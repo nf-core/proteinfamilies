@@ -4,8 +4,8 @@ process CHUNK_CLUSTERS {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/eb/eb3700531c7ec639f59f084ab64c05e881d654dcf829db163539f2f0b095e09d/data' :
-        'community.wave.seqera.io/library/biopython:1.84--3318633dad0031e7' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/438649357e4dcaab676b1bff95e3aace1decb36a658d6257869a641155867e0c/data' :
+        'community.wave.seqera.io/library/pip_pyfastx:c1d255a74c4291f8' }"
 
     input:
     tuple val(meta) , path(clustering)

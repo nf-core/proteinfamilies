@@ -69,6 +69,7 @@ Reporting:
       - `<samplename>/`
         - `chunked_fasta/`
           - `*.fasta`: (optional) fasta files with amino acid sequences of each cluster above the membership threshold
+    - `<samplename>_clustering_distribution_mqc.csv`: csv with initial clustering metadata, from each sample, to print with MultiQC (Id,Cluster Size,Number of Clusters)
 
 </details>
 

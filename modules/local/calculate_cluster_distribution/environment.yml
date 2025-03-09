@@ -2,6 +2,4 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - pip
-  - pip:
-      - pyfastx==2.2.0
+  - conda-forge::sed=4.7
