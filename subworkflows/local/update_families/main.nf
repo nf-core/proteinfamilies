@@ -101,7 +101,7 @@ workflow UPDATE_FAMILIES {
 
     if (params.remove_sequence_redundancy) {
         // Strict clustering to remove redundancy
-        EXECUTE_CLUSTERING( fasta_ch )
+        EXECUTE_CLUSTERING( fasta_ch, params.clustering_tool )
         ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
 
         REMOVE_REDUNDANT_SEQS( EXECUTE_CLUSTERING.out.clusters, EXECUTE_CLUSTERING.out.seqs )

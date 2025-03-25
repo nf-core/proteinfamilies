@@ -80,7 +80,7 @@ workflow PROTEINFAMILIES {
 
     // Creating new families
     // Clustering
-    EXECUTE_CLUSTERING( ch_samplesheet_for_create )
+    EXECUTE_CLUSTERING( ch_samplesheet_for_create, params.clustering_tool )
     ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
 
     CALCULATE_CLUSTER_DISTRIBUTION( EXECUTE_CLUSTERING.out.clusters )

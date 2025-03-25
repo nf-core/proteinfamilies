@@ -9,7 +9,8 @@ include { MMSEQS_CREATETSV } from '../../../modules/nf-core/mmseqs/createtsv/mai
 
 workflow EXECUTE_CLUSTERING {
     take:
-    sequences // tuple val(meta), path(fasta)
+    sequences       // tuple val(meta), path(fasta)
+    clustering_tool // string: mmseqs clustering algorithm
 
     main:
     ch_versions       = Channel.empty()
@@ -18,10 +19,10 @@ workflow EXECUTE_CLUSTERING {
     MMSEQS_CREATEDB( sequences )
     ch_versions = ch_versions.mix( MMSEQS_CREATEDB.out.versions )
 
-    if (params.clustering_tool == 'cluster') {
+    if (clustering_tool == 'cluster') {
         cluster_res = MMSEQS_CLUSTER( MMSEQS_CREATEDB.out.db )
         ch_versions = ch_versions.mix( MMSEQS_CLUSTER.out.versions )
-    } else { // fallback: linclust
+    } else if (clustering_tool == 'linclust') {
         cluster_res = MMSEQS_LINCLUST( MMSEQS_CREATEDB.out.db )
         ch_versions = ch_versions.mix( MMSEQS_LINCLUST.out.versions )
     }

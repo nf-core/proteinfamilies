@@ -1,0 +1,115 @@
+nextflow_workflow {
+
+    name "Test Subworkflow EXECUTE_CLUSTERING"
+    script "../main.nf"
+    workflow "EXECUTE_CLUSTERING"
+
+    test("fasta - linclust") {
+
+        when {
+            workflow {
+                """
+                clustering_tool = 'linclust'
+
+                input[0] = Channel.of([
+                    [ id: 'test_linclust' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[1] = clustering_tool
+                """
+            }
+        }
+
+        then {
+            def lines = path(workflow.out.clusters[0][1]).readLines()
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    file(workflow.out.clusters[0][1]).name,
+                    lines.size(),
+                    workflow.out.versions).match() }
+            )
+        }
+    }
+
+    test("fasta - cluster") {
+
+        when {
+            workflow {
+                """
+                clustering_tool = 'cluster'
+
+                input[0] = Channel.of([
+                    [ id: 'test_cluster' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[1] = clustering_tool
+                """
+            }
+        }
+
+        then {
+            def lines = path(workflow.out.clusters[0][1]).readLines()
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    file(workflow.out.clusters[0][1]).name,
+                    lines.size(),
+                    workflow.out.versions).match() }
+            )
+        }
+    }
+
+    test("fasta - linclust - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                clustering_tool = 'linclust'
+
+                input[0] = Channel.of([
+                    [ id: 'test_linclust_stub' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[1] = clustering_tool
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+    test("fasta - cluster - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                clustering_tool = 'cluster'
+
+                input[0] = Channel.of([
+                    [ id: 'test_cluster_stub' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[1] = clustering_tool
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+}
