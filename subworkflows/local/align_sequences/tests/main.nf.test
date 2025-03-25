@@ -1,0 +1,107 @@
+nextflow_workflow {
+
+    name "Test Subworkflow ALIGN_SEQUENCES"
+    script "../main.nf"
+    workflow "ALIGN_SEQUENCES"
+
+    test("fasta - famsa") {
+
+        when {
+            workflow {
+                """
+                alignment_tool = 'famsa'
+
+                input[0] = Channel.of([
+                    [ id: 'test_famsa' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
+                ])
+                input[1] = alignment_tool
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+    test("fasta - mafft") {
+
+        when {
+            workflow {
+                """
+                alignment_tool = 'mafft'
+
+                input[0] = Channel.of([
+                    [ id: 'test_mafft' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
+                ])
+                input[1] = alignment_tool
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+    test("fasta - famsa - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                alignment_tool = 'famsa'
+
+                input[0] = Channel.of([
+                    [ id: 'test_famsa_stub' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
+                ])
+                input[1] = alignment_tool
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+    test("fasta - mafft - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                alignment_tool = 'mafft'
+
+                input[0] = Channel.of([
+                    [ id: 'test_mafft_stub' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
+                ])
+                input[1] = alignment_tool
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+}

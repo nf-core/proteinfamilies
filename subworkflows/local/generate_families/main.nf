@@ -26,7 +26,7 @@ workflow GENERATE_FAMILIES {
             [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName], file_path ]
         }
 
-    ALIGN_SEQUENCES( ch_fasta )
+    ALIGN_SEQUENCES( ch_fasta, params.alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_msa = ALIGN_SEQUENCES.out.alignments
 

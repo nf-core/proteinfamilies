@@ -82,7 +82,7 @@ workflow REMOVE_REDUNDANCY {
         REMOVE_REDUNDANT_SEQS( EXECUTE_CLUSTERING.out.clusters, EXECUTE_CLUSTERING.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions )
 
-        ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta )
+        ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, params.alignment_tool )
         ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
         msa = ALIGN_SEQUENCES.out.alignments
     }

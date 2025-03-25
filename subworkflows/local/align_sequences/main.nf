@@ -7,13 +7,14 @@ include { MAFFT_ALIGN } from '../../../modules/nf-core/mafft/align/main'
 
 workflow ALIGN_SEQUENCES {
     take:
-    sequences // tuple val(meta), path(fasta)
+    sequences      // tuple val(meta), path(fasta)
+    alignment_tool // string: MSA tool
 
     main:
     ch_versions   = Channel.empty()
     ch_alignments = Channel.empty()
 
-    if (params.alignment_tool == 'famsa') {
+    if (alignment_tool == 'famsa') {
         alignment_res = FAMSA_ALIGN( sequences, [[:],[]], false )
         ch_versions = ch_versions.mix( FAMSA_ALIGN.out.versions )
         ch_alignments = alignment_res.alignment

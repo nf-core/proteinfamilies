@@ -109,7 +109,7 @@ workflow UPDATE_FAMILIES {
         fasta_ch = REMOVE_REDUNDANT_SEQS.out.fasta
     }
 
-    ALIGN_SEQUENCES( fasta_ch )
+    ALIGN_SEQUENCES( fasta_ch, params.alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_msa = ALIGN_SEQUENCES.out.alignments
 
