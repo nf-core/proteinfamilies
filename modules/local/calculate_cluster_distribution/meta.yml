@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "calculate_cluster_distribution"
+description: Parse a clustering TSV file to count the occurrences of each cluster and generate a MultiQC-compatible output file.
+keywords:
+  - clustering
+  - distribution
+  - multiqc
+tools:
+  - "calculate_cluster_distribution":
+      description: "Parse a clustering TSV file to count the occurrences of each cluster and generate a MultiQC-compatible output file"
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/calculate_cluster_distribution/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/calculate_cluster_distribution/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/calculate_cluster_distribution/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - clusters:
+        type: file
+        description: 2-column TSV clustering file (e.g., cluster_rep\tcluster_member).
+        pattern: "*.tsv"
+output:
+  - mqc:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - ${prefix}_clustering_distribution_mqc.csv:
+          type: file
+          description: Trimmed multiple sequence alignment file
+          pattern: "*.csv"
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"
