@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | biopython | 1.84             | 1.85        |
 | pyfastx   | 2.2.0            |             |
 
-### `Deprecated`
+### `Removed`
 
 - [#73](https://github.com/nf-core/proteinfamilies/pull/73) - Deprecated `pyfastx` module version of `CHUNK_CLUSTERS`, since it was struggling performance-wise with larger datasets.
 
