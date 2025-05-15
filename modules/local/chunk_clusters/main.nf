@@ -1,11 +1,11 @@
 process CHUNK_CLUSTERS {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_high'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/43/438649357e4dcaab676b1bff95e3aace1decb36a658d6257869a641155867e0c/data' :
-        'community.wave.seqera.io/library/pip_pyfastx:c1d255a74c4291f8' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/83/8372f6241b480332d91bc00a88ec8c72c8f7fcc9994177a5dd67a07007cd6e32/data' :
+        'community.wave.seqera.io/library/biopython:1.85--6f761292fa9881b4' }"
 
     input:
     tuple val(meta) , path(clustering)
@@ -31,12 +31,13 @@ process CHUNK_CLUSTERS {
         --clustering ${clustering} \\
         --sequences ${fasta_name} \\
         --threshold ${size_threshold} \\
+        --threads $task.cpus \\
         --out_folder chunked_fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version 2>&1 | sed 's/Python //g')
-        pyfastx: \$(python -c "import importlib.metadata; print(importlib.metadata.version('pyfastx'))")
+        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
     END_VERSIONS
     """
 
@@ -48,7 +49,7 @@ process CHUNK_CLUSTERS {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version 2>&1 | sed 's/Python //g')
-        pyfastx: \$(python -c "import importlib.metadata; print(importlib.metadata.version('pyfastx'))")
+        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
     END_VERSIONS
     """
 
