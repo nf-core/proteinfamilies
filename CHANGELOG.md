@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#76](https://github.com/nf-core/proteinfamilies/pull/76) - Default branch changed from `master` to `main`.
+- [#77](https://github.com/nf-core/proteinfamilies/pull/77) - Default branch changed from `master` to `main`.
 - [#73](https://github.com/nf-core/proteinfamilies/pull/73) - Changed the fasta parsing library of the `CHUNK_CLUSTERS` local module, from `pyfastx` back to the latest version of `biopython`, and parallelized its writing mechanism, achieving decreased execution time.
 
 ### `Dependencies`
