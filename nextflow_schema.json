@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/proteinfamilies/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/nf-core/proteinfamilies/main/nextflow_schema.json",
     "title": "nf-core/proteinfamilies pipeline parameters",
     "description": "Generate protein family level models (Multiple Sequence Alignments (MSAs), Hidden Markov Models (HMMs)) starting from a FASTA amino acid sequence file.",
     "type": "object",
