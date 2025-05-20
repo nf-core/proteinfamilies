@@ -3,6 +3,24 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.1.1 - [2025/05/17]
+
+### `Changed`
+
+- [#77](https://github.com/nf-core/proteinfamilies/pull/77) - Default branch changed from `master` to `main`.
+- [#73](https://github.com/nf-core/proteinfamilies/pull/73) - Changed the fasta parsing library of the `CHUNK_CLUSTERS` local module, from `pyfastx` back to the latest version of `biopython`, and parallelized its writing mechanism, achieving decreased execution time.
+
+### `Dependencies`
+
+| Tool      | Previous version | New version |
+| --------- | ---------------- | ----------- |
+| biopython | 1.84             | 1.85        |
+| pyfastx   | 2.2.0            |             |
+
+### `Removed`
+
+- [#73](https://github.com/nf-core/proteinfamilies/pull/73) - Deprecated `pyfastx` module version of `CHUNK_CLUSTERS`, since it was struggling performance-wise with larger datasets.
+
 ## v1.1.0 - [2025/05/06]
 
 ### `Added`
