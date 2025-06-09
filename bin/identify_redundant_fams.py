@@ -90,10 +90,17 @@ def remove_redundant_fams(mapping, domtbl, length_threshold, out_file):
 
     redundant_fam_names = set()
     for _, row in domtbl_df.iterrows():
-        if int(row["query size"]) < int(row["target size"]):
-            redundant_fam_names.add(row["query name"])
-        else:
-            redundant_fam_names.add(row["target name"])
+        query = row["query name"]
+        target = row["target name"]
+        query_size = int(row["query size"])
+        target_size = int(row["target size"])
+
+        if query_size < target_size:
+            redundant_fam_names.add(query)
+        elif target_size < query_size:
+            redundant_fam_names.add(target)
+        else: # sizes equal, keep alphabetically first as non-redundant to avoid triangular deletions
+            redundant_fam_names.add(max(query, target))
 
     with open(out_file, "w") as f:
         for name in sorted(redundant_fam_names):
