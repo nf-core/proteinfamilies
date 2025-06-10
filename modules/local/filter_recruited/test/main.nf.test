@@ -1,0 +1,55 @@
+nextflow_process {
+
+    name "Test Process FILTER_RECRUITED"
+    script "../main.nf"
+    process "FILTER_RECRUITED"
+
+    test("proteinfamilies - hmmsearch - fasta") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'filtering' ],  // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/modules/chunk.domtbl.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[1] = 0.8
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("proteinfamilies - hmmsearch - fasta - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'filtering' ],  // meta map
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/modules/chunk.domtbl.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[1] = 0.8
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}

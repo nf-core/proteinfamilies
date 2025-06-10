@@ -1,0 +1,55 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "filter_recruited"
+description: Keep the hit sequences from the input fasta file. Use a threshold in [0, 1] to filter the hits.
+keywords:
+  - filtering
+  - hmmsearch
+  - domtbl
+tools:
+  - "filter_recruited":
+      description: "Keep the hit sequences from the input fasta file. Use a threshold in [0, 1] to filter the hits."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/filter_recruited/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/filter_recruited/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/filter_recruited/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - domtbl:
+        type: file
+        description: The domtbl output format file of hmmsearch.
+        pattern: "*.domtbl.gz"
+    - fa:
+        type: file
+        description: An amino acid sequence fasta file.
+        pattern: "*.{fa,fa.gz,fasta,fasta.gz}"
+  - - length_threshold:
+        type: float
+        description: The minimum fraction of the hit sequence envelope coords [start, end] against the query HMM's length.
+output:
+  - fasta:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - ${prefix}.fasta.gz:
+          type: file
+          description: a filtered fasta file
+          pattern: "*.fasta.gz"
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@ReaKal"
+  - "@ChrisTzaferis"
+maintainers:
+  - "@vagkaratzas"

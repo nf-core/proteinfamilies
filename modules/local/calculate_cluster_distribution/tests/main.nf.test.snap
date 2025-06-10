@@ -1,0 +1,68 @@
+{
+    "proteinfamilies - tsv": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_clustering_distribution_mqc.csv:md5,53d7b52b9ff993372a1153b2ff8ac639"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,21017052f4c8e826f6d6ab9fdffe11f5"
+                ],
+                "mqc": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_clustering_distribution_mqc.csv:md5,53d7b52b9ff993372a1153b2ff8ac639"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,21017052f4c8e826f6d6ab9fdffe11f5"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-03-24T14:43:56.858435601"
+    },
+    "proteinfamilies - tsv - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_clustering_distribution_mqc.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,21017052f4c8e826f6d6ab9fdffe11f5"
+                ],
+                "mqc": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_clustering_distribution_mqc.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,21017052f4c8e826f6d6ab9fdffe11f5"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-03-24T14:44:05.560229782"
+    }
+}
