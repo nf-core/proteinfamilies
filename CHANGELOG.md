@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.2.0dev - [date]
 
+### `Changed`
+
+- [#81](https://github.com/nf-core/proteinfamilies/pull/81) - nf-core tools template update to 3.3.1.
+
 ### `Fixed`
 
 - [#80](https://github.com/nf-core/proteinfamilies/pull/80) - Fixed a bug where, due to a missing check for equal family sizes, non-redundant families were erroneously marked as redundant through transitive relationships and were removed
