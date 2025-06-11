@@ -13,7 +13,7 @@ nextflow_workflow {
 
                 input[0] = Channel.of([
                     [ id: 'test_famsa' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
                 """
@@ -37,7 +37,7 @@ nextflow_workflow {
 
                 input[0] = Channel.of([
                     [ id: 'test_mafft' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
                 """
@@ -63,7 +63,7 @@ nextflow_workflow {
 
                 input[0] = Channel.of([
                     [ id: 'test_famsa_stub' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
                 """
@@ -89,7 +89,7 @@ nextflow_workflow {
 
                 input[0] = Channel.of([
                     [ id: 'test_mafft_stub' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
                 """
