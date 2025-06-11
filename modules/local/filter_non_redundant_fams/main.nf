@@ -30,4 +30,15 @@ process FILTER_NON_REDUNDANT_FAMS {
         python: \$(python --version 2>&1 | sed 's/Python //g')
     END_VERSIONS
     """
+
+    stub:
+    extension = files[0].extension
+    """
+    touch test.${extension}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+    END_VERSIONS
+    """
 }

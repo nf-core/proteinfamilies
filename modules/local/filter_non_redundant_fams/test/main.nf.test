@@ -1,0 +1,65 @@
+nextflow_process {
+
+    name "Test Process FILTER_NON_REDUNDANT_FAMS"
+    script "../main.nf"
+    process "FILTER_NON_REDUNDANT_FAMS"
+
+    test("proteinfamilies - nonredundant") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'aln' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                    ]
+                ])
+                input[1] = Channel.of([
+                    [ id: 'redundant_ids' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/redundant_fam_ids.txt', checkIfExists: true),
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("proteinfamilies - nonredundant - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'aln' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                    ]
+                ])
+                input[1] = Channel.of([
+                    [ id: 'redundant_ids' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/redundant_fam_ids.txt', checkIfExists: true),
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}
