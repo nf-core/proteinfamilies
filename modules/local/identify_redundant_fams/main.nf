@@ -33,4 +33,15 @@ process IDENTIFY_REDUNDANT_FAMS {
         pandas: \$(python -c "import importlib.metadata; print(importlib.metadata.version('pandas'))")
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch redundant_fam_ids.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        pandas: \$(python -c "import importlib.metadata; print(importlib.metadata.version('pandas'))")
+    END_VERSIONS
+    """
 }
