@@ -23,7 +23,7 @@ input:
           e.g. `[ id:'sample1', single_end:false ]`
     - aln:
         type: file
-        description: A list of alignment files that will be staged as a directory. 
+        description: A list of alignment files that will be staged as a directory.
         pattern: "*.{sto.gz,fasta,fasta.gz}"
 output:
   - fasta:
