@@ -8,7 +8,8 @@ nextflow_pipeline {
 
         when {
             params {
-                outdir = "$outputDir"
+                outdir                 = "$outputDir"
+                cluster_size_threshold = 5
             }
         }
 
