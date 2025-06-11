@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#xx](https://github.com/nf-core/proteinfamilies/pull/xx) - Added nf-test and `meta.yml` file for local module `EXTRACT_FAMILY_REPS`
 - [#81](https://github.com/nf-core/proteinfamilies/pull/81) - Added the default pipeline end-to-end nf-test.
 
 ### `Changed`
