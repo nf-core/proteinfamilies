@@ -13,7 +13,7 @@ nextflow_workflow {
 
                 input[0] = Channel.of([
                     [ id: 'test_linclust' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 input[1] = clustering_tool
                 """
@@ -41,7 +41,7 @@ nextflow_workflow {
 
                 input[0] = Channel.of([
                     [ id: 'test_cluster' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 input[1] = clustering_tool
                 """
@@ -71,7 +71,7 @@ nextflow_workflow {
 
                 input[0] = Channel.of([
                     [ id: 'test_linclust_stub' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 input[1] = clustering_tool
                 """
@@ -97,7 +97,7 @@ nextflow_workflow {
 
                 input[0] = Channel.of([
                     [ id: 'test_cluster_stub' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 input[1] = clustering_tool
                 """

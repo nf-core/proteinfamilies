@@ -14,7 +14,12 @@ nextflow_pipeline {
 
         then {
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
-            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}',
+                'seed_msa/raw/famsa_align/mgnifams_test/*.aln', 'seed_msa/raw/clipkit/mgnifams_test/*.clipkit',
+                'seed_msa/filtered/mgnifams_test/*.clipkit', 'mmseqs/redundancy_clustering/mmseqs_createtsv/*.tsv',
+                'hmm/raw/mgnifams_test/*.hmm.gz', 'hmm/filtered/mgnifams_test/*.hmm.gz',
+                'full_msa/raw/hmmer_hmmalign/mgnifams_test/*.sto.gz', 'full_msa/filtered/famsa_align/mgnifams_test/*.aln',
+                'fasta/non_redundant_sequences_filtered/mgnifams_test/*.faa'])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assertAll(

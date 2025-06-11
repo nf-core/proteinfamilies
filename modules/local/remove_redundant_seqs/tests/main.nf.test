@@ -11,11 +11,11 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id: 'test_tsv' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/modules/clustering.tsv', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
                 input[1] = Channel.of([
                     [ id: 'test_fasta' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 """
             }
@@ -38,11 +38,11 @@ nextflow_process {
                 """
                 input[0] = Channel.of([
                     [ id: 'test_tsv' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/modules/clustering.tsv', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
                 input[1] = Channel.of([
                     [ id: 'test_fasta' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 """
             }
