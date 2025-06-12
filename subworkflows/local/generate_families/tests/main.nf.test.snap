@@ -1,0 +1,42 @@
+{
+    "fasta": {
+        "content": [
+            "test_chunks_chunk_1.hmm.gz",
+            [
+                [
+                    {
+                        "id": "test_chunks",
+                        "chunk": "chunk_1"
+                    },
+                    "test_chunks_chunk_1.clipkit:md5,dae9d5f940e2f43687e068155ebfe1ae"
+                ],
+                [
+                    {
+                        "id": "test_chunks",
+                        "chunk": "chunk_2"
+                    },
+                    "test_chunks_chunk_2.clipkit:md5,adcd7fc302b4cd66c219d2df51a7e7e8"
+                ]
+            ],
+            [
+                
+            ],
+            [
+                
+            ],
+            [
+                "versions.yml:md5,45eba8d30565dc253428be013fbd48cb",
+                "versions.yml:md5,45eba8d30565dc253428be013fbd48cb",
+                "versions.yml:md5,ef2d0b048087d63b5fcac1c32e704791",
+                "versions.yml:md5,ef2d0b048087d63b5fcac1c32e704791",
+                "versions.yml:md5,fc501370ac8ce03b2fcc4377984702f1",
+                "versions.yml:md5,fc501370ac8ce03b2fcc4377984702f1"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-06-12T10:27:59.370626718"
+    }
+}
