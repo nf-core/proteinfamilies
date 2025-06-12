@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#xx](https://github.com/nf-core/proteinfamilies/pull/xx) - Added nf-test and `meta.yml` file for local subworkflow `GENERATE_FAMILIES`
   Added nf-test and `meta.yml` file for local subworkflow `REMOVE_REDUNDANCY`
+  Added nf-test and `meta.yml` file for local subworkflow `UPDATE_FAMILIES`
 - [#88](https://github.com/nf-core/proteinfamilies/pull/88) - Added nf-test and `meta.yml` file for local module `BRANCH_HITS_FASTA`
   Added nf-test and `meta.yml` file for local module `FILTER_NON_REDUNDANT_FAMS`
   Added nf-test and `meta.yml` file for local module `IDENTIFY_REDUNDANT_FAMS`

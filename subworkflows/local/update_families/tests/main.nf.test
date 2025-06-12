@@ -1,0 +1,31 @@
+nextflow_workflow {
+
+    name "Test Subworkflow UPDATE_FAMILIES"
+    script "../main.nf"
+    workflow "UPDATE_FAMILIES"
+    config "./nextflow.config"
+
+    test("fasta - update") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.fa', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/existing_hmms.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/existing_msas.tar.gz', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match()}
+            )
+        }
+    }
+
+}
