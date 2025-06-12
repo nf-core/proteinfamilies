@@ -4,12 +4,15 @@ lint:
     - conf/igenomes_ignored.config
     - conf/igenomes.config
     - conf/igenomes_ignored.config
-nf_core_version: 3.2.0
+  files_unchanged:
+    - .github/PULL_REQUEST_TEMPLATE.md
+nf_core_version: 3.3.1
 repository_type: pipeline
 template:
   author: Evangelos Karatzas
-  description: Generate protein family level models (MSAs, HMMs) starting from a FASTA
-    amino acid sequence file.
+  description: Generate protein family level models (Multiple Sequence Alignments
+    (MSAs), Hidden Markov Models (HMMs)) starting from a FASTA amino acid sequence
+    file.
   force: false
   is_nfcore: true
   name: proteinfamilies
@@ -18,4 +21,4 @@ template:
   skip_features:
     - igenomes
     - fastqc
-  version: 1.1.0dev
+  version: 1.2.0dev

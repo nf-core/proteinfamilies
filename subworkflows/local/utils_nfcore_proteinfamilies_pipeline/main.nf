@@ -186,7 +186,7 @@ def toolBibliographyText() {
 
     def clipping_text = '<li>Steenwyk, J. L., Buida III, T. J., Li, Y., Shen, X. X., & Rokas, A. (2020). ClipKIT: a multiple sequence alignment trimming software for accurate phylogenomic inference. PLoS biology, 18(12), e3001007. doi: <a href="https://doi.org/10.1371/journal.pbio.3001007">10.1371/journal.pbio.3001007</a></li>'
 
-    def model_text = '<li>Potter, S. C., Luciani, A., Eddy, S. R., Park, Y., Lopez, R., & Finn, R. D. (2018). HMMER web server: 2018 update. Nucleic acids research, 46(W1), W200-W204. doi: <a href="https://doi.org/10.1093/nar/gky448">10.1093/nar/gky448</a></li>'
+    def model_text = '<li>Eddy, S. R. (2011). Accelerated profile HMM searches. PLoS computational biology, 7(10), e1002195. doi: <a href="https://doi.org/10.1371/journal.pcbi.1002195">10.1371/journal.pcbi.1002195</a></li>'
 
     def postprocessing_text = '<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 32(19), 3047–3048. doi: <a href="https://doi.org/10.1093/bioinformatics/btw354">10.1093/bioinformatics/btw354</a></li>'
 

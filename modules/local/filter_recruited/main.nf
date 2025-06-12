@@ -12,20 +12,32 @@ process FILTER_RECRUITED {
     val(length_threshold)
 
     output:
-    tuple val(meta), path("*.fasta.gz"), emit: fasta, optional: true
-    path "versions.yml"                , emit: versions
+    tuple val(meta), path("${prefix}.fasta.gz"), emit: fasta, optional: true
+    path "versions.yml"                        , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
     filter_recruited.py \\
         --domtbl ${domtbl} \\
         --fasta ${fa} \\
         --length_threshold ${length_threshold} \\
         --out_fasta ${prefix}.fasta.gz
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
+    END_VERSIONS
+    """
+
+    stub:
+    prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo "" | gzip > ${prefix}.fasta.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

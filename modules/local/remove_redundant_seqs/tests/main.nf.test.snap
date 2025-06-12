@@ -1,0 +1,68 @@
+{
+    "proteinfamilies - tsv": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_tsv"
+                        },
+                        "test_tsv_null_reps.faa:md5,e06dfa1241372e7fe8aa9f8c20c8f8a9"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,f0134d1ac1c4b968f0a6be3b369979f6"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test_tsv"
+                        },
+                        "test_tsv_null_reps.faa:md5,e06dfa1241372e7fe8aa9f8c20c8f8a9"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,f0134d1ac1c4b968f0a6be3b369979f6"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-05-06T10:49:10.093036535"
+    },
+    "proteinfamilies - tsv - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_tsv"
+                        },
+                        "test_tsv_null_reps.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,f0134d1ac1c4b968f0a6be3b369979f6"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test_tsv"
+                        },
+                        "test_tsv_null_reps.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,f0134d1ac1c4b968f0a6be3b369979f6"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-05-06T10:49:21.489882365"
+    }
+}

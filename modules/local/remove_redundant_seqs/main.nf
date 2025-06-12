@@ -12,7 +12,7 @@ process REMOVE_REDUNDANT_SEQS {
     tuple val(meta2), path(sequences)
 
     output:
-    tuple val(meta), path("${meta.id}_reps.fa"), emit: fasta
+    tuple val(meta), path("${prefix}_reps.faa"), emit: fasta
     path "versions.yml"                        , emit: versions
 
     when:
@@ -21,7 +21,7 @@ process REMOVE_REDUNDANT_SEQS {
     script:
     def is_compressed = sequences.getName().endsWith(".gz") ? true : false
     def fasta_name    = sequences.name.replace(".gz", "")
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
     if [ "$is_compressed" == "true" ]; then
         gzip -c -d $sequences > $fasta_name
@@ -30,7 +30,19 @@ process REMOVE_REDUNDANT_SEQS {
     remove_redundant_seqs.py \\
         --clustering ${clustering} \\
         --sequences ${fasta_name} \\
-        --out_fasta ${prefix}_reps.fa
+        --out_fasta ${prefix}_reps.faa
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
+    END_VERSIONS
+    """
+
+    stub:
+    prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_reps.faa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

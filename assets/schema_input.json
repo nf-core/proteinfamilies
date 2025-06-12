@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/proteinfamilies/master/assets/schema_input.json",
+    "$id": "https://raw.githubusercontent.com/nf-core/proteinfamilies/main/assets/schema_input.json",
     "title": "nf-core/proteinfamilies pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
@@ -25,14 +25,14 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.tar\\.gz$",
-                "description": "Gzipped tarball file containing existing protein family HMMs. These models will be used to 'fish' new sequences from the input and then be updated accordingly."
+                "description": "Gzipped tarball file containing existing protein family Hidden Markov Models (HMMs). These models will be used to 'fish' new sequences from the input and then be updated accordingly. Example: 'example.tar.gz'"
             },
             "existing_msas_to_update": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.tar\\.gz$",
-                "description": "Tarball file containing multiple sequence alignments (MSAs) for the families to be updated. These alignments are essential for the update process and should match the HMM filenames one by one."
+                "description": "Tarball file containing Multiple Sequence Alignments (MSAs) for the families to be updated. These alignments are essential for the update process and should match the Hidden Markov Model (HMM) filenames one by one. Example: 'example.tar.gz'"
             }
         },
         "required": ["sample", "fasta"]

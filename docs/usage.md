@@ -39,8 +39,8 @@ Here we provide guidance regarding some parameter choices.
   The `cluster` option is very slow and should only be used for small or medium size inputs.
   The `linclust` option is somewhat less sensitive, but extremely fast for clustering larger datasets.
 - alignment_tool ["famsa", "mafft"]: Multiple Sequence Alignment (MSA) options.
-  The `famsa` option is generally recommended as best time-memory-accuracy combination.
-  The `mafft` option is also very fast and may still produce better alignments in some edge cases.
+  The `famsa` option is generally recommended as the best time-memory-accuracy combination.
+  The `mafft` option offers various alignment strategies, but in general is slower and less sensitive than `famsa`.
 - trim_ends_only: Flag to either clip MSA gaps throughout the alignment, or only at the ends.
   Only used if `trim_msa` is on.
   The authors suggest keeping the `trim_ends_only` on, since the gaps inside the sequences may still carry evolutionary significance.

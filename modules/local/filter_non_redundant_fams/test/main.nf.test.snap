@@ -1,0 +1,68 @@
+{
+    "proteinfamilies - nonredundant - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "aln"
+                        },
+                        "test.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,94d53b04b93e6419c24cc8d4a858a851"
+                ],
+                "filtered": [
+                    [
+                        {
+                            "id": "aln"
+                        },
+                        "test.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,94d53b04b93e6419c24cc8d4a858a851"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-06-11T17:07:59.04572567"
+    },
+    "proteinfamilies - nonredundant": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "aln"
+                        },
+                        "mgnifams_test_2.aln:md5,62ba4732047ba75151f735c2399973a4"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,94d53b04b93e6419c24cc8d4a858a851"
+                ],
+                "filtered": [
+                    [
+                        {
+                            "id": "aln"
+                        },
+                        "mgnifams_test_2.aln:md5,62ba4732047ba75151f735c2399973a4"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,94d53b04b93e6419c24cc8d4a858a851"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-06-11T17:07:51.415216844"
+    }
+}

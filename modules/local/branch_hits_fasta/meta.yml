@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "branch_hits_fasta"
+description: Check if there are hmmsearch matches for sequences and if so, assign them to the respective hit family file, else put them in a fasta.gz file.
+keywords:
+  - chunking
+  - clusters
+  - fasta
+tools:
+  - "branch_hits_fasta":
+      description: "Check if there are hmmsearch matches for sequences and if so, assign them to the respective hit family file, else put them in a fasta.gz file."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/branch_hits_fasta/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/branch_hits_fasta/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/branch_hits_fasta/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - fasta:
+        type: file
+        description: Input amino acid fasta file.
+        pattern: "*.{fasta,faa,fa,fasta.gz,faa.gz,fa.gz}"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - domtbl:
+        type: file
+        description: The result of hmmsearch with input sequences against existing family HMM hits.
+        pattern: "*.domtbl.gz"
+  - - length_threshold:
+        type: float
+        description: The minimum HMM query hit length percentage to consider for a family hit.
+output:
+  - hits:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - hits/*:
+          type: file
+          description: List of fasta files containing sequences that had HMM hits across families -one file per family.
+          pattern: "hits/*.fasta"
+  - non_hit_fasta:
+      - meta2:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - .fasta.gz:
+          type: file
+          description: Updated compressed input fasta file containing non-hit sequences, to go through the basic family generation workflow.
+          pattern: "*.fasta.gz"
+  - versions:
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

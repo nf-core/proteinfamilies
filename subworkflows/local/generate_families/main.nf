@@ -16,7 +16,8 @@ workflow GENERATE_FAMILIES {
 
     main:
     ch_versions = Channel.empty()
-    ch_msa      = Channel.empty()
+    ch_seed_msa = Channel.empty()
+    ch_full_msa = Channel.empty()
     ch_fasta    = Channel.empty()
     ch_hmm      = Channel.empty()
 
@@ -28,15 +29,15 @@ workflow GENERATE_FAMILIES {
 
     ALIGN_SEQUENCES( ch_fasta, params.alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
-    ch_msa = ALIGN_SEQUENCES.out.alignments
+    ch_seed_msa = ALIGN_SEQUENCES.out.alignments
 
     if (params.trim_msa) {
-        CLIPKIT( ch_msa, params.clipkit_out_format )
+        CLIPKIT( ch_seed_msa, params.clipkit_out_format )
         ch_versions = ch_versions.mix( CLIPKIT.out.versions )
-        ch_msa = CLIPKIT.out.clipkit
+        ch_seed_msa = CLIPKIT.out.clipkit
     }
 
-    HMMER_HMMBUILD( ch_msa, [] )
+    HMMER_HMMBUILD( ch_seed_msa, [] )
     ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions )
     ch_hmm = HMMER_HMMBUILD.out.hmm
 
@@ -70,12 +71,15 @@ workflow GENERATE_FAMILIES {
 
         HMMER_HMMALIGN( ch_input_for_hmmalign.seq, ch_input_for_hmmalign.hmm )
         ch_versions = ch_versions.mix( HMMER_HMMALIGN.out.versions )
-        ch_msa = HMMER_HMMALIGN.out.sto
+        ch_full_msa = HMMER_HMMALIGN.out.sto
+    } else {
+        ch_full_msa = ch_seed_msa
     }
 
     emit:
     versions = ch_versions
-    msa      = ch_msa
+    seed_msa = ch_seed_msa
+    full_msa = ch_full_msa
     fasta    = ch_fasta
     hmm      = ch_hmm
 }
