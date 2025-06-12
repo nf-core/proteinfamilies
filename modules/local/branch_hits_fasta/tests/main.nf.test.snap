@@ -1,0 +1,114 @@
+{
+    "proteinfamilies - fasta - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "fasta"
+                        },
+                        "test.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "fasta"
+                        },
+                        "test.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,e4ba3fe48bf303125eb920183b7567c9"
+                ],
+                "hits": [
+                    [
+                        {
+                            "id": "fasta"
+                        },
+                        "test.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "non_hit_fasta": [
+                    [
+                        {
+                            "id": "fasta"
+                        },
+                        "test.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,e4ba3fe48bf303125eb920183b7567c9"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-06-12T08:57:06.080022922"
+    },
+    "proteinfamilies - fasta": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "fasta"
+                        },
+                        [
+                            "mgnifams_test_1.fasta:md5,df53aa6a0450be4f1c73c51578ba5323",
+                            "mgnifams_test_3.fasta:md5,25bc45d9938415d996e1ff0fef235f78",
+                            "mgnifams_test_4.fasta:md5,4f8efff250f1242767d6eaab614b880f",
+                            "mgnifams_test_5.fasta:md5,666cf3c54399d0088fd5ad03eec6e575",
+                            "mgnifams_test_6.fasta:md5,c3ac1f49721a3d5faa69ec916aab29d2",
+                            "mgnifams_test_7.fasta:md5,161d18858155e5185ff3b1900d58cf48"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "fasta"
+                        },
+                        "fasta.fasta.gz:md5,7ab7e32d9e439bba8ee151cd2d278994"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,e4ba3fe48bf303125eb920183b7567c9"
+                ],
+                "hits": [
+                    [
+                        {
+                            "id": "fasta"
+                        },
+                        [
+                            "mgnifams_test_1.fasta:md5,df53aa6a0450be4f1c73c51578ba5323",
+                            "mgnifams_test_3.fasta:md5,25bc45d9938415d996e1ff0fef235f78",
+                            "mgnifams_test_4.fasta:md5,4f8efff250f1242767d6eaab614b880f",
+                            "mgnifams_test_5.fasta:md5,666cf3c54399d0088fd5ad03eec6e575",
+                            "mgnifams_test_6.fasta:md5,c3ac1f49721a3d5faa69ec916aab29d2",
+                            "mgnifams_test_7.fasta:md5,161d18858155e5185ff3b1900d58cf48"
+                        ]
+                    ]
+                ],
+                "non_hit_fasta": [
+                    [
+                        {
+                            "id": "fasta"
+                        },
+                        "fasta.fasta.gz:md5,7ab7e32d9e439bba8ee151cd2d278994"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,e4ba3fe48bf303125eb920183b7567c9"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-06-12T08:56:59.454704406"
+    }
+}
