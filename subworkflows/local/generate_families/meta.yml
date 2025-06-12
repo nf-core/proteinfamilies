@@ -6,7 +6,13 @@ keywords:
   - hmm model
   - seed alignment
   - full alignment
-components: []
+components:
+  - align_sequences
+  - clipkit
+  - hmmer/hmmbuild
+  - hmmer/hmmsearch
+  - filter_recruited
+  - hmmer/hmmalign
 input:
   - sequences:
       type: file

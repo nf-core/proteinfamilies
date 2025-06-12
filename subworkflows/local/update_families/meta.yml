@@ -5,7 +5,18 @@ keywords:
   - update
   - hmm model
   - full alignment
-components: []
+components:
+  - untar
+  - cat/cat
+  - hmmer/hmmsearch
+  - branch_hits_fasta
+  - seqkit/seq
+  - execute_clustering
+  - remove_redundant_seqs
+  - align_sequences
+  - clipkit
+  - hmmer/hmmbuild
+  - extract_family_reps
 input:
   - ch_samplesheet_for_update:
       type: file

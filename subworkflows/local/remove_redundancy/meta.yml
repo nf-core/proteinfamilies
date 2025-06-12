@@ -6,7 +6,16 @@ keywords:
   - redundancy
   - inter-family
   - intra-family
-components: []
+components:
+  - extract_family_reps
+  - cat/cat
+  - hmmer/hmmsearch
+  - identify_redundant_fams
+  - filter_non_redundant_fams
+  - execute_clustering
+  - remove_redundant_seqs
+  - align_sequences
+  - hhsuite/reformat
 input:
   - seed_msa:
       type: file
