@@ -19,11 +19,12 @@ output:
   - no_hit_seqs:
       type: file
       description: |
-        Seed MSA files containing the multiple sequence alignment of the seed clusters.
+        FASTA file with sequences without hits, to go through the base family generation workflow.
   - updated_family_reps:
       type: file
       description: |
-        Seed MSA files containing the multiple sequence alignment of the seed clusters.
+        A MultiQC CSV file containing metadata about the updated family representatives;
+        "Sample Name","Family Id","Size","Representative Length","Representative Id","Sequence"
 authors:
   - "@vagkaratzas"
 maintainers:
