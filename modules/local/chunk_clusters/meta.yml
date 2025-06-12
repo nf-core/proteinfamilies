@@ -46,7 +46,7 @@ output:
             e.g. `[ id:'sample1', single_end:false ]`
       - chunked_fasta/*:
           type: file
-          description: Directory containing chunked FASTA files produced from the clustering process.
+          description: List of files containing chunked FASTA files produced from the clustering process.
           pattern: "chunked_fasta/*.fasta"
   - versions:
       - "versions.yml":

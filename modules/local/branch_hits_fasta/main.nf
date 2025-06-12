@@ -36,4 +36,17 @@ process BRANCH_HITS_FASTA {
         biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p hits
+    touch hits/test.fasta
+    echo "" | gzip > test.fasta.gz
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
+    END_VERSIONS
+    """
 }

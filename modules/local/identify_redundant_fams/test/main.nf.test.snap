@@ -1,0 +1,68 @@
+{
+    "proteinfamilies - family redundancy - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "mqc"
+                        },
+                        "redundant_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,8d87cf7f37933fe6085e5d21f8faca41"
+                ],
+                "redundant_ids": [
+                    [
+                        {
+                            "id": "mqc"
+                        },
+                        "redundant_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,8d87cf7f37933fe6085e5d21f8faca41"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-06-11T16:35:29.927982018"
+    },
+    "proteinfamilies - family redundancy": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "mqc"
+                        },
+                        "redundant_fam_ids.txt:md5,d54a9f9187d78a1566ec3156b96f2f78"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,8d87cf7f37933fe6085e5d21f8faca41"
+                ],
+                "redundant_ids": [
+                    [
+                        {
+                            "id": "mqc"
+                        },
+                        "redundant_fam_ids.txt:md5,d54a9f9187d78a1566ec3156b96f2f78"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,8d87cf7f37933fe6085e5d21f8faca41"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-06-11T16:35:19.795377229"
+    }
+}

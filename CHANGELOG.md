@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#88](https://github.com/nf-core/proteinfamilies/pull/88) - Added nf-test and `meta.yml` file for local module `BRANCH_HITS_FASTA`
+- [#88](https://github.com/nf-core/proteinfamilies/pull/88) - Added nf-test and `meta.yml` file for local module `FILTER_NON_REDUNDANT_FAMS`
+- [#88](https://github.com/nf-core/proteinfamilies/pull/88) - Added nf-test and `meta.yml` file for local module `IDENTIFY_REDUNDANT_FAMS`
+- [#88](https://github.com/nf-core/proteinfamilies/pull/88) - Added nf-test and `meta.yml` file for local module `EXTRACT_FAMILY_REPS`
 - [#81](https://github.com/nf-core/proteinfamilies/pull/81) - Added the default pipeline end-to-end nf-test.
 
 ### `Changed`
