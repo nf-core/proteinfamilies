@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "GENERATE_FAMILIES"
+description: Subworkflow with functionality that may be useful for any Nextflow pipeline
+keywords:
+  - fasta
+  - hmm model
+  - seed alignment
+  - full alignment
+components: []
+input:
+  - sequences:
+      type: file
+      description: |
+        Amino acid fasta file containing sequences to be used for family generation.
+  - fasta_chunks:
+      type: file
+      description: |
+        Chunked FASTA files produced from the clustering process.
+output:
+  - versions:
+      type: file
+      description: |
+        Versions file containing the software versions used in the workflow.
+  - seed_msa:
+      type: file
+      description: |
+        Seed MSA files containing the multiple sequence alignment of the seed clusters.
+  - full_msa:
+      type: file
+      description: |
+        Full MSA files containing the multiple sequence alignment of each family with additional recruited sequences.
+  - fasta:
+      type: file
+      description: |
+        FASTA files corresponding to the full MSA files.
+  - hmm:
+      type: file
+      description: |
+        HMM files containing the hidden Markov model of each family.
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

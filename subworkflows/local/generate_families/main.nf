@@ -15,6 +15,8 @@ workflow GENERATE_FAMILIES {
     fasta_chunks
 
     main:
+    sequences.view()
+    fasta_chunks.view()
     ch_versions = Channel.empty()
     ch_seed_msa = Channel.empty()
     ch_full_msa = Channel.empty()

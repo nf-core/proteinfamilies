@@ -4,29 +4,35 @@ nextflow_workflow {
     script "../main.nf"
     workflow "GENERATE_FAMILIES"
 
-    test("fasta - minimal") {
+    test("fasta") {
 
         when {
             workflow {
                 """
                 input[0] = Channel.of([
-                    [ id: 'test_minimal' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    [ id: 'test_minimal' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
-                input[0] = Channel.of([
-                    [ id: 'test_chunks' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_1.fasta', checkIfExists: true),
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/subworkflows/chunk_2.fasta', checkIfExists: true)
+                input[1] = Channel.of([
+                    [ id: 'test_chunks' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.fasta', checkIfExists: true)
+                    ]
                 ])
                 """
             }
         }
 
         then {
-            def lines = path(workflow.out.clusters[0][1]).readLines()
             assertAll(
                 { assert workflow.success},
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    file(workflow.out.hmm[0][1]).name,
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta,
+                    workflow.out.versions).match()}
             )
         }
     }
