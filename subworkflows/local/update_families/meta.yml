@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "UPDATE_FAMILIES"
+description: Subworkflow that updates HMMs and full MSAs of existing families with new sequences.
+keywords:
+  - update
+  - hmm model
+  - full alignment
+components: []
+input:
+  - ch_samplesheet_for_update:
+      type: file
+      description: |
+        CSV file with the following columns; meta, sequences, existing_hmms_to_update, existing_msas_to_update
+output:
+  - versions:
+      type: file
+      description: |
+        Versions file containing the software versions used in the workflow.
+  - no_hit_seqs:
+      type: file
+      description: |
+        Seed MSA files containing the multiple sequence alignment of the seed clusters.
+  - updated_family_reps:
+      type: file
+      description: |
+        Seed MSA files containing the multiple sequence alignment of the seed clusters.
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"
