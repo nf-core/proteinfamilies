@@ -11,7 +11,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,8d87cf7f37933fe6085e5d21f8faca41"
+                    "versions.yml:md5,ee9740f51b2073a4fc34f9ba4b2d0022"
                 ],
                 "redundant_ids": [
                     [
@@ -22,47 +22,39 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,8d87cf7f37933fe6085e5d21f8faca41"
+                    "versions.yml:md5,ee9740f51b2073a4fc34f9ba4b2d0022"
                 ]
             }
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-06-11T16:35:29.927982018"
+        "timestamp": "2025-06-13T15:29:51.689666568"
     },
     "proteinfamilies - family redundancy": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "mqc"
-                        },
-                        "redundant_fam_ids.txt:md5,d54a9f9187d78a1566ec3156b96f2f78"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,8d87cf7f37933fe6085e5d21f8faca41"
-                ],
-                "redundant_ids": [
-                    [
-                        {
-                            "id": "mqc"
-                        },
-                        "redundant_fam_ids.txt:md5,d54a9f9187d78a1566ec3156b96f2f78"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,8d87cf7f37933fe6085e5d21f8faca41"
+            [
+                [
+                    {
+                        "id": "mqc"
+                    },
+                    "redundant_fam_ids.txt:md5,d54a9f9187d78a1566ec3156b96f2f78"
                 ]
-            }
+            ],
+            [
+                {
+                    "IDENTIFY_REDUNDANT_FAMS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.0"
+                    }
+                }
+            ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-06-11T16:35:19.795377229"
+        "timestamp": "2025-06-13T15:29:44.618846903"
     }
 }

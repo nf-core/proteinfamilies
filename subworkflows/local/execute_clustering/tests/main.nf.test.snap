@@ -4,16 +4,28 @@
             "test_cluster.tsv",
             50000,
             [
-                "versions.yml:md5,3312bc6e1fa1b06e4a8ac2603deba2a4",
-                "versions.yml:md5,40b242fe8ca427ffe7cd860dc5b9d7fc",
-                "versions.yml:md5,9d06e5efe2356113924a205c58f0b42f"
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CREATETSV": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CLUSTER": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CREATEDB": {
+                        "mmseqs": "17.b804f"
+                    }
+                }
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-06-11T11:24:04.063783388"
+        "timestamp": "2025-06-13T15:58:10.964310155"
     },
     "fasta - linclust - stub": {
         "content": [
@@ -64,25 +76,37 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-06-11T11:24:20.49578136"
+        "timestamp": "2025-06-13T15:58:24.789924716"
     },
     "fasta - linclust": {
         "content": [
             "test_linclust.tsv",
             50000,
             [
-                "versions.yml:md5,3312bc6e1fa1b06e4a8ac2603deba2a4",
-                "versions.yml:md5,9d06e5efe2356113924a205c58f0b42f",
-                "versions.yml:md5,c3f8381c74eb9f0a2d549f273ba89595"
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CREATETSV": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CREATEDB": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_LINCLUST": {
+                        "mmseqs": "17.b804f"
+                    }
+                }
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-06-11T11:23:26.647753445"
+        "timestamp": "2025-06-13T15:57:34.418151877"
     },
     "fasta - cluster - stub": {
         "content": [
@@ -133,8 +157,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.6"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-06-11T11:24:36.484728618"
+        "timestamp": "2025-06-13T15:58:42.266689644"
     }
 }

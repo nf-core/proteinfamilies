@@ -28,75 +28,58 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-03-25T10:36:25.613783976"
+        "timestamp": "2025-06-13T15:49:12.943662288"
     },
     "fasta - famsa": {
         "content": [
-            {
-                "0": [
-                    "versions.yml:md5,cbb230db362dd90a73a8a916b4448d5e"
-                ],
-                "1": [
-                    [
-                        {
-                            "id": "test_famsa"
-                        },
-                        "test_famsa_null.aln:md5,61de03fefaa5f2501b65ba44f8a3fd2d"
-                    ]
-                ],
-                "alignments": [
-                    [
-                        {
-                            "id": "test_famsa"
-                        },
-                        "test_famsa_null.aln:md5,61de03fefaa5f2501b65ba44f8a3fd2d"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,cbb230db362dd90a73a8a916b4448d5e"
+            [
+                [
+                    {
+                        "id": "test_famsa"
+                    },
+                    "test_famsa_null.aln:md5,61de03fefaa5f2501b65ba44f8a3fd2d"
                 ]
-            }
+            ],
+            [
+                {
+                    "ALIGN_SEQUENCES:FAMSA_ALIGN": {
+                        "famsa": "2.2.2- (2022-10-09)"
+                    }
+                }
+            ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-03-25T10:35:29.565556703"
+        "timestamp": "2025-06-13T15:48:52.92015504"
     },
     "fasta - mafft": {
         "content": [
-            {
-                "0": [
-                    "versions.yml:md5,d454b643526f65a83b3f26bfdfeb9f10"
-                ],
-                "1": [
-                    [
-                        {
-                            "id": "test_mafft"
-                        },
-                        "test_mafft_null.fas:md5,61de03fefaa5f2501b65ba44f8a3fd2d"
-                    ]
-                ],
-                "alignments": [
-                    [
-                        {
-                            "id": "test_mafft"
-                        },
-                        "test_mafft_null.fas:md5,61de03fefaa5f2501b65ba44f8a3fd2d"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,d454b643526f65a83b3f26bfdfeb9f10"
+            [
+                [
+                    {
+                        "id": "test_mafft"
+                    },
+                    "test_mafft_null.fas:md5,61de03fefaa5f2501b65ba44f8a3fd2d"
                 ]
-            }
+            ],
+            [
+                {
+                    "ALIGN_SEQUENCES:MAFFT_ALIGN": {
+                        "mafft": 7.52,
+                        "pigz": "2.8)"
+                    }
+                }
+            ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-03-25T10:36:14.655653162"
+        "timestamp": "2025-06-13T15:49:02.384211723"
     },
     "fasta - mafft - stub": {
         "content": [
@@ -127,8 +110,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-03-25T10:36:37.695112353"
+        "timestamp": "2025-06-13T15:49:24.511029137"
     }
 }

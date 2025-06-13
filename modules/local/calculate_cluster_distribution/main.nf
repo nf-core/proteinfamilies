@@ -31,7 +31,7 @@ process CALCULATE_CLUSTER_DISTRIBUTION {
     Id,Cluster Size,Number of Clusters
     EOF
 
-    awk '{count[\$1]++} END {for (c in count) size[count[c]]++} END {for (s in size) print s "," s "," size[s]}' ${clusters} | sort -n --parallel=${task.cpus} >> ${prefix}_clustering_distribution_mqc.csv
+    awk '{count[\$1]++} END {for (c in count) size[count[c]]++} END {for (s in size) print s "," s "," size[s]}' ${clusters} | sort -t, -k3,3nr --parallel=${task.cpus} >> ${prefix}_clustering_distribution_mqc.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

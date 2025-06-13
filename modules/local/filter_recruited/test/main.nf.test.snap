@@ -1,36 +1,28 @@
 {
     "proteinfamilies - hmmsearch - fasta": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "filtering"
-                        },
-                        "filtering_null.fasta.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
-                    ]
-                ],
-                "1": [
-                    "versions.yml:md5,b9ebaa78156a9cdd16c4ea79dae93950"
-                ],
-                "fasta": [
-                    [
-                        {
-                            "id": "filtering"
-                        },
-                        "filtering_null.fasta.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,b9ebaa78156a9cdd16c4ea79dae93950"
+            [
+                [
+                    {
+                        "id": "filtering"
+                    },
+                    "filtering_null.fasta.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
                 ]
-            }
+            ],
+            [
+                {
+                    "FILTER_RECRUITED": {
+                        "python": "3.13.1",
+                        "biopython": 1.85
+                    }
+                }
+            ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-03-26T12:49:18.246171832"
+        "timestamp": "2025-06-13T15:19:25.989434663"
     },
     "proteinfamilies - hmmsearch - fasta - stub": {
         "content": [
@@ -44,7 +36,7 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,b9ebaa78156a9cdd16c4ea79dae93950"
+                    "versions.yml:md5,bbd4ade59554c36516908d1325b288af"
                 ],
                 "fasta": [
                     [
@@ -55,14 +47,14 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,b9ebaa78156a9cdd16c4ea79dae93950"
+                    "versions.yml:md5,bbd4ade59554c36516908d1325b288af"
                 ]
             }
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.3"
         },
-        "timestamp": "2025-03-26T12:49:39.946682352"
+        "timestamp": "2025-06-13T15:19:42.603340138"
     }
 }
