@@ -25,7 +25,11 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert snapshot(
+                    process.out.hits,
+                    process.out.non_hit_fasta,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()}
             )
         }
     }

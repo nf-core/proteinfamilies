@@ -19,7 +19,7 @@
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,e4ba3fe48bf303125eb920183b7567c9"
+                    "versions.yml:md5,c8b64849d0e062bd2ec6db470afe03d0"
                 ],
                 "hits": [
                     [
@@ -38,7 +38,7 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,e4ba3fe48bf303125eb920183b7567c9"
+                    "versions.yml:md5,c8b64849d0e062bd2ec6db470afe03d0"
                 ]
             }
         ],
@@ -46,69 +46,46 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-06-12T08:57:06.080022922"
+        "timestamp": "2025-06-13T14:13:49.253831461"
     },
     "proteinfamilies - fasta": {
         "content": [
-            {
-                "0": [
+            [
+                [
+                    {
+                        "id": "fasta"
+                    },
                     [
-                        {
-                            "id": "fasta"
-                        },
-                        [
-                            "mgnifams_test_1.fasta:md5,df53aa6a0450be4f1c73c51578ba5323",
-                            "mgnifams_test_3.fasta:md5,25bc45d9938415d996e1ff0fef235f78",
-                            "mgnifams_test_4.fasta:md5,4f8efff250f1242767d6eaab614b880f",
-                            "mgnifams_test_5.fasta:md5,666cf3c54399d0088fd5ad03eec6e575",
-                            "mgnifams_test_6.fasta:md5,c3ac1f49721a3d5faa69ec916aab29d2",
-                            "mgnifams_test_7.fasta:md5,161d18858155e5185ff3b1900d58cf48"
-                        ]
+                        "mgnifams_test_1.fasta:md5,df53aa6a0450be4f1c73c51578ba5323",
+                        "mgnifams_test_3.fasta:md5,25bc45d9938415d996e1ff0fef235f78",
+                        "mgnifams_test_4.fasta:md5,4f8efff250f1242767d6eaab614b880f",
+                        "mgnifams_test_5.fasta:md5,666cf3c54399d0088fd5ad03eec6e575",
+                        "mgnifams_test_6.fasta:md5,c3ac1f49721a3d5faa69ec916aab29d2",
+                        "mgnifams_test_7.fasta:md5,161d18858155e5185ff3b1900d58cf48"
                     ]
-                ],
-                "1": [
-                    [
-                        {
-                            "id": "fasta"
-                        },
-                        "fasta.fasta.gz:md5,7ab7e32d9e439bba8ee151cd2d278994"
-                    ]
-                ],
-                "2": [
-                    "versions.yml:md5,e4ba3fe48bf303125eb920183b7567c9"
-                ],
-                "hits": [
-                    [
-                        {
-                            "id": "fasta"
-                        },
-                        [
-                            "mgnifams_test_1.fasta:md5,df53aa6a0450be4f1c73c51578ba5323",
-                            "mgnifams_test_3.fasta:md5,25bc45d9938415d996e1ff0fef235f78",
-                            "mgnifams_test_4.fasta:md5,4f8efff250f1242767d6eaab614b880f",
-                            "mgnifams_test_5.fasta:md5,666cf3c54399d0088fd5ad03eec6e575",
-                            "mgnifams_test_6.fasta:md5,c3ac1f49721a3d5faa69ec916aab29d2",
-                            "mgnifams_test_7.fasta:md5,161d18858155e5185ff3b1900d58cf48"
-                        ]
-                    ]
-                ],
-                "non_hit_fasta": [
-                    [
-                        {
-                            "id": "fasta"
-                        },
-                        "fasta.fasta.gz:md5,7ab7e32d9e439bba8ee151cd2d278994"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,e4ba3fe48bf303125eb920183b7567c9"
                 ]
-            }
+            ],
+            [
+                [
+                    {
+                        "id": "fasta"
+                    },
+                    "fasta.fasta.gz:md5,7ab7e32d9e439bba8ee151cd2d278994"
+                ]
+            ],
+            [
+                {
+                    "BRANCH_HITS_FASTA": {
+                        "python": "3.13.1",
+                        "biopython": 1.85
+                    }
+                }
+            ]
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-06-12T08:56:59.454704406"
+        "timestamp": "2025-06-13T14:13:37.087871575"
     }
 }
