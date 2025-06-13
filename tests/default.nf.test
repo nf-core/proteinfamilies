@@ -22,6 +22,16 @@ nextflow_pipeline {
                 'fasta/non_redundant_sequences_filtered/mgnifams_test/*.faa'])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            // paths to check for sizes
+            def hmm_path             = "/hmm/filtered/mgnifams_test"
+            def stable_hmm_size      = getAllFilesFromDir(params.outdir + hmm_path, ignoreFile: 'tests/.nftignore')
+            def seed_msa_path        = "/seed_msa/filtered/mgnifams_test"
+            def stable_seed_msa_size = getAllFilesFromDir(params.outdir + seed_msa_path, ignoreFile: 'tests/.nftignore')
+            def full_msa_path        = "/full_msa/filtered/famsa_align/mgnifams_test"
+            def stable_full_msa_size = getAllFilesFromDir(params.outdir + full_msa_path, ignoreFile: 'tests/.nftignore')
+            def fasta_path           = "/fasta/non_redundant_sequences_filtered/mgnifams_test"
+            def stable_fasta_size    = getAllFilesFromDir(params.outdir + fasta_path, ignoreFile: 'tests/.nftignore')
+
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
@@ -32,7 +42,12 @@ nextflow_pipeline {
                     // All stable path name, with a relative path
                     stable_name,
                     // All files with stable contents
-                    stable_path
+                    stable_path,
+                    // Rest of the folders, counting result files because names can be mixed
+                    hmm_path      + ": " + stable_hmm_size.size(),
+                    seed_msa_path + ": " + stable_seed_msa_size.size(),
+                    full_msa_path + ": " + stable_full_msa_size.size(),
+                    fasta_path    + ": " + stable_fasta_size.size()
                 ).match() }
             )
         }

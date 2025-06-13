@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "UPDATE_FAMILIES"
+description: Subworkflow that updates HMMs and full MSAs of existing families with new sequences.
+keywords:
+  - update
+  - hmm model
+  - full alignment
+components:
+  - untar
+  - cat/cat
+  - hmmer/hmmsearch
+  - branch_hits_fasta
+  - seqkit/seq
+  - execute_clustering
+  - remove_redundant_seqs
+  - align_sequences
+  - clipkit
+  - hmmer/hmmbuild
+  - extract_family_reps
+input:
+  - ch_samplesheet_for_update:
+      type: file
+      description: |
+        CSV file with the following columns; meta, sequences, existing_hmms_to_update, existing_msas_to_update
+output:
+  - versions:
+      type: file
+      description: |
+        Versions file containing the software versions used in the workflow.
+  - no_hit_seqs:
+      type: file
+      description: |
+        FASTA file with sequences without hits, to go through the base family generation workflow.
+  - updated_family_reps:
+      type: file
+      description: |
+        A MultiQC CSV file containing metadata about the updated family representatives;
+        "Sample Name","Family Id","Size","Representative Length","Representative Id","Sequence"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

@@ -1,0 +1,93 @@
+{
+    "fasta": {
+        "content": [
+            "test_chunk_1.hmm.gz",
+            [
+                [
+                    {
+                        "id": "test",
+                        "chunk": "chunk_1"
+                    },
+                    "test_chunk_1.clipkit:md5,dae9d5f940e2f43687e068155ebfe1ae"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "chunk_2"
+                    },
+                    "test_chunk_2.clipkit:md5,adcd7fc302b4cd66c219d2df51a7e7e8"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "chunk": "chunk_1"
+                    },
+                    "test_chunk_1.sto.gz:md5,93d4f5b7b89ead091ef68dedd70ca2f5"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "chunk_2"
+                    },
+                    "test_chunk_2.sto.gz:md5,e962e2d7e32fba8685d9670709a6835c"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "chunk": "chunk_1"
+                    },
+                    "test_chunk_1.fasta.gz:md5,5d14fec7a4e06606eda48f8c912323ab"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "chunk_2"
+                    },
+                    "test_chunk_2.fasta.gz:md5,7ae62909eb81f92c331b2048a8ac34d3"
+                ]
+            ],
+            [
+                {
+                    "GENERATE_FAMILIES:HMMER_HMMALIGN": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:ALIGN_SEQUENCES:FAMSA_ALIGN": {
+                        "famsa": "2.2.2- (2022-10-09)"
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:FILTER_RECRUITED": {
+                        "python": "3.12.7",
+                        "biopython": 1.84
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:HMMER_HMMSEARCH": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:CLIPKIT": {
+                        "clipkit": "2.4.1"
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:HMMER_HMMBUILD": {
+                        "hmmer": 3.4
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.6"
+        },
+        "timestamp": "2025-06-13T08:20:26.127836137"
+    }
+}

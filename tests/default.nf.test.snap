@@ -135,12 +135,16 @@
                 "mgnifams_test_clustering_distribution_mqc.csv:md5,ed774e71fc0188897da954b7c7789013",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "multiqc_mgnifams_test_cluster_distribution.txt:md5,07087cc378861244dec0c0d2b1b6c3a7"
-            ]
+            ],
+            "/hmm/filtered/mgnifams_test: 5",
+            "/seed_msa/filtered/mgnifams_test: 5",
+            "/full_msa/filtered/famsa_align/mgnifams_test: 5",
+            "/fasta/non_redundant_sequences_filtered/mgnifams_test: 5"
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-06-11T16:11:09.36897376"
+        "timestamp": "2025-06-13T08:59:53.473545333"
     }
 }

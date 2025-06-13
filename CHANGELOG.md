@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#88](https://github.com/nf-core/proteinfamilies/pull/88) - Added nf-test and `meta.yml` file for local module `BRANCH_HITS_FASTA`
-- [#88](https://github.com/nf-core/proteinfamilies/pull/88) - Added nf-test and `meta.yml` file for local module `FILTER_NON_REDUNDANT_FAMS`
-- [#88](https://github.com/nf-core/proteinfamilies/pull/88) - Added nf-test and `meta.yml` file for local module `IDENTIFY_REDUNDANT_FAMS`
-- [#88](https://github.com/nf-core/proteinfamilies/pull/88) - Added nf-test and `meta.yml` file for local module `EXTRACT_FAMILY_REPS`
-- [#81](https://github.com/nf-core/proteinfamilies/pull/81) - Added the default pipeline end-to-end nf-test.
+- [#93](https://github.com/nf-core/proteinfamilies/pull/93)
+  - Added nf-test and `meta.yml` file for local subworkflow `GENERATE_FAMILIES`.
+  - Added nf-test and `meta.yml` file for local subworkflow `REMOVE_REDUNDANCY`.
+  - Added nf-test and `meta.yml` file for local subworkflow `UPDATE_FAMILIES`.
+- [#88](https://github.com/nf-core/proteinfamilies/pull/88)
+  - Added nf-test and `meta.yml` file for local module `BRANCH_HITS_FASTA`.
+  - Added nf-test and `meta.yml` file for local module `FILTER_NON_REDUNDANT_FAMS`.
+  - Added nf-test and `meta.yml` file for local module `IDENTIFY_REDUNDANT_FAMS`.
+  - Added nf-test and `meta.yml` file for local module `EXTRACT_FAMILY_REPS`.
+  - Added the default pipeline end-to-end nf-test.
 
 ### `Changed`
 
@@ -43,8 +48,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#69](https://github.com/nf-core/proteinfamilies/pull/69) - Added the `hhsuite/reformat` nf-core module to reformat `.sto` alignments to `.fas` when in-family sequence redundancy is not removed.
-  Also added the option to save intermediate and final family fasta files throughout the workflow with various `save` parameters.
+- [#69](https://github.com/nf-core/proteinfamilies/pull/69)
+  - Added the `hhsuite/reformat` nf-core module to reformat `.sto` alignments to `.fas` when in-family sequence redundancy is not removed.
+  - Added the option to save intermediate and final family fasta files throughout the workflow with various `save` parameters.
 - [#58](https://github.com/nf-core/proteinfamilies/pull/58) - Added nf-test and `meta.yml` file for local module `REMOVE_REDUNDANCY_SEQS` (Hackathon 2025)
 - [#56](https://github.com/nf-core/proteinfamilies/pull/56) - Added nf-test and `meta.yml` file for local module `FILTER_RECRUITED` (Hackathon 2025)
 - [#55](https://github.com/nf-core/proteinfamilies/pull/55) - Added nf-test and `meta.yml` file for local module `CHUNK_CLUSTERS` (Hackathon 2025)
@@ -63,11 +69,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#69](https://github.com/nf-core/proteinfamilies/pull/69) - Changed the publish directory architecture for HMMs, seed MSAs, full MSAs and family FASTA files, to make it more intuitive.
-  `REMOVE_REDUNDANT_FAMS` local module converted to `IDENTIFY_REDUNDANT_FAMS` to extract redundant family ids which will then be used downstream.
-  `FILTER_NON_REDUNDANT_HMMS` local module converted to `FILTER_NON_REDUNDANT_FAMS` and reused four times (HMM, seed MSA, full MSA, FASTA).
-  Changed the output format of the `EXTRACT_FAMILY_REPS` and `REMOVE_REDUNDANT_SEQS` local modules from `.fa` to `.faa`.
-  Metro map updated with new `hhsuite/reformat` module.
+- [#69](https://github.com/nf-core/proteinfamilies/pull/69)
+  - Changed the publish directory architecture for HMMs, seed MSAs, full MSAs and family FASTA files, to make it more intuitive.
+  - `REMOVE_REDUNDANT_FAMS` local module converted to `IDENTIFY_REDUNDANT_FAMS` to extract redundant family ids which will then be used downstream.
+  - `FILTER_NON_REDUNDANT_HMMS` local module converted to `FILTER_NON_REDUNDANT_FAMS` and reused four times (HMM, seed MSA, full MSA, FASTA).
+  - Changed the output format of the `EXTRACT_FAMILY_REPS` and `REMOVE_REDUNDANT_SEQS` local modules from `.fa` to `.faa`.
+  - Metro map updated with new `hhsuite/reformat` module.
 - [#57](https://github.com/nf-core/proteinfamilies/pull/57) - slight improvements of `nextflow_schema.json` (Hackathon 2025)
 - [#57](https://github.com/nf-core/proteinfamilies/pull/57) - slight improtmenets of `assets/schema_input.json` (Hackathon 2025)
 - [#34](https://github.com/nf-core/proteinfamilies/pull/34) - Swapped the `SeqIO` python library with `pyfastx` for the `CHUNK_CLUSTERS` module, quartering its duration

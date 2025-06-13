@@ -1,0 +1,41 @@
+nextflow_workflow {
+
+    name "Test Subworkflow GENERATE_FAMILIES"
+    script "../main.nf"
+    workflow "GENERATE_FAMILIES"
+
+    test("fasta") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[1] = Channel.of([
+                    [ id: 'test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.fasta', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    file(workflow.out.hmm[0][1]).name,
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match()}
+            )
+        }
+    }
+
+}
