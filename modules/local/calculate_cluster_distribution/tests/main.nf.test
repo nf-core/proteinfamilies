@@ -10,7 +10,7 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of([
-                    [ id: 'test' ], // meta map
+                    [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
                 """
@@ -20,7 +20,10 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert snapshot(
+                    process.out.mqc,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()}
             )
         }
     }
@@ -33,7 +36,7 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of([
-                    [ id: 'test' ], // meta map
+                    [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
                 """
