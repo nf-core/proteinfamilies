@@ -51,24 +51,43 @@
                 ]
             ],
             [
-                "versions.yml:md5,247ef08f0b089979a50b118c7fcdc2b0",
-                "versions.yml:md5,247ef08f0b089979a50b118c7fcdc2b0",
-                "versions.yml:md5,45eba8d30565dc253428be013fbd48cb",
-                "versions.yml:md5,45eba8d30565dc253428be013fbd48cb",
-                "versions.yml:md5,cf594456f2dd939c2364378f09c5d88a",
-                "versions.yml:md5,cf594456f2dd939c2364378f09c5d88a",
-                "versions.yml:md5,e57cf4916752bb72d16bd2e7072b9c26",
-                "versions.yml:md5,e57cf4916752bb72d16bd2e7072b9c26",
-                "versions.yml:md5,ef2d0b048087d63b5fcac1c32e704791",
-                "versions.yml:md5,ef2d0b048087d63b5fcac1c32e704791",
-                "versions.yml:md5,fc501370ac8ce03b2fcc4377984702f1",
-                "versions.yml:md5,fc501370ac8ce03b2fcc4377984702f1"
+                {
+                    "GENERATE_FAMILIES:HMMER_HMMALIGN": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:ALIGN_SEQUENCES:FAMSA_ALIGN": {
+                        "famsa": "2.2.2- (2022-10-09)"
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:FILTER_RECRUITED": {
+                        "python": "3.12.7",
+                        "biopython": 1.84
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:HMMER_HMMSEARCH": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:CLIPKIT": {
+                        "clipkit": "2.4.1"
+                    }
+                },
+                {
+                    "GENERATE_FAMILIES:HMMER_HMMBUILD": {
+                        "hmmer": 3.4
+                    }
+                }
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-06-13T08:10:49.910402535"
+        "timestamp": "2025-06-13T08:20:26.127836137"
     }
 }

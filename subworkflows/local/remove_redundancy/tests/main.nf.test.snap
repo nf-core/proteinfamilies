@@ -1,85 +1,97 @@
 {
     "fasta": {
         "content": [
-            {
-                "0": [
-                    "versions.yml:md5,2e56cce61242aa766f9faeadea0eaab4",
-                    "versions.yml:md5,2e56cce61242aa766f9faeadea0eaab4",
-                    "versions.yml:md5,514f77979c7a42c50d3a160039691bf1",
-                    "versions.yml:md5,514f77979c7a42c50d3a160039691bf1",
-                    "versions.yml:md5,520d18642496ad2a1f10b398fac6b22a",
-                    "versions.yml:md5,8a6f9abbb2d3692c536f785c998ba61b",
-                    "versions.yml:md5,9ee1a1f09fc852f2bdfe28c8c5e1dce0",
-                    "versions.yml:md5,a5b7760b8bb8584bd219311e0c87a26d",
-                    "versions.yml:md5,aab2381bdfbe580c86231df4aae28e1d",
-                    "versions.yml:md5,aab2381bdfbe580c86231df4aae28e1d",
-                    "versions.yml:md5,bc219b535c99a77a940e0500ae9d59ae",
-                    "versions.yml:md5,c2e017a69c6842c41e6e98ab5e6e3096",
-                    "versions.yml:md5,d5733b4121d2fe7955dce3c97b35cecd",
-                    "versions.yml:md5,d7a1ac6445e3844c0fd409a888a0ca7e",
-                    "versions.yml:md5,dce404572dc0fb89587eef3ec86d1985",
-                    "versions.yml:md5,dce404572dc0fb89587eef3ec86d1985",
-                    "versions.yml:md5,f2f9b134d338231be4c03073daf49b05",
-                    "versions.yml:md5,f2f9b134d338231be4c03073daf49b05"
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.aln:md5,eb65c919dd074c6c25420163675de2c4"
                 ],
-                "1": [
-                    [
-                        {
-                            "id": "chunk",
-                            "chunk": "1"
-                        },
-                        "chunk_1.aln:md5,eb65c919dd074c6c25420163675de2c4"
-                    ],
-                    [
-                        {
-                            "id": "chunk",
-                            "chunk": "2"
-                        },
-                        "chunk_2.aln:md5,ed2a2cbbb5f207f44ddef4781cd75ff7"
-                    ]
-                ],
-                "full_msa": [
-                    [
-                        {
-                            "id": "chunk",
-                            "chunk": "1"
-                        },
-                        "chunk_1.aln:md5,eb65c919dd074c6c25420163675de2c4"
-                    ],
-                    [
-                        {
-                            "id": "chunk",
-                            "chunk": "2"
-                        },
-                        "chunk_2.aln:md5,ed2a2cbbb5f207f44ddef4781cd75ff7"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,2e56cce61242aa766f9faeadea0eaab4",
-                    "versions.yml:md5,2e56cce61242aa766f9faeadea0eaab4",
-                    "versions.yml:md5,514f77979c7a42c50d3a160039691bf1",
-                    "versions.yml:md5,514f77979c7a42c50d3a160039691bf1",
-                    "versions.yml:md5,520d18642496ad2a1f10b398fac6b22a",
-                    "versions.yml:md5,8a6f9abbb2d3692c536f785c998ba61b",
-                    "versions.yml:md5,9ee1a1f09fc852f2bdfe28c8c5e1dce0",
-                    "versions.yml:md5,a5b7760b8bb8584bd219311e0c87a26d",
-                    "versions.yml:md5,aab2381bdfbe580c86231df4aae28e1d",
-                    "versions.yml:md5,aab2381bdfbe580c86231df4aae28e1d",
-                    "versions.yml:md5,bc219b535c99a77a940e0500ae9d59ae",
-                    "versions.yml:md5,c2e017a69c6842c41e6e98ab5e6e3096",
-                    "versions.yml:md5,d5733b4121d2fe7955dce3c97b35cecd",
-                    "versions.yml:md5,d7a1ac6445e3844c0fd409a888a0ca7e",
-                    "versions.yml:md5,dce404572dc0fb89587eef3ec86d1985",
-                    "versions.yml:md5,dce404572dc0fb89587eef3ec86d1985",
-                    "versions.yml:md5,f2f9b134d338231be4c03073daf49b05",
-                    "versions.yml:md5,f2f9b134d338231be4c03073daf49b05"
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.aln:md5,ed2a2cbbb5f207f44ddef4781cd75ff7"
                 ]
-            }
+            ],
+            [
+                {
+                    "REMOVE_REDUNDANCY:EXECUTE_CLUSTERING:MMSEQS_LINCLUST": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:EXECUTE_CLUSTERING:MMSEQS_CREATETSV": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
+                        "python": "3.13.0"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
+                        "python": "3.13.0"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
+                        "python": "3.13.0"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
+                        "famsa": "2.2.2- (2022-10-09)"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
+                        "python": "3.10.6",
+                        "pandas": "1.4.3"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
+                        "python": "3.13.1",
+                        "biopython": 1.85
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
+                        "python": "3.13.0"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:CAT_CAT": {
+                        "pigz": "2.3.4"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:EXECUTE_CLUSTERING:MMSEQS_CREATEDB": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:REMOVE_REDUNDANT_SEQS": {
+                        "python": "3.12.7",
+                        "biopython": 1.84
+                    }
+                }
+            ]
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "24.10.6"
         },
-        "timestamp": "2025-06-12T11:53:01.081655841"
+        "timestamp": "2025-06-13T08:24:41.402459452"
     }
 }

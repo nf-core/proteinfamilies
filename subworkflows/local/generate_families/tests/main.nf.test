@@ -32,7 +32,8 @@ nextflow_workflow {
                     workflow.out.seed_msa,
                     workflow.out.full_msa,
                     workflow.out.fasta,
-                    workflow.out.versions).match()}
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match()}
             )
         }
     }

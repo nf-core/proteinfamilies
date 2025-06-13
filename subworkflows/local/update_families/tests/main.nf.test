@@ -23,7 +23,11 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success},
-                { assert snapshot(workflow.out).match()}
+                { assert snapshot(
+                    workflow.out.no_hit_seqs,
+                    workflow.out.updated_family_reps,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match()}
             )
         }
     }
