@@ -12,7 +12,7 @@ nextflow_workflow {
                 alignment_tool = 'famsa'
 
                 input[0] = Channel.of([
-                    [ id: 'test_famsa' ], // meta map
+                    [ id: 'test_famsa' ],
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
@@ -23,7 +23,10 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success},
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    workflow.out.alignments,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match()}
             )
         }
     }
@@ -36,7 +39,7 @@ nextflow_workflow {
                 alignment_tool = 'mafft'
 
                 input[0] = Channel.of([
-                    [ id: 'test_mafft' ], // meta map
+                    [ id: 'test_mafft' ],
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
@@ -47,7 +50,10 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success},
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    workflow.out.alignments,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match()}
             )
         }
     }
@@ -62,7 +68,7 @@ nextflow_workflow {
                 alignment_tool = 'famsa'
 
                 input[0] = Channel.of([
-                    [ id: 'test_famsa_stub' ], // meta map
+                    [ id: 'test_famsa_stub' ],
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
@@ -88,7 +94,7 @@ nextflow_workflow {
                 alignment_tool = 'mafft'
 
                 input[0] = Channel.of([
-                    [ id: 'test_mafft_stub' ], // meta map
+                    [ id: 'test_mafft_stub' ],
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
