@@ -1,0 +1,150 @@
+{
+    "-profile test": {
+        "content": [
+            82,
+            {
+                "CALCULATE_CLUSTER_DISTRIBUTION": {
+                    "sed": 4.7
+                },
+                "CAT_CAT": {
+                    "pigz": "2.3.4"
+                },
+                "CHUNK_CLUSTERS": {
+                    "python": "3.13.1",
+                    "biopython": 1.85
+                },
+                "CLIPKIT": {
+                    "clipkit": "2.4.1"
+                },
+                "EXTRACT_FAMILY_REPS": {
+                    "python": "3.13.1",
+                    "biopython": 1.85
+                },
+                "FAMSA_ALIGN": {
+                    "famsa": "2.2.2- (2022-10-09)"
+                },
+                "FILTER_NON_REDUNDANT_FASTA": {
+                    "python": "3.13.1"
+                },
+                "FILTER_NON_REDUNDANT_FULL_MSA": {
+                    "python": "3.13.1"
+                },
+                "FILTER_NON_REDUNDANT_HMM": {
+                    "python": "3.13.1"
+                },
+                "FILTER_NON_REDUNDANT_SEED_MSA": {
+                    "python": "3.13.1"
+                },
+                "FILTER_RECRUITED": {
+                    "python": "3.13.1",
+                    "biopython": 1.85
+                },
+                "HMMER_HMMALIGN": {
+                    "hmmer": 3.4
+                },
+                "HMMER_HMMBUILD": {
+                    "hmmer": 3.4
+                },
+                "HMMER_HMMSEARCH": {
+                    "hmmer": 3.4
+                },
+                "IDENTIFY_REDUNDANT_FAMS": {
+                    "python": "3.13.1",
+                    "pandas": "2.3.0"
+                },
+                "MMSEQS_CREATEDB": {
+                    "mmseqs": "17.b804f"
+                },
+                "MMSEQS_CREATETSV": {
+                    "mmseqs": "17.b804f"
+                },
+                "MMSEQS_LINCLUST": {
+                    "mmseqs": "17.b804f"
+                },
+                "REMOVE_REDUNDANT_SEQS": {
+                    "python": "3.13.1",
+                    "biopython": 1.85
+                },
+                "Workflow": {
+                    "nf-core/proteinfamilies": "v1.2.0"
+                }
+            },
+            [
+                "family_reps",
+                "family_reps/mgnifams_test",
+                "family_reps/mgnifams_test/mgnifams_test_meta_mqc.csv",
+                "family_reps/mgnifams_test/mgnifams_test_reps.faa",
+                "fasta",
+                "fasta/non_redundant_sequences_filtered",
+                "fasta/non_redundant_sequences_filtered/mgnifams_test",
+                "full_msa",
+                "full_msa/filtered",
+                "full_msa/filtered/famsa_align",
+                "full_msa/filtered/famsa_align/mgnifams_test",
+                "full_msa/raw",
+                "full_msa/raw/hmmer_hmmalign",
+                "full_msa/raw/hmmer_hmmalign/mgnifams_test",
+                "hmm",
+                "hmm/filtered",
+                "hmm/filtered/mgnifams_test",
+                "hmm/raw",
+                "hmm/raw/mgnifams_test",
+                "mmseqs",
+                "mmseqs/initial_clustering",
+                "mmseqs/initial_clustering/mgnifams_test_clustering_distribution_mqc.csv",
+                "mmseqs/initial_clustering/mmseqs_createtsv",
+                "mmseqs/initial_clustering/mmseqs_createtsv/mgnifams_test.tsv",
+                "mmseqs/redundancy_clustering",
+                "mmseqs/redundancy_clustering/mmseqs_createtsv",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/BETA-multiqc.parquet",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_family_metadata.txt",
+                "multiqc/multiqc_data/multiqc_mgnifams_test_cluster_distribution.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/pdf",
+                "multiqc/multiqc_plots/pdf/family_metadata.pdf",
+                "multiqc/multiqc_plots/pdf/mgnifams_test_cluster_distribution.pdf",
+                "multiqc/multiqc_plots/png",
+                "multiqc/multiqc_plots/png/family_metadata.png",
+                "multiqc/multiqc_plots/png/mgnifams_test_cluster_distribution.png",
+                "multiqc/multiqc_plots/svg",
+                "multiqc/multiqc_plots/svg/family_metadata.svg",
+                "multiqc/multiqc_plots/svg/mgnifams_test_cluster_distribution.svg",
+                "multiqc/multiqc_report.html",
+                "pipeline_info",
+                "pipeline_info/nf_core_proteinfamilies_software_mqc_versions.yml",
+                "remove_redundancy",
+                "remove_redundancy/mgnifams_test",
+                "remove_redundancy/mgnifams_test/redundant_fam_ids.txt",
+                "seed_msa",
+                "seed_msa/filtered",
+                "seed_msa/filtered/mgnifams_test",
+                "seed_msa/raw",
+                "seed_msa/raw/clipkit",
+                "seed_msa/raw/clipkit/mgnifams_test",
+                "seed_msa/raw/famsa_align",
+                "seed_msa/raw/famsa_align/mgnifams_test"
+            ],
+            [
+                "mgnifams_test_clustering_distribution_mqc.csv:md5,ed774e71fc0188897da954b7c7789013",
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "multiqc_mgnifams_test_cluster_distribution.txt:md5,07087cc378861244dec0c0d2b1b6c3a7"
+            ],
+            "/hmm/filtered/mgnifams_test: 5",
+            "/seed_msa/filtered/mgnifams_test: 5",
+            "/full_msa/filtered/famsa_align/mgnifams_test: 5",
+            "/fasta/non_redundant_sequences_filtered/mgnifams_test: 5"
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.3"
+        },
+        "timestamp": "2025-06-13T16:34:36.295355955"
+    }
+}

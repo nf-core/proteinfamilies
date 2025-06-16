@@ -4,8 +4,8 @@ process BRANCH_HITS_FASTA {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/eb/eb3700531c7ec639f59f084ab64c05e881d654dcf829db163539f2f0b095e09d/data' :
-        'community.wave.seqera.io/library/biopython:1.84--3318633dad0031e7' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/83/8372f6241b480332d91bc00a88ec8c72c8f7fcc9994177a5dd67a07007cd6e32/data' :
+        'community.wave.seqera.io/library/biopython:1.85--6f761292fa9881b4' }"
 
     input:
     tuple val(meta) , path(fasta)
@@ -29,6 +29,19 @@ process BRANCH_HITS_FASTA {
         --length_threshold ${length_threshold} \\
         --hits hits \\
         --non_hits ${prefix}.fasta.gz
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    mkdir -p hits
+    touch hits/test.fasta
+    echo "" | gzip > test.fasta.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

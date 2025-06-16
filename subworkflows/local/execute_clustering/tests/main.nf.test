@@ -12,8 +12,8 @@ nextflow_workflow {
                 clustering_tool = 'linclust'
 
                 input[0] = Channel.of([
-                    [ id: 'test_linclust' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    [ id: 'test_linclust' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 input[1] = clustering_tool
                 """
@@ -21,13 +21,13 @@ nextflow_workflow {
         }
 
         then {
-            def lines = path(workflow.out.clusters[0][1]).readLines()
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
                     file(workflow.out.clusters[0][1]).name,
-                    lines.size(),
-                    workflow.out.versions).match() }
+                    path(workflow.out.clusters[0][1]).readLines().size(),
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match() }
             )
         }
     }
@@ -40,8 +40,8 @@ nextflow_workflow {
                 clustering_tool = 'cluster'
 
                 input[0] = Channel.of([
-                    [ id: 'test_cluster' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    [ id: 'test_cluster' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 input[1] = clustering_tool
                 """
@@ -49,13 +49,13 @@ nextflow_workflow {
         }
 
         then {
-            def lines = path(workflow.out.clusters[0][1]).readLines()
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
                     file(workflow.out.clusters[0][1]).name,
-                    lines.size(),
-                    workflow.out.versions).match() }
+                    path(workflow.out.clusters[0][1]).readLines().size(),
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match() }
             )
         }
     }
@@ -70,8 +70,8 @@ nextflow_workflow {
                 clustering_tool = 'linclust'
 
                 input[0] = Channel.of([
-                    [ id: 'test_linclust_stub' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    [ id: 'test_linclust_stub' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 input[1] = clustering_tool
                 """
@@ -96,8 +96,8 @@ nextflow_workflow {
                 clustering_tool = 'cluster'
 
                 input[0] = Channel.of([
-                    [ id: 'test_cluster_stub' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'proteinfamilies/test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    [ id: 'test_cluster_stub' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 input[1] = clustering_tool
                 """

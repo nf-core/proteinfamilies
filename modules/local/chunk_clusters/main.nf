@@ -52,5 +52,4 @@ process CHUNK_CLUSTERS {
         biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
     END_VERSIONS
     """
-
 }

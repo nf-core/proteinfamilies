@@ -67,8 +67,8 @@ workflow REMOVE_REDUNDANCY {
             .groupTuple(by: 0)
 
         full_msa = full_msa
-        .map { meta, fas -> [[id: meta.id], fas] }
-        .groupTuple(by: 0)
+            .map { meta, fas -> [[id: meta.id], fas] }
+            .groupTuple(by: 0)
 
         // Join to ensure in sync
         ch_input_for_fam_removal = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids
