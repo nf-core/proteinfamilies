@@ -1,0 +1,54 @@
+nextflow_process {
+
+    name "Test Process CALCULATE_CLUSTER_DISTRIBUTION"
+    script "../main.nf"
+    process "CALCULATE_CLUSTER_DISTRIBUTION"
+
+    test("proteinfamilies - tsv") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.mqc,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - tsv - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}

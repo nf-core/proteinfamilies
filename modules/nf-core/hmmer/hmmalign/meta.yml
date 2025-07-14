@@ -1,0 +1,54 @@
+name: hmmer_hmmalign
+description: hmmalign from the HMMER suite aligns a number of sequences to an HMM
+  profile
+keywords:
+  - alignment
+  - HMMER
+  - profile
+  - amino acid
+  - nucleotide
+tools:
+  - hmmer:
+      description: Biosequence analysis using profile hidden Markov models
+      homepage: http://hmmer.org/
+      documentation: http://hmmer.org/documentation.html
+      doi: "10.1371/journal.pcbi.1002195"
+      licence: ["BSD-3-Clause"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+    - fasta:
+        type: file
+        description: Amino acid or nucleotide gzipped compressed fasta file
+        pattern: "*.{fna.gz,faa.gz,fasta.gz,fa.gz}"
+  - - hmm:
+        type: file
+        description: A gzipped HMM file
+        pattern: "*.hmm.gz"
+output:
+  - sto:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.sto.gz":
+          type: file
+          description: Multiple alignment in gzipped Stockholm format
+          pattern: "*.sto.gz"
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@erikrikarddaniel"
+  - "@jfy133"
+maintainers:
+  - "@erikrikarddaniel"
+  - "@jfy133"
+  - "@vagkaratzas"

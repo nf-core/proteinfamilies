@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "REMOVE_REDUNDANCY"
+description: Subworkflow that removes inter-family (whole families) and/or intra-family (sequence) redundancies.
+keywords:
+  - filtering
+  - redundancy
+  - inter-family
+  - intra-family
+components:
+  - extract_family_reps
+  - cat/cat
+  - hmmer/hmmsearch
+  - identify_redundant_fams
+  - filter_non_redundant_fams
+  - execute_clustering
+  - remove_redundant_seqs
+  - align_sequences
+  - hhsuite/reformat
+input:
+  - seed_msa:
+      type: file
+      description: |
+        List of seed MSA files along with their meta IDs and chunk number.
+  - full_msa:
+      type: file
+      description: |
+        List of full MSA files along with their meta IDs and chunk number.
+  - fasta:
+      type: file
+      description: |
+        List of fasta files along with their meta IDs and chunk number.
+  - hmm:
+      type: file
+      description: |
+        List of HMM files along with their meta IDs and chunk number.
+output:
+  - versions:
+      type: file
+      description: |
+        Versions file containing the software versions used in the workflow.
+  - full_msa:
+      type: file
+      description: |
+        Redundancy-filtered full MSA files.
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

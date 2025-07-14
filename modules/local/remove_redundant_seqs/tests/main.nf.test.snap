@@ -1,0 +1,60 @@
+{
+    "proteinfamilies - tsv": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_tsv"
+                    },
+                    "test_tsv_null_reps.faa:md5,e06dfa1241372e7fe8aa9f8c20c8f8a9"
+                ]
+            ],
+            [
+                {
+                    "REMOVE_REDUNDANT_SEQS": {
+                        "python": "3.13.1",
+                        "biopython": 1.85
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.3"
+        },
+        "timestamp": "2025-06-13T15:36:57.405924262"
+    },
+    "proteinfamilies - tsv - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_tsv"
+                        },
+                        "test_tsv_null_reps.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,1801b851fa91a19c75b6a4fb3db96f07"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test_tsv"
+                        },
+                        "test_tsv_null_reps.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,1801b851fa91a19c75b6a4fb3db96f07"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.3"
+        },
+        "timestamp": "2025-06-13T15:37:17.110306402"
+    }
+}

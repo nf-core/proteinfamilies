@@ -1,0 +1,65 @@
+nextflow_process {
+
+    name "Test Process BRANCH_HITS_FASTA"
+    script "../main.nf"
+    process "BRANCH_HITS_FASTA"
+
+    test("proteinfamilies - fasta") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'fasta' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[1] = Channel.of([
+                    [ id: 'domtbl' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true)
+                ])
+                input[2] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.hits,
+                    process.out.non_hit_fasta,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - fasta - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'fasta' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[1] = Channel.of([
+                    [ id: 'domtbl' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true)
+                ])
+                input[2] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}

@@ -19,19 +19,20 @@
                     "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/proteinfamilies/usage#samplesheet-input).",
+                    "description": "Path to comma-separated file '.csv' containing information about the samples in the experiment.",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file '.csv' with 3 columns, and a header row. See [usage docs](https://nf-co.re/proteinfamilies/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "help_text": "You will need to define where your results will be saved. Use this parameter to specify the location.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "email": {
                     "type": "string",
-                    "description": "Email address for completion summary.",
+                    "description": "Email address for completion summary. Example: name.surname@example.com",
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
@@ -115,7 +116,7 @@
                 },
                 "email_on_fail": {
                     "type": "string",
-                    "description": "Email address for completion summary, only when pipeline fails.",
+                    "description": "Email address for completion summary, only when pipeline fails. Example: name.surname@example.com",
                     "fa_icon": "fas fa-exclamation-triangle",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
                     "help_text": "An email address to send a summary email to when the pipeline is completed - ONLY sent if the pipeline does not exit successfully.",
@@ -129,7 +130,7 @@
                 },
                 "max_multiqc_email_size": {
                     "type": "string",
-                    "description": "File size limit when attaching MultiQC reports to summary emails.",
+                    "description": "File size limit when attaching MultiQC reports to summary emails. Example: name.surname@example.com",
                     "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
                     "default": "25.MB",
                     "fa_icon": "fas fa-file-upload",
@@ -177,7 +178,7 @@
                     "type": "string",
                     "fa_icon": "far fa-check-circle",
                     "description": "Base URL or local path to location of pipeline test dataset files",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/proteinfamilies/",
                     "hidden": true
                 },
                 "trace_report_suffix": {
@@ -185,6 +186,210 @@
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
                     "hidden": true
+                }
+            }
+        },
+        "clustering_params": {
+            "title": "Clustering parameters",
+            "type": "object",
+            "description": "Use these parameters to control the flow of the clustering subworkflow execution.",
+            "properties": {
+                "save_mmseqs_db": {
+                    "type": "boolean",
+                    "description": "Save the db output folder of mmseqs createdb",
+                    "help_text": "Specify to save the mmseqs formatted database of input fasta sequences."
+                },
+                "clustering_tool": {
+                    "type": "string",
+                    "description": "Choose clustering algorithm. Either simple 'cluster' for medium size inputs, or 'linclust' for less sensitive clustering of larger datasets.",
+                    "help_text": "mmseqs algorithms available: 'cluster' or 'linclust'.",
+                    "enum": ["linclust", "cluster"]
+                },
+                "cluster_seq_identity": {
+                    "type": "number",
+                    "default": 0.5,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "mmseqs parameter for minimum sequence identity",
+                    "help_text": "Minimum sequence identity required for clustering. The mmseqs default is 0.9, but protein families contain way more diverse sequences (https://doi.org/10.1093/protein/12.2.85)."
+                },
+                "cluster_coverage": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "mmseqs parameter for minimum sequence coverage ratio",
+                    "help_text": "Minimum sequence length coverage required for clustering"
+                },
+                "cluster_cov_mode": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "mmseqs parameter for coverage mode: 0 for both, 1 for target and 2 for query sequence",
+                    "help_text": "Defined by the number of aligned residue pairs divided by 0: the maximum of the length of query/centre and target/non-centre sequences, 1: the length of the target/non-centre sequence, 2: the length of the query/centre"
+                },
+                "save_mmseqs_clustering": {
+                    "type": "boolean",
+                    "description": "Save the clustering output folder of mmseqs cluster or linclust",
+                    "help_text": "Specify to save the mmseqs formatted result clustering."
+                },
+                "cluster_size_threshold": {
+                    "type": "integer",
+                    "default": 25,
+                    "description": "Minimum clustering chunk size threshold to create seed Multiple Sequence Alignments upon.",
+                    "help_text": "This is an initial filter for the mmseqs clustering results. The lower the threshold, the more families will be generated. Additional sequences may be later recruited in the families."
+                },
+                "save_mmseqs_chunked_fasta": {
+                    "type": "boolean",
+                    "description": "Save membership-filtered initial mmseqs clusters in fasta format",
+                    "help_text": "Specify to save the mmseqs clusters in fasta format."
+                }
+            }
+        },
+        "alignment_params": {
+            "title": "Alignment parameters",
+            "type": "object",
+            "description": "Use these parameters to control the Multiple Sequence Alignment subworkflow execution.",
+            "properties": {
+                "alignment_tool": {
+                    "type": "string",
+                    "description": "Choose alignment tool. FAMSA is recommended as best time-memory-accuracy combination option.",
+                    "help_text": "Available tools: 'famsa' or 'mafft'.",
+                    "enum": ["famsa", "mafft"]
+                },
+                "trim_msa": {
+                    "type": "boolean",
+                    "description": "Boolean whether to trim the Multiple Sequence Alignment (MSA) gaps",
+                    "default": true,
+                    "fa_icon": "fas fa-check-square",
+                    "hidden": true
+                },
+                "clipkit_out_format": {
+                    "type": "string",
+                    "default": "clipkit",
+                    "description": "Choose the output format of the clipped alignment.",
+                    "help_text": "Make sure this is different than the input extension format, otherwise the tool won't run (i.e., != aln for famsa and != fas for mafft)."
+                },
+                "trim_ends_only": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Choose if ClipKIT should only clip gaps at the ends of the MSAs.",
+                    "help_text": "By default, ClipKIT clips gaps over the specified threshold, both at the ends and throughout the length of the MSA. This flag restricts clipping to the ends"
+                },
+                "gap_threshold": {
+                    "type": "number",
+                    "default": 0.5,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Multiple Sequence Alignment (MSA) positions with gappiness greater than this threshold will be trimmed"
+                },
+                "recruit_sequences_with_models": {
+                    "type": "boolean",
+                    "description": "Set to true to recruit additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) to refine the alignments",
+                    "default": true,
+                    "fa_icon": "fas fa-check-square",
+                    "hidden": true,
+                    "help_text": "If this is set to true, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the hmmsearch_query_length_threshold), resulting in bigger but better described families"
+                },
+                "hmmsearch_write_target": {
+                    "type": "boolean",
+                    "description": "Boolean whether to generate target results file of hmmsearch",
+                    "default": false,
+                    "fa_icon": "fas fa-check-square",
+                    "hidden": true,
+                    "help_text": "Specify to calculate the hmmsearch tabular (space-delimited) summary of per-target output (*.tbl.gz)."
+                },
+                "hmmsearch_write_domain": {
+                    "type": "boolean",
+                    "description": "Boolean whether to generate domain results file of hmmsearch",
+                    "default": true,
+                    "fa_icon": "fas fa-check-square",
+                    "hidden": true,
+                    "help_text": "Specify to calculate the hmmsearch tabular (space-delimited) summary of per-domain output (*.domtbl.gz)."
+                },
+                "hmmsearch_evalue_cutoff": {
+                    "type": "number",
+                    "default": 0.001,
+                    "description": "hmmsearch e-value cutoff threshold for reported results"
+                },
+                "save_hmmsearch_results": {
+                    "type": "boolean",
+                    "description": "Save the output of hmmsearch (.domtbl.gz and .tbl.gz)",
+                    "help_text": "Specify to save the .domtbl.gz and .tbl.gz files generated by running hmmsearch on the family model against the input set of sequences."
+                },
+                "hmmsearch_query_length_threshold": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "hmmsearch minimum length percentage filter of hit env vs query length",
+                    "help_text": "This length threshold should be quite high to make sure that small, fragmented sequences are not recruited in the family models"
+                },
+                "save_hmmsearch_filtered_fasta": {
+                    "type": "boolean",
+                    "description": "Save family fasta files after recruiting sequences with hmmsearch",
+                    "help_text": "Specify to save the extended family fasta files with all hmmsearch recruited sequences."
+                }
+            }
+        },
+        "redundancy_params": {
+            "title": "Redundancy removal parameters",
+            "type": "object",
+            "description": "Use these parameters to control the redundancy removal subworkflow execution.",
+            "properties": {
+                "remove_family_redundancy": {
+                    "type": "boolean",
+                    "description": "Removal of between-family redundancy via hmmsearch.",
+                    "default": true,
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true,
+                    "help_text": "Similar families should not be further processed, for better resource management and to avoid duplication of families."
+                },
+                "hmmsearch_family_length_threshold": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
+                },
+                "save_non_redundant_fams_fasta": {
+                    "type": "boolean",
+                    "description": "Save only the fasta files of non-redundant families (might still contain redundant sequences)",
+                    "help_text": "Specify to save the fasta files of non-redundant families."
+                },
+                "remove_sequence_redundancy": {
+                    "type": "boolean",
+                    "description": "Removal of inside-family redundancy of sequences via mmseqs clustering.",
+                    "default": true,
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true,
+                    "help_text": "Highly similar sequences within the same family should be removed, while making sure that the protein family diversity is still well captured."
+                },
+                "cluster_seq_identity_for_redundancy": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "mmseqs parameter for minimum sequence identity",
+                    "help_text": "Need to be quite high, to make sure that the diversity is still well captured, while highly similar sequences are removed"
+                },
+                "cluster_coverage_for_redundancy": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "mmseqs parameter for minimum sequence coverage ratio",
+                    "help_text": "Need to be quite high, to make sure that the diversity is still well captured, well highly similar sequences are removed"
+                },
+                "cluster_cov_mode_for_redundancy": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "mmseqs parameter for coverage mode: 0 for both, 1 for target and 2 for query sequence",
+                    "help_text": "Defined by the number of aligned residue pairs divided by 0: the maximum of the length of query/centre and target/non-centre sequences, 1: the length of the target/non-centre sequence, 2: the length of the query/centre"
+                },
+                "save_non_redundant_seqs_fasta": {
+                    "type": "boolean",
+                    "description": "Save the final family fasta files with sequence redundancy removed",
+                    "help_text": "Specify to save the family fasta files with non-redundant sequence sets."
                 }
             }
         }
@@ -198,6 +403,15 @@
         },
         {
             "$ref": "#/$defs/generic_options"
+        },
+        {
+            "$ref": "#/$defs/clustering_params"
+        },
+        {
+            "$ref": "#/$defs/alignment_params"
+        },
+        {
+            "$ref": "#/$defs/redundancy_params"
         }
     ]
 }

@@ -1,0 +1,164 @@
+{
+    "fasta - cluster": {
+        "content": [
+            "test_cluster.tsv",
+            50000,
+            [
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CREATETSV": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CLUSTER": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CREATEDB": {
+                        "mmseqs": "17.b804f"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.3"
+        },
+        "timestamp": "2025-06-13T15:58:10.964310155"
+    },
+    "fasta - linclust - stub": {
+        "content": [
+            {
+                "0": [
+                    "versions.yml:md5,3312bc6e1fa1b06e4a8ac2603deba2a4",
+                    "versions.yml:md5,9d06e5efe2356113924a205c58f0b42f",
+                    "versions.yml:md5,c3f8381c74eb9f0a2d549f273ba89595"
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test_linclust_stub"
+                        },
+                        "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/mgnifams_input_small.fa"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test_linclust_stub"
+                        },
+                        "test_linclust_stub.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "clusters": [
+                    [
+                        {
+                            "id": "test_linclust_stub"
+                        },
+                        "test_linclust_stub.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "seqs": [
+                    [
+                        {
+                            "id": "test_linclust_stub"
+                        },
+                        "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/mgnifams_input_small.fa"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,3312bc6e1fa1b06e4a8ac2603deba2a4",
+                    "versions.yml:md5,9d06e5efe2356113924a205c58f0b42f",
+                    "versions.yml:md5,c3f8381c74eb9f0a2d549f273ba89595"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.3"
+        },
+        "timestamp": "2025-06-13T15:58:24.789924716"
+    },
+    "fasta - linclust": {
+        "content": [
+            "test_linclust.tsv",
+            50000,
+            [
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CREATETSV": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_CREATEDB": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "EXECUTE_CLUSTERING:MMSEQS_LINCLUST": {
+                        "mmseqs": "17.b804f"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.3"
+        },
+        "timestamp": "2025-06-13T15:57:34.418151877"
+    },
+    "fasta - cluster - stub": {
+        "content": [
+            {
+                "0": [
+                    "versions.yml:md5,3312bc6e1fa1b06e4a8ac2603deba2a4",
+                    "versions.yml:md5,40b242fe8ca427ffe7cd860dc5b9d7fc",
+                    "versions.yml:md5,9d06e5efe2356113924a205c58f0b42f"
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test_cluster_stub"
+                        },
+                        "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/mgnifams_input_small.fa"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test_cluster_stub"
+                        },
+                        "test_cluster_stub.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "clusters": [
+                    [
+                        {
+                            "id": "test_cluster_stub"
+                        },
+                        "test_cluster_stub.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "seqs": [
+                    [
+                        {
+                            "id": "test_cluster_stub"
+                        },
+                        "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/mgnifams_input_small.fa"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,3312bc6e1fa1b06e4a8ac2603deba2a4",
+                    "versions.yml:md5,40b242fe8ca427ffe7cd860dc5b9d7fc",
+                    "versions.yml:md5,9d06e5efe2356113924a205c58f0b42f"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.3"
+        },
+        "timestamp": "2025-06-13T15:58:42.266689644"
+    }
+}
