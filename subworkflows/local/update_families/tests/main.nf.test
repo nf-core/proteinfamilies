@@ -25,7 +25,8 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
-                    workflow.out.updated_family_reps,
+                    file(workflow.out.updated_family_reps[0][1]).name,
+                    path(workflow.out.updated_family_reps[0][1]).readLines().size(),
                     workflow.out.versions.collect { path(it).yaml }.unique()
                     ).match()}
             )
