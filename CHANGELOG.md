@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#99](https://github.com/nf-core/proteinfamilies/pull/99) - `CAT_CAT` module replaced with `FIND_CONCATENATE` to avoid large scale `Argument list too long` errors.
+- [#100](https://github.com/nf-core/proteinfamilies/pull/100) - `CAT_CAT` module replaced with `FIND_CONCATENATE` to avoid large scale `Argument list too long` errors.
 - [#98](https://github.com/nf-core/proteinfamilies/pull/98) - nf-core tools template update to 3.3.2.
 
 ## v1.2.0 - [2025/06/13]
