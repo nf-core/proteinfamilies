@@ -3,7 +3,7 @@
 */
 
 include { EXTRACT_FAMILY_REPS                                        } from '../../../modules/local/extract_family_reps/main'
-include { CAT_CAT                                                    } from '../../../modules/nf-core/cat/cat'
+include { FIND_CONCATENATE                                           } from '../../../modules/nf-core/find/concatenate'
 include { HMMER_HMMSEARCH                                            } from '../../../modules/nf-core/hmmer/hmmsearch/main'
 include { IDENTIFY_REDUNDANT_FAMS                                    } from '../../../modules/local/identify_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_HMM      } from '../../../modules/local/filter_non_redundant_fams/main'
@@ -36,10 +36,10 @@ workflow REMOVE_REDUNDANCY {
         ch_hmm = hmm
             .map { meta, model -> [[id: meta.id], model] }
             .groupTuple(by: 0)
-        CAT_CAT( ch_hmm )
-        ch_versions = ch_versions.mix( CAT_CAT.out.versions )
+        FIND_CONCATENATE( ch_hmm )
+        ch_versions = ch_versions.mix( FIND_CONCATENATE.out.versions )
 
-        ch_input_for_hmmsearch = CAT_CAT.out.file_out
+        ch_input_for_hmmsearch = FIND_CONCATENATE.out.file_out
             .combine(EXTRACT_FAMILY_REPS.out.fasta, by: 0)
             .map { meta, model, seqs -> [meta, model, seqs, false, false, true] }
 
