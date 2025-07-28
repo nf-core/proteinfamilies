@@ -1,6 +1,6 @@
 process EXTRACT_FAMILY_REPS {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_high'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -23,6 +23,7 @@ process EXTRACT_FAMILY_REPS {
     """
     extract_family_reps.py \\
         --full_msa_folder aln \\
+        --num_threads ${task.cpus} \\
         --metadata ${prefix}_meta_mqc.csv \\
         --out_fasta ${prefix}_reps.faa
 

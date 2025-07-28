@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#101](https://github.com/nf-core/proteinfamilies/pull/101) - Parallelized execution for the `EXTRACT_FAMILY_REPS` local module.
 - [#100](https://github.com/nf-core/proteinfamilies/pull/100) - `CAT_CAT` module replaced with `FIND_CONCATENATE` to avoid large scale `Argument list too long` errors.
 - [#98](https://github.com/nf-core/proteinfamilies/pull/98) - nf-core tools template update to 3.3.2.
 
