@@ -4,7 +4,7 @@ nextflow_process {
     script "../main.nf"
     process "EXTRACT_FAMILY_REPS"
 
-    test("proteinfamilies - aln") {
+    test("proteinfamilies - faa") {
 
         when {
             process {
@@ -12,8 +12,8 @@ nextflow_process {
                 input[0] = Channel.of([
                     [ id: 'extract_family_reps' ],
                     [
-                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
-                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.faa', checkIfExists: true)
                     ]
                 ])
                 """
@@ -34,7 +34,7 @@ nextflow_process {
         }
     }
 
-    test("proteinfamilies - aln - stub") {
+    test("proteinfamilies - faa - stub") {
 
         options "-stub"
 
@@ -44,8 +44,8 @@ nextflow_process {
                 input[0] = Channel.of([
                     [ id: 'extract_family_reps' ],
                     [
-                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
-                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.faa', checkIfExists: true)
                     ]
                 ])
                 """

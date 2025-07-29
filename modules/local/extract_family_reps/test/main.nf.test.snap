@@ -1,15 +1,14 @@
 {
-    "proteinfamilies - aln": {
+    "proteinfamilies - faa": {
         "content": [
             "extract_family_reps_reps.faa",
-            7,
+            4,
             "extract_family_reps_meta_mqc.csv",
             8,
             [
                 {
                     "EXTRACT_FAMILY_REPS": {
-                        "python": "3.13.1",
-                        "biopython": 1.85
+                        "python": "3.13.1"
                     }
                 }
             ]
@@ -18,9 +17,9 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-07-14T14:40:38.452461242"
+        "timestamp": "2025-07-29T11:25:17.775635822"
     },
-    "proteinfamilies - aln - stub": {
+    "proteinfamilies - faa - stub": {
         "content": [
             {
                 "0": [
@@ -40,7 +39,7 @@
                     ]
                 ],
                 "2": [
-                    "versions.yml:md5,8a0073a7aebf991081f4b28800b975f4"
+                    "versions.yml:md5,3f12f02c71ad2d3d5aff7885537cbd9f"
                 ],
                 "fasta": [
                     [
@@ -59,7 +58,7 @@
                     ]
                 ],
                 "versions": [
-                    "versions.yml:md5,8a0073a7aebf991081f4b28800b975f4"
+                    "versions.yml:md5,3f12f02c71ad2d3d5aff7885537cbd9f"
                 ]
             }
         ],
@@ -67,6 +66,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-07-14T14:40:49.087750638"
+        "timestamp": "2025-07-29T11:25:31.692612332"
     }
 }
