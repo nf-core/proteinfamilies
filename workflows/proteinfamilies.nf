@@ -98,11 +98,11 @@ workflow PROTEINFAMILIES {
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
     // Post-processing
-    ch_full_msa = REMOVE_REDUNDANCY.out.full_msa
+    ch_fasta = REMOVE_REDUNDANCY.out.fasta
         .map { meta, aln -> [ [id: meta.id], aln ] }
         .groupTuple(by: 0)
 
-    EXTRACT_FAMILY_REPS( ch_full_msa )
+    EXTRACT_FAMILY_REPS( ch_fasta )
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
     ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 

@@ -12,8 +12,8 @@ process REMOVE_REDUNDANT_SEQS {
     tuple val(meta2), path(sequences)
 
     output:
-    tuple val(meta), path("${prefix}_reps.faa"), emit: fasta
-    path "versions.yml"                        , emit: versions
+    tuple val(meta), path("${prefix}.faa"), emit: fasta
+    path "versions.yml"                   , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -30,7 +30,7 @@ process REMOVE_REDUNDANT_SEQS {
     remove_redundant_seqs.py \\
         --clustering ${clustering} \\
         --sequences ${fasta_name} \\
-        --out_fasta ${prefix}_reps.faa
+        --out_fasta ${prefix}.faa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -42,7 +42,7 @@ process REMOVE_REDUNDANT_SEQS {
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}_reps.faa
+    touch ${prefix}.faa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -8,9 +8,6 @@ import os
 import gzip
 import argparse
 import csv
-from Bio import SeqIO
-from Bio.Seq import Seq
-from Bio.SeqRecord import SeqRecord
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 
@@ -19,11 +16,11 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-f",
-        "--full_msa_folder",
+        "--fasta_folder",
         required=True,
         metavar="FOLDER",
         type=str,
-        help="Input folder with fasta full alignments.",
+        help="Input folder with amino acid FASTA files.",
     )
     parser.add_argument(
         "-t",
@@ -38,7 +35,7 @@ def parse_args(args=None):
         required=True,
         metavar="FILE",
         type=str,
-        help="Name of the output csv file with family ids, sizes and representative sequences.",
+        help="Output CSV file with family ids, sizes and representative sequences.",
     )
     parser.add_argument(
         "-o",
@@ -46,54 +43,65 @@ def parse_args(args=None):
         required=True,
         metavar="FILE",
         type=str,
-        help="Name of the output fasta file with family representative sequences.",
+        help="Output FASTA file with representative sequences.",
     )
     return parser.parse_args(args)
 
 
-def process_file(filename, msa_folder):
-    filepath = os.path.join(msa_folder, filename)
-    format = "stockholm" if filepath.endswith(".sto.gz") else "fasta"
-
+def parse_first_fasta(filepath):
     open_func = gzip.open if filepath.endswith(".gz") else open
-    with open_func(filepath, "rt") as fasta_file:
-        parser = SeqIO.parse(fasta_file, format)
-        try:
-            # Only read first sequence
-            first_record = next(parser)
-            # Then count remaining records to get total family size without storing in memory
-            family_size = 1 + sum(1 for _ in parser)
-        except StopIteration:
-            return None  # skip empty alignments
+    header = None
+    seq_lines = []
+    flag = False
 
-    if first_record:
-        # Remove gaps from the sequence, and convert all to upper case
-        cleaned_sequence = (
-            str(first_record.seq).replace("-", "").replace(".", "").upper()
-        )
-        # Modify the ID to only include the part before the first space
-        cleaned_id = first_record.id.split(" ")[0]
-        # Create a new SeqRecord with the cleaned sequence and ID
-        cleaned_record = SeqRecord(
-            Seq(cleaned_sequence), id=cleaned_id, description=""
-        )
-        family_name = os.path.splitext(os.path.splitext(filename)[0])[0]
-        return (family_name, family_size, len(cleaned_sequence), cleaned_id, cleaned_sequence, cleaned_record)
+    with open_func(filepath, "rt") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith(">") and not flag:
+                flag = True
+                if header is None:
+                    header = line[1:].split()[0]  # first header only
+                else:
+                    break  # stop reading after second header
+            elif header:
+                seq_lines.append(line)
 
+    # get count of total proteins on second pass
+    with open_func(filepath, "rt") as f:
+        size = sum(1 for line in f if line.startswith(">"))
+
+    if header and seq_lines:
+        sequence = "".join(seq_lines).replace("-", "").replace(".", "").upper()
+        return header, sequence, size
+    return None, None, size
+
+
+def process_file(filename, fasta_folder):
+    filepath = os.path.join(fasta_folder, filename)
+    family_name = os.path.splitext(os.path.splitext(filename)[0])[0]
+
+    header, sequence, size = parse_first_fasta(filepath)
+    if header and sequence:
+        return (
+            family_name,           # Sample Name
+            family_name,           # Family ID
+            size,                  # Family size
+            len(sequence),         # Representative Length
+            header,                # Representative ID
+            sequence               # Sequence
+        )
     return None
 
 
-def extract_first_sequences(msa_folder, num_threads, metadata_file, out_fasta):
-    all_files = sorted(os.listdir(msa_folder))
+def extract_first_sequences(fasta_folder, num_threads, metadata_file, out_fasta):
+    all_files = sorted(os.listdir(fasta_folder))
 
-    # Process in parallel
     with ProcessPoolExecutor(max_workers=num_threads) as executor:
-        results = list(executor.map(partial(process_file, msa_folder=msa_folder), all_files))
+        results = list(executor.map(partial(process_file, fasta_folder=fasta_folder), all_files))
 
-    # Open the output FASTA file in write mode
-    with open(out_fasta, "w") as fasta_out, open(
-        metadata_file, "w", newline=""
-    ) as csv_out:
+    with open(out_fasta, "w") as fasta_out, open(metadata_file, "w", newline="") as csv_out:
         # Write custom metadata lines to the metadata file
         csv_out.write(
             '# id: "family_metadata"\n'
@@ -103,28 +111,25 @@ def extract_first_sequences(msa_folder, num_threads, metadata_file, out_fasta):
             '# plot_type: "table"\n'
         )
         csv_writer = csv.writer(csv_out, quoting=csv.QUOTE_NONNUMERIC)
-        # Write the CSV header
-        csv_writer.writerow(
-            [
-                "Sample Name",
-                "Family Id",
-                "Size",
-                "Representative Length",
-                "Representative Id",
-                "Sequence",
-            ]
-        )
+        csv_writer.writerow([
+            "Sample Name",
+            "Family Id",
+            "Size",
+            "Representative Length",
+            "Representative Id",
+            "Sequence",
+        ])
 
         for res in results:
             if res:
-                family_name, size, rep_len, rep_id, sequence, record = res
-                csv_writer.writerow([family_name, family_name, size, rep_len, rep_id, sequence])
-                SeqIO.write(record, fasta_out, "fasta")
+                sample, fam_id, size, length, rep_id, seq = res
+                csv_writer.writerow([sample, fam_id, size, length, rep_id, seq])
+                fasta_out.write(f">{rep_id}\n{seq}\n")
 
 
 def main(args=None):
     args = parse_args(args)
-    extract_first_sequences(args.full_msa_folder, args.num_threads, args.metadata, args.out_fasta)
+    extract_first_sequences(args.fasta_folder, args.num_threads, args.metadata, args.out_fasta)
 
 
 if __name__ == "__main__":
