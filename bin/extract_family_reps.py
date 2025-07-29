@@ -54,7 +54,7 @@ def parse_first_fasta(filepath):
     seq_lines = []
     flag = False
 
-    with open_func(filepath, "r") as f:
+    with open_func(filepath, "rt") as f:
         for line in f:
             line = line.strip()
             if not line:
@@ -69,7 +69,7 @@ def parse_first_fasta(filepath):
                 seq_lines.append(line)
 
     # get count of total proteins on second pass
-    with open_func(filepath, "r") as f:
+    with open_func(filepath, "rt") as f:
         size = sum(1 for line in f if line.startswith(">"))
 
     if header and seq_lines:

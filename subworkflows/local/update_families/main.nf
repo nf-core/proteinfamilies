@@ -39,10 +39,10 @@ workflow UPDATE_FAMILIES {
     ch_folders_to_validate = UNTAR_HMM.out.untar
         .join(UNTAR_MSA.out.untar)
         .multiMap { meta, folder1, folder2 ->
-            hmm_folder_ch: [meta, folder1]
-            msa_folder_ch: [meta, folder2]
+            ch_hmm_folder: [meta, folder1]
+            ch_msa_folder: [meta, folder2]
         }
-    validateMatchingFolders(ch_folders_to_validate.hmm_folder_ch, ch_folders_to_validate.msa_folder_ch)
+    validateMatchingFolders(ch_folders_to_validate.ch_hmm_folder, ch_folders_to_validate.ch_msa_folder)
 
     // Squeeze the HMMs into a single file
     CAT_HMM( UNTAR_HMM.out.untar.map { meta, folder -> [meta, file("${folder.toUriString()}/*", checkIfExists: true)] } )
@@ -97,19 +97,19 @@ workflow UPDATE_FAMILIES {
     // Aggregate each family's MSA sequences with the newly recruited ones
     CAT_FASTA( ch_input_for_cat )
     ch_versions = ch_versions.mix( CAT_FASTA.out.versions )
-    fasta_ch = CAT_FASTA.out.file_out
+    ch_fasta = CAT_FASTA.out.file_out
 
     if (params.remove_sequence_redundancy) {
         // Strict clustering to remove redundancy
-        EXECUTE_CLUSTERING( fasta_ch, params.clustering_tool )
+        EXECUTE_CLUSTERING( ch_fasta, params.clustering_tool )
         ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
 
         REMOVE_REDUNDANT_SEQS( EXECUTE_CLUSTERING.out.clusters, EXECUTE_CLUSTERING.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions )
-        fasta_ch = REMOVE_REDUNDANT_SEQS.out.fasta
+        ch_fasta = REMOVE_REDUNDANT_SEQS.out.fasta
     }
 
-    ALIGN_SEQUENCES( fasta_ch, params.alignment_tool )
+    ALIGN_SEQUENCES( ch_fasta, params.alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_msa = ALIGN_SEQUENCES.out.alignments
 
@@ -122,10 +122,10 @@ workflow UPDATE_FAMILIES {
     HMMER_HMMBUILD( ch_msa, [] )
     ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions )
 
-    ch_msa = ch_msa
-        .map { meta, aln -> [ [id: meta.id], aln ] }
+    ch_fasta = ch_fasta
+        .map { meta, faa -> [ [id: meta.id], faa ] }
         .groupTuple(by: 0)
-    EXTRACT_FAMILY_REPS( ch_msa )
+    EXTRACT_FAMILY_REPS( ch_fasta )
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
     ch_updated_family_reps = ch_updated_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
