@@ -26,7 +26,7 @@ def parse_args(args=None):
         "-t",
         "--num_threads",
         type=int,
-        default=1,
+        default=4,
         help="Number of threads to use for parallel processing."
     )
     parser.add_argument(
@@ -48,7 +48,19 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def parse_first_fasta(filepath):
+def extract_data(filepath):
+    """
+    Extract the first sequence and total number of entries from a FASTA file.
+
+    Args:
+        filepath (str): Path to the FASTA (.fa or .fa.gz) file.
+
+    Returns:
+        tuple: (header, sequence, size), where:
+            header (str): ID of the first sequence.
+            sequence (str): Amino acid sequence (with gaps and dots removed).
+            size (int): Total number of sequences in the file.
+    """
     open_func = gzip.open if filepath.endswith(".gz") else open
     header = None
     seq_lines = []
@@ -78,11 +90,30 @@ def parse_first_fasta(filepath):
     return None, None, size
 
 
-def process_file(filename, fasta_folder):
+def process_fasta_file(filename, fasta_folder):
+    """
+    Process a single FASTA file to extract family and representative sequence info.
+
+    Args:
+        filename (str): Filename of the FASTA file.
+        fasta_folder (str): Directory containing the FASTA files.
+
+    Returns:
+        tuple or None: (
+            sample name (str),
+            family ID (str),
+            family size (int),
+            representative length (int),
+            representative ID (str),
+            representative sequence (str)
+        ), or None if data is incomplete.
+    """
     filepath = os.path.join(fasta_folder, filename)
+    print(filename)
+    
     family_name = os.path.splitext(os.path.splitext(filename)[0])[0]
 
-    header, sequence, size = parse_first_fasta(filepath)
+    header, sequence, size = extract_data(filepath)
     if header and sequence:
         return (
             family_name,           # Sample Name
@@ -95,11 +126,20 @@ def process_file(filename, fasta_folder):
     return None
 
 
-def extract_first_sequences(fasta_folder, num_threads, metadata_file, out_fasta):
+def parse_family_metadata(fasta_folder, num_threads, metadata_file, out_fasta):
+    """
+    Process all FASTA files in a folder, in parallel, and write metadata and representative sequences.
+
+    Args:
+        fasta_folder (str): Folder containing input FASTA files.
+        num_threads (int): Number of threads for parallel processing.
+        metadata_file (str): Path to the output CSV metadata file.
+        out_fasta (str): Path to the output FASTA file of representative sequences.
+    """
     all_files = sorted(os.listdir(fasta_folder))
 
     with ProcessPoolExecutor(max_workers=num_threads) as executor:
-        results = list(executor.map(partial(process_file, fasta_folder=fasta_folder), all_files))
+        results = list(executor.map(partial(process_fasta_file, fasta_folder=fasta_folder), all_files))
 
     with open(out_fasta, "w") as fasta_out, open(metadata_file, "w", newline="") as csv_out:
         # Write custom metadata lines to the metadata file
@@ -129,7 +169,7 @@ def extract_first_sequences(fasta_folder, num_threads, metadata_file, out_fasta)
 
 def main(args=None):
     args = parse_args(args)
-    extract_first_sequences(args.fasta_folder, args.num_threads, args.metadata, args.out_fasta)
+    parse_family_metadata(args.fasta_folder, args.num_threads, args.metadata, args.out_fasta)
 
 
 if __name__ == "__main__":
