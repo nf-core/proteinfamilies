@@ -109,8 +109,6 @@ def process_fasta_file(filename, fasta_folder):
         ), or None if data is incomplete.
     """
     filepath = os.path.join(fasta_folder, filename)
-    print(filename)
-    
     family_name = os.path.splitext(os.path.splitext(filename)[0])[0]
 
     header, sequence, size = extract_data(filepath)
