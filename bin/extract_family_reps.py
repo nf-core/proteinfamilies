@@ -64,30 +64,28 @@ def extract_data(filepath):
     open_func = gzip.open if filepath.endswith(".gz") else open
     header = None
     seq_lines = []
-    flag = False
+    size = 0
+    collecting = False
+    collected = False
 
     with open_func(filepath, "rt") as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
-            if line.startswith(">") and not flag:
-                flag = True
-                if header is None:
+            if line.startswith(">"):
+                size += 1
+                if not collected:
                     header = line[1:].split()[0]  # first header only
+                    collecting = True
                 else:
-                    break  # stop reading after second header
-            elif header:
+                    collecting = False  # stop collecting sequence after first one
+                    collected = True
+            elif collecting:
                 seq_lines.append(line)
 
-    # get count of total proteins on second pass
-    with open_func(filepath, "rt") as f:
-        size = sum(1 for line in f if line.startswith(">"))
-
-    if header and seq_lines:
-        sequence = "".join(seq_lines).replace("-", "").replace(".", "").upper()
-        return header, sequence, size
-    return None, None, size
+    sequence = "".join(seq_lines).replace("-", "").replace(".", "").upper() if seq_lines else None
+    return header, sequence, size
 
 
 def process_fasta_file(filename, fasta_folder):
