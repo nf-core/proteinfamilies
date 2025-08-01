@@ -73,7 +73,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
-                    workflow.out.full_msa,
+                    workflow.out.fasta,
                     workflow.out.versions.collect { path(it).yaml }.unique()
                     ).match()}
             )
