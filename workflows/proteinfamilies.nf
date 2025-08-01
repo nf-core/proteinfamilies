@@ -26,7 +26,7 @@ include { REMOVE_REDUNDANCY  } from '../subworkflows/local/remove_redundancy'
 //
 // MODULE: Local to the pipeline
 //
-include { CALCULATE_CLUSTER_DISTRIBUTION } from "../modules/local/calculate_cluster_distribution/main"
+include { CALCULATE_CLUSTER_DISTRIBUTION } from '../modules/local/calculate_cluster_distribution/main'
 include { CHUNK_CLUSTERS                 } from '../modules/local/chunk_clusters/main'
 include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
 
@@ -71,7 +71,15 @@ workflow PROTEINFAMILIES {
 
     // Updating existing families
     if (ch_branch_result.to_update) {
-        UPDATE_FAMILIES( ch_samplesheet_for_update )
+        UPDATE_FAMILIES (
+            ch_samplesheet_for_update,
+            params.hmmsearch_query_length_threshold,
+            params.remove_sequence_redundancy,
+            params.clustering_tool,
+            params.alignment_tool,
+            params.trim_msa,
+            params.clipkit_out_format
+        )
         ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
 
         ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
@@ -80,7 +88,10 @@ workflow PROTEINFAMILIES {
 
     // Creating new families
     // Clustering
-    EXECUTE_CLUSTERING( ch_samplesheet_for_create, params.clustering_tool )
+    EXECUTE_CLUSTERING (
+        ch_samplesheet_for_create,
+        params.clustering_tool
+    )
     ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
 
     CALCULATE_CLUSTER_DISTRIBUTION( EXECUTE_CLUSTERING.out.clusters )
@@ -90,11 +101,31 @@ workflow PROTEINFAMILIES {
     ch_versions = ch_versions.mix( CHUNK_CLUSTERS.out.versions )
 
     // Multiple sequence alignment
-    GENERATE_FAMILIES( ch_samplesheet_for_create, CHUNK_CLUSTERS.out.fasta_chunks )
+    GENERATE_FAMILIES(
+        ch_samplesheet_for_create,
+        CHUNK_CLUSTERS.out.fasta_chunks,
+        params.alignment_tool,
+        params.trim_msa,
+        params.clipkit_out_format,
+        params.hmmsearch_write_target,
+        params.hmmsearch_write_domain,
+        params.recruit_sequences_with_models,
+        params.hmmsearch_query_length_threshold
+    )
     ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     // Remove redundant sequences and families
-    REMOVE_REDUNDANCY( GENERATE_FAMILIES.out.seed_msa, GENERATE_FAMILIES.out.full_msa, GENERATE_FAMILIES.out.fasta, GENERATE_FAMILIES.out.hmm )
+    REMOVE_REDUNDANCY (
+        GENERATE_FAMILIES.out.seed_msa,
+        GENERATE_FAMILIES.out.full_msa,
+        GENERATE_FAMILIES.out.fasta,
+        GENERATE_FAMILIES.out.hmm,
+        params.remove_family_redundancy,
+        params.hmmsearch_family_length_threshold,
+        params.remove_sequence_redundancy,
+        params.clustering_tool,
+        params.alignment_tool
+    )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
     // Post-processing

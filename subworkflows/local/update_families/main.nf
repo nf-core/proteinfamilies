@@ -1,3 +1,7 @@
+/*
+    UPDATE EXISTING FAMILIES HMM AND MSA
+*/
+
 include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_MSA            } from '../../../modules/nf-core/untar/main'
 include { validateMatchingFolders       } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
@@ -15,7 +19,13 @@ include { EXTRACT_FAMILY_REPS           } from '../../../modules/local/extract_f
 
 workflow UPDATE_FAMILIES {
     take:
-    ch_samplesheet_for_update // channel: [meta, sequences, existing_hmms_to_update, existing_msas_to_update]
+    ch_samplesheet_for_update        // channel: [meta, sequences, existing_hmms_to_update, existing_msas_to_update]
+    hmmsearch_query_length_threshold // number [0.0, 1.0]
+    remove_sequence_redundancy       // boolean
+    clustering_tool                  // string ["linclust", "cluster"]
+    alignment_tool                   // string ["famsa", "mafft"]
+    trim_msa                         // boolean
+    clipkit_out_format               // string (default: clipkit)
 
     main:
     ch_versions            = Channel.empty()
@@ -64,7 +74,7 @@ workflow UPDATE_FAMILIES {
         }
 
     // Branch hit families/fasta proteins from non hit fasta proteins
-    BRANCH_HITS_FASTA ( ch_input_for_branch_hits.fasta, ch_input_for_branch_hits.domtbl, params.hmmsearch_query_length_threshold )
+    BRANCH_HITS_FASTA ( ch_input_for_branch_hits.fasta, ch_input_for_branch_hits.domtbl, hmmsearch_query_length_threshold )
     ch_versions = ch_versions.mix( BRANCH_HITS_FASTA.out.versions )
     ch_no_hit_seqs = BRANCH_HITS_FASTA.out.non_hit_fasta
 
@@ -99,9 +109,9 @@ workflow UPDATE_FAMILIES {
     ch_versions = ch_versions.mix( CAT_FASTA.out.versions )
     ch_fasta = CAT_FASTA.out.file_out
 
-    if (params.remove_sequence_redundancy) {
+    if (remove_sequence_redundancy) {
         // Strict clustering to remove redundancy
-        EXECUTE_CLUSTERING( ch_fasta, params.clustering_tool )
+        EXECUTE_CLUSTERING( ch_fasta, clustering_tool )
         ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
 
         REMOVE_REDUNDANT_SEQS( EXECUTE_CLUSTERING.out.clusters, EXECUTE_CLUSTERING.out.seqs )
@@ -109,12 +119,12 @@ workflow UPDATE_FAMILIES {
         ch_fasta = REMOVE_REDUNDANT_SEQS.out.fasta
     }
 
-    ALIGN_SEQUENCES( ch_fasta, params.alignment_tool )
+    ALIGN_SEQUENCES( ch_fasta, alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_msa = ALIGN_SEQUENCES.out.alignments
 
-    if (params.trim_msa) {
-        CLIPKIT( ch_msa, params.clipkit_out_format )
+    if (trim_msa) {
+        CLIPKIT( ch_msa, clipkit_out_format )
         ch_versions = ch_versions.mix( CLIPKIT.out.versions )
         ch_msa = CLIPKIT.out.clipkit
     }

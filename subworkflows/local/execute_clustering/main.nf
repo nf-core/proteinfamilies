@@ -10,7 +10,7 @@ include { MMSEQS_CREATETSV } from '../../../modules/nf-core/mmseqs/createtsv/mai
 workflow EXECUTE_CLUSTERING {
     take:
     sequences       // tuple val(meta), path(fasta)
-    clustering_tool // string: mmseqs clustering algorithm
+    clustering_tool // string: ["linclust", "cluster"]
 
     main:
     ch_versions       = Channel.empty()
