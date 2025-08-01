@@ -1,3 +1,7 @@
+/*
+    UPDATE EXISTING FAMILIES HMM AND MSA
+*/
+
 include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_MSA            } from '../../../modules/nf-core/untar/main'
 include { validateMatchingFolders       } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
