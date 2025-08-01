@@ -39,20 +39,20 @@ input:
         description: Integer value representing the minimum allowed cluster size to chunk.
 output:
   fasta_chunks:
-      - - meta:
-            type: map
-            description: |
-              Groovy Map containing sample information
-              e.g. `[ id:'sample1', single_end:false ]`
-      - chunked_fasta/*:
-          type: file
-          description: List of files containing chunked FASTA files produced from the clustering process.
-          pattern: "chunked_fasta/*.fasta"
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+    - chunked_fasta/*:
+        type: file
+        description: List of files containing chunked FASTA files produced from the clustering process.
+        pattern: "chunked_fasta/*.fasta"
   versions:
-      - versions.yml:
-          type: file
-          description: File containing software versions
-          pattern: "versions.yml"
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
 authors:
   - "@vagkaratzas"
   - "@GiatrasKon"
