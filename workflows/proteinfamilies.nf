@@ -71,7 +71,15 @@ workflow PROTEINFAMILIES {
 
     // Updating existing families
     if (ch_branch_result.to_update) {
-        UPDATE_FAMILIES( ch_samplesheet_for_update )
+        UPDATE_FAMILIES (
+            ch_samplesheet_for_update,
+            params.hmmsearch_query_length_threshold,
+            params.remove_sequence_redundancy,
+            params.clustering_tool,
+            params.alignment_tool,
+            params.trim_msa,
+            params.clipkit_out_format
+        )
         ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
 
         ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
