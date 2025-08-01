@@ -28,7 +28,6 @@ workflow GENERATE_FAMILIES {
     ch_fasta    = Channel.empty()
     ch_hmm      = Channel.empty()
 
-    fasta_chunks.view()
     ch_fasta = fasta_chunks
         .transpose()
         .map { meta, file_path ->

@@ -18,15 +18,20 @@ include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_RAW                   } from '../
 
 workflow REMOVE_REDUNDANCY {
     take:
-    seed_msa // tuple val(meta), path(fas)
-    full_msa // tuple val(meta), path(fas)
-    fasta    // tuple val(meta), path(fasta)
-    hmm      // tuple val(meta), path(hmm)
+    seed_msa                          // tuple val(meta), path(clipkit)
+    full_msa                          // tuple val(meta), path(sto.gz)
+    fasta                             // tuple val(meta), path(fasta.gz)
+    hmm                               // tuple val(meta), path(hmm.gz)
+    remove_family_redundancy          // boolean
+    hmmsearch_family_length_threshold // number [0.0, 1.0]
+    remove_sequence_redundancy        // boolean
+    clustering_tool                   // string ["linclust", "cluster"]
+    alignment_tool                    // string ["famsa", "mafft"]
 
     main:
     ch_versions = Channel.empty()
 
-    if (params.remove_family_redundancy) {
+    if (remove_family_redundancy) {
         ch_fasta = fasta
             .map { meta, faa -> [[id: meta.id], faa] }
             .groupTuple(by: 0)
@@ -55,7 +60,7 @@ workflow REMOVE_REDUNDANCY {
             }
 
         IDENTIFY_REDUNDANT_FAMS( ch_input_for_redundant_fam_identification.map, \
-            ch_input_for_redundant_fam_identification.domtbl, params.hmmsearch_family_length_threshold )
+            ch_input_for_redundant_fam_identification.domtbl, hmmsearch_family_length_threshold )
         ch_versions = ch_versions.mix( IDENTIFY_REDUNDANT_FAMS.out.versions )
 
         fasta = fasta
@@ -109,17 +114,17 @@ workflow REMOVE_REDUNDANCY {
             }
     }
 
-    if (params.remove_sequence_redundancy) {
-        EXECUTE_CLUSTERING( fasta, params.clustering_tool )
+    if (remove_sequence_redundancy) {
+        EXECUTE_CLUSTERING( fasta, clustering_tool )
         ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
 
         REMOVE_REDUNDANT_SEQS( EXECUTE_CLUSTERING.out.clusters, EXECUTE_CLUSTERING.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions )
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
-        ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, params.alignment_tool )
+        ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool )
         ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
-    } else if (params.remove_family_redundancy) {
+    } else if (remove_family_redundancy) {
         HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" )
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions )
     } else { // both remove_family_redundancy and remove_sequence_redundancy false, different publish dir

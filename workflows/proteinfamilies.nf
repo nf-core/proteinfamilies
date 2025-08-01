@@ -115,7 +115,17 @@ workflow PROTEINFAMILIES {
     ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     // Remove redundant sequences and families
-    REMOVE_REDUNDANCY( GENERATE_FAMILIES.out.seed_msa, GENERATE_FAMILIES.out.full_msa, GENERATE_FAMILIES.out.fasta, GENERATE_FAMILIES.out.hmm )
+    REMOVE_REDUNDANCY (
+        GENERATE_FAMILIES.out.seed_msa,
+        GENERATE_FAMILIES.out.full_msa,
+        GENERATE_FAMILIES.out.fasta,
+        GENERATE_FAMILIES.out.hmm,
+        params.remove_family_redundancy,
+        params.hmmsearch_family_length_threshold,
+        params.remove_sequence_redundancy,
+        params.clustering_tool,
+        params.alignment_tool
+    )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
     // Post-processing
