@@ -8,7 +8,7 @@ include { SEQKIT_STATS_TO_MQC } from '../../../modules/local/seqkit_stats_to_mqc
 workflow CHECK_QUALITY {
     take:
     fasta // tuple val(meta), path(fasta)
-    
+
     main:
     ch_versions = Channel.empty()
 
