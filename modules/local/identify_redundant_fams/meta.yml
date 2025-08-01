@@ -38,18 +38,18 @@ input:
         type: float
         description: The minimum HMM query hit length percentage to consider for redundancy.
 output:
-  - redundant_ids:
-      - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
+  redundant_ids:
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1', single_end:false ]`
       - redundant_fam_ids.txt:
           type: file
           description: a text file with redundant family IDs
           pattern: "redundant_fam_ids.txt"
-  - versions:
-      - "versions.yml":
+  versions:
+      - versions.yml:
           type: file
           description: File containing software versions
           pattern: "versions.yml"

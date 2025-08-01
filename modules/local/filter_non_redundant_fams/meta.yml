@@ -35,18 +35,18 @@ input:
         description: A text file with redundant family IDs.
         pattern: "*.txt"
 output:
-  - filtered:
-      - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
+  filtered:
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1', single_end:false ]`
       - .${extension}:
           type: file
           description: the family files that passed the redundancy checks
           pattern: "*.${extension}"
-  - versions:
-      - "versions.yml":
+  versions:
+      - versions.yml:
           type: file
           description: File containing software versions
           pattern: "versions.yml"

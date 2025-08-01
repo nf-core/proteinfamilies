@@ -38,28 +38,28 @@ input:
         type: float
         description: The minimum HMM query hit length percentage to consider for a family hit.
 output:
-  - hits:
-      - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
+  hits:
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1', single_end:false ]`
       - hits/*:
           type: file
           description: List of fasta files containing sequences that had HMM hits across families -one file per family.
           pattern: "hits/*.fasta"
-  - non_hit_fasta:
-      - meta2:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
+  non_hit_fasta:
+      - - meta2:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1', single_end:false ]`
       - .fasta.gz:
           type: file
           description: Updated compressed input fasta file containing non-hit sequences, to go through the basic family generation workflow.
           pattern: "*.fasta.gz"
-  - versions:
-      - "versions.yml":
+  versions:
+      - versions.yml:
           type: file
           description: File containing software versions
           pattern: "versions.yml"

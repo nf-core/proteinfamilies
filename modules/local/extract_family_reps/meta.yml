@@ -26,30 +26,30 @@ input:
         description: A list of alignment files that will be staged as a directory.
         pattern: "*.{sto.gz,fasta,fasta.gz}"
 output:
-  - fasta:
-      - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
+  fasta:
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1', single_end:false ]`
       - ${prefix}_reps.faa:
           type: file
           description: a fasta file with all family representative sequences
           pattern: "*_reps.faa"
-  - map:
-      - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
+  map:
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1', single_end:false ]`
       - ${prefix}_meta_mqc.csv:
           type: file
           description: |
             a MultiQC CSV file with all family representative sequence metadata:
             "Sample Name","Family Id","Size","Representative Length","Representative Id","Sequence"
           pattern: "*_meta_mqc.csv"
-  - versions:
-      - "versions.yml":
+  versions:
+      - versions.yml:
           type: file
           description: File containing software versions
           pattern: "versions.yml"
