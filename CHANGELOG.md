@@ -15,8 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#105](https://github.com/nf-core/proteinfamilies/pull/105) - `CHECK_QUALITY` subworkflow added at the start of the pipeline.
-It utilizes the `seqkit/stats` nf-core module to generate a `MultiQC`-ready report with statistics for the input amino acid sequences.
-The metro-map has been updated to reflect this change.
+  It utilizes the `seqkit/stats` nf-core module to generate a `MultiQC`-ready report with statistics for the input amino acid sequences.
+  The metro-map has been updated to reflect this change.
 
 ## v1.2.0 - [2025/06/13]
 
