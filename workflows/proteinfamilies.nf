@@ -18,6 +18,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_prot
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+include { CHECK_QUALITY      } from '../subworkflows/local/check_quality'
 include { UPDATE_FAMILIES    } from '../subworkflows/local/update_families'
 include { EXECUTE_CLUSTERING } from '../subworkflows/local/execute_clustering'
 include { GENERATE_FAMILIES  } from '../subworkflows/local/generate_families'
@@ -48,6 +49,14 @@ workflow PROTEINFAMILIES {
 
     ch_samplesheet_for_create = Channel.empty()
     ch_samplesheet_for_update = Channel.empty()
+
+    ch_input_for_qc = ch_samplesheet
+        .map { meta, fasta, _existing_hmms_to_update, _existing_msas_to_update ->
+            [ meta, fasta ]
+        }
+
+    CHECK_QUALITY( ch_input_for_qc )
+    ch_versions = ch_versions.mix( CHECK_QUALITY.out.versions )
 
     ch_branch_result = ch_samplesheet
         .branch { _meta, _fasta, existing_hmms_to_update, existing_msas_to_update ->
@@ -179,6 +188,7 @@ workflow PROTEINFAMILIES {
         )
     )
 
+    ch_multiqc_files = ch_multiqc_files.mix(CHECK_QUALITY.out.seqkit_stats_mqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { it[1] }.ifEmpty([]))
 
