@@ -65,6 +65,11 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
+                input[4] = true       // remove_family_redundancy
+                input[5] = 0.9        // hmmsearch_family_length_threshold
+                input[6] = true       // remove_sequence_redundancy
+                input[7] = "linclust" // clustering_tool
+                input[8] = "famsa"    // alignment_tool
                 """
             }
         }

@@ -16,6 +16,12 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/existing_hmms.tar.gz', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'test_data/existing_msas.tar.gz', checkIfExists: true)
                 ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = true       // remove_sequence_redundancy
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = true       // trim_msa
+                input[6] = "clipkit"  // clipkit_out_format
                 """
             }
         }
