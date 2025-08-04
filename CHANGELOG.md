@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.3.0dev - [date]
+## v1.3.0dev - [2025/08/04]
 
 ### `Changed`
 
@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#105](https://github.com/nf-core/proteinfamilies/pull/105) - `CHECK_QUALITY` subworkflow added at the start of the pipeline.
   It utilizes the `seqkit/stats` nf-core module to generate a `MultiQC`-ready report with statistics for the input amino acid sequences.
   The metro-map has been updated to reflect this change.
+
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| multiqc | 1.29             | 1.30        |
 
 ## v1.2.0 - [2025/06/13]
 
