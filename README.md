@@ -28,6 +28,10 @@ Optionally, paths to existing family HMMs and MSAs can be given (must have match
     <img src="docs/images/proteinfamilies_workflow.png" alt="nf-core/proteinfamilies workflow overview">
 </p>
 
+### Check quality
+
+Generate input amino acid sequence statistics with ([`SeqKit`](https://github.com/shenwei356/seqkit/))
+
 ### Create families
 
 1. Cluster sequences ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/))

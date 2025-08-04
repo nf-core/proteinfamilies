@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            82,
+            84,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -66,6 +66,12 @@
                     "python": "3.13.1",
                     "biopython": 1.85
                 },
+                "SEQKIT_STATS": {
+                    "seqkit": "2.9.0"
+                },
+                "SEQKIT_STATS_TO_MQC": {
+                    "sed": 4.7
+                },
                 "Workflow": {
                     "nf-core/proteinfamilies": "v1.3.0dev"
                 }
@@ -106,21 +112,27 @@
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_family_metadata.txt",
                 "multiqc/multiqc_data/multiqc_mgnifams_test_cluster_distribution.txt",
+                "multiqc/multiqc_data/multiqc_seqkit_stats_summary.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
                 "multiqc/multiqc_plots/pdf/family_metadata.pdf",
                 "multiqc/multiqc_plots/pdf/mgnifams_test_cluster_distribution.pdf",
+                "multiqc/multiqc_plots/pdf/seqkit_stats_summary.pdf",
                 "multiqc/multiqc_plots/png",
                 "multiqc/multiqc_plots/png/family_metadata.png",
                 "multiqc/multiqc_plots/png/mgnifams_test_cluster_distribution.png",
+                "multiqc/multiqc_plots/png/seqkit_stats_summary.png",
                 "multiqc/multiqc_plots/svg",
                 "multiqc/multiqc_plots/svg/family_metadata.svg",
                 "multiqc/multiqc_plots/svg/mgnifams_test_cluster_distribution.svg",
+                "multiqc/multiqc_plots/svg/seqkit_stats_summary.svg",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_proteinfamilies_software_mqc_versions.yml",
+                "qc",
+                "qc/mgnifams_test.tsv",
                 "remove_redundancy",
                 "remove_redundancy/mgnifams_test",
                 "remove_redundancy/mgnifams_test/redundant_fam_ids.txt",
@@ -136,7 +148,9 @@
             [
                 "mgnifams_test_clustering_distribution_mqc.csv:md5,ed774e71fc0188897da954b7c7789013",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
-                "multiqc_mgnifams_test_cluster_distribution.txt:md5,07087cc378861244dec0c0d2b1b6c3a7"
+                "multiqc_mgnifams_test_cluster_distribution.txt:md5,07087cc378861244dec0c0d2b1b6c3a7",
+                "multiqc_seqkit_stats_summary.txt:md5,03246398c523ec1e0d65ce32049fcf12",
+                "mgnifams_test.tsv:md5,1ddd5b13cb13dac8360d0d7542cb26f0"
             ],
             "/hmm/filtered/mgnifams_test: 5",
             "/seed_msa/filtered/mgnifams_test: 5",
@@ -147,6 +161,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-07-29T13:51:45.554009051"
+        "timestamp": "2025-08-01T17:23:03.191501857"
     }
 }
