@@ -17,21 +17,21 @@
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.(fa|fasta|faa|fas)(\\.gz)?$",
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.(fa|fasta|faa|fas)(\\.gz)?$",
                 "errorMessage": "Fasta file for amino acid sequences must be provided, cannot contain spaces and must have extension '.fa', '.fasta', '.faa', '.fas', '.fa.gz', '.fasta.gz', '.faa.gz' or '.fas.gz'"
             },
             "existing_hmms_to_update": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.tar\\.gz$",
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
                 "description": "Gzipped tarball file containing existing protein family Hidden Markov Models (HMMs). These models will be used to 'fish' new sequences from the input and then be updated accordingly. Example: 'example.tar.gz'"
             },
             "existing_msas_to_update": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.tar\\.gz$",
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
                 "description": "Tarball file containing Multiple Sequence Alignments (MSAs) for the families to be updated. These alignments are essential for the update process and should match the Hidden Markov Model (HMM) filenames one by one. Example: 'example.tar.gz'"
             }
         },
