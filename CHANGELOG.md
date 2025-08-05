@@ -47,6 +47,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#80](https://github.com/nf-core/proteinfamilies/pull/80) - Fixed a bug where, due to a missing check for equal family sizes, non-redundant families were erroneously marked as redundant through transitive relationships and were removed
 
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| multiqc | 1.28             | 1.29        |
+
 ## v1.1.1 - [2025/05/17]
 
 ### `Changed`
