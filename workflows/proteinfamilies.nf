@@ -18,6 +18,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_prot
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+include { CHECK_QUALITY      } from '../subworkflows/local/check_quality'
 include { UPDATE_FAMILIES    } from '../subworkflows/local/update_families'
 include { EXECUTE_CLUSTERING } from '../subworkflows/local/execute_clustering'
 include { GENERATE_FAMILIES  } from '../subworkflows/local/generate_families'
@@ -26,7 +27,7 @@ include { REMOVE_REDUNDANCY  } from '../subworkflows/local/remove_redundancy'
 //
 // MODULE: Local to the pipeline
 //
-include { CALCULATE_CLUSTER_DISTRIBUTION } from "../modules/local/calculate_cluster_distribution/main"
+include { CALCULATE_CLUSTER_DISTRIBUTION } from '../modules/local/calculate_cluster_distribution/main'
 include { CHUNK_CLUSTERS                 } from '../modules/local/chunk_clusters/main'
 include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
 
@@ -48,6 +49,14 @@ workflow PROTEINFAMILIES {
 
     ch_samplesheet_for_create = Channel.empty()
     ch_samplesheet_for_update = Channel.empty()
+
+    ch_input_for_qc = ch_samplesheet
+        .map { meta, fasta, _existing_hmms_to_update, _existing_msas_to_update ->
+            [ meta, fasta ]
+        }
+
+    CHECK_QUALITY( ch_input_for_qc )
+    ch_versions = ch_versions.mix( CHECK_QUALITY.out.versions )
 
     ch_branch_result = ch_samplesheet
         .branch { _meta, _fasta, existing_hmms_to_update, existing_msas_to_update ->
@@ -71,7 +80,15 @@ workflow PROTEINFAMILIES {
 
     // Updating existing families
     if (ch_branch_result.to_update) {
-        UPDATE_FAMILIES( ch_samplesheet_for_update )
+        UPDATE_FAMILIES (
+            ch_samplesheet_for_update,
+            params.hmmsearch_query_length_threshold,
+            params.remove_sequence_redundancy,
+            params.clustering_tool,
+            params.alignment_tool,
+            params.trim_msa,
+            params.clipkit_out_format
+        )
         ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
 
         ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
@@ -80,7 +97,10 @@ workflow PROTEINFAMILIES {
 
     // Creating new families
     // Clustering
-    EXECUTE_CLUSTERING( ch_samplesheet_for_create, params.clustering_tool )
+    EXECUTE_CLUSTERING (
+        ch_samplesheet_for_create,
+        params.clustering_tool
+    )
     ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
 
     CALCULATE_CLUSTER_DISTRIBUTION( EXECUTE_CLUSTERING.out.clusters )
@@ -90,19 +110,39 @@ workflow PROTEINFAMILIES {
     ch_versions = ch_versions.mix( CHUNK_CLUSTERS.out.versions )
 
     // Multiple sequence alignment
-    GENERATE_FAMILIES( ch_samplesheet_for_create, CHUNK_CLUSTERS.out.fasta_chunks )
+    GENERATE_FAMILIES(
+        ch_samplesheet_for_create,
+        CHUNK_CLUSTERS.out.fasta_chunks,
+        params.alignment_tool,
+        params.trim_msa,
+        params.clipkit_out_format,
+        params.hmmsearch_write_target,
+        params.hmmsearch_write_domain,
+        params.recruit_sequences_with_models,
+        params.hmmsearch_query_length_threshold
+    )
     ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     // Remove redundant sequences and families
-    REMOVE_REDUNDANCY( GENERATE_FAMILIES.out.seed_msa, GENERATE_FAMILIES.out.full_msa, GENERATE_FAMILIES.out.fasta, GENERATE_FAMILIES.out.hmm )
+    REMOVE_REDUNDANCY (
+        GENERATE_FAMILIES.out.seed_msa,
+        GENERATE_FAMILIES.out.full_msa,
+        GENERATE_FAMILIES.out.fasta,
+        GENERATE_FAMILIES.out.hmm,
+        params.remove_family_redundancy,
+        params.hmmsearch_family_length_threshold,
+        params.remove_sequence_redundancy,
+        params.clustering_tool,
+        params.alignment_tool
+    )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
     // Post-processing
-    ch_full_msa = REMOVE_REDUNDANCY.out.full_msa
+    ch_fasta = REMOVE_REDUNDANCY.out.fasta
         .map { meta, aln -> [ [id: meta.id], aln ] }
         .groupTuple(by: 0)
 
-    EXTRACT_FAMILY_REPS( ch_full_msa )
+    EXTRACT_FAMILY_REPS( ch_fasta )
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
     ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
@@ -148,6 +188,7 @@ workflow PROTEINFAMILIES {
         )
     )
 
+    ch_multiqc_files = ch_multiqc_files.mix(CHECK_QUALITY.out.seqkit_stats_mqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { it[1] }.ifEmpty([]))
 

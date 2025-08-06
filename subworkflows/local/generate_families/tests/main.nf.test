@@ -20,6 +20,13 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.fasta', checkIfExists: true)
                     ]
                 ])
+                input[2] = "famsa"   // alignment_tool
+                input[3] = true      // trim_msa
+                input[4] = "clipkit" // clipkit_out_format
+                input[5] = false     // hmmsearch_write_target
+                input[6] = true      // hmmsearch_write_domain
+                input[7] = true      // recruit_sequences_with_models
+                input[8] = 0.9       // hmmsearch_query_length_threshold
                 """
             }
         }

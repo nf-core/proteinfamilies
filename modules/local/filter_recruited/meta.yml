@@ -33,21 +33,21 @@ input:
         type: float
         description: The minimum fraction of the hit sequence envelope coords [start, end] against the query HMM's length.
 output:
-  - fasta:
-      - meta:
+  fasta:
+    - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1', single_end:false ]`
-      - ${prefix}.fasta.gz:
-          type: file
-          description: a filtered fasta file
-          pattern: "*.fasta.gz"
-  - versions:
-      - "versions.yml":
-          type: file
-          description: File containing software versions
-          pattern: "versions.yml"
+    - ${prefix}.fasta.gz:
+        type: file
+        description: a filtered fasta file
+        pattern: "*.fasta.gz"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
 authors:
   - "@ReaKal"
   - "@ChrisTzaferis"

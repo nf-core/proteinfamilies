@@ -4,16 +4,16 @@ nextflow_process {
     script "../main.nf"
     process "EXTRACT_FAMILY_REPS"
 
-    test("proteinfamilies - aln") {
+    test("proteinfamilies - faa") {
 
         when {
             process {
                 """
                 input[0] = Channel.of([
-                    [ id: 'extract_family_reps' ],  // meta map
+                    [ id: 'extract_family_reps' ],
                     [
-                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
-                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.faa', checkIfExists: true)
                     ]
                 ])
                 """
@@ -24,15 +24,17 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
-                    process.out.fasta,
-                    process.out.map,
+                    file(process.out.fasta[0][1]).name,
+                    path(process.out.fasta[0][1]).readLines().size(),
+                    file(process.out.map[0][1]).name,
+                    path(process.out.map[0][1]).readLines().size(),
                     process.out.versions.collect { path(it).yaml }
                     ).match()}
             )
         }
     }
 
-    test("proteinfamilies - aln - stub") {
+    test("proteinfamilies - faa - stub") {
 
         options "-stub"
 
@@ -40,10 +42,10 @@ nextflow_process {
             process {
                 """
                 input[0] = Channel.of([
-                    [ id: 'extract_family_reps' ],  // meta map
+                    [ id: 'extract_family_reps' ],
                     [
-                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
-                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.faa', checkIfExists: true)
                     ]
                 ])
                 """

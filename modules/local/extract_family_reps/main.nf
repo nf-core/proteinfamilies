@@ -1,14 +1,14 @@
 process EXTRACT_FAMILY_REPS {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_high'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/83/8372f6241b480332d91bc00a88ec8c72c8f7fcc9994177a5dd67a07007cd6e32/data' :
-        'community.wave.seqera.io/library/biopython:1.85--6f761292fa9881b4' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7d/7d0fee0217685dc2501570e1dd12076f9466175d0a37335ca424390cffec5fa1/data' :
+        'community.wave.seqera.io/library/python:3.13.1--d00663700fcc8bcf' }"
 
     input:
-    tuple val(meta), path(aln, stageAs: "aln/*")
+    tuple val(meta), path(faa, stageAs: "faa/*")
 
     output:
     tuple val(meta), path("${prefix}_reps.faa")    , emit: fasta
@@ -22,14 +22,14 @@ process EXTRACT_FAMILY_REPS {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     extract_family_reps.py \\
-        --full_msa_folder aln \\
+        --fasta_folder faa \\
+        --num_threads ${task.cpus} \\
         --metadata ${prefix}_meta_mqc.csv \\
         --out_fasta ${prefix}_reps.faa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version 2>&1 | sed 's/Python //g')
-        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
     END_VERSIONS
     """
 
@@ -42,7 +42,6 @@ process EXTRACT_FAMILY_REPS {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version 2>&1 | sed 's/Python //g')
-        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
     END_VERSIONS
     """
 }

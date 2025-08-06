@@ -3,7 +3,7 @@
 */
 
 include { EXTRACT_FAMILY_REPS                                        } from '../../../modules/local/extract_family_reps/main'
-include { CAT_CAT                                                    } from '../../../modules/nf-core/cat/cat'
+include { FIND_CONCATENATE                                           } from '../../../modules/nf-core/find/concatenate'
 include { HMMER_HMMSEARCH                                            } from '../../../modules/nf-core/hmmer/hmmsearch/main'
 include { IDENTIFY_REDUNDANT_FAMS                                    } from '../../../modules/local/identify_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_HMM      } from '../../../modules/local/filter_non_redundant_fams/main'
@@ -18,28 +18,33 @@ include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_RAW                   } from '../
 
 workflow REMOVE_REDUNDANCY {
     take:
-    seed_msa // tuple val(meta), path(fas)
-    full_msa // tuple val(meta), path(fas)
-    fasta    // tuple val(meta), path(fasta)
-    hmm      // tuple val(meta), path(hmm)
+    seed_msa                          // tuple val(meta), path(clipkit)
+    full_msa                          // tuple val(meta), path(sto.gz)
+    fasta                             // tuple val(meta), path(fasta.gz)
+    hmm                               // tuple val(meta), path(hmm.gz)
+    remove_family_redundancy          // boolean
+    hmmsearch_family_length_threshold // number [0.0, 1.0]
+    remove_sequence_redundancy        // boolean
+    clustering_tool                   // string ["linclust", "cluster"]
+    alignment_tool                    // string ["famsa", "mafft"]
 
     main:
     ch_versions = Channel.empty()
 
-    if (params.remove_family_redundancy) {
-        ch_msa = full_msa
-            .map { meta, aln -> [[id: meta.id], aln] }
+    if (remove_family_redundancy) {
+        ch_fasta = fasta
+            .map { meta, faa -> [[id: meta.id], faa] }
             .groupTuple(by: 0)
-        EXTRACT_FAMILY_REPS( ch_msa )
+        EXTRACT_FAMILY_REPS( ch_fasta )
         ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
 
         ch_hmm = hmm
             .map { meta, model -> [[id: meta.id], model] }
             .groupTuple(by: 0)
-        CAT_CAT( ch_hmm )
-        ch_versions = ch_versions.mix( CAT_CAT.out.versions )
+        FIND_CONCATENATE( ch_hmm )
+        ch_versions = ch_versions.mix( FIND_CONCATENATE.out.versions )
 
-        ch_input_for_hmmsearch = CAT_CAT.out.file_out
+        ch_input_for_hmmsearch = FIND_CONCATENATE.out.file_out
             .combine(EXTRACT_FAMILY_REPS.out.fasta, by: 0)
             .map { meta, model, seqs -> [meta, model, seqs, false, false, true] }
 
@@ -55,7 +60,7 @@ workflow REMOVE_REDUNDANCY {
             }
 
         IDENTIFY_REDUNDANT_FAMS( ch_input_for_redundant_fam_identification.map, \
-            ch_input_for_redundant_fam_identification.domtbl, params.hmmsearch_family_length_threshold )
+            ch_input_for_redundant_fam_identification.domtbl, hmmsearch_family_length_threshold )
         ch_versions = ch_versions.mix( IDENTIFY_REDUNDANT_FAMS.out.versions )
 
         fasta = fasta
@@ -109,27 +114,25 @@ workflow REMOVE_REDUNDANCY {
             }
     }
 
-    if (params.remove_sequence_redundancy) {
-        EXECUTE_CLUSTERING( fasta, params.clustering_tool )
+    if (remove_sequence_redundancy) {
+        EXECUTE_CLUSTERING( fasta, clustering_tool )
         ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
 
         REMOVE_REDUNDANT_SEQS( EXECUTE_CLUSTERING.out.clusters, EXECUTE_CLUSTERING.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions )
+        fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
-        ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, params.alignment_tool )
+        ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool )
         ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
-        full_msa = ALIGN_SEQUENCES.out.alignments
-    } else if (params.remove_family_redundancy) {
+    } else if (remove_family_redundancy) {
         HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" )
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions )
-        full_msa = HHSUITE_REFORMAT_FILTERED.out.msa
     } else { // both remove_family_redundancy and remove_sequence_redundancy false, different publish dir
         HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" )
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions )
-        full_msa = HHSUITE_REFORMAT_RAW.out.msa
     }
 
     emit:
     versions = ch_versions
-    full_msa = full_msa
+    fasta = fasta
 }

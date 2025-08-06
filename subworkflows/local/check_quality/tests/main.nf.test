@@ -1,0 +1,31 @@
+nextflow_workflow {
+
+    name "Test Subworkflow CHECK_QUALITY"
+    script "../main.nf"
+    workflow "CHECK_QUALITY"
+
+    test("fasta") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.seqkit_stats_mqc,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match()}
+            )
+        }
+    }
+
+}

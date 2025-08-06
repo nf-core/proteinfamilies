@@ -10,6 +10,10 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
+Quality check:
+
+- [SeqKit](#seqkit) for input amino acid sequences quality check (QC)
+
 Initial clustering:
 
 - [MMseqs2](#mmseqs2) initial clustering of input amino acid sequences and filtering with membership threshold
@@ -36,7 +40,7 @@ Updating families:
 
 - [untar](#untar) to decompress tarballs of existing hmms and msas
 - [hmmer](#hmmer-for-updating-families) to match input sequences to existing families with hmmsearch as well as for rebuilding models with newly recruited sequences with hmmbuild
-- [SeqKit](#SeqKit) to extract fasta formatted family sequences from their MSA files
+- [SeqKit](#seqkit-for-updating-families) to extract fasta formatted family sequences from their MSA files
 - [MMseqs2](#mmseqs2-for-updating-families) to strictly cluster the sequences within each of the families to update
 - [FAMSA](#famsa-for-updating-families) aligner option. Re-align full MSA with final set of sequences
 - [mafft](#mafft-for-updating-families) aligner option. Re-align full MSA with final set of sequences
@@ -47,6 +51,23 @@ Reporting:
 - [Extract family representatives](#extract-family-representatives) to produce the final metadata file along with a fasta of all family representative sequences (can be used downstream for structural prediction).
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+
+### SeqKit
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `qc/`
+  - `<samplename>.fastq`: Statistics for the input amino acid sequences
+
+</details>
+
+The `seqkit` module is used for initial quality check of the input amino acid sequences
+as well as during the `update_families` mode to extract sequences from family MSA, into intermediate fasta files (`seqkit` output folder).
+The intermediate `update_families/fasta` folder contains the aggregation of existing family sequences along with their newly matching ones,
+that will together produce the updated family MSA.
+
+[SeqKit](https://github.com/shenwei356/seqkit) is a cross-platform and ultrafast toolkit for FASTA/Q file manipulation.
 
 ### MMseqs2
 
@@ -357,7 +378,7 @@ in the `update_families/hmmer/hmmbuild` folder, from the respective new MSAs.
 
 [hmmer](https://github.com/EddyRivasLab/hmmer) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 
-### SeqKit
+### SeqKit for updating families
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -370,7 +391,7 @@ in the `update_families/hmmer/hmmbuild` folder, from the respective new MSAs.
 
 </details>
 
-The seqkit module is mainly used during the `update_families` mode
+The `seqkit` module is mainly used during the `update_families` mode
 to extract sequences from family MSA, into intermediate fasta files (`seqkit` output folder).
 The intermediate `update_families/fasta` folder contains the aggregation of existing family sequences along with their newly matching ones,
 that will together produce the updated family MSA.

@@ -35,21 +35,21 @@ input:
         description: fasta file containing amino acid sequences in this family
         pattern: "*.{fa,fa.gz,fasta,fasta.gz}"
 output:
-  - fasta:
-      - meta:
+  fasta:
+    - - meta:
           type: map
           description: |
             Groovy Map containing mapping information
             e.g. `[ id:'sample1', single_end:false ]`
-      - ${prefix}_reps.fa:
-          type: file
-          description: fasta file containing non-redundant, representative sequences
-          pattern: "*_reps.fa"
-  - versions:
-      - "versions.yml":
-          type: file
-          description: File containing software versions
-          pattern: "versions.yml"
+    - ${prefix}_reps.fa:
+        type: file
+        description: fasta file containing non-redundant, representative sequences
+        pattern: "*_reps.fa"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
 authors:
   - "@vagkaratzas"
   - "@sillitoe"

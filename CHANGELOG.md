@@ -3,6 +3,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.3.0dev - [2025/08/06]
+
+### `Changed`
+
+- [#104](https://github.com/nf-core/proteinfamilies/pull/104) - Pulling `params` from local subworkflows into main workflow.
+- [#103](https://github.com/nf-core/proteinfamilies/pull/103) - Parallelized execution for the `EXTRACT_FAMILY_REPS` local module and changed its input from `full_msa` to `fasta`.
+- [#100](https://github.com/nf-core/proteinfamilies/pull/100) - `CAT_CAT` module replaced with `FIND_CONCATENATE` to avoid large scale `Argument list too long` errors.
+- [#98](https://github.com/nf-core/proteinfamilies/pull/98) - nf-core tools template update to 3.3.2.
+
+### `Added`
+
+- [#105](https://github.com/nf-core/proteinfamilies/pull/105) - `CHECK_QUALITY` subworkflow added at the start of the pipeline.
+  It utilizes the `seqkit/stats` nf-core module to generate a `MultiQC`-ready report with statistics for the input amino acid sequences.
+  The metro-map has been updated to reflect this change.
+
 ## v1.2.0 - [2025/06/13]
 
 ### `Added`
@@ -25,6 +40,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#80](https://github.com/nf-core/proteinfamilies/pull/80) - Fixed a bug where, due to a missing check for equal family sizes, non-redundant families were erroneously marked as redundant through transitive relationships and were removed
+
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| multiqc | 1.28             | 1.29        |
 
 ## v1.1.1 - [2025/05/17]
 
