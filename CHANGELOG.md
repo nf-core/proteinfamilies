@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.4.0dev - [date]
 
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| multiqc | 1.29             | 1.30        |
+
 ## v1.3.0 - [2025/08/06]
 
 ### `Changed`
