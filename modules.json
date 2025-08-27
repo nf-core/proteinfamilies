@@ -58,7 +58,7 @@
                     },
                     "mmseqs/createtsv": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "c4a614a3e1d4156f2d8dfb6ce0d398090fd8639b",
                         "installed_by": ["mmseqs_fasta_cluster", "modules"],
                         "patch": "modules/nf-core/mmseqs/createtsv/mmseqs-createtsv.diff"
                     },
@@ -94,7 +94,7 @@
                 "nf-core": {
                     "mmseqs_fasta_cluster": {
                         "branch": "master",
-                        "git_sha": "987da3ba4fec2d03063e45f2e48977391b254fea",
+                        "git_sha": "85f598366c78a54e8dc2ad7575a94d5996d75c1e",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nextflow_pipeline": {
