@@ -19,11 +19,6 @@
             ],
             [
                 {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
-                        "mmseqs": "17.b804f"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
                         "python": "3.13.1",
                         "pandas": "2.3.0"
@@ -31,6 +26,11 @@
                 },
                 {
                     "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
+                        "mmseqs": "17.b804f"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
                         "mmseqs": "17.b804f"
                     }
                 },
@@ -48,6 +48,11 @@
                     "REMOVE_REDUNDANCY:REMOVE_REDUNDANT_SEQS": {
                         "python": "3.13.1",
                         "biopython": 1.85
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
+                        "mmseqs": "17.b804f"
                     }
                 },
                 {
@@ -71,11 +76,6 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
-                        "mmseqs": "17.b804f"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
                         "python": "3.13.1"
                     }
@@ -93,6 +93,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-07-29T13:46:56.057488862"
+        "timestamp": "2025-08-27T13:40:18.247018064"
     }
 }
