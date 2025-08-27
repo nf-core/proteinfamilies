@@ -10,7 +10,7 @@ include { HMMER_HMMSEARCH               } from '../../../modules/nf-core/hmmer/h
 include { BRANCH_HITS_FASTA             } from '../../../modules/local/branch_hits_fasta'
 include { SEQKIT_SEQ                    } from '../../../modules/nf-core/seqkit/seq/main'
 include { FIND_CONCATENATE as CAT_FASTA } from '../../../modules/nf-core/find/concatenate/main'
-include { EXECUTE_CLUSTERING            } from '../../../subworkflows/local/execute_clustering'
+include { MMSEQS_FASTA_CLUSTER          } from '../../../subworkflows/nf-core/mmseqs_fasta_cluster'
 include { REMOVE_REDUNDANT_SEQS         } from '../../../modules/local/remove_redundant_seqs/main'
 include { ALIGN_SEQUENCES               } from '../../../subworkflows/local/align_sequences'
 include { CLIPKIT                       } from '../../../modules/nf-core/clipkit/main'
@@ -111,10 +111,10 @@ workflow UPDATE_FAMILIES {
 
     if (remove_sequence_redundancy) {
         // Strict clustering to remove redundancy
-        EXECUTE_CLUSTERING( ch_fasta, clustering_tool )
-        ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
+        MMSEQS_FASTA_CLUSTER( ch_fasta, clustering_tool )
+        ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
-        REMOVE_REDUNDANT_SEQS( EXECUTE_CLUSTERING.out.clusters, EXECUTE_CLUSTERING.out.seqs )
+        REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions )
         ch_fasta = REMOVE_REDUNDANT_SEQS.out.fasta
     }

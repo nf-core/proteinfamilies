@@ -10,7 +10,7 @@ include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_HMM      } from '../
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_SEED_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_FULL_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_FASTA    } from '../../../modules/local/filter_non_redundant_fams/main'
-include { EXECUTE_CLUSTERING                                         } from '../../../subworkflows/local/execute_clustering'
+include { MMSEQS_FASTA_CLUSTER                                       } from '../../../subworkflows/nf-core/mmseqs_fasta_cluster'
 include { REMOVE_REDUNDANT_SEQS                                      } from '../../../modules/local/remove_redundant_seqs/main'
 include { ALIGN_SEQUENCES                                            } from '../../../subworkflows/local/align_sequences'
 include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_FILTERED              } from '../../../modules/nf-core/hhsuite/reformat/main'
@@ -115,10 +115,10 @@ workflow REMOVE_REDUNDANCY {
     }
 
     if (remove_sequence_redundancy) {
-        EXECUTE_CLUSTERING( fasta, clustering_tool )
-        ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
+        MMSEQS_FASTA_CLUSTER( fasta, clustering_tool )
+        ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
-        REMOVE_REDUNDANT_SEQS( EXECUTE_CLUSTERING.out.clusters, EXECUTE_CLUSTERING.out.seqs )
+        REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions )
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
