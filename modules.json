@@ -48,29 +48,29 @@
                     "mmseqs/cluster": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["mmseqs_fasta_cluster", "modules"],
+                        "installed_by": ["mmseqs_fasta_cluster"],
                         "patch": "modules/nf-core/mmseqs/cluster/mmseqs-cluster.diff"
                     },
                     "mmseqs/createdb": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["mmseqs_fasta_cluster", "modules"]
+                        "installed_by": ["mmseqs_fasta_cluster"]
                     },
                     "mmseqs/createtsv": {
                         "branch": "master",
                         "git_sha": "c4a614a3e1d4156f2d8dfb6ce0d398090fd8639b",
-                        "installed_by": ["mmseqs_fasta_cluster", "modules"],
+                        "installed_by": ["mmseqs_fasta_cluster"],
                         "patch": "modules/nf-core/mmseqs/createtsv/mmseqs-createtsv.diff"
                     },
                     "mmseqs/linclust": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["mmseqs_fasta_cluster", "modules"],
+                        "installed_by": ["mmseqs_fasta_cluster"],
                         "patch": "modules/nf-core/mmseqs/linclust/mmseqs-linclust.diff"
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "c9a31c472ef2d86802eb44f27322955849859361",
+                        "git_sha": "a4488d3d09244f29fb4606ba4eef85d59dcc6ad8",
                         "installed_by": ["modules"]
                     },
                     "seqkit/seq": {
