@@ -13,12 +13,12 @@
             11,
             [
                 {
-                    "UPDATE_FAMILIES:EXECUTE_CLUSTERING:MMSEQS_CREATEDB": {
+                    "UPDATE_FAMILIES:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
                         "mmseqs": "17.b804f"
                     }
                 },
                 {
-                    "UPDATE_FAMILIES:EXECUTE_CLUSTERING:MMSEQS_LINCLUST": {
+                    "UPDATE_FAMILIES:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
                         "mmseqs": "17.b804f"
                     }
                 },
@@ -78,7 +78,7 @@
                     }
                 },
                 {
-                    "UPDATE_FAMILIES:EXECUTE_CLUSTERING:MMSEQS_CREATETSV": {
+                    "UPDATE_FAMILIES:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
                         "mmseqs": "17.b804f"
                     }
                 },

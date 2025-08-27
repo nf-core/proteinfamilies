@@ -48,24 +48,24 @@
                     "mmseqs/cluster": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["modules"],
+                        "installed_by": ["mmseqs_fasta_cluster", "modules"],
                         "patch": "modules/nf-core/mmseqs/cluster/mmseqs-cluster.diff"
                     },
                     "mmseqs/createdb": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["modules"]
+                        "installed_by": ["mmseqs_fasta_cluster", "modules"]
                     },
                     "mmseqs/createtsv": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["modules"],
+                        "installed_by": ["mmseqs_fasta_cluster", "modules"],
                         "patch": "modules/nf-core/mmseqs/createtsv/mmseqs-createtsv.diff"
                     },
                     "mmseqs/linclust": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["modules"],
+                        "installed_by": ["mmseqs_fasta_cluster", "modules"],
                         "patch": "modules/nf-core/mmseqs/linclust/mmseqs-linclust.diff"
                     },
                     "multiqc": {
@@ -92,6 +92,11 @@
             },
             "subworkflows": {
                 "nf-core": {
+                    "mmseqs_fasta_cluster": {
+                        "branch": "master",
+                        "git_sha": "987da3ba4fec2d03063e45f2e48977391b254fea",
+                        "installed_by": ["subworkflows"]
+                    },
                     "utils_nextflow_pipeline": {
                         "branch": "master",
                         "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",

@@ -18,11 +18,11 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_prot
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { CHECK_QUALITY      } from '../subworkflows/local/check_quality'
-include { UPDATE_FAMILIES    } from '../subworkflows/local/update_families'
-include { EXECUTE_CLUSTERING } from '../subworkflows/local/execute_clustering'
-include { GENERATE_FAMILIES  } from '../subworkflows/local/generate_families'
-include { REMOVE_REDUNDANCY  } from '../subworkflows/local/remove_redundancy'
+include { CHECK_QUALITY        } from '../subworkflows/local/check_quality'
+include { UPDATE_FAMILIES      } from '../subworkflows/local/update_families'
+include { MMSEQS_FASTA_CLUSTER } from '../subworkflows/nf-core/mmseqs_fasta_cluster'
+include { GENERATE_FAMILIES    } from '../subworkflows/local/generate_families'
+include { REMOVE_REDUNDANCY    } from '../subworkflows/local/remove_redundancy'
 
 //
 // MODULE: Local to the pipeline
@@ -97,16 +97,16 @@ workflow PROTEINFAMILIES {
 
     // Creating new families
     // Clustering
-    EXECUTE_CLUSTERING (
+    MMSEQS_FASTA_CLUSTER (
         ch_samplesheet_for_create,
         params.clustering_tool
     )
-    ch_versions = ch_versions.mix( EXECUTE_CLUSTERING.out.versions )
+    ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
-    CALCULATE_CLUSTER_DISTRIBUTION( EXECUTE_CLUSTERING.out.clusters )
+    CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
     ch_versions = ch_versions.mix( CALCULATE_CLUSTER_DISTRIBUTION.out.versions )
 
-    CHUNK_CLUSTERS( EXECUTE_CLUSTERING.out.clusters, EXECUTE_CLUSTERING.out.seqs, params.cluster_size_threshold )
+    CHUNK_CLUSTERS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs, params.cluster_size_threshold )
     ch_versions = ch_versions.mix( CHUNK_CLUSTERS.out.versions )
 
     // Multiple sequence alignment

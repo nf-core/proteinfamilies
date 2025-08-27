@@ -1,21 +1,28 @@
 nextflow_workflow {
 
-    name "Test Subworkflow EXECUTE_CLUSTERING"
+    name "Test Subworkflow MMSEQS_FASTA_CLUSTER"
     script "../main.nf"
-    workflow "EXECUTE_CLUSTERING"
+    workflow "MMSEQS_FASTA_CLUSTER"
+    config './nextflow.config'
+
+    tag "subworkflows"
+    tag "subworkflows_nfcore"
+    tag "subworkflows/mmseqs_fasta_cluster"
+    tag "mmseqs/createdb"
+    tag "mmseqs/cluster"
+    tag "mmseqs/linclust"
+    tag "mmseqs/createtsv"
 
     test("fasta - linclust") {
 
         when {
             workflow {
                 """
-                clustering_tool = 'linclust'
-
                 input[0] = Channel.of([
                     [ id: 'test_linclust' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/proteome.fasta.gz', checkIfExists: true)
                 ])
-                input[1] = clustering_tool
+                input[1] = 'linclust'
                 """
             }
         }
@@ -24,10 +31,9 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
-                    file(workflow.out.clusters[0][1]).name,
-                    path(workflow.out.clusters[0][1]).readLines().size(),
-                    workflow.out.versions.collect { path(it).yaml }.unique()
-                    ).match() }
+                    workflow.out,
+                    workflow.out.versions.collect{ path(it).yaml }
+                ).match() }
             )
         }
     }
@@ -37,13 +43,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                clustering_tool = 'cluster'
-
                 input[0] = Channel.of([
                     [ id: 'test_cluster' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/proteome.fasta.gz', checkIfExists: true)
                 ])
-                input[1] = clustering_tool
+                input[1] = 'cluster'
                 """
             }
         }
@@ -52,10 +56,9 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
-                    file(workflow.out.clusters[0][1]).name,
-                    path(workflow.out.clusters[0][1]).readLines().size(),
-                    workflow.out.versions.collect { path(it).yaml }.unique()
-                    ).match() }
+                    workflow.out,
+                    workflow.out.versions.collect{ path(it).yaml }
+                ).match() }
             )
         }
     }
@@ -67,13 +70,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                clustering_tool = 'linclust'
-
                 input[0] = Channel.of([
                     [ id: 'test_linclust_stub' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/proteome.fasta.gz', checkIfExists: true)
                 ])
-                input[1] = clustering_tool
+                input[1] = 'linclust'
                 """
             }
         }
@@ -81,7 +82,10 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success},
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    workflow.out,
+                    workflow.out.versions.collect{ path(it).yaml }
+                ).match() }
             )
         }
     }
@@ -93,13 +97,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                clustering_tool = 'cluster'
-
                 input[0] = Channel.of([
                     [ id: 'test_cluster_stub' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/proteome.fasta.gz', checkIfExists: true)
                 ])
-                input[1] = clustering_tool
+                input[1] = 'cluster'
                 """
             }
         }
@@ -107,7 +109,10 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success},
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    workflow.out,
+                    workflow.out.versions.collect{ path(it).yaml }
+                ).match() }
             )
         }
     }

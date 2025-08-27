@@ -1,10 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
-name: "EXECUTE_CLUSTERING"
+name: "MMSEQS_FASTA_CLUSTER"
 description: Subworkflow that generates a clustering TSV file from a set of amino acid sequence within a FASTA file.
 keywords:
   - fasta
   - sequences
-  - clustering
+  - cluster
+  - linclust
+  - mmseqs
 components:
   - mmseqs/createdb
   - mmseqs/cluster
@@ -14,11 +16,11 @@ input:
   - sequences:
       type: file
       description: |
-        Amino acid fasta file containing amino acid sequences for clustering.
+       Fasta file containing sequences for clustering.
   - clustering_tool:
       type: string
       description: |
-        Clustering tool to use for generating the clustering. Options are 'linclust' or 'cluster'.
+        Clustering algorithm of MMSeqs to use for cluster generation. Options are 'linclust' or 'cluster'.
 output:
   - versions:
       type: file

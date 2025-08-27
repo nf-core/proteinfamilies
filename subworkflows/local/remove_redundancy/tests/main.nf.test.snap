@@ -19,7 +19,7 @@
             ],
             [
                 {
-                    "REMOVE_REDUNDANCY:EXECUTE_CLUSTERING:MMSEQS_LINCLUST": {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
                         "mmseqs": "17.b804f"
                     }
                 },
@@ -30,7 +30,7 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:EXECUTE_CLUSTERING:MMSEQS_CREATETSV": {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
                         "mmseqs": "17.b804f"
                     }
                 },
@@ -71,7 +71,7 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:EXECUTE_CLUSTERING:MMSEQS_CREATEDB": {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
                         "mmseqs": "17.b804f"
                     }
                 },
