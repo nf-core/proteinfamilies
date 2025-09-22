@@ -3,7 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.3.1dev - [date]
+## v1.4.0dev - [date]
+
+### `Fixed`
+
+- [#112](https://github.com/nf-core/proteinfamilies/pull/112) - Fixed a bug in `EXTRACT_FAMILY_REPS`, where all sequences were pasted into the family representative one, and updated the relevant local nf-test. (by @vagkaratzas)
 
 ### `Changed`
 
