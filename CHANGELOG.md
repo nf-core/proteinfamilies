@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v1.4.0dev - [date]
 
+### `Fixed`
+
+- [#112](https://github.com/nf-core/proteinfamilies/pull/112) - Fixed a bug in `EXTRACT_FAMILY_REPS`, where all sequences were pasted into the family representative one, and updated the relevant local nf-test. (by @vagkaratzas)
+
 ### `Changed`
 
 - [#106](https://github.com/nf-core/proteinfamilies/pull/106) - Swapped the local `EXECUTE_CLUSTERING` subworkflow with the new nf-core `MMSEQS_FASTA_CLUSTER` one. (by @vagkaratzas)

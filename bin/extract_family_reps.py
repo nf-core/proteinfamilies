@@ -65,23 +65,22 @@ def extract_data(filepath):
     header = None
     seq_lines = []
     size = 0
-    collecting = False
-    collected = False
+    collecting = True  # collect sequence until second header
 
     with open_func(filepath, "rt") as f:
         for line in f:
             line = line.strip()
             if not line:
                 continue
+
             if line.startswith(">"):
                 size += 1
-                if not collected:
-                    header = line[1:].split()[0]  # first header only
-                    collecting = True
-                else:
-                    collecting = False  # stop collecting sequence after first one
-                    collected = True
-            elif collecting:
+                if header is None:
+                    header = line[1:].split()[0]
+                elif collecting:
+                    # we’ve seen second header → stop collecting
+                    collecting = False
+            elif collecting and header is not None:
                 seq_lines.append(line)
 
     sequence = "".join(seq_lines).replace("-", "").replace(".", "").upper() if seq_lines else None
