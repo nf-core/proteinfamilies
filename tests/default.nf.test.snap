@@ -73,7 +73,7 @@
                     "sed": 4.7
                 },
                 "Workflow": {
-                    "nf-core/proteinfamilies": "v1.4.0dev"
+                    "nf-core/proteinfamilies": "v1.3.1"
                 }
             },
             [
