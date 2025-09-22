@@ -24,10 +24,8 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
-                    file(process.out.fasta[0][1]).name,
-                    path(process.out.fasta[0][1]).readLines().size(),
-                    file(process.out.map[0][1]).name,
-                    path(process.out.map[0][1]).readLines().size(),
+                    process.out.fasta,
+                    process.out.map,
                     process.out.versions.collect { path(it).yaml }
                     ).match()}
             )
