@@ -55,11 +55,19 @@ workflow PROTEINFAMILIES {
             [ meta, fasta ]
         }
 
-    CHECK_QUALITY( ch_input_for_qc )
+    CHECK_QUALITY( ch_input_for_qc, params.skip_preprocessing )
     ch_versions = ch_versions.mix( CHECK_QUALITY.out.versions )
 
-    ch_branch_result = ch_samplesheet
-        .branch { _meta, _fasta, existing_hmms_to_update, existing_msas_to_update ->
+    // Replace input fasta and join back in samplesheet to ensure in sync in case of multiple sequence files
+    ch_samplesheet_updated = ch_samplesheet
+        .combine(CHECK_QUALITY.out.fasta, by: 0)
+        .map {
+            meta, _fasta, existing_hmms, existing_msas, updated_fasta ->
+            [ meta, updated_fasta, existing_hmms, existing_msas ]
+        }
+
+    ch_branch_result = ch_samplesheet_updated
+        .branch { _meta, _updated_fasta, existing_hmms_to_update, existing_msas_to_update ->
             to_create: !existing_hmms_to_update?.size() && !existing_msas_to_update?.size()
             to_update: existing_hmms_to_update?.size() && existing_msas_to_update?.size()
         }
@@ -73,8 +81,8 @@ workflow PROTEINFAMILIES {
     /*   and MSAs)                      */
     /************************************/
     ch_samplesheet_for_create = ch_branch_result.to_create
-        .map { meta, fasta, _existing_hmms, _existing_msas ->
-            [meta, fasta]
+        .map { meta, updated_fasta, _existing_hmms, _existing_msas ->
+            [meta, updated_fasta]
         }
     ch_samplesheet_for_update = ch_branch_result.to_update
 

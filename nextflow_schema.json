@@ -189,6 +189,33 @@
                 }
             }
         },
+        "quality_check_params": {
+            "title": "Quality check parameters",
+            "type": "object",
+            "description": "Use these parameters to control the flow of the quality check subworkflow execution.",
+            "properties": {
+                "skip_preprocessing": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-ban",
+                    "description": "Skip all default QC steps for sequences (gap trimming, length filtering, validation, duplicate removal).",
+                    "help": "Skips input amino acid sequence preprocessing transformations, length filtering, duplicate removal and validation checks."
+                },
+                "min_seq_length": {
+                    "type": "integer",
+                    "default": 30,
+                    "fa_icon": "fas fa-ruler-horizontal",
+                    "description": "The minimum allowed sequence length",
+                    "help_text": "Specify the minimum length of amino acid sequences that go into clustering."
+                },
+                "max_seq_length": {
+                    "type": "integer",
+                    "default": 5000,
+                    "fa_icon": "fas fa-ruler-horizontal",
+                    "description": "The maximum allowed sequence length",
+                    "help_text": "Specify the maximum length of amino acid sequences that go into clustering."
+                }
+            }
+        },
         "clustering_params": {
             "title": "Clustering parameters",
             "type": "object",
@@ -403,6 +430,9 @@
         },
         {
             "$ref": "#/$defs/generic_options"
+        },
+        {
+            "$ref": "#/$defs/quality_check_params"
         },
         {
             "$ref": "#/$defs/clustering_params"
