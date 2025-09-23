@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            83,
+            96,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -66,8 +66,14 @@
                     "python": "3.13.1",
                     "biopython": 1.85
                 },
-                "SEQFU_STATS": {
+                "SEQFU_STATS_AFTER": {
                     "seqfu": "1.20.3"
+                },
+                "SEQFU_STATS_BEFORE": {
+                    "seqfu": "1.20.3"
+                },
+                "SEQKIT_SEQ": {
+                    "seqkit": "v2.9.0"
                 },
                 "Workflow": {
                     "nf-core/proteinfamilies": "v1.3.1"
@@ -108,29 +114,36 @@
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_family_metadata.txt",
-                "multiqc/multiqc_data/multiqc_mgnifams_test.txt",
+                "multiqc/multiqc_data/multiqc_mgnifams_test_after.txt",
+                "multiqc/multiqc_data/multiqc_mgnifams_test_before.txt",
                 "multiqc/multiqc_data/multiqc_mgnifams_test_cluster_distribution.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
                 "multiqc/multiqc_plots/pdf/family_metadata.pdf",
-                "multiqc/multiqc_plots/pdf/mgnifams_test.pdf",
+                "multiqc/multiqc_plots/pdf/mgnifams_test_after.pdf",
+                "multiqc/multiqc_plots/pdf/mgnifams_test_before.pdf",
                 "multiqc/multiqc_plots/pdf/mgnifams_test_cluster_distribution.pdf",
                 "multiqc/multiqc_plots/png",
                 "multiqc/multiqc_plots/png/family_metadata.png",
-                "multiqc/multiqc_plots/png/mgnifams_test.png",
+                "multiqc/multiqc_plots/png/mgnifams_test_after.png",
+                "multiqc/multiqc_plots/png/mgnifams_test_before.png",
                 "multiqc/multiqc_plots/png/mgnifams_test_cluster_distribution.png",
                 "multiqc/multiqc_plots/svg",
                 "multiqc/multiqc_plots/svg/family_metadata.svg",
-                "multiqc/multiqc_plots/svg/mgnifams_test.svg",
+                "multiqc/multiqc_plots/svg/mgnifams_test_after.svg",
+                "multiqc/multiqc_plots/svg/mgnifams_test_before.svg",
                 "multiqc/multiqc_plots/svg/mgnifams_test_cluster_distribution.svg",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_proteinfamilies_software_mqc_versions.yml",
                 "qc",
-                "qc/mgnifams_test.tsv",
-                "qc/mgnifams_test_mqc.txt",
+                "qc/mgnifams_test.fasta",
+                "qc/mgnifams_test_after.tsv",
+                "qc/mgnifams_test_after_mqc.txt",
+                "qc/mgnifams_test_before.tsv",
+                "qc/mgnifams_test_before_mqc.txt",
                 "remove_redundancy",
                 "remove_redundancy/mgnifams_test",
                 "remove_redundancy/mgnifams_test/redundant_fam_ids.txt",
@@ -144,22 +157,26 @@
                 "seed_msa/raw/famsa_align/mgnifams_test"
             ],
             [
-                "mgnifams_test_clustering_distribution_mqc.csv:md5,ed774e71fc0188897da954b7c7789013",
+                "mgnifams_test_clustering_distribution_mqc.csv:md5,3d86404929dcc3e74e5c360879280103",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
-                "multiqc_mgnifams_test.txt:md5,c3391248efaceace288fcff679a25d8d",
-                "multiqc_mgnifams_test_cluster_distribution.txt:md5,07087cc378861244dec0c0d2b1b6c3a7",
-                "mgnifams_test.tsv:md5,fc3916cd1791c2f783a0a236ea92187b",
-                "mgnifams_test_mqc.txt:md5,79ef9640c4acb78f37a37141661f9e51"
+                "multiqc_mgnifams_test_after.txt:md5,7c761ad42b2675224e7a8d3517680107",
+                "multiqc_mgnifams_test_before.txt:md5,c3391248efaceace288fcff679a25d8d",
+                "multiqc_mgnifams_test_cluster_distribution.txt:md5,1e44b02d3073253d772b2767d0c891e2",
+                "mgnifams_test.fasta:md5,3318b1ad90348bd26e38650a4c3a4c0b",
+                "mgnifams_test_after.tsv:md5,a890e7b667d8405f81a2ca441afcc7db",
+                "mgnifams_test_after_mqc.txt:md5,853b708f45a3ebd96efdff516e88b196",
+                "mgnifams_test_before.tsv:md5,fc3916cd1791c2f783a0a236ea92187b",
+                "mgnifams_test_before_mqc.txt:md5,79ef9640c4acb78f37a37141661f9e51"
             ],
-            "/hmm/filtered/mgnifams_test: 5",
-            "/seed_msa/filtered/mgnifams_test: 5",
-            "/full_msa/filtered/famsa_align/mgnifams_test: 5",
-            "/fasta/non_redundant_sequences_filtered/mgnifams_test: 5"
+            "/hmm/filtered/mgnifams_test: 6",
+            "/seed_msa/filtered/mgnifams_test: 6",
+            "/full_msa/filtered/famsa_align/mgnifams_test: 6",
+            "/fasta/non_redundant_sequences_filtered/mgnifams_test: 6"
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.7"
         },
-        "timestamp": "2025-09-23T10:52:31.53784913"
+        "timestamp": "2025-09-23T12:50:28.271840243"
     }
 }

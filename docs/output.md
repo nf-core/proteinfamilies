@@ -13,6 +13,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 Quality check:
 
 - [SeqFu](#seqfu) for input amino acid sequences quality check (QC)
+- [SeqKit](#seqkit) for preprocessing input amino acid sequences
 
 Initial clustering:
 
@@ -58,12 +59,28 @@ Reporting:
 <summary>Output files</summary>
 
 - `qc/`
-  - `<samplename>.tsv`: Statistics for the input amino acid sequences
-  - `<samplename>_mqc.txt`: Statistics for the input amino acid sequences in MultiQC-ready format
+  - `<samplename>_before.tsv`: Statistics for the input amino acid sequences before preprocessing
+  - `<samplename>_before_mqc.txt`: Statistics for the input amino acid sequences in MultiQC-ready format before preprocessing
+  - `<samplename>_after.tsv`: (optional) Statistics for the input amino acid sequences after preprocessing
+  - `<samplename>_after_mqc.txt`: (optional) Statistics for the input amino acid sequences in MultiQC-ready format after preprocessing
 
 </details>
 
-The `seqkit` module is used for initial quality check of the input amino acid sequences
+The `seqfu` module is used for statistics generation of input amino acid sequences, both before and after preprocessing.
+
+[SeqFu](https://github.com/telatin/seqfu2) is a cross-platform compiled suite of tools to manipulate and inspect FASTA and FASTQ files.
+
+### SeqKit
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `qc/`
+  - `<samplename>.<suffix>`: Updated preprocessed input fasta file
+
+</details>
+
+The `seqkit` module is used for initial preprocessing of the input amino acid sequences
 as well as during the `update_families` mode to extract sequences from family MSA, into intermediate fasta files (`seqkit` output folder).
 The intermediate `update_families/fasta` folder contains the aggregation of existing family sequences along with their newly matching ones,
 that will together produce the updated family MSA.
