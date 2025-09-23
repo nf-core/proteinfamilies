@@ -213,6 +213,11 @@
                     "fa_icon": "fas fa-ruler-horizontal",
                     "description": "The maximum allowed sequence length",
                     "help_text": "Specify the maximum length of amino acid sequences that go into clustering."
+                },
+                "remove_duplicates_on_sequence": {
+                    "type": "boolean",
+                    "description": "Remove duplicate input amino acid sequences, based on the sequence.",
+                    "help": "Instead of just removing by similar identifier, the tool also removes duplicate sequences."
                 }
             }
         },

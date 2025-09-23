@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx) - `SEQKIT_SEQ` for optional sequence preprocessing in the quality check subworkflow. (by @vagkaratzas)
+- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx)
+  - Added `SEQKIT_SEQ` for optional sequence preprocessing in the quality check subworkflow. (by @vagkaratzas)
+  - Added `SEQKIT_RMDUP` for optional removal of duplicate names and sequences in the quality check subworkflow. (by @vagkaratzas)
 
 ### `Changed`
 
