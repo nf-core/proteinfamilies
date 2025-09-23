@@ -188,7 +188,7 @@ workflow PROTEINFAMILIES {
         )
     )
 
-    ch_multiqc_files = ch_multiqc_files.mix(CHECK_QUALITY.out.seqkit_stats_mqc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(CHECK_QUALITY.out.multiqc_files.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { it[1] }.ifEmpty([]))
 

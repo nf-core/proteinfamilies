@@ -10,6 +10,10 @@
 
 ## Pipeline tools
 
+- [SeqFu](https://pubmed.ncbi.nlm.nih.gov/34066939/)
+
+> Telatin A, Fariselli P, Birolo G. SeqFu: a suite of utilities for the robust and reproducible manipulation of sequence files. Bioengineering. 2021 May 7;8(5):59. doi: 10.3390/bioengineering8050059. PubMed PMID: 34066939; PubMed Central PMCID: PMC8148589.
+
 - [MMseqs2](https://pubmed.ncbi.nlm.nih.gov/33734313/)
 
 > Mirdita M, Steinegger M, Breitwieser F, Söding J, Levy Karin E. Fast and sensitive taxonomic assignment to metagenomic contigs. Bioinformatics. 2021 Sep 15;37(18):3029-31. doi: 10.1093/bioinformatics/btab184. PubMed PMID: 33734313; PubMed Central PMCID: PMC8479651.

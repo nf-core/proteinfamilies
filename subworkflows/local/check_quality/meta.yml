@@ -7,8 +7,7 @@ keywords:
   - statistics
   - quality check
 components:
-  - seqkit/stats
-  - seqkit_stats_to_mqc
+  - seqfu/stats
 input:
   - sequences:
       type: file
@@ -19,7 +18,7 @@ output:
       type: file
       description: |
         Versions file containing the software versions used in the workflow.
-  - seqkit_stats_mqc:
+  - multiqc_files:
       type: file
       description: |
         Statistics file for MultiQC.

@@ -21,7 +21,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
-                    workflow.out.seqkit_stats_mqc,
+                    workflow.out.multiqc_files,
                     workflow.out.versions.collect { path(it).yaml }.unique()
                     ).match()}
             )

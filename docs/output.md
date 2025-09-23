@@ -12,7 +12,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 Quality check:
 
-- [SeqKit](#seqkit) for input amino acid sequences quality check (QC)
+- [SeqFu](#seqfu) for input amino acid sequences quality check (QC)
 
 Initial clustering:
 
@@ -52,13 +52,14 @@ Reporting:
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-### SeqKit
+### SeqFu
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `qc/`
-  - `<samplename>.fastq`: Statistics for the input amino acid sequences
+  - `<samplename>.tsv`: Statistics for the input amino acid sequences
+  - `<samplename>_mqc.txt`: Statistics for the input amino acid sequences in MultiQC-ready format
 
 </details>
 

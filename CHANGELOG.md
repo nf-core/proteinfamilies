@@ -3,6 +3,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.4.0dev - [date]
+
+### `Changed`
+
+- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx) - Swapped the local `SEQKIT_STATS` and the local `SEQKIT_STATS_TO_MQC` modules with the `SEQFU_STATS` one, which runs a bit faster and produces a MultiQC-ready output. (by @vagkaratzas)
+
+### `Dependencies`
+
+| Tool  | Previous version | New version |
+| ----- | ---------------- | ----------- |
+| seqfu | -                | 1.20.3      |
+
 ## v1.3.1 - [2025/09/22]
 
 ### `Fixed`
