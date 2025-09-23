@@ -3,6 +3,22 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.3.1 - [2025/09/22]
+
+### `Fixed`
+
+- [#112](https://github.com/nf-core/proteinfamilies/pull/112) - Fixed a bug in `EXTRACT_FAMILY_REPS`, where all sequences were pasted into the family representative one, and updated the relevant local nf-test. (by @vagkaratzas)
+
+### `Changed`
+
+- [#106](https://github.com/nf-core/proteinfamilies/pull/106) - Swapped the local `EXECUTE_CLUSTERING` subworkflow with the new nf-core `MMSEQS_FASTA_CLUSTER` one. (by @vagkaratzas)
+
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| multiqc | 1.29             | 1.30        |
+
 ## v1.3.0 - [2025/08/06]
 
 ### `Changed`
