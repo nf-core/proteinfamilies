@@ -63,6 +63,7 @@ Reporting:
   - `<samplename>_before_mqc.txt`: Statistics for the input amino acid sequences in MultiQC-ready format before preprocessing
   - `<samplename>_after.tsv`: (optional) Statistics for the input amino acid sequences after preprocessing
   - `<samplename>_after_mqc.txt`: (optional) Statistics for the input amino acid sequences in MultiQC-ready format after preprocessing
+  - `<samplename>.log`: (optional) Output file with count of duplicate sequences that were found and removed
 
 </details>
 
