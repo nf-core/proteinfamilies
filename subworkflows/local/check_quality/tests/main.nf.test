@@ -3,16 +3,18 @@ nextflow_workflow {
     name "Test Subworkflow CHECK_QUALITY"
     script "../main.nf"
     workflow "CHECK_QUALITY"
+    config './nextflow.config'
 
-    test("fasta") {
+    test("faa") {
 
         when {
             workflow {
                 """
                 input[0] = Channel.of([
-                    [ id: 'test' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    [ id: 'test_faa' ],
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/proteome_test.faa', checkIfExists: true)
                 ])
+                input[1] = false
                 """
             }
         }
@@ -21,9 +23,37 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
+                    workflow.out.fasta,
                     workflow.out.multiqc_files,
                     workflow.out.versions.collect { path(it).yaml }.unique()
-                    ).match()}
+                ).match() }
+            )
+        }
+    }
+
+    test("faa - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test_stub' ],
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/proteome_test.faa', checkIfExists: true)
+                ])
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out,
+                    workflow.out.versions.collect{ path(it).yaml }.unique()
+                ).match() }
             )
         }
     }
