@@ -75,7 +75,7 @@
                     },
                     "seqfu/stats": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "0de52f52d57fe3cba21119066024806c92b9d404",
                         "installed_by": ["modules"]
                     },
                     "seqkit/replace": {
