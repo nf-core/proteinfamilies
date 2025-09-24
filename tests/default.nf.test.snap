@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            98,
+            87,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -164,27 +164,23 @@
                 "seed_msa/raw/famsa_align/mgnifams_test"
             ],
             [
-                "mgnifams_test_clustering_distribution_mqc.csv:md5,3d86404929dcc3e74e5c360879280103",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
-                "multiqc_mgnifams_test_after.txt:md5,efccfc53e86c458f1dbca07f11074ba3",
+                "multiqc_mgnifams_test_after.txt:md5,908666b17d5a31b706ad82b71683ad33",
                 "multiqc_mgnifams_test_before.txt:md5,a06ef06961ba30c0b7cea9d1a68d059b",
-                "multiqc_mgnifams_test_cluster_distribution.txt:md5,1e44b02d3073253d772b2767d0c891e2",
-                "mgnifams_test.fasta:md5,3318b1ad90348bd26e38650a4c3a4c0b",
+                "multiqc_mgnifams_test_cluster_distribution.txt:md5,9f310a12f74e4e64764f5831e5f8b02c",
                 "mgnifams_test.log:md5,a41135cfe024baaf42f135583fe73f0d",
-                "mgnifams_test_after.tsv:md5,d424fbac4c998aa2ded5f8dac38aef8d",
-                "mgnifams_test_after_mqc.txt:md5,b3d0945090bd11c7c4abe57ec708289f",
                 "mgnifams_test_before.tsv:md5,b36f8986046de88a7cd08500643bc601",
                 "mgnifams_test_before_mqc.txt:md5,909e80c33017b431e9a7f5159efaccca"
             ],
-            "/hmm/filtered/mgnifams_test: 6",
-            "/seed_msa/filtered/mgnifams_test: 6",
-            "/full_msa/filtered/famsa_align/mgnifams_test: 6",
-            "/fasta/non_redundant_sequences_filtered/mgnifams_test: 6"
+            "/hmm/filtered/mgnifams_test: 5",
+            "/seed_msa/filtered/mgnifams_test: 5",
+            "/full_msa/filtered/famsa_align/mgnifams_test: 5",
+            "/fasta/non_redundant_sequences_filtered/mgnifams_test: 5"
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-24T16:37:13.742518716"
+        "timestamp": "2025-09-24T17:05:19.866775925"
     }
 }
