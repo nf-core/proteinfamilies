@@ -149,6 +149,11 @@ def validateInputSamplesheet(input) {
 def toolCitationText() {
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
+    def quality_check_text = [
+        "Amino acid sequence statistics were generated with SeqFu (Telatin et al. 2021).",
+        params.skip_preprocessing ? "" : "Input sequences were preprocessed with SeqKit (gap trimming, length filtering, validation, duplicate removal) (Shen et al. 2024)."
+    ].join(' ').trim()
+
     def clustering_text = "Amino acid sequence clustering was performed with MMseqs2 (Mirdita et al. 2021)."
 
     def alignment_text = [
@@ -164,6 +169,7 @@ def toolCitationText() {
     def postprocessing_text = "Run statistics were reported using MultiQC (Ewels et al. 2016)."
 
     def citation_text = [
+        quality_check_text,
         clustering_text,
         alignment_text,
         params.trim_msa ? clipping_text : "",
@@ -177,6 +183,11 @@ def toolCitationText() {
 def toolBibliographyText() {
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
+    def quality_check_text = [
+        '<li>Telatin, A., Fariselli, P., & Birolo, G. (2021). SeqFu: a suite of utilities for the robust and reproducible manipulation of sequence files. Bioengineering, 8(5), 59. doi: <a href="https://doi.org/10.3390/bioengineering8050059">10.3390/bioengineering8050059</a></li>',
+        params.skip_preprocessing ? '' : '<li>Shen, W., Sipos, B., & Zhao, L. (2024). SeqKit2: A Swiss army knife for sequence and alignment processing. Imeta, 3(3), e191. doi: <a href="https://doi.org/10.1002/imt2.191">10.1002/imt2.191</a></li>'
+    ].join(' ').trim()
+
     def clustering_text = '<li>Mirdita, M., Steinegger, M., Breitwieser, F., Söding, J., & Levy Karin, E. (2021). Fast and sensitive taxonomic assignment to metagenomic contigs. Bioinformatics, 37(18), 3029-3031. doi: <a href="https://doi.org/10.1093/bioinformatics/btab184">10.1093/bioinformatics/btab184</a></li>'
 
     def alignment_text = [
@@ -191,6 +202,7 @@ def toolBibliographyText() {
     def postprocessing_text = '<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 32(19), 3047–3048. doi: <a href="https://doi.org/10.1093/bioinformatics/btw354">10.1093/bioinformatics/btw354</a></li>'
 
     def reference_text = [
+        quality_check_text,
         clustering_text,
         alignment_text,
         params.trim_msa ? clipping_text : "",

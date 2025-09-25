@@ -1,46 +1,45 @@
-name: "seqkit_stats"
-description: simple statistics of FASTA/Q files
+name: seqkit_replace
+description: Use seqkit to find/replace strings within sequences and sequence headers
 keywords:
   - seqkit
+  - replace
+  - sequence
+  - sequence headers
   - fasta
-  - stats
 tools:
-  - "seqkit":
+  - seqkit:
       description: Cross-platform and ultrafast toolkit for FASTA/Q file manipulation,
         written by Wei Shen.
       homepage: https://bioinf.shenwei.me/seqkit/usage/
       documentation: https://bioinf.shenwei.me/seqkit/usage/
       tool_dev_url: https://github.com/shenwei356/seqkit/
-      doi: "10.1371/journal.pone.0163962"
-      licence: ["MIT"]
+      doi: "10.1371/journal.pone.016396"
       identifier: biotools:seqkit
 input:
   - - meta:
         type: map
-        description: >
-          Groovy Map containing sample information e.g. [ id:'test', single_end:false
-          ]
-    - reads:
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - fastx:
         type: file
-        description: >
-          Either FASTA or FASTQ files.
-        pattern: "*.{fa,fna,faa,fasta,fq,fastq}[.gz]"
+        description: fasta/q file
+        pattern: "*.{fasta,fastq,fa,fq,fas,fna,faa}*"
         ontologies:
           - edam: http://edamontology.org/format_1930 # FASTQ
 output:
-  stats:
+  fastx:
     - - meta:
           type: map
-          description: >
-            Groovy Map containing sample information e.g. [ id:'test', single_end:false
-            ]
-      - "*.tsv":
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.fast*":
           type: file
-          description: >
-            Tab-separated output file with basic sequence statistics.
-          pattern: "*.tsv"
+          description: fasta/q file with replaced values
+          pattern: "*.{fasta,fastq,fa,fq,fas,fna,faa}*"
           ontologies:
-            - edam: http://edamontology.org/format_3475 # TSV
+            - edam: http://edamontology.org/format_1930 # FASTQ
   versions:
     - versions.yml:
         type: file
@@ -49,8 +48,6 @@ output:
         ontologies:
           - edam: http://edamontology.org/format_3750 # YAML
 authors:
-  - "@Midnighter"
-  - "@heuermh"
+  - "@mjcipriano"
 maintainers:
-  - "@Midnighter"
-  - "@heuermh"
+  - "@mjcipriano"

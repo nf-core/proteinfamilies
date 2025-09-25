@@ -1,4 +1,4 @@
-process SEQKIT_STATS {
+process SEQKIT_REPLACE {
     tag "${meta.id}"
     label 'process_low'
 
@@ -8,24 +8,34 @@ process SEQKIT_STATS {
         : 'biocontainers/seqkit:2.9.0--h9ee0642_0'}"
 
     input:
-    tuple val(meta), path(reads)
+    tuple val(meta), path(fastx)
 
     output:
-    tuple val(meta), path("*.tsv"), emit: stats
+    tuple val(meta), path("*.fast*"), emit: fastx
     path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: '--all'
+    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def extension = "fastq"
+    if ("${fastx}" ==~ /.+\.fasta|.+\.fasta.gz|.+\.fa|.+\.fa.gz|.+\.fas|.+\.fas.gz|.+\.fna|.+\.fna.gz|.+\.faa|.+\.faa.gz/) {
+        extension = "fasta"
+    }
+    def isgz = ""
+    if ("${fastx}" ==~ /.+\.gz/) {
+        isgz = ".gz"
+    }
+    def endswith = task.ext.suffix ?: "${extension}${isgz}"
     """
-    seqkit stats \\
-        --tabular \\
-        --threads ${task.cpus} \\
+    seqkit \\
+        replace \\
         ${args} \\
-        ${reads} > '${prefix}.tsv'
+        --threads ${task.cpus} \\
+        -i ${fastx} \\
+        -o ${prefix}.${endswith}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -35,8 +45,14 @@ process SEQKIT_STATS {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def extension = "fastq"
+    if ("${fastx}" ==~ /.+\.fasta|.+\.fasta.gz|.+\.fa|.+\.fa.gz|.+\.fas|.+\.fas.gz|.+\.fna|.+\.fna.gz/) {
+        extension = "fasta"
+    }
+    def endswith = task.ext.suffix ?: "${extension}.gz"
+
     """
-    touch ${prefix}.tsv
+    echo "" | gzip > ${prefix}.${endswith}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

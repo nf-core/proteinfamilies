@@ -10,6 +10,14 @@
 
 ## Pipeline tools
 
+- [SeqFu](https://pubmed.ncbi.nlm.nih.gov/34066939/)
+
+> Telatin A, Fariselli P, Birolo G. SeqFu: a suite of utilities for the robust and reproducible manipulation of sequence files. Bioengineering. 2021 May 7;8(5):59. doi: 10.3390/bioengineering8050059. PubMed PMID: 34066939; PubMed Central PMCID: PMC8148589.
+
+- [SeqKit](https://pubmed.ncbi.nlm.nih.gov/38898985/)
+
+> Shen W, Sipos B, Zhao L. SeqKit2: A Swiss army knife for sequence and alignment processing. iMeta. 2024 Apr 5:e191. doi: 10.1002/imt2.191. PubMed PMID: 38898985; PubMed Central PMCID: PMC11183193.
+
 - [MMseqs2](https://pubmed.ncbi.nlm.nih.gov/33734313/)
 
 > Mirdita M, Steinegger M, Breitwieser F, Söding J, Levy Karin E. Fast and sensitive taxonomic assignment to metagenomic contigs. Bioinformatics. 2021 Sep 15;37(18):3029-31. doi: 10.1093/bioinformatics/btab184. PubMed PMID: 33734313; PubMed Central PMCID: PMC8479651.
@@ -33,10 +41,6 @@
 - [HH-suite3](https://pubmed.ncbi.nlm.nih.gov/31521110/)
 
 > Steinegger M, Meier M, Mirdita M, Vöhringer H, Haunsberger SJ, Söding J. HH-suite3 for fast remote homology detection and deep protein annotation. BMC bioinformatics. 2019 Dec;20:1-5. doi: 110.1186/s12859-019-3019-7. PubMed PMID: 31521110; PubMed Central PMCID: PMC6744700.
-
-- [SeqKit](https://pubmed.ncbi.nlm.nih.gov/38898985/)
-
-> Shen W, Sipos B, Zhao L. SeqKit2: A Swiss army knife for sequence and alignment processing. iMeta. 2024 Apr 5:e191. doi: 10.1002/imt2.191. PubMed PMID: 38898985; PubMed Central PMCID: PMC11183193.
 
 - [Biopython](https://pubmed.ncbi.nlm.nih.gov/19304878/)
 

@@ -6,11 +6,17 @@ multiqc/multiqc_data/multiqc_sources.txt
 multiqc/multiqc_data/multiqc_software_versions.txt
 multiqc/multiqc_data/BETA-multiqc.parquet
 multiqc/multiqc_data/multiqc_family_metadata.txt
+multiqc/multiqc_mgnifams_test_after.txt
+multiqc/multiqc_mgnifams_test_cluster_distribution.txt
 multiqc/multiqc_data/llms-full.txt
 multiqc/multiqc_plots/{svg,pdf,png}/*.{svg,pdf,png}
 multiqc/multiqc_report.html
 pipeline_info/*.{html,json,txt,yml}
+qc/mgnifams_test_after_mqc.txt
+qc/mgnifams_test_after.tsv
+qc/mgnifams_test.fasta
 mmseqs/initial_clustering/mmseqs_createtsv/mgnifams_test.tsv
+mmseqs/initial_clustering/mgnifams_test_clustering_distribution_mqc.csv
 mmseqs/redundancy_clustering/**/*
 family_reps/**/*
 fasta/**/*
