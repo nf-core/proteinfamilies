@@ -70,7 +70,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "a4488d3d09244f29fb4606ba4eef85d59dcc6ad8",
+                        "git_sha": "e10b76ca0c66213581bec2833e30d31f239dec0b",
                         "installed_by": ["modules"]
                     },
                     "seqfu/stats": {
@@ -95,7 +95,7 @@
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "00ee87ebb541af0008596400ce6d5f66d79d5408",
                         "installed_by": ["modules"]
                     }
                 }

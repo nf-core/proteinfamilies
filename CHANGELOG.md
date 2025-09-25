@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx)
+  - Added preprint citation to the repo. (by @vagkaratzas)
 - [#117](https://github.com/nf-core/proteinfamilies/pull/117)
   - Added `SEQKIT_SEQ` for optional sequence preprocessing in the quality check subworkflow. (by @vagkaratzas)
   - Added `SEQKIT_REPLACE` for optional sequence name parsing in the quality check subworkflow. (by @vagkaratzas)
@@ -18,9 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
-| Tool  | Previous version | New version |
-| ----- | ---------------- | ----------- |
-| seqfu | -                | 1.20.3      |
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| seqfu   | -                | 1.20.3      |
+| multiqc | 1.30             | 1.31        |
 
 ## v1.3.1 - [2025/09/22]
 
