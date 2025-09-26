@@ -59,11 +59,12 @@ Reporting:
 <summary>Output files</summary>
 
 - `qc/`
-  - `<samplename>_before.tsv`: Statistics for the input amino acid sequences before preprocessing
-  - `<samplename>_before_mqc.txt`: Statistics for the input amino acid sequences in MultiQC-ready format before preprocessing
-  - `<samplename>_after.tsv`: (optional) Statistics for the input amino acid sequences after preprocessing
-  - `<samplename>_after_mqc.txt`: (optional) Statistics for the input amino acid sequences in MultiQC-ready format after preprocessing
-  - `<samplename>.log`: (optional) Output file with count of duplicate sequences that were found and removed
+  - `<samplename>/`
+    - `<samplename>_before.tsv`: Statistics for the input amino acid sequences before preprocessing
+    - `<samplename>_before_mqc.txt`: Statistics for the input amino acid sequences in MultiQC-ready format before preprocessing
+    - `<samplename>_after.tsv`: (optional) Statistics for the input amino acid sequences after preprocessing
+    - `<samplename>_after_mqc.txt`: (optional) Statistics for the input amino acid sequences in MultiQC-ready format after preprocessing
+    - `<samplename>.log`: (optional) Output file with count of duplicate sequences that were found and removed
 
 </details>
 
@@ -77,7 +78,8 @@ The `seqfu` module is used for statistics generation of input amino acid sequenc
 <summary>Output files</summary>
 
 - `qc/`
-  - `<samplename>.<suffix>`: Updated preprocessed input fasta file
+  - `<samplename>/`
+    - `<samplename>.<suffix>`: Updated preprocessed input fasta file
 
 </details>
 
@@ -267,7 +269,8 @@ These `remove_redundancy` optional folders only contain intermediate pipeline re
 - `mmseqs/`
   - `redundancy_clustering/`
     - `mmseqs_createtsv/`
-      - `<samplename>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
+      - `<samplename>/`
+        - `<samplename>_*.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
     - `mmseqs_createdb/`
       - `<samplename>/`
         - `*`: (optional) mmseqs format db of fasta sequences
@@ -425,7 +428,8 @@ that will together produce the updated family MSA.
 - `mmseqs/`
   - `update_families/`
     - `mmseqs_createtsv/`
-      - `<family_id>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
+      - `<samplename>/`
+        - `<family_id>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
     - `mmseqs_createdb/`
       - `<family_id>/`
         - `*`: (optional) mmseqs format db of fasta sequences
