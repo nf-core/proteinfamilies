@@ -24,8 +24,11 @@
 It takes a protein fasta file as input, clusters the sequences and then generates protein family Hiden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
 Optionally, paths to existing family HMMs and MSAs can be given (must have matching base filenames one-to-one) in order to update with new sequences in case of matching hits.
 
-<p align="center">
-    <img src="docs/images/proteinfamilies_workflow.png" alt="nf-core/proteinfamilies workflow overview">
+<p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/proteinfamilies_workflow_dark.png">
+    <img alt="nf-core/proteinfamilies workflow overview" src="docs/images/proteinfamilies_workflow_light.png">
+  </picture>
 </p>
 
 ### Check quality
