@@ -12,7 +12,7 @@
                     },
                     "famsa/align": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "5c07517e7b526d4c3058fa88009e765b130ea5e8",
                         "installed_by": ["modules"]
                     },
                     "find/concatenate": {
