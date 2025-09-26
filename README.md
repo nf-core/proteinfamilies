@@ -31,9 +31,9 @@ Optionally, paths to existing family HMMs and MSAs can be given (must have match
   </picture>
 </p>
 
-### Check quality
+### Check quality and pre-process
 
-Generate input amino acid sequence statistics with ([`SeqKit`](https://github.com/shenwei356/seqkit/))
+Generate input amino acid sequence statistics with ([`SeqFu`](https://github.com/telatin/seqfu2/)) and pre-process them with ([`SeqKit`](https://github.com/shenwei356/seqkit/))
 
 ### Create families
 
