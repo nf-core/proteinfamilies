@@ -1,14 +1,11 @@
-/*
-    AMINO ACID SEQUENCE QUALITY CHECK
-*/
-
 include { SEQFU_STATS as SEQFU_STATS_BEFORE } from '../../../modules/nf-core/seqfu/stats/main'
 include { SEQKIT_SEQ                        } from '../../../modules/nf-core/seqkit/seq/main'
 include { SEQKIT_RMDUP                      } from '../../../modules/nf-core/seqkit/rmdup/main'
 include { SEQKIT_REPLACE                    } from '../../../modules/nf-core/seqkit/replace/main'
 include { SEQFU_STATS as SEQFU_STATS_AFTER  } from '../../../modules/nf-core/seqfu/stats/main'
 
-workflow CHECK_QUALITY {
+workflow FAA_SEQFU_SEQKIT {
+
     take:
     fasta              // tuple val(meta), path(fasta)
     skip_preprocessing // boolean

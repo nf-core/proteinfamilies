@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx)
+  - Swapped the local `CHECK_QUALITY` subworkflow with the new nf-core one `FAA_SEQFU_SEQKIT`. (by @vagkaratzas)
 - [#117](https://github.com/nf-core/proteinfamilies/pull/117) - Swapped the local `SEQKIT_STATS` and the local `SEQKIT_STATS_TO_MQC` modules with the `SEQFU_STATS` one, which runs a bit faster and produces a MultiQC-ready output without the need for manual parsing. (by @vagkaratzas)
 
 ### `Dependencies`

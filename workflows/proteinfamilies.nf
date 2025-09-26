@@ -18,7 +18,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_prot
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { CHECK_QUALITY        } from '../subworkflows/local/check_quality'
+include { FAA_SEQFU_SEQKIT     } from '../subworkflows/nf-core/faa_seqfu_seqkit/main'
 include { UPDATE_FAMILIES      } from '../subworkflows/local/update_families'
 include { MMSEQS_FASTA_CLUSTER } from '../subworkflows/nf-core/mmseqs_fasta_cluster'
 include { GENERATE_FAMILIES    } from '../subworkflows/local/generate_families'
@@ -55,12 +55,12 @@ workflow PROTEINFAMILIES {
             [ meta, fasta ]
         }
 
-    CHECK_QUALITY( ch_input_for_qc, params.skip_preprocessing )
-    ch_versions = ch_versions.mix( CHECK_QUALITY.out.versions )
+    FAA_SEQFU_SEQKIT( ch_input_for_qc, params.skip_preprocessing )
+    ch_versions = ch_versions.mix( FAA_SEQFU_SEQKIT.out.versions )
 
     // Replace input fasta and join back in samplesheet to ensure in sync in case of multiple sequence files
     ch_samplesheet_updated = ch_samplesheet
-        .combine(CHECK_QUALITY.out.fasta, by: 0)
+        .combine(FAA_SEQFU_SEQKIT.out.fasta, by: 0)
         .map {
             meta, _fasta, existing_hmms, existing_msas, updated_fasta ->
             [ meta, updated_fasta, existing_hmms, existing_msas ]
@@ -196,7 +196,7 @@ workflow PROTEINFAMILIES {
         )
     )
 
-    ch_multiqc_files = ch_multiqc_files.mix(CHECK_QUALITY.out.multiqc_files.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(FAA_SEQFU_SEQKIT.out.multiqc_files.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { it[1] }.ifEmpty([]))
 
