@@ -29,6 +29,7 @@ include { REMOVE_REDUNDANCY    } from '../subworkflows/local/remove_redundancy'
 //
 include { CALCULATE_CLUSTER_DISTRIBUTION } from '../modules/local/calculate_cluster_distribution/main'
 include { CHUNK_CLUSTERS                 } from '../modules/local/chunk_clusters/main'
+include { EXTRACT_FAMILY_MEMBERS         } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
 
 /*
@@ -149,6 +150,9 @@ workflow PROTEINFAMILIES {
     ch_fasta = REMOVE_REDUNDANCY.out.fasta
         .map { meta, aln -> [ [id: meta.id], aln ] }
         .groupTuple(by: 0)
+
+    EXTRACT_FAMILY_MEMBERS( ch_fasta ) // TODO modules.config, output.md, update subworkflow, changelog, readme
+    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
