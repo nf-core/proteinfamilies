@@ -115,7 +115,7 @@ If you use nf-core/proteinfamilies for your analysis, please cite the article as
 
 > **nf-core/proteinfamilies: A scalable pipeline for the generation of protein families.**
 >
-> Evangelos Karatzas,  Martin Beracochea,  Fotis A. Baltoumas,  Eleni Aplakidou,  Lorna Richardson,  James A. Fellows Yates,  Daniel Lundin, nf-core community,  Aydin Buluç,  Nikos C. Kyrpides,  Ilias Georgakopoulos-Soares,  Georgios A. Pavlopoulos & Robert D. Finn
+> Evangelos Karatzas, Martin Beracochea, Fotis A. Baltoumas, Eleni Aplakidou, Lorna Richardson, James A. Fellows Yates, Daniel Lundin, nf-core community, Aydin Buluç, Nikos C. Kyrpides, Ilias Georgakopoulos-Soares, Georgios A. Pavlopoulos & Robert D. Finn
 >
 > _biorxiv._ 2025 Aug. doi: [10.1101/2025.08.12.670010](https://dx.doi.org/10.1101/2025.08.12.670010).
 
