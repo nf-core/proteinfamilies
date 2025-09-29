@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx)
+- [#118](https://github.com/nf-core/proteinfamilies/pull/118)
   - Added preprint citation to the repo. (by @vagkaratzas)
   - Added separate metro map files for dark and light browser modes. (by @vagkaratzas)
-  - Added new local module `EXTRACT_FAMILY_MEMBERS` that outputs a 2-col TSV file with final family identifiers and all their member sequence identifiers.
+  - Added new local module `EXTRACT_FAMILY_MEMBERS` that outputs a 2-col TSV file with final family identifiers and all their member sequence identifiers. (by @vagkaratzas)
 - [#117](https://github.com/nf-core/proteinfamilies/pull/117)
   - Added `SEQKIT_SEQ` for optional sequence preprocessing in the quality check subworkflow. (by @vagkaratzas)
   - Added `SEQKIT_REPLACE` for optional sequence name parsing in the quality check subworkflow. (by @vagkaratzas)
@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx)
+- [#118](https://github.com/nf-core/proteinfamilies/pull/118)
   - Swapped the local `CHECK_QUALITY` subworkflow with the new nf-core one `FAA_SEQFU_SEQKIT`. (by @vagkaratzas)
 - [#117](https://github.com/nf-core/proteinfamilies/pull/117) - Swapped the local `SEQKIT_STATS` and the local `SEQKIT_STATS_TO_MQC` modules with the `SEQFU_STATS` one, which runs a bit faster and produces a MultiQC-ready output without the need for manual parsing. (by @vagkaratzas)
 
