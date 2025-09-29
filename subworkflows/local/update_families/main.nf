@@ -15,6 +15,7 @@ include { REMOVE_REDUNDANT_SEQS         } from '../../../modules/local/remove_re
 include { ALIGN_SEQUENCES               } from '../../../subworkflows/local/align_sequences'
 include { CLIPKIT                       } from '../../../modules/nf-core/clipkit/main'
 include { HMMER_HMMBUILD                } from '../../../modules/nf-core/hmmer/hmmbuild/main'
+include { EXTRACT_FAMILY_MEMBERS        } from '../../../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS           } from '../../../modules/local/extract_family_reps/main'
 
 workflow UPDATE_FAMILIES {
@@ -135,6 +136,10 @@ workflow UPDATE_FAMILIES {
     ch_fasta = ch_fasta
         .map { meta, faa -> [ [id: meta.id], faa ] }
         .groupTuple(by: 0)
+
+    EXTRACT_FAMILY_MEMBERS( ch_fasta )
+    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions )
+
     EXTRACT_FAMILY_REPS( ch_fasta )
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
     ch_updated_family_reps = ch_updated_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )

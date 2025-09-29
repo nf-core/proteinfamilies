@@ -151,7 +151,7 @@ workflow PROTEINFAMILIES {
         .map { meta, aln -> [ [id: meta.id], aln ] }
         .groupTuple(by: 0)
 
-    EXTRACT_FAMILY_MEMBERS( ch_fasta ) // TODO modules.config, output.md, update subworkflow, changelog, readme
+    EXTRACT_FAMILY_MEMBERS( ch_fasta ) // TODO changelog, readme
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
