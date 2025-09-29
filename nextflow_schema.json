@@ -244,7 +244,7 @@
                 },
                 "cluster_seq_identity": {
                     "type": "number",
-                    "default": 0.5,
+                    "default": 0.3,
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "mmseqs parameter for minimum sequence identity",
@@ -252,7 +252,7 @@
                 },
                 "cluster_coverage": {
                     "type": "number",
-                    "default": 0.9,
+                    "default": 0.5,
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "mmseqs parameter for minimum sequence coverage ratio",
