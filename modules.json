@@ -12,7 +12,7 @@
                     },
                     "famsa/align": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "5c07517e7b526d4c3058fa88009e765b130ea5e8",
                         "installed_by": ["modules"]
                     },
                     "find/concatenate": {
@@ -70,38 +70,43 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "a4488d3d09244f29fb4606ba4eef85d59dcc6ad8",
+                        "git_sha": "e10b76ca0c66213581bec2833e30d31f239dec0b",
                         "installed_by": ["modules"]
                     },
                     "seqfu/stats": {
                         "branch": "master",
                         "git_sha": "0de52f52d57fe3cba21119066024806c92b9d404",
-                        "installed_by": ["modules"]
+                        "installed_by": ["faa_seqfu_seqkit"]
                     },
                     "seqkit/replace": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["modules"]
+                        "installed_by": ["faa_seqfu_seqkit"]
                     },
                     "seqkit/rmdup": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["modules"]
+                        "installed_by": ["faa_seqfu_seqkit"]
                     },
                     "seqkit/seq": {
                         "branch": "master",
                         "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
-                        "installed_by": ["modules"]
+                        "installed_by": ["faa_seqfu_seqkit"]
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "00ee87ebb541af0008596400ce6d5f66d79d5408",
                         "installed_by": ["modules"]
                     }
                 }
             },
             "subworkflows": {
                 "nf-core": {
+                    "faa_seqfu_seqkit": {
+                        "branch": "master",
+                        "git_sha": "15c0a7968179d3b717a9973a1c4f25beb8a9aa2b",
+                        "installed_by": ["subworkflows"]
+                    },
                     "mmseqs_fasta_cluster": {
                         "branch": "master",
                         "git_sha": "85f598366c78a54e8dc2ad7575a94d5996d75c1e",
@@ -119,7 +124,7 @@
                     },
                     "utils_nfschema_plugin": {
                         "branch": "master",
-                        "git_sha": "dcd088f483cede0c3df4034d405126f05a764cc7",
+                        "git_sha": "4b406a74dc0449c0401ed87d5bfff4252fd277fd",
                         "installed_by": ["subworkflows"]
                     }
                 }

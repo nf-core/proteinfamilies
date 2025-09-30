@@ -1,5 +1,9 @@
 # nf-core/proteinfamilies: Citations
 
+## [nf-core/proteinfamilies](https://www.biorxiv.org/content/10.1101/2025.08.12.670010/)
+
+> Karatzas E, Beracochea M, Baltoumas FA, Aplakidou E, Richardson L, Fellows Yates JA, Lundin D, nf-core community, Buluc A, Kyrpides N, Georgakopoulos-Soares I. nf-core/proteinfamilies: A scalable pipeline for the generation of protein families. bioRxiv. 2025:2025-08. doi: 10.1101/2025.08.12.670010.
+
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
 > Ewels PA, Peltzer A, Fillinger S, Patel H, Alneberg J, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. The nf-core framework for community-curated bioinformatics pipelines. Nat Biotechnol. 2020 Mar;38(3):276-278. doi: 10.1038/s41587-020-0439-x. PubMed PMID: 32055031.

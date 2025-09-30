@@ -1,9 +1,17 @@
 nextflow_workflow {
 
-    name "Test Subworkflow CHECK_QUALITY"
+    name "Test Subworkflow FAA_SEQFU_SEQKIT"
     script "../main.nf"
-    workflow "CHECK_QUALITY"
+    workflow "FAA_SEQFU_SEQKIT"
     config './nextflow.config'
+
+    tag "subworkflows"
+    tag "subworkflows_nfcore"
+    tag "subworkflows/faa_seqfu_seqkit"
+    tag "seqfu/stats"
+    tag "seqkit/seq"
+    tag "seqkit/rmdup"
+    tag "seqkit/replace"
 
     test("faa") {
 
@@ -22,11 +30,7 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success},
-                { assert snapshot(
-                    workflow.out.fasta,
-                    workflow.out.multiqc_files,
-                    workflow.out.versions.collect { path(it).yaml }.unique()
-                ).match() }
+                { assert snapshot(workflow.out).match() }
             )
         }
     }

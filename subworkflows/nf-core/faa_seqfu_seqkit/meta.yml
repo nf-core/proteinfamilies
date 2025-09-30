@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
-name: "CHECK_QUALITY"
+name: "faa_seqfu_seqkit"
 description: Subworkflow that checks the quality of input amino acid sequences and exports statistics
 keywords:
   - fasta
@@ -8,6 +8,9 @@ keywords:
   - quality check
 components:
   - seqfu/stats
+  - seqkit/seq
+  - seqkit/rmdup
+  - seqkit/replace
 input:
   - sequences:
       type: file

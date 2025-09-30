@@ -89,6 +89,11 @@
                     "description": "Institutional config URL link.",
                     "hidden": true,
                     "fa_icon": "fas fa-users-cog"
+                },
+                "modules_testdata_base_path": {
+                    "type": "string",
+                    "description": "Base path / URL for data used in the modules",
+                    "hidden": true
                 }
             }
         },
@@ -239,7 +244,7 @@
                 },
                 "cluster_seq_identity": {
                     "type": "number",
-                    "default": 0.5,
+                    "default": 0.3,
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "mmseqs parameter for minimum sequence identity",
@@ -247,7 +252,7 @@
                 },
                 "cluster_coverage": {
                     "type": "number",
-                    "default": 0.9,
+                    "default": 0.5,
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "mmseqs parameter for minimum sequence coverage ratio",

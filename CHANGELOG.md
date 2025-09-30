@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#118](https://github.com/nf-core/proteinfamilies/pull/118)
+  - Added preprint citation to the repo. (by @vagkaratzas)
+  - Added separate metro map files for dark and light browser modes. (by @vagkaratzas)
+  - Added new local module `EXTRACT_FAMILY_MEMBERS` that outputs a 2-col TSV file with final family identifiers and all their member sequence identifiers. (by @vagkaratzas)
 - [#117](https://github.com/nf-core/proteinfamilies/pull/117)
   - Added `SEQKIT_SEQ` for optional sequence preprocessing in the quality check subworkflow. (by @vagkaratzas)
   - Added `SEQKIT_REPLACE` for optional sequence name parsing in the quality check subworkflow. (by @vagkaratzas)
@@ -14,13 +18,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#118](https://github.com/nf-core/proteinfamilies/pull/118)
+  - Swapped the local `CHECK_QUALITY` subworkflow with the new nf-core one `FAA_SEQFU_SEQKIT`. (by @vagkaratzas)
+  - Based on protein family reproducibility benchmarks (i.e., computationally reproducing manually curated protein family resources), the `cluster_seq_identity` and `cluster_coverage` parameter default values have been updated to `0.3` and `0.5` (down from `0.5` and `0.9`) respectively. (by @vagkaratzas)
 - [#117](https://github.com/nf-core/proteinfamilies/pull/117) - Swapped the local `SEQKIT_STATS` and the local `SEQKIT_STATS_TO_MQC` modules with the `SEQFU_STATS` one, which runs a bit faster and produces a MultiQC-ready output without the need for manual parsing. (by @vagkaratzas)
 
 ### `Dependencies`
 
-| Tool  | Previous version | New version |
-| ----- | ---------------- | ----------- |
-| seqfu | -                | 1.20.3      |
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| seqfu   | -                | 1.20.3      |
+| multiqc | 1.30             | 1.31        |
 
 ## v1.3.1 - [2025/09/22]
 

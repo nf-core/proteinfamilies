@@ -24,13 +24,16 @@
 It takes a protein fasta file as input, clusters the sequences and then generates protein family Hiden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
 Optionally, paths to existing family HMMs and MSAs can be given (must have matching base filenames one-to-one) in order to update with new sequences in case of matching hits.
 
-<p align="center">
-    <img src="docs/images/proteinfamilies_workflow.png" alt="nf-core/proteinfamilies workflow overview">
+<p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/proteinfamilies_workflow_dark.png">
+    <img alt="nf-core/proteinfamilies workflow overview" src="docs/images/proteinfamilies_workflow_light.png">
+  </picture>
 </p>
 
-### Check quality
+### Check quality and pre-process
 
-Generate input amino acid sequence statistics with ([`SeqKit`](https://github.com/shenwei356/seqkit/))
+Generate input amino acid sequence statistics with ([`SeqFu`](https://github.com/telatin/seqfu2/)) and pre-process them with ([`SeqKit`](https://github.com/shenwei356/seqkit/))
 
 ### Create families
 
@@ -108,7 +111,15 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 ## Citations
 
-If you use nf-core/proteinfamilies for your analysis, please cite it using the following doi: [10.5281/zenodo.14881993](https://doi.org/10.5281/zenodo.14881993).
+If you use nf-core/proteinfamilies for your analysis, please cite the article as follows:
+
+> **nf-core/proteinfamilies: A scalable pipeline for the generation of protein families.**
+>
+> Evangelos Karatzas, Martin Beracochea, Fotis A. Baltoumas, Eleni Aplakidou, Lorna Richardson, James A. Fellows Yates, Daniel Lundin, nf-core community, Aydin Buluç, Nikos C. Kyrpides, Ilias Georgakopoulos-Soares, Georgios A. Pavlopoulos & Robert D. Finn
+>
+> _biorxiv._ 2025 Aug. doi: [10.1101/2025.08.12.670010](https://dx.doi.org/10.1101/2025.08.12.670010).
+
+You can cite the nf-core/proteinfamilies zenodo record for a specific version using the following doi: [10.5281/zenodo.14881993](https://doi.org/10.5281/zenodo.14881993).
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

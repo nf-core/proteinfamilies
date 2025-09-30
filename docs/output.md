@@ -59,11 +59,12 @@ Reporting:
 <summary>Output files</summary>
 
 - `qc/`
-  - `<samplename>_before.tsv`: Statistics for the input amino acid sequences before preprocessing
-  - `<samplename>_before_mqc.txt`: Statistics for the input amino acid sequences in MultiQC-ready format before preprocessing
-  - `<samplename>_after.tsv`: (optional) Statistics for the input amino acid sequences after preprocessing
-  - `<samplename>_after_mqc.txt`: (optional) Statistics for the input amino acid sequences in MultiQC-ready format after preprocessing
-  - `<samplename>.log`: (optional) Output file with count of duplicate sequences that were found and removed
+  - `<samplename>/`
+    - `<samplename>_before.tsv`: Statistics for the input amino acid sequences before preprocessing
+    - `<samplename>_before_mqc.txt`: Statistics for the input amino acid sequences in MultiQC-ready format before preprocessing
+    - `<samplename>_after.tsv`: (optional) Statistics for the input amino acid sequences after preprocessing
+    - `<samplename>_after_mqc.txt`: (optional) Statistics for the input amino acid sequences in MultiQC-ready format after preprocessing
+    - `<samplename>.log`: (optional) Output file with count of duplicate sequences that were found and removed
 
 </details>
 
@@ -77,7 +78,8 @@ The `seqfu` module is used for statistics generation of input amino acid sequenc
 <summary>Output files</summary>
 
 - `qc/`
-  - `<samplename>.<suffix>`: Updated preprocessed input fasta file
+  - `<samplename>/`
+    - `<samplename>.<suffix>`: Updated preprocessed input fasta file
 
 </details>
 
@@ -106,7 +108,7 @@ that will together produce the updated family MSA.
     - `mmseqs_cluster/`
       - `<samplename>/`
         - `*`: (optional) mmseqs format clustered db. Can be turned on with --save_mmseqs_clustering
-    - `<samplename>_clustering_distribution_mqc.csv`: csv with initial clustering metadata, from each sample, to print with MultiQC (Id,Cluster Size,Number of Clusters)
+    - `<samplename>_clustering_distribution_mqc.csv`: CSV file with initial clustering metadata, from each sample, to print with MultiQC (column headers: Id,Cluster Size,Number of Clusters)
 - `fasta/`
   - `mmseqs_initial_clustering_filtered/`
     - `<samplename>/`
@@ -247,7 +249,7 @@ along with the families' respective full MSAs, to recruit sequences from a new i
         - `<samplename>_*.domtbl.gz`: (optional) hmmsearch results of family reps against families' HMMs
   - `family_reps/`
     - `<samplename>/`
-      - `<samplename>_meta_mqc.csv`: (optional) csv with metadata (Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
+      - `<samplename>_meta_mqc.csv`: (optional) CSV file with metadata (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
       - `<samplename>_reps.fa`: (optional) fasta file of all family representative sequences (one sequence per family)
 
 </details>
@@ -267,7 +269,8 @@ These `remove_redundancy` optional folders only contain intermediate pipeline re
 - `mmseqs/`
   - `redundancy_clustering/`
     - `mmseqs_createtsv/`
-      - `<samplename>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
+      - `<samplename>/`
+        - `<samplename>_*.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
     - `mmseqs_createdb/`
       - `<samplename>/`
         - `*`: (optional) mmseqs format db of fasta sequences
@@ -385,8 +388,9 @@ If `--remove_sequence_redundancy` is set to `false`, then either the raw (if `--
     - `<samplename>.fasta.gz`: (optional) FASTA file that contains all remaining non-hit input sequences, which will be passed to normal execution mode to create new families
   - `family_reps/`
     - `<samplename>/`
-      - `<samplename>_meta_mqc.csv`: (optional) csv with metadata (Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
-      - `<samplename>_reps.fa`: (optional) fasta file of all family representative sequences (one sequence per family)
+      - `<samplename>_meta_mqc.csv`: CSV file with metadata (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
+      - `<samplename>_reps.fa`: fasta file of all family representative sequences (one sequence per family)
+      - `<samplename>.tsv`: 2-column TSV file with family ids and all sequence member ids
 
 </details>
 
@@ -425,7 +429,8 @@ that will together produce the updated family MSA.
 - `mmseqs/`
   - `update_families/`
     - `mmseqs_createtsv/`
-      - `<family_id>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
+      - `<samplename>/`
+        - `<family_id>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
     - `mmseqs_createdb/`
       - `<family_id>/`
         - `*`: (optional) mmseqs format db of fasta sequences
@@ -513,12 +518,13 @@ Results are stored in the `update_families/full_msa` folder.
 
 - `family_reps/`
   - `<samplename>/`
-    - `<samplename>_meta_mqc.csv`: csv with metadata to print with MultiQC (Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
+    - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
     - `<samplename>_reps.fa`: fasta file of all family representative sequences (one sequence per family)
+    - `<samplename>.tsv`: 2-column TSV file with family ids and all sequence member ids
 - `update_families/`
   - `family_reps/`
     - `<samplename>/`
-      - `<samplename>_meta_mqc.csv`: csv with metadata to print with MultiQC (Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
+      - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
       - `<samplename>_reps.fa`: fasta file of all family representative sequences (one sequence per family)
 
 </details>
