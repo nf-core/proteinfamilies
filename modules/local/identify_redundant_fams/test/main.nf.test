@@ -17,7 +17,8 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = 0.9
+                input[2] = 0.95
+                input[3] = 0.9
                 """
             }
         }
@@ -48,7 +49,8 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = 0.9
+                input[2] = 0.95
+                input[3] = 0.9
                 """
             }
         }

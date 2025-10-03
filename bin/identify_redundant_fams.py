@@ -67,7 +67,7 @@ def remove_self_hits(domtbl_df, representative_to_family):
     return domtbl_df
 
 
-def filter_and_label(domtbl_df, redundancy_length_threshold, similarity_length_threshold):
+def filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_length_threshold):
     """
     Return two DataFrames:
     - redundant candidates (>= redundancy_length_threshold)
@@ -84,6 +84,48 @@ def filter_and_label(domtbl_df, redundancy_length_threshold, similarity_length_t
     ]
 
     return redundant_df, similar_df
+
+
+def process_redundant(redundant_df, family_to_size, out_file):
+    redundant_df = redundant_df.drop(columns=["qlen", "env from", "env to"])
+    redundant_df["query size"] = redundant_df["query name"].map(family_to_size)
+    redundant_df["target size"] = redundant_df["target name"].map(family_to_size)
+
+    redundant_fam_names = set()
+    for _, row in redundant_df.iterrows():
+        query = row["query name"]
+        target = row["target name"]
+        query_size = int(row["query size"])
+        target_size = int(row["target size"])
+
+        if query_size < target_size:
+            redundant_fam_names.add(query)
+        elif target_size < query_size:
+            redundant_fam_names.add(target)
+        else: # sizes equal, keep alphabetically first as non-redundant to avoid triangular deletions
+            redundant_fam_names.add(max(query, target))
+
+    with open(out_file, "w") as f:
+        for name in sorted(redundant_fam_names):
+            f.write(name + "\n")
+
+    return redundant_fam_names
+
+
+def process_similar(similar_df, redundant_fam_names, similarities_csv):
+    # remove any similarity rows involving families already marked redundant
+    if not similar_df.empty:
+        similar_df = similar_df[
+            ~similar_df["query name"].isin(redundant_fam_names)
+            & ~similar_df["target name"].isin(redundant_fam_names)
+        ]
+
+    if not similar_df.empty:
+        similar_out = similar_df[["query name", "target name", "similarity_score"]].copy()
+        similar_out = similar_out.rename(
+            columns={"query name": "family_1", "target name": "family_2"}
+        )
+        similar_out.to_csv(similarities_csv, index=False)
 
 
 def process_family_similarity(mapping, domtbl, redundancy_length_threshold, similarity_length_threshold, out_file, similarities_csv):
@@ -109,38 +151,11 @@ def process_family_similarity(mapping, domtbl, redundancy_length_threshold, simi
 
     domtbl_df = remove_self_hits(domtbl_df, representative_to_family)
 
-    redundant_df, similar_df = filter_and_label(domtbl_df, redundancy_length_threshold, similarity_length_threshold)
+    redundant_df, similar_df = filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_length_threshold)
 
-    # --- Process redundancy ---
-    redundant_df = redundant_df.drop(columns=["qlen", "env from", "env to"])
-    redundant_df["query size"] = redundant_df["query name"].map(family_to_size)
-    redundant_df["target size"] = redundant_df["target name"].map(family_to_size)
+    redundant_fam_names = process_redundant(redundant_df, family_to_size, out_file)
 
-    redundant_fam_names = set()
-    for _, row in redundant_df.iterrows():
-        query = row["query name"]
-        target = row["target name"]
-        query_size = int(row["query size"])
-        target_size = int(row["target size"])
-
-        if query_size < target_size:
-            redundant_fam_names.add(query)
-        elif target_size < query_size:
-            redundant_fam_names.add(target)
-        else: # sizes equal, keep alphabetically first as non-redundant to avoid triangular deletions
-            redundant_fam_names.add(max(query, target))
-
-    with open(out_file, "w") as f:
-        for name in sorted(redundant_fam_names):
-            f.write(name + "\n")
-
-    # --- Process similarities ---
-    if not similar_df.empty:
-        similar_out = similar_df[["query name", "target name", "similarity_score"]].copy()
-        similar_out = similar_out.rename(
-            columns={"query name": "family_1", "target name": "family_2"}
-        )
-        similar_out.to_csv(similarities_csv, index=False)
+    process_similar(similar_df, redundant_fam_names, similarities_csv)
 
 
 def main(args=None):
