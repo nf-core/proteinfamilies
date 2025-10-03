@@ -18,15 +18,16 @@ include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_RAW                   } from '../
 
 workflow REMOVE_REDUNDANCY {
     take:
-    seed_msa                          // tuple val(meta), path(clipkit)
-    full_msa                          // tuple val(meta), path(sto.gz)
-    fasta                             // tuple val(meta), path(fasta.gz)
-    hmm                               // tuple val(meta), path(hmm.gz)
-    remove_family_redundancy          // boolean
-    hmmsearch_family_length_threshold // number [0.0, 1.0]
-    remove_sequence_redundancy        // boolean
-    clustering_tool                   // string ["linclust", "cluster"]
-    alignment_tool                    // string ["famsa", "mafft"]
+    seed_msa                                     // tuple val(meta), path(clipkit)
+    full_msa                                     // tuple val(meta), path(sto.gz)
+    fasta                                        // tuple val(meta), path(fasta.gz)
+    hmm                                          // tuple val(meta), path(hmm.gz)
+    remove_family_redundancy                     // boolean
+    hmmsearch_family_redundancy_length_threshold // number [0.0, 1.0]
+    hmmsearch_family_similarity_length_threshold // number [0.0, 1.0]
+    remove_sequence_redundancy                   // boolean
+    clustering_tool                              // string ["linclust", "cluster"]
+    alignment_tool                               // string ["famsa", "mafft"]
 
     main:
     ch_versions = Channel.empty()
@@ -60,7 +61,8 @@ workflow REMOVE_REDUNDANCY {
             }
 
         IDENTIFY_REDUNDANT_FAMS( ch_input_for_redundant_fam_identification.map, \
-            ch_input_for_redundant_fam_identification.domtbl, hmmsearch_family_length_threshold )
+            ch_input_for_redundant_fam_identification.domtbl, \
+            hmmsearch_family_redundancy_length_threshold, hmmsearch_family_similarity_length_threshold )
         ch_versions = ch_versions.mix( IDENTIFY_REDUNDANT_FAMS.out.versions )
 
         fasta = fasta

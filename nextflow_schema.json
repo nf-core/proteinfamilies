@@ -381,12 +381,20 @@
                     "hidden": true,
                     "help_text": "Similar families should not be further processed, for better resource management and to avoid duplication of families."
                 },
-                "hmmsearch_family_length_threshold": {
+                "hmmsearch_family_redundancy_length_threshold": {
+                    "type": "number",
+                    "default": 0.95,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
+                },
+                "hmmsearch_family_similarity_length_threshold": {
                     "type": "number",
                     "default": 0.9,
                     "minimum": 0.0,
                     "maximum": 1.0,
-                    "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
+                    "description": "hmmsearch minimum length percentage of hit env vs query length, to flag and report similar families (and to optionally merge)",
+                    "help_text": "Must be below the hmmsearch_family_redundancy_length_threshold to be valid."
                 },
                 "save_non_redundant_fams_fasta": {
                     "type": "boolean",

@@ -66,10 +66,11 @@ nextflow_workflow {
                     ]
                 )
                 input[4] = true       // remove_family_redundancy
-                input[5] = 0.9        // hmmsearch_family_length_threshold
-                input[6] = true       // remove_sequence_redundancy
-                input[7] = "linclust" // clustering_tool
-                input[8] = "famsa"    // alignment_tool
+                input[5] = 0.95       // hmmsearch_family_redundancy_length_threshold
+                input[6] = 0.9        // hmmsearch_family_similarity_length_threshold
+                input[7] = true       // remove_sequence_redundancy
+                input[8] = "linclust" // clustering_tool
+                input[9] = "famsa"    // alignment_tool
                 """
             }
         }

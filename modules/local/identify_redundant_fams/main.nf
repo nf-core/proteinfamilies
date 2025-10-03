@@ -10,10 +10,12 @@ process IDENTIFY_REDUNDANT_FAMS {
     input:
     tuple val(meta) , path(mapping)
     tuple val(meta2), path(domtbl)
-    val(length_threshold)
+    val(redundancy_length_threshold)
+    val(similarity_length_threshold)
 
     output:
     tuple val(meta), path("redundant_fam_ids.txt"), emit: redundant_ids
+    tuple val(meta), path("similarities.csv")     , emit: similarities, optional: true
     path "versions.yml"                           , emit: versions
 
     when:
@@ -24,8 +26,10 @@ process IDENTIFY_REDUNDANT_FAMS {
     identify_redundant_fams.py \\
         --mapping ${mapping} \\
         --domtbl ${domtbl} \\
-        --length_threshold ${length_threshold} \\
-        --out_file redundant_fam_ids.txt
+        --redundancy_length_threshold ${redundancy_length_threshold} \\
+        --similarity_length_threshold ${similarity_length_threshold} \\
+        --out_file redundant_fam_ids.txt \\
+        --similarities_csv similarities.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -37,6 +41,7 @@ process IDENTIFY_REDUNDANT_FAMS {
     stub:
     """
     touch redundant_fam_ids.txt
+    touch similarities.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
