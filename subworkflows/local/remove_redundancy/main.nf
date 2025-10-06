@@ -25,6 +25,7 @@ workflow REMOVE_REDUNDANCY {
     fasta                                        // tuple val(meta), path(fasta.gz)
     hmm                                          // tuple val(meta), path(hmm.gz)
     remove_family_redundancy                     // boolean
+    skip_family_merging                          // boolean
     hmmsearch_family_redundancy_length_threshold // number [0.0, 1.0]
     hmmsearch_family_similarity_length_threshold // number [0.0, 1.0]
     remove_sequence_redundancy                   // boolean
@@ -36,11 +37,17 @@ workflow REMOVE_REDUNDANCY {
     hmmsearch_write_domain                       // boolean
     recruit_sequences_with_models                // boolean
     hmmsearch_query_length_threshold             // number [0.0, 1.0]
+    outdir
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions        = Channel.empty()
+    ch_merged_seed_msa = Channel.empty()
+    ch_merged_full_msa = Channel.empty()
+    ch_merged_fasta    = Channel.empty()
+    ch_merged_hmm      = Channel.empty()
+    ch_similar_ids     = Channel.empty()
 
-    if (remove_family_redundancy) {
+    if (remove_family_redundancy || !skip_family_merging) {
         ch_fasta = fasta
             .map { meta, faa -> [[id: meta.id], faa] }
             .groupTuple(by: 0)
@@ -73,26 +80,63 @@ workflow REMOVE_REDUNDANCY {
             hmmsearch_family_redundancy_length_threshold, hmmsearch_family_similarity_length_threshold )
         ch_versions = ch_versions.mix( IDENTIFY_REDUNDANT_FAMS.out.versions )
 
-        fasta = fasta
-            .map { meta, fas -> [[id: meta.id], fas] }
-            .groupTuple(by: 0)
-
         ch_seed_msa = seed_msa
             .map { meta, fas -> [[id: meta.id], fas] }
             .groupTuple(by: 0)
 
-        MERGE_FAMILIES( IDENTIFY_REDUNDANT_FAMS.out.similarities, ch_seed_msa, \
+        if (!skip_family_merging) {
+            MERGE_FAMILIES( IDENTIFY_REDUNDANT_FAMS.out.similarities, ch_seed_msa, \
             sequences, alignment_tool, trim_msa, clipkit_out_format, \
             hmmsearch_write_target, hmmsearch_write_domain, \
             recruit_sequences_with_models, hmmsearch_query_length_threshold )
-        ch_versions = ch_versions.mix( MERGE_FAMILIES.out.versions )
+            ch_versions = ch_versions.mix( MERGE_FAMILIES.out.versions )
 
-        full_msa = full_msa
+            ch_merged_seed_msa = MERGE_FAMILIES.out.seed_msa
+            ch_merged_full_msa = MERGE_FAMILIES.out.full_msa
+            ch_merged_fasta    = MERGE_FAMILIES.out.fasta
+            ch_merged_hmm      = MERGE_FAMILIES.out.hmm
+
+            ch_seed_msa = seed_msa
+                .mix(ch_merged_seed_msa)
+                .map { meta, fas -> [[id: meta.id], fas] }
+                .groupTuple(by: 0)
+
+            ch_hmm = hmm
+                .mix(ch_merged_hmm)
+                .map { meta, model -> [[id: meta.id], model] }
+                .groupTuple(by: 0)
+
+            ch_similar_ids = IDENTIFY_REDUNDANT_FAMS.out.similar_ids
+        }
+
+        fasta = fasta
+            .mix(ch_merged_fasta)
             .map { meta, fas -> [[id: meta.id], fas] }
             .groupTuple(by: 0)
 
+        full_msa = full_msa
+            .mix(ch_merged_full_msa)
+            .map { meta, fas -> [[id: meta.id], fas] }
+            .groupTuple(by: 0)
+
+        // TODO empty Channel if remove_family_redundancy false
+        ch_skip_ids = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids // TODO convert to module
+            .concat(ch_similar_ids) // empty if merging of families is skipped ch_similar_ids
+            .groupTuple(by: 0)
+            .map { meta, files ->
+                def outdir_meta = "${outdir}/remove_redundancy/skipped_ids/${meta.id}/"
+                new File(outdir_meta).mkdirs()
+                def outfile = file("${outdir_meta}/skip_family_ids.txt")
+                outfile.withWriter { writer ->
+                    files.each { f ->
+                        f.eachLine { line -> writer.writeLine(line) }
+                    }
+                }
+                return [meta, outfile]
+            }
+        
         // Join to ensure in sync
-        ch_input_for_fam_removal = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids
+        ch_input_for_fam_removal = ch_skip_ids
             .join(fasta)
             .join(ch_hmm)
             .join(ch_seed_msa)
@@ -117,7 +161,9 @@ workflow REMOVE_REDUNDANCY {
         full_msa = FILTER_NON_REDUNDANT_FULL_MSA.out.filtered
             .transpose()
             .map { meta, file ->
-                [[id: meta.id, chunk: file.getSimpleName().split('_')[-1]], file]
+                def filename = file.getSimpleName()
+                def chunk = filename.split("${meta.id}_", 2)[1]  // Split by meta.id_ and take remainder, to also match merged ids
+                [[id: meta.id, chunk: chunk], file]
             }
 
         FILTER_NON_REDUNDANT_FASTA( ch_input_for_fam_removal.seq, ch_input_for_fam_removal.ids  )
@@ -126,7 +172,9 @@ workflow REMOVE_REDUNDANCY {
         fasta = FILTER_NON_REDUNDANT_FASTA.out.filtered
             .transpose()
             .map { meta, file ->
-                [[id: meta.id, chunk: file.getSimpleName().split('_')[-1]], file]
+                def filename = file.getSimpleName()
+                def chunk = filename.split("${meta.id}_", 2)[1]  // Split by meta.id_ and take remainder, to also match merged ids
+                [[id: meta.id, chunk: chunk], file]
             }
     }
 

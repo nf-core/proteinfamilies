@@ -50,4 +50,8 @@ workflow MERGE_FAMILIES {
 
     emit:
     versions = ch_versions
+    seed_msa = GENERATE_FAMILIES.out.seed_msa
+    full_msa = GENERATE_FAMILIES.out.full_msa
+    fasta    = GENERATE_FAMILIES.out.fasta
+    hmm      = GENERATE_FAMILIES.out.hmm
 }

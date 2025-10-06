@@ -381,11 +381,19 @@
                     "hidden": true,
                     "help_text": "Similar families should not be further processed, for better resource management and to avoid duplication of families."
                 },
+                "skip_family_merging": {
+                    "type": "boolean",
+                    "description": "Flag to skip merging of similar families.",
+                    "default": false,
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true,
+                    "help_text": "If false, similar families (but not redundant!) will be merged, depending on the hmmsearch_family_similarity_length_threshold parameter."
+                },
                 "hmmsearch_family_redundancy_length_threshold": {
                     "type": "number",
                     "default": 0.95,
                     "minimum": 0.0,
-                    "maximum": 1.0,
+                    "maximum": 1.1,
                     "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
                 },
                 "hmmsearch_family_similarity_length_threshold": {
