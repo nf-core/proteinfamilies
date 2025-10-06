@@ -6,6 +6,7 @@ include { EXTRACT_FAMILY_REPS                                        } from '../
 include { FIND_CONCATENATE                                           } from '../../../modules/nf-core/find/concatenate'
 include { HMMER_HMMSEARCH                                            } from '../../../modules/nf-core/hmmer/hmmsearch/main'
 include { IDENTIFY_REDUNDANT_FAMS                                    } from '../../../modules/local/identify_redundant_fams/main'
+include { MERGE_FAMILIES                                             } from '../../../subworkflows/local/merge_families/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_HMM      } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_SEED_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_FULL_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
@@ -72,6 +73,9 @@ workflow REMOVE_REDUNDANCY {
         ch_seed_msa = seed_msa
             .map { meta, fas -> [[id: meta.id], fas] }
             .groupTuple(by: 0)
+
+        MERGE_FAMILIES( IDENTIFY_REDUNDANT_FAMS.out.similarities, ch_seed_msa )
+        ch_versions = ch_versions.mix( MERGE_FAMILIES.out.versions )
 
         full_msa = full_msa
             .map { meta, fas -> [[id: meta.id], fas] }
