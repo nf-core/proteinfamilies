@@ -19,6 +19,7 @@ include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_RAW                   } from '../
 
 workflow REMOVE_REDUNDANCY {
     take:
+    sequences                                    // tuple val(meta), path(fasta)
     seed_msa                                     // tuple val(meta), path(clipkit)
     full_msa                                     // tuple val(meta), path(sto.gz)
     fasta                                        // tuple val(meta), path(fasta.gz)
@@ -29,6 +30,12 @@ workflow REMOVE_REDUNDANCY {
     remove_sequence_redundancy                   // boolean
     clustering_tool                              // string ["linclust", "cluster"]
     alignment_tool                               // string ["famsa", "mafft"]
+    trim_msa                                     // boolean
+    clipkit_out_format                           // string (default: clipkit)
+    hmmsearch_write_target                       // boolean
+    hmmsearch_write_domain                       // boolean
+    recruit_sequences_with_models                // boolean
+    hmmsearch_query_length_threshold             // number [0.0, 1.0]
 
     main:
     ch_versions = Channel.empty()
@@ -74,7 +81,10 @@ workflow REMOVE_REDUNDANCY {
             .map { meta, fas -> [[id: meta.id], fas] }
             .groupTuple(by: 0)
 
-        MERGE_FAMILIES( IDENTIFY_REDUNDANT_FAMS.out.similarities, ch_seed_msa )
+        MERGE_FAMILIES( IDENTIFY_REDUNDANT_FAMS.out.similarities, ch_seed_msa, \
+            sequences, alignment_tool, trim_msa, clipkit_out_format, \
+            hmmsearch_write_target, hmmsearch_write_domain, \
+            recruit_sequences_with_models, hmmsearch_query_length_threshold )
         ch_versions = ch_versions.mix( MERGE_FAMILIES.out.versions )
 
         full_msa = full_msa

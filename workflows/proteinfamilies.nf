@@ -118,10 +118,16 @@ workflow PROTEINFAMILIES {
     CHUNK_CLUSTERS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs, params.cluster_size_threshold )
     ch_versions = ch_versions.mix( CHUNK_CLUSTERS.out.versions )
 
-    // Multiple sequence alignment
+    ch_fasta_chunks = CHUNK_CLUSTERS.out.fasta_chunks
+        .transpose()
+        .map { meta, file_path ->
+            [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName], file_path ]
+        }
+    
+    // Multiple sequence alignments, model building and sequence recruiting
     GENERATE_FAMILIES(
         ch_samplesheet_for_create,
-        CHUNK_CLUSTERS.out.fasta_chunks,
+        ch_fasta_chunks,
         params.alignment_tool,
         params.trim_msa,
         params.clipkit_out_format,
@@ -134,6 +140,7 @@ workflow PROTEINFAMILIES {
 
     // Remove redundant sequences and families
     REMOVE_REDUNDANCY (
+        ch_samplesheet_for_create,
         GENERATE_FAMILIES.out.seed_msa,
         GENERATE_FAMILIES.out.full_msa,
         GENERATE_FAMILIES.out.fasta,
@@ -143,7 +150,13 @@ workflow PROTEINFAMILIES {
         params.hmmsearch_family_similarity_length_threshold,
         params.remove_sequence_redundancy,
         params.clustering_tool,
-        params.alignment_tool
+        params.alignment_tool,
+        params.trim_msa,
+        params.clipkit_out_format,
+        params.hmmsearch_write_target,
+        params.hmmsearch_write_domain,
+        params.recruit_sequences_with_models,
+        params.hmmsearch_query_length_threshold
     )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 

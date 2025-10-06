@@ -12,7 +12,7 @@ include { HMMER_HMMALIGN   } from '../../../modules/nf-core/hmmer/hmmalign/main'
 workflow GENERATE_FAMILIES {
     take:
     sequences                        // tuple val(meta), path(fasta)
-    fasta_chunks                     // tuple val(meta), path(fasta)
+    ch_fasta                         // tuple val(meta), path(fasta)
     alignment_tool                   // string ["famsa", "mafft"]
     trim_msa                         // boolean
     clipkit_out_format               // string (default: clipkit)
@@ -25,14 +25,7 @@ workflow GENERATE_FAMILIES {
     ch_versions = Channel.empty()
     ch_seed_msa = Channel.empty()
     ch_full_msa = Channel.empty()
-    ch_fasta    = Channel.empty()
     ch_hmm      = Channel.empty()
-
-    ch_fasta = fasta_chunks
-        .transpose()
-        .map { meta, file_path ->
-            [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName], file_path ]
-        }
 
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
