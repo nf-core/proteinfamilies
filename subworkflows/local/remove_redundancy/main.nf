@@ -3,10 +3,11 @@
 */
 
 include { EXTRACT_FAMILY_REPS                                        } from '../../../modules/local/extract_family_reps/main'
-include { FIND_CONCATENATE                                           } from '../../../modules/nf-core/find/concatenate'
+include { FIND_CONCATENATE as FIND_CONCATENATE_HMMS                  } from '../../../modules/nf-core/find/concatenate'
 include { HMMER_HMMSEARCH                                            } from '../../../modules/nf-core/hmmer/hmmsearch/main'
 include { IDENTIFY_REDUNDANT_FAMS                                    } from '../../../modules/local/identify_redundant_fams/main'
 include { MERGE_FAMILIES                                             } from '../../../subworkflows/local/merge_families/main'
+include { FIND_CONCATENATE as FIND_CONCATENATE_SKIP_IDS              } from '../../../modules/nf-core/find/concatenate'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_HMM      } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_SEED_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_FULL_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
@@ -45,7 +46,6 @@ workflow REMOVE_REDUNDANCY {
     ch_merged_full_msa = Channel.empty()
     ch_merged_fasta    = Channel.empty()
     ch_merged_hmm      = Channel.empty()
-    ch_similar_ids     = Channel.empty()
 
     if (remove_family_redundancy || !skip_family_merging) {
         ch_fasta = fasta
@@ -57,10 +57,10 @@ workflow REMOVE_REDUNDANCY {
         ch_hmm = hmm
             .map { meta, model -> [[id: meta.id], model] }
             .groupTuple(by: 0)
-        FIND_CONCATENATE( ch_hmm )
-        ch_versions = ch_versions.mix( FIND_CONCATENATE.out.versions )
+        FIND_CONCATENATE_HMMS( ch_hmm )
+        ch_versions = ch_versions.mix( FIND_CONCATENATE_HMMS.out.versions )
 
-        ch_input_for_hmmsearch = FIND_CONCATENATE.out.file_out
+        ch_input_for_hmmsearch = FIND_CONCATENATE_HMMS.out.file_out
             .combine(EXTRACT_FAMILY_REPS.out.fasta, by: 0)
             .map { meta, model, seqs -> [meta, model, seqs, false, false, true] }
 
@@ -105,8 +105,6 @@ workflow REMOVE_REDUNDANCY {
                 .mix(ch_merged_hmm)
                 .map { meta, model -> [[id: meta.id], model] }
                 .groupTuple(by: 0)
-
-            ch_similar_ids = IDENTIFY_REDUNDANT_FAMS.out.similar_ids
         }
 
         fasta = fasta
@@ -119,24 +117,14 @@ workflow REMOVE_REDUNDANCY {
             .map { meta, fas -> [[id: meta.id], fas] }
             .groupTuple(by: 0)
 
-        // TODO empty Channel if remove_family_redundancy false
-        ch_skip_ids = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids // TODO convert to module
-            .concat(ch_similar_ids) // empty if merging of families is skipped ch_similar_ids
+        ch_skip_ids = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids
+            .concat(IDENTIFY_REDUNDANT_FAMS.out.similar_ids)
             .groupTuple(by: 0)
-            .map { meta, files ->
-                def outdir_meta = "${outdir}/remove_redundancy/skipped_ids/${meta.id}/"
-                new File(outdir_meta).mkdirs()
-                def outfile = file("${outdir_meta}/skip_family_ids.txt")
-                outfile.withWriter { writer ->
-                    files.each { f ->
-                        f.eachLine { line -> writer.writeLine(line) }
-                    }
-                }
-                return [meta, outfile]
-            }
-        
+        FIND_CONCATENATE_SKIP_IDS( ch_skip_ids )
+        ch_versions = ch_versions.mix( FIND_CONCATENATE_SKIP_IDS.out.versions )
+
         // Join to ensure in sync
-        ch_input_for_fam_removal = ch_skip_ids
+        ch_input_for_fam_removal = FIND_CONCATENATE_SKIP_IDS.out.file_out
             .join(fasta)
             .join(ch_hmm)
             .join(ch_seed_msa)

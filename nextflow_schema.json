@@ -393,7 +393,7 @@
                     "type": "number",
                     "default": 0.95,
                     "minimum": 0.0,
-                    "maximum": 1.1,
+                    "maximum": 1.0,
                     "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
                 },
                 "hmmsearch_family_similarity_length_threshold": {

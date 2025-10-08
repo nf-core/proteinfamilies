@@ -174,6 +174,9 @@ def process_family_similarity(mapping, domtbl, redundancy_length_threshold, simi
 def main(args=None):
     args = parse_args(args)
 
+    open(args.out_file, "w").close()
+    open(args.similar_file, "w").close()
+
     process_family_similarity(
         args.mapping,
         args.domtbl,
