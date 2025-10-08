@@ -145,7 +145,7 @@ workflow PROTEINFAMILIES {
         GENERATE_FAMILIES.out.full_msa,
         GENERATE_FAMILIES.out.fasta,
         GENERATE_FAMILIES.out.hmm,
-        params.remove_family_redundancy,
+        params.skip_family_redundancy_removal,
         params.skip_family_merging,
         params.hmmsearch_family_redundancy_length_threshold,
         params.hmmsearch_family_similarity_length_threshold,

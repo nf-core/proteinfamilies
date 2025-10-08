@@ -373,13 +373,13 @@
             "type": "object",
             "description": "Use these parameters to control the redundancy removal subworkflow execution.",
             "properties": {
-                "remove_family_redundancy": {
+                "skip_family_redundancy_removal": {
                     "type": "boolean",
-                    "description": "Removal of between-family redundancy via hmmsearch.",
-                    "default": true,
+                    "description": "Skip removal of between-family redundancy via hmmsearch sequence to family model matching.",
+                    "default": false,
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true,
-                    "help_text": "Similar families should not be further processed, for better resource management and to avoid duplication of families."
+                    "help_text": "Suggested to keep false, so that redundant families are not further processed, for better resource management and to avoid duplication."
                 },
                 "skip_family_merging": {
                     "type": "boolean",

@@ -25,7 +25,7 @@ workflow REMOVE_REDUNDANCY {
     full_msa                                     // tuple val(meta), path(sto.gz)
     fasta                                        // tuple val(meta), path(fasta.gz)
     hmm                                          // tuple val(meta), path(hmm.gz)
-    remove_family_redundancy                     // boolean
+    skip_family_redundancy_removal               // boolean
     skip_family_merging                          // boolean
     hmmsearch_family_redundancy_length_threshold // number [0.0, 1.0]
     hmmsearch_family_similarity_length_threshold // number [0.0, 1.0]
@@ -47,7 +47,7 @@ workflow REMOVE_REDUNDANCY {
     ch_merged_fasta    = Channel.empty()
     ch_merged_hmm      = Channel.empty()
 
-    if (remove_family_redundancy || !skip_family_merging) {
+    if (!skip_family_redundancy_removal || !skip_family_merging) {
         ch_fasta = fasta
             .map { meta, faa -> [[id: meta.id], faa] }
             .groupTuple(by: 0)
@@ -176,10 +176,10 @@ workflow REMOVE_REDUNDANCY {
 
         ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool )
         ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
-    } else if (remove_family_redundancy) {
+    } else if (!skip_family_redundancy_removal) {
         HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" )
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions )
-    } else { // both remove_family_redundancy and remove_sequence_redundancy false, different publish dir
+    } else { // both skip_family_redundancy_removal and remove_sequence_redundancy true, different publish dir
         HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" )
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions )
     }
