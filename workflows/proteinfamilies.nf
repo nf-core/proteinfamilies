@@ -133,7 +133,7 @@ workflow PROTEINFAMILIES {
         params.clipkit_out_format,
         params.hmmsearch_write_target,
         params.hmmsearch_write_domain,
-        params.recruit_sequences_with_models,
+        params.skip_additional_sequence_recruiting,
         params.hmmsearch_query_length_threshold
     )
     ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
@@ -156,7 +156,7 @@ workflow PROTEINFAMILIES {
         params.clipkit_out_format,
         params.hmmsearch_write_target,
         params.hmmsearch_write_domain,
-        params.recruit_sequences_with_models,
+        params.skip_additional_sequence_recruiting,
         params.hmmsearch_query_length_threshold,
         params.outdir
     )

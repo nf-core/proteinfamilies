@@ -319,13 +319,13 @@
                     "maximum": 1.0,
                     "description": "Multiple Sequence Alignment (MSA) positions with gappiness greater than this threshold will be trimmed"
                 },
-                "recruit_sequences_with_models": {
+                "skip_additional_sequence_recruiting": {
                     "type": "boolean",
-                    "description": "Set to true to recruit additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) to refine the alignments",
-                    "default": true,
+                    "description": "Skip recruitment of additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) into the full alignment",
+                    "default": false,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true,
-                    "help_text": "If this is set to true, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the hmmsearch_query_length_threshold), resulting in bigger but better described families"
+                    "help_text": "If this is set to false, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the hmmsearch_query_length_threshold), resulting in bigger but better described families"
                 },
                 "hmmsearch_write_target": {
                     "type": "boolean",

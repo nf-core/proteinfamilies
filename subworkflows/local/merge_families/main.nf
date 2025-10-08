@@ -8,16 +8,16 @@ include { GENERATE_FAMILIES       } from '../../../subworkflows/local/generate_f
 
 workflow MERGE_FAMILIES {
     take:
-    similarities                     // tuple val(meta), path(txt)
-    seed_msa                         // tuple val(meta), path(aln)
-    sequences                        // tuple val(meta), path(fasta)
-    alignment_tool                   // string ["famsa", "mafft"]
-    skip_msa_trimming                // boolean
-    clipkit_out_format               // string (default: clipkit)
-    hmmsearch_write_target           // boolean
-    hmmsearch_write_domain           // boolean
-    recruit_sequences_with_models    // boolean
-    hmmsearch_query_length_threshold // number [0.0, 1.0]
+    similarities                        // tuple val(meta), path(txt)
+    seed_msa                            // tuple val(meta), path(aln)
+    sequences                           // tuple val(meta), path(fasta)
+    alignment_tool                      // string ["famsa", "mafft"]
+    skip_msa_trimming                   // boolean
+    clipkit_out_format                  // string (default: clipkit)
+    hmmsearch_write_target              // boolean
+    hmmsearch_write_domain              // boolean
+    skip_additional_sequence_recruiting // boolean
+    hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
     main:
     ch_versions = Channel.empty()
@@ -45,7 +45,7 @@ workflow MERGE_FAMILIES {
     GENERATE_FAMILIES( sequences, MERGE_SEEDS.out.merged_seed_msa, \
             alignment_tool, skip_msa_trimming, clipkit_out_format, \
             hmmsearch_write_target, hmmsearch_write_domain, \
-            recruit_sequences_with_models, hmmsearch_query_length_threshold )
+            skip_additional_sequence_recruiting, hmmsearch_query_length_threshold )
     ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     emit:

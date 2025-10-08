@@ -11,15 +11,15 @@ include { HMMER_HMMALIGN   } from '../../../modules/nf-core/hmmer/hmmalign/main'
 
 workflow GENERATE_FAMILIES {
     take:
-    sequences                        // tuple val(meta), path(fasta)
-    ch_fasta                         // tuple val(meta), path(fasta)
-    alignment_tool                   // string ["famsa", "mafft"]
-    skip_msa_trimming                // boolean
-    clipkit_out_format               // string (default: clipkit)
-    hmmsearch_write_target           // boolean
-    hmmsearch_write_domain           // boolean
-    recruit_sequences_with_models    // boolean
-    hmmsearch_query_length_threshold // number [0.0, 1.0]
+    sequences                           // tuple val(meta), path(fasta)
+    ch_fasta                            // tuple val(meta), path(fasta)
+    alignment_tool                      // string ["famsa", "mafft"]
+    skip_msa_trimming                   // boolean
+    clipkit_out_format                  // string (default: clipkit)
+    hmmsearch_write_target              // boolean
+    hmmsearch_write_domain              // boolean
+    skip_additional_sequence_recruiting // boolean
+    hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
     main:
     ch_versions = Channel.empty()
@@ -47,7 +47,7 @@ workflow GENERATE_FAMILIES {
         .combine(sequences, by: 0)
         .map { id, meta, hmm, seqs -> [ meta, hmm, seqs, false, hmmsearch_write_target, hmmsearch_write_domain ] }
 
-    if (recruit_sequences_with_models) {
+    if (!skip_additional_sequence_recruiting) {
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
         ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions )
 

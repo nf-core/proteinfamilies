@@ -36,7 +36,7 @@ workflow REMOVE_REDUNDANCY {
     clipkit_out_format                           // string (default: clipkit)
     hmmsearch_write_target                       // boolean
     hmmsearch_write_domain                       // boolean
-    recruit_sequences_with_models                // boolean
+    skip_additional_sequence_recruiting          // boolean
     hmmsearch_query_length_threshold             // number [0.0, 1.0]
     outdir
 
@@ -88,7 +88,7 @@ workflow REMOVE_REDUNDANCY {
             MERGE_FAMILIES( IDENTIFY_REDUNDANT_FAMS.out.similarities, ch_seed_msa, \
             sequences, alignment_tool, skip_msa_trimming, clipkit_out_format, \
             hmmsearch_write_target, hmmsearch_write_domain, \
-            recruit_sequences_with_models, hmmsearch_query_length_threshold )
+            skip_additional_sequence_recruiting, hmmsearch_query_length_threshold )
             ch_versions = ch_versions.mix( MERGE_FAMILIES.out.versions )
 
             ch_merged_seed_msa = MERGE_FAMILIES.out.seed_msa
