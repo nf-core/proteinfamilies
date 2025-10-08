@@ -12,8 +12,8 @@ process MERGE_SEEDS {
     tuple val(meta2), path(seed_msa, stageAs: "seed_msa/*")
 
     output:
-    tuple val(meta), path("${prefix}*"), emit: merged_seed_msa
-    path "versions.yml"                , emit: versions
+    tuple val(meta), path("${prefix}.fas"), emit: merged_seed_msa
+    path "versions.yml"                   , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

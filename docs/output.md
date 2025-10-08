@@ -37,6 +37,10 @@ Removing redundancy:
 - [mafft](#mafft-for-redundancy-removal) aligner option. Re-align full MSA with final set of sequences
 - [HH-suite3](#hh-suite3) to reformat raw full `.sto` MSAs to `.fas`, in case the user did not select to remove in-family sequence redundancy, that automatically re-aligns sequences with either FAMSA or mafft
 
+Merging families:
+
+- [local](#local-modules-for-family-merging) modules are used as part of redundancy removal, to identify and merge similar families
+
 Updating families:
 
 - [untar](#untar) to decompress tarballs of existing hmms and msas
@@ -350,6 +354,23 @@ If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be cre
 If `--remove_sequence_redundancy` is set to `false`, then either the raw (if `--remove_family_redundancy` is set to `false`) or the filtered (if `--remove_family_redundancy` is set to `true`) full `.sto` MSAs will be reformatted to `.fas`.
 
 [HH-suite3](https://github.com/soedinglab/hh-suite) is an open-source software package for sensitive protein sequence searching based on the pairwise alignment of hidden Markov models (HMMs).
+
+### Local modules for family merging
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `remove_redundancy/`
+  - `merge_families/`
+    - `<samplename>/`
+      - `pooled_components.txt`: comma separated clusters of similar family ids
+      - `<merged_id>.fas`: (optional) merged seed alignment of each pooled component
+
+</details>
+
+If `--skip_family_merging` is set to `false`, and `hmmsearch_family_similarity_length_threshold` correctly set 
+below the `hmmsearch_family_redundancy_length_threshold`, then similar family seed alignments can be merged
+and go through the `generate_families` subworkflow once more.
 
 ### untar
 
