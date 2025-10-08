@@ -22,7 +22,7 @@ workflow UPDATE_FAMILIES {
     take:
     ch_samplesheet_for_update        // channel: [meta, sequences, existing_hmms_to_update, existing_msas_to_update]
     hmmsearch_query_length_threshold // number [0.0, 1.0]
-    remove_sequence_redundancy       // boolean
+    skip_sequence_redundancy_removal // boolean
     clustering_tool                  // string ["linclust", "cluster"]
     alignment_tool                   // string ["famsa", "mafft"]
     skip_msa_trimming                // boolean
@@ -110,7 +110,7 @@ workflow UPDATE_FAMILIES {
     ch_versions = ch_versions.mix( CAT_FASTA.out.versions )
     ch_fasta = CAT_FASTA.out.file_out
 
-    if (remove_sequence_redundancy) {
+    if (!skip_sequence_redundancy_removal) {
         // Strict clustering to remove redundancy
         MMSEQS_FASTA_CLUSTER( ch_fasta, clustering_tool )
         ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )

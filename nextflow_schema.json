@@ -409,10 +409,10 @@
                     "description": "Save only the fasta files of non-redundant families (might still contain redundant sequences)",
                     "help_text": "Specify to save the fasta files of non-redundant families."
                 },
-                "remove_sequence_redundancy": {
+                "skip_sequence_redundancy_removal": {
                     "type": "boolean",
-                    "description": "Removal of inside-family redundancy of sequences via mmseqs clustering.",
-                    "default": true,
+                    "description": "Skip removal of inside-family redundancy of sequences via mmseqs clustering.",
+                    "default": false,
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true,
                     "help_text": "Highly similar sequences within the same family should be removed, while making sure that the protein family diversity is still well captured."

@@ -68,7 +68,7 @@ nextflow_workflow {
                 input[4] = false      // skip_family_redundancy_removal
                 input[5] = 0.95       // hmmsearch_family_redundancy_length_threshold
                 input[6] = 0.9        // hmmsearch_family_similarity_length_threshold
-                input[7] = true       // remove_sequence_redundancy
+                input[7] = false      // skip_sequence_redundancy_removal
                 input[8] = "linclust" // clustering_tool
                 input[9] = "famsa"    // alignment_tool
                 """

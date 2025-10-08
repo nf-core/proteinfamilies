@@ -92,7 +92,7 @@ workflow PROTEINFAMILIES {
         UPDATE_FAMILIES (
             ch_samplesheet_for_update,
             params.hmmsearch_query_length_threshold,
-            params.remove_sequence_redundancy,
+            params.skip_sequence_redundancy_removal,
             params.clustering_tool,
             params.alignment_tool,
             params.skip_msa_trimming,
@@ -149,7 +149,7 @@ workflow PROTEINFAMILIES {
         params.skip_family_merging,
         params.hmmsearch_family_redundancy_length_threshold,
         params.hmmsearch_family_similarity_length_threshold,
-        params.remove_sequence_redundancy,
+        params.skip_sequence_redundancy_removal,
         params.clustering_tool,
         params.alignment_tool,
         params.skip_msa_trimming,

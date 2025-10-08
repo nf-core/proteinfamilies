@@ -29,7 +29,7 @@ workflow REMOVE_REDUNDANCY {
     skip_family_merging                          // boolean
     hmmsearch_family_redundancy_length_threshold // number [0.0, 1.0]
     hmmsearch_family_similarity_length_threshold // number [0.0, 1.0]
-    remove_sequence_redundancy                   // boolean
+    skip_sequence_redundancy_removal             // boolean
     clustering_tool                              // string ["linclust", "cluster"]
     alignment_tool                               // string ["famsa", "mafft"]
     skip_msa_trimming                            // boolean
@@ -166,7 +166,7 @@ workflow REMOVE_REDUNDANCY {
             }
     }
 
-    if (remove_sequence_redundancy) {
+    if (!skip_sequence_redundancy_removal) {
         MMSEQS_FASTA_CLUSTER( fasta, clustering_tool )
         ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
@@ -179,7 +179,7 @@ workflow REMOVE_REDUNDANCY {
     } else if (!skip_family_redundancy_removal) {
         HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" )
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions )
-    } else { // both skip_family_redundancy_removal and remove_sequence_redundancy true, different publish dir
+    } else { // both skip_family_redundancy_removal and skip_sequence_redundancy_removal true, different publish dir
         HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" )
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions )
     }
