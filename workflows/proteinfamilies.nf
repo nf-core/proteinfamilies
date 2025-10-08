@@ -95,7 +95,7 @@ workflow PROTEINFAMILIES {
             params.remove_sequence_redundancy,
             params.clustering_tool,
             params.alignment_tool,
-            params.trim_msa,
+            params.skip_msa_trimming,
             params.clipkit_out_format
         )
         ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
@@ -129,7 +129,7 @@ workflow PROTEINFAMILIES {
         ch_samplesheet_for_create,
         ch_fasta_chunks,
         params.alignment_tool,
-        params.trim_msa,
+        params.skip_msa_trimming,
         params.clipkit_out_format,
         params.hmmsearch_write_target,
         params.hmmsearch_write_domain,
@@ -152,7 +152,7 @@ workflow PROTEINFAMILIES {
         params.remove_sequence_redundancy,
         params.clustering_tool,
         params.alignment_tool,
-        params.trim_msa,
+        params.skip_msa_trimming,
         params.clipkit_out_format,
         params.hmmsearch_write_target,
         params.hmmsearch_write_domain,

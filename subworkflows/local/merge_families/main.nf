@@ -12,7 +12,7 @@ workflow MERGE_FAMILIES {
     seed_msa                         // tuple val(meta), path(aln)
     sequences                        // tuple val(meta), path(fasta)
     alignment_tool                   // string ["famsa", "mafft"]
-    trim_msa                         // boolean
+    skip_msa_trimming                // boolean
     clipkit_out_format               // string (default: clipkit)
     hmmsearch_write_target           // boolean
     hmmsearch_write_domain           // boolean
@@ -43,7 +43,7 @@ workflow MERGE_FAMILIES {
     ch_versions = ch_versions.mix( MERGE_SEEDS.out.versions )
 
     GENERATE_FAMILIES( sequences, MERGE_SEEDS.out.merged_seed_msa, \
-            alignment_tool, trim_msa, clipkit_out_format, \
+            alignment_tool, skip_msa_trimming, clipkit_out_format, \
             hmmsearch_write_target, hmmsearch_write_domain, \
             recruit_sequences_with_models, hmmsearch_query_length_threshold )
     ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )

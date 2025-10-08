@@ -14,7 +14,7 @@ workflow GENERATE_FAMILIES {
     sequences                        // tuple val(meta), path(fasta)
     ch_fasta                         // tuple val(meta), path(fasta)
     alignment_tool                   // string ["famsa", "mafft"]
-    trim_msa                         // boolean
+    skip_msa_trimming                // boolean
     clipkit_out_format               // string (default: clipkit)
     hmmsearch_write_target           // boolean
     hmmsearch_write_domain           // boolean
@@ -31,7 +31,7 @@ workflow GENERATE_FAMILIES {
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_seed_msa = ALIGN_SEQUENCES.out.alignments
 
-    if (trim_msa) {
+    if (!skip_msa_trimming) {
         CLIPKIT( ch_seed_msa, clipkit_out_format )
         ch_versions = ch_versions.mix( CLIPKIT.out.versions )
         ch_seed_msa = CLIPKIT.out.clipkit

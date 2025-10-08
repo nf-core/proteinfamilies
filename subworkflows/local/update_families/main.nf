@@ -25,7 +25,7 @@ workflow UPDATE_FAMILIES {
     remove_sequence_redundancy       // boolean
     clustering_tool                  // string ["linclust", "cluster"]
     alignment_tool                   // string ["famsa", "mafft"]
-    trim_msa                         // boolean
+    skip_msa_trimming                // boolean
     clipkit_out_format               // string (default: clipkit)
 
     main:
@@ -124,7 +124,7 @@ workflow UPDATE_FAMILIES {
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_msa = ALIGN_SEQUENCES.out.alignments
 
-    if (trim_msa) {
+    if (!skip_msa_trimming) {
         CLIPKIT( ch_msa, clipkit_out_format )
         ch_versions = ch_versions.mix( CLIPKIT.out.versions )
         ch_msa = CLIPKIT.out.clipkit

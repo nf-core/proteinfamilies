@@ -32,7 +32,7 @@ workflow REMOVE_REDUNDANCY {
     remove_sequence_redundancy                   // boolean
     clustering_tool                              // string ["linclust", "cluster"]
     alignment_tool                               // string ["famsa", "mafft"]
-    trim_msa                                     // boolean
+    skip_msa_trimming                            // boolean
     clipkit_out_format                           // string (default: clipkit)
     hmmsearch_write_target                       // boolean
     hmmsearch_write_domain                       // boolean
@@ -86,7 +86,7 @@ workflow REMOVE_REDUNDANCY {
 
         if (!skip_family_merging) {
             MERGE_FAMILIES( IDENTIFY_REDUNDANT_FAMS.out.similarities, ch_seed_msa, \
-            sequences, alignment_tool, trim_msa, clipkit_out_format, \
+            sequences, alignment_tool, skip_msa_trimming, clipkit_out_format, \
             hmmsearch_write_target, hmmsearch_write_domain, \
             recruit_sequences_with_models, hmmsearch_query_length_threshold )
             ch_versions = ch_versions.mix( MERGE_FAMILIES.out.versions )

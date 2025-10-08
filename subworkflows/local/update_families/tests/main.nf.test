@@ -20,7 +20,7 @@ nextflow_workflow {
                 input[2] = true       // remove_sequence_redundancy
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
-                input[5] = true       // trim_msa
+                input[5] = false      // skip_msa_trimming
                 input[6] = "clipkit"  // clipkit_out_format
                 """
             }

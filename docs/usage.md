@@ -42,7 +42,7 @@ Here we provide guidance regarding some parameter choices.
   The `famsa` option is generally recommended as the best time-memory-accuracy combination.
   The `mafft` option offers various alignment strategies, but in general is slower and less sensitive than `famsa`.
 - trim_ends_only: Flag to either clip MSA gaps throughout the alignment, or only at the ends.
-  Only used if `trim_msa` is on.
+  Only used if `skip_msa_trimming` is off.
   The authors suggest keeping the `trim_ends_only` on, since the gaps inside the sequences may still carry evolutionary significance.
 
 ## Running the pipeline

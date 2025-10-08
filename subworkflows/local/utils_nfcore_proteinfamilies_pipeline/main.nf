@@ -178,7 +178,7 @@ def toolCitationText() {
         quality_check_text,
         clustering_text,
         alignment_text,
-        params.trim_msa ? clipping_text : "",
+        !params.skip_msa_trimming ? clipping_text : "",
         model_text,
         postprocessing_text
     ].join(' ').trim()
@@ -211,7 +211,7 @@ def toolBibliographyText() {
         quality_check_text,
         clustering_text,
         alignment_text,
-        params.trim_msa ? clipping_text : "",
+        !params.skip_msa_trimming ? clipping_text : "",
         model_text,
         postprocessing_text
     ].join(' ').trim()

@@ -293,10 +293,10 @@
                     "help_text": "Available tools: 'famsa' or 'mafft'.",
                     "enum": ["famsa", "mafft"]
                 },
-                "trim_msa": {
+                "skip_msa_trimming": {
                     "type": "boolean",
-                    "description": "Boolean whether to trim the Multiple Sequence Alignment (MSA) gaps",
-                    "default": true,
+                    "description": "Boolean whether to skip trimming off gappy positions from Multiple Sequence Alignments (MSAs)",
+                    "default": false,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
