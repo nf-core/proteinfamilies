@@ -23,6 +23,7 @@ process IDENTIFY_REDUNDANT_FAMS {
     task.ext.when == null || task.ext.when
 
     script:
+    def args = task.ext.args ?: ''
     """
     identify_redundant_fams.py \\
         --mapping ${mapping} \\
@@ -31,7 +32,8 @@ process IDENTIFY_REDUNDANT_FAMS {
         --similarity_length_threshold ${similarity_length_threshold} \\
         --out_file redundant_fam_ids.txt \\
         --similar_file similar_fam_ids.txt \\
-        --similarities_csv similarities.csv
+        --similarities_csv similarities.csv \\
+        ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
