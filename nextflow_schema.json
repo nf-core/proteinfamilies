@@ -391,7 +391,7 @@
                 },
                 "hmmsearch_family_redundancy_length_threshold": {
                     "type": "number",
-                    "default": 0.95,
+                    "default": 1.0,
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
