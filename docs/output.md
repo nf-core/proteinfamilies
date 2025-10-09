@@ -299,13 +299,13 @@ along with the families' respective full MSAs, to recruit sequences from a new i
       - `pooled_components.txt`: comma separated clusters of similar family ids
       - `<merged_id>.fas`: (optional) merged seed alignment of each pooled component
   - `skipped_ids/`
-      - `<samplename>.txt`: (optional) concatenated redundant and similar (single) family ids that are filtered out
+    - `<samplename>.txt`: (optional) concatenated redundant and similar (single) family ids that are filtered out
 </details>
 
 If one of `--skip_family_redundancy_removal` or `--skip_family_merging` is set to `false`, the `hmmer/hmmsearch` module is used
 to identify family representative sequences that are identical or similar (respectively) to other family HMMs.
 In case of redundancy, the smaller sized families are flagged for removal.
-If `--skip_family_merging` is set to `false`, and if `hmmsearch_family_similarity_length_threshold` is correctly set 
+If `--skip_family_merging` is set to `false`, and if `hmmsearch_family_similarity_length_threshold` is correctly set
 lower than `hmmsearch_family_redundancy_length_threshold` (or `skip_family_redundancy_removal` is set to `true`), then similar family seed alignments can be merged
 and go through the `generate_families` subworkflow once more.
 Most `remove_redundancy` outputs are optional folders that contain intermediate pipeline results, and therefore are not saved in the output results by default.

@@ -72,17 +72,17 @@ output:
       description: |
         Versions file containing the software versions used in the workflow
   - seed_msa:
-        type: file
-        description: Generated seed multiple sequence alignment files of merged families
+      type: file
+      description: Generated seed multiple sequence alignment files of merged families
   - full_msa:
-        type: file
-        description: Full multiple sequence alignment files of merged families
+      type: file
+      description: Full multiple sequence alignment files of merged families
   - fasta:
-        type: file
-        description: FASTA sequence files of merged families full alignments
+      type: file
+      description: FASTA sequence files of merged families full alignments
   - hmm:
-        type: file
-        description: Hidden Markov Model profile files of merged families
+      type: file
+      description: Hidden Markov Model profile files of merged families
 authors:
   - "@vagkaratzas"
 maintainers:
