@@ -38,7 +38,6 @@ workflow REMOVE_REDUNDANCY {
     hmmsearch_write_domain                       // boolean
     skip_additional_sequence_recruiting          // boolean
     hmmsearch_query_length_threshold             // number [0.0, 1.0]
-    outdir
 
     main:
     ch_versions        = Channel.empty()

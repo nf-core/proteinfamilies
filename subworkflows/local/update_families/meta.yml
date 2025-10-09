@@ -32,36 +32,42 @@ input:
         CSV file with the following columns; meta, sequences, existing_hmms_to_update, existing_msas_to_update
   - hmmsearch_query_length_threshold:
       type: number
-      description: Query length threshold for hmmsearch filtering to determine sequence hits that will update existing families (between 0.0 and 1.0)
+      description: |
+        Query length threshold for hmmsearch filtering to determine sequence hits that will update existing families (between 0.0 and 1.0)
       minimum: 0.0
       maximum: 1.0
   - skip_sequence_redundancy_removal:
       type: boolean
-      description: Skip sequence redundancy removal step using clustering
+      description: |
+        Skip sequence redundancy removal step using clustering
   - clustering_tool:
       type: string
-      description: Tool to use for sequence clustering to remove redundancy
+      description: |
+        Tool to use for sequence clustering to remove redundancy
       enum: ["linclust", "cluster"]
   - alignment_tool:
       type: string
-      description: Tool to use for multiple sequence alignment
+      description: |
+        Tool to use for multiple sequence alignment
       enum: ["famsa", "mafft"]
   - skip_msa_trimming:
       type: boolean
-      description: Skip trimming of multiple sequence alignments with ClipKIT
+      description: |
+        Skip trimming of multiple sequence alignments with ClipKIT
   - clipkit_out_format:
       type: string
-      description: Output format for ClipKIT trimming tool
+      description: |
+        Output format for ClipKIT trimming tool
       default: "clipkit"
 output:
   - versions:
       type: file
       description: |
-        Versions file containing the software versions used in the workflow.
+        Versions file containing the software versions used in the workflow
   - no_hit_seqs:
       type: file
       description: |
-        FASTA file with sequences without hits, to go through the base family generation workflow.
+        FASTA file with sequences without hits, to go through the base family generation workflow
   - updated_family_reps:
       type: file
       description: |

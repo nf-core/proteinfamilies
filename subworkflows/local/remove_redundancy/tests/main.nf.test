@@ -82,7 +82,6 @@ nextflow_workflow {
                 input[15] = true       // hmmsearch_write_domain
                 input[16] = false      // skip_additional_sequence_recruiting
                 input[17] = 0.9        // hmmsearch_query_length_threshold
-                input[18] = "."        // outdir
                 """
             }
         }

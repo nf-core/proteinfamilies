@@ -157,8 +157,7 @@ workflow PROTEINFAMILIES {
         params.hmmsearch_write_target,
         params.hmmsearch_write_domain,
         params.skip_additional_sequence_recruiting,
-        params.hmmsearch_query_length_threshold,
-        params.outdir
+        params.hmmsearch_query_length_threshold
     )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
