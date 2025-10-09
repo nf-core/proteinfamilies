@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
-name: "ALIGN_SEQUENCES"
-description: Subworkflow that generates alignments from amino acid fasta files.
+name: "align_sequences"
+description: Generate alignments from amino acid fasta files
 keywords:
   - fasta
   - sequences
@@ -12,19 +12,20 @@ input:
   - sequences:
       type: file
       description: |
-        Amino acid fasta file containing amino acid sequences for alignment.
+        Amino acid fasta file containing amino acid sequences for alignment
   - alignment_tool:
       type: string
       description: |
-        Alignment tool to use for generating the alignment. Options are 'famsa' or 'mafft'.
+        Alignment tool to use for generating the alignment. Options are 'famsa' or 'mafft'
 output:
   - versions:
       type: file
       description: |
-        Versions file containing the software versions used in the workflow.
+        Versions file containing the software versions used in the workflow
   - alignments:
       type: file
-      description: MSA file
+      description: |
+        MSA files
 authors:
   - "@vagkaratzas"
 maintainers:

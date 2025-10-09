@@ -14,18 +14,23 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
                 ])
                 input[1] = Channel.of([
-                    [ id: 'test' ],
+                        [ id: 'test', chunk: "chunk_1" ],
+                        [
+                            file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true)
+                        ]
+                    ],
                     [
-                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta', checkIfExists: true),
-                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.fasta', checkIfExists: true)
-                    ]
+                        [ id: 'test', chunk: "chunk_2" ],
+                        [
+                            file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.fasta', checkIfExists: true)
+                        ]
                 ])
                 input[2] = "famsa"   // alignment_tool
-                input[3] = true      // trim_msa
+                input[3] = false     // skip_msa_trimming
                 input[4] = "clipkit" // clipkit_out_format
                 input[5] = false     // hmmsearch_write_target
                 input[6] = true      // hmmsearch_write_domain
-                input[7] = true      // recruit_sequences_with_models
+                input[7] = false     // skip_additional_sequence_recruiting
                 input[8] = 0.9       // hmmsearch_query_length_threshold
                 """
             }

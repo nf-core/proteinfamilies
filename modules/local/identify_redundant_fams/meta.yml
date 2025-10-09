@@ -47,19 +47,30 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-    - redundant_fam_ids.txt:
-        type: file
-        description: a text file with redundant family IDs
-        pattern: "redundant_fam_ids.txt"
+      - redundant_fam_ids.txt:
+          type: file
+          description: A text file with redundant family IDs
+          pattern: "redundant_fam_ids.txt"
+  similar_ids:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-    - redundant_fam_ids.txt:
-        type: file
-        description: a CSV file with family similarities and length threshold score
-        pattern: "similarities.csv"
+      - similar_fam_ids.txt:
+          type: file
+          description: A text file with similar family IDs
+          pattern: "similar_fam_ids.txt"
+  similarities:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - similarities.csv:
+          type: file
+          description: A CSV file with pairwise family similarities based on hmmsearch length threshold scores
+          pattern: "similarities.csv"
   versions:
     - versions.yml:
         type: file

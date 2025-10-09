@@ -11,34 +11,27 @@ include { HMMER_HMMALIGN   } from '../../../modules/nf-core/hmmer/hmmalign/main'
 
 workflow GENERATE_FAMILIES {
     take:
-    sequences                        // tuple val(meta), path(fasta)
-    fasta_chunks                     // tuple val(meta), path(fasta)
-    alignment_tool                   // string ["famsa", "mafft"]
-    trim_msa                         // boolean
-    clipkit_out_format               // string (default: clipkit)
-    hmmsearch_write_target           // boolean
-    hmmsearch_write_domain           // boolean
-    recruit_sequences_with_models    // boolean
-    hmmsearch_query_length_threshold // number [0.0, 1.0]
+    sequences                           // tuple val(meta), path(fasta)
+    ch_fasta                            // tuple val(meta), path(fasta)
+    alignment_tool                      // string ["famsa", "mafft"]
+    skip_msa_trimming                   // boolean
+    clipkit_out_format                  // string (default: clipkit)
+    hmmsearch_write_target              // boolean
+    hmmsearch_write_domain              // boolean
+    skip_additional_sequence_recruiting // boolean
+    hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
     main:
     ch_versions = Channel.empty()
     ch_seed_msa = Channel.empty()
     ch_full_msa = Channel.empty()
-    ch_fasta    = Channel.empty()
     ch_hmm      = Channel.empty()
-
-    ch_fasta = fasta_chunks
-        .transpose()
-        .map { meta, file_path ->
-            [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName], file_path ]
-        }
 
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_seed_msa = ALIGN_SEQUENCES.out.alignments
 
-    if (trim_msa) {
+    if (!skip_msa_trimming) {
         CLIPKIT( ch_seed_msa, clipkit_out_format )
         ch_versions = ch_versions.mix( CLIPKIT.out.versions )
         ch_seed_msa = CLIPKIT.out.clipkit
@@ -54,7 +47,7 @@ workflow GENERATE_FAMILIES {
         .combine(sequences, by: 0)
         .map { id, meta, hmm, seqs -> [ meta, hmm, seqs, false, hmmsearch_write_target, hmmsearch_write_domain ] }
 
-    if (recruit_sequences_with_models) {
+    if (!skip_additional_sequence_recruiting) {
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
         ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions )
 

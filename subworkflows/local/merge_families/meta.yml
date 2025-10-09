@@ -1,17 +1,20 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
-name: "generate_families"
-description: Generate family models and alignments from clustered sequences using multiple sequence alignment, trimming, HMM building, and optional sequence recruitment
+name: "merge_families"
+description: Merge similar protein families by pooling components, merging seed alignments, and generating new family HMM profiles and full alignments
 keywords:
   - families
+  - merging
+  - similarity
+  - pooling
   - alignment
   - hmm
-  - model
+  - protein
   - sequences
   - msa
-  - trimming
-  - recruitment
-  - protein
 components:
+  - pool_similar_components
+  - merge_seeds
+  - generate_families
   - align_sequences
   - clipkit
   - hmmer/hmmbuild
@@ -19,14 +22,18 @@ components:
   - filter_recruited
   - hmmer/hmmalign
 input:
+  - similarities:
+      type: file
+      description: |
+        File containing pairwise similarity data between families
+  - seed_msa:
+      type: file
+      description: |
+        Initial seed multiple sequence alignment files that will be merged according to similarities
   - sequences:
       type: file
       description: |
-        Amino acid FASTA file containing sequences to be used for family generation
-  - ch_fasta:
-      type: file
-      description: |
-        FASTA files produced from the clustering process
+        FASTA file containing input sequences
   - alignment_tool:
       type: string
       description: |
@@ -35,7 +42,7 @@ input:
   - skip_msa_trimming:
       type: boolean
       description: |
-        Skip trimming of multiple sequence alignments with ClipKIT
+        Skip trimming of multiple sequence alignments
   - clipkit_out_format:
       type: string
       description: |
@@ -52,11 +59,11 @@ input:
   - skip_additional_sequence_recruiting:
       type: boolean
       description: |
-        Skip additional sequence recruiting step using hmmsearch
+        Skip additional sequence recruiting step
   - hmmsearch_query_length_threshold:
       type: number
       description: |
-        Query length threshold for hmmsearch additional sequence filtering (between 0.0 and 1.0)
+        Query length threshold for hmmsearch sequence recruitment for full alignments (between 0.0 and 1.0)
       minimum: 0.0
       maximum: 1.0
 output:
@@ -66,20 +73,16 @@ output:
         Versions file containing the software versions used in the workflow
   - seed_msa:
       type: file
-      description: |
-        Seed MSA files containing the multiple sequence alignment of the seed clusters
+      description: Generated seed multiple sequence alignment files of merged families
   - full_msa:
       type: file
-      description: |
-        Full MSA files containing the multiple sequence alignment of each family with additional recruited sequences
+      description: Full multiple sequence alignment files of merged families
   - fasta:
       type: file
-      description: |
-        FASTA files corresponding to the full MSA files
+      description: FASTA sequence files of merged families full alignments
   - hmm:
       type: file
-      description: |
-        HMM files containing the hidden Markov model of each family
+      description: Hidden Markov Model profile files of merged families
 authors:
   - "@vagkaratzas"
 maintainers:

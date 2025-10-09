@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "merge_seeds"
+description: Merge seed MSA files based on a-priori similarity information.
+keywords:
+  - merge
+  - seed alignment
+  - msa
+  - similarity
+tools:
+  - "merge_seeds":
+      description: "Merge seed MSA files based on similarity information."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/merge_seeds/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/merge_seeds/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/merge_seeds/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - similarities:
+        type: string
+        description: A string containing comma separated family ids, used to determine which seeds to merge.
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - seed_msa:
+        type: file
+        description: Collection of seed MSA files to be merged.
+        pattern: "*.fas"
+output:
+  merged_seed_msa:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}.fas":
+          type: file
+          description: Merged seed MSA file
+          pattern: "*.fas"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

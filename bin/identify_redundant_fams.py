@@ -27,6 +27,11 @@ def parse_args(args=None):
         help="TSV hmmsearch domtbl out results for filtering.",
     )
     parser.add_argument(
+        "--skip_family_redundancy_removal",
+        action="store_true",
+        help="If set, skip filtering of similar families above redundancy threshold.",
+    )
+    parser.add_argument(
         "-l",
         "--redundancy_length_threshold",
         required=True,
@@ -51,6 +56,13 @@ def parse_args(args=None):
         help="Name of the output file with redundant family ids.",
     )
     parser.add_argument(
+        "--similar_file",
+        required=True,
+        metavar="FILE",
+        type=str,
+        help="Output file for IDs of families appearing in similarities.csv.",
+    )
+    parser.add_argument(
         "--similarities_csv",
         default="similarities.csv",
         metavar="FILE",
@@ -67,7 +79,7 @@ def remove_self_hits(domtbl_df, representative_to_family):
     return domtbl_df
 
 
-def filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_length_threshold):
+def filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_length_threshold, skip_family_redundancy_removal):
     """
     Return two DataFrames:
     - redundant candidates (>= redundancy_length_threshold)
@@ -77,42 +89,52 @@ def filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_
         (domtbl_df["env to"] - domtbl_df["env from"] + 1) / domtbl_df["qlen"]
     )
 
-    redundant_df = domtbl_df[domtbl_df["similarity_score"] >= redundancy_length_threshold]
-    similar_df = domtbl_df[
-        (domtbl_df["similarity_score"] >= similarity_length_threshold)
-        & (domtbl_df["similarity_score"] < redundancy_length_threshold)
-    ]
+    if skip_family_redundancy_removal:
+        redundant_df = pd.DataFrame(columns=domtbl_df.columns) # empty df
+        similar_df = domtbl_df[
+            domtbl_df["similarity_score"] >= similarity_length_threshold
+        ]
+    else:
+        redundant_df = domtbl_df[
+            domtbl_df["similarity_score"] >= redundancy_length_threshold
+        ]
+        similar_df = domtbl_df[
+            (domtbl_df["similarity_score"] >= similarity_length_threshold)
+            & (domtbl_df["similarity_score"] < redundancy_length_threshold)
+        ]
 
     return redundant_df, similar_df
 
 
-def process_redundant(redundant_df, family_to_size, out_file):
-    redundant_df = redundant_df.drop(columns=["qlen", "env from", "env to"])
-    redundant_df["query size"] = redundant_df["query name"].map(family_to_size)
-    redundant_df["target size"] = redundant_df["target name"].map(family_to_size)
-
+def process_redundant(redundant_df, family_to_size, out_file, skip_family_redundancy_removal):
     redundant_fam_names = set()
-    for _, row in redundant_df.iterrows():
-        query = row["query name"]
-        target = row["target name"]
-        query_size = int(row["query size"])
-        target_size = int(row["target size"])
 
-        if query_size < target_size:
-            redundant_fam_names.add(query)
-        elif target_size < query_size:
-            redundant_fam_names.add(target)
-        else: # sizes equal, keep alphabetically first as non-redundant to avoid triangular deletions
-            redundant_fam_names.add(max(query, target))
+    if not skip_family_redundancy_removal:
+        redundant_df = redundant_df.drop(columns=["qlen", "env from", "env to"])
+        redundant_df["query size"] = redundant_df["query name"].map(family_to_size)
+        redundant_df["target size"] = redundant_df["target name"].map(family_to_size)
 
-    with open(out_file, "w") as f:
-        for name in sorted(redundant_fam_names):
-            f.write(name + "\n")
+        for _, row in redundant_df.iterrows():
+            query = row["query name"]
+            target = row["target name"]
+            query_size = int(row["query size"])
+            target_size = int(row["target size"])
+
+            if query_size < target_size:
+                redundant_fam_names.add(query)
+            elif target_size < query_size:
+                redundant_fam_names.add(target)
+            else: # sizes equal, keep alphabetically first as non-redundant to avoid triangular deletions
+                redundant_fam_names.add(max(query, target))
+
+        with open(out_file, "w") as f:
+            for name in sorted(redundant_fam_names):
+                f.write(name + "\n")
 
     return redundant_fam_names
 
 
-def process_similar(similar_df, redundant_fam_names, similarities_csv):
+def process_similar(similar_df, redundant_fam_names, similarities_csv, similar_file):
     # remove any similarity rows involving families already marked redundant
     if not similar_df.empty:
         similar_df = similar_df[
@@ -127,8 +149,14 @@ def process_similar(similar_df, redundant_fam_names, similarities_csv):
         )
         similar_out.to_csv(similarities_csv, index=False)
 
+        # collect all unique family IDs that appear at least once in similarities
+        similar_ids = set(similar_out["family_1"]) | set(similar_out["family_2"])
+        with open(similar_file, "w") as f:
+            for fam in sorted(similar_ids):
+                f.write(f"{fam}\n")
 
-def process_family_similarity(mapping, domtbl, redundancy_length_threshold, similarity_length_threshold, out_file, similarities_csv):
+
+def process_family_similarity(mapping, domtbl, redundancy_length_threshold, similarity_length_threshold, out_file, similar_file, similarities_csv, skip_family_redundancy_removal):
     mapping_df = pd.read_csv(
         mapping, comment="#", usecols=["Family Id", "Size", "Representative Id"]
     )
@@ -151,15 +179,18 @@ def process_family_similarity(mapping, domtbl, redundancy_length_threshold, simi
 
     domtbl_df = remove_self_hits(domtbl_df, representative_to_family)
 
-    redundant_df, similar_df = filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_length_threshold)
+    redundant_df, similar_df = filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_length_threshold, skip_family_redundancy_removal)
 
-    redundant_fam_names = process_redundant(redundant_df, family_to_size, out_file)
+    redundant_fam_names = process_redundant(redundant_df, family_to_size, out_file, skip_family_redundancy_removal)
 
-    process_similar(similar_df, redundant_fam_names, similarities_csv)
+    process_similar(similar_df, redundant_fam_names, similarities_csv, similar_file)
 
 
 def main(args=None):
     args = parse_args(args)
+
+    open(args.out_file, "w").close()
+    open(args.similar_file, "w").close()
 
     process_family_similarity(
         args.mapping,
@@ -167,7 +198,9 @@ def main(args=None):
         args.redundancy_length_threshold,
         args.similarity_length_threshold,
         args.out_file,
+        args.similar_file,
         args.similarities_csv,
+        args.skip_family_redundancy_removal
     )
 
 

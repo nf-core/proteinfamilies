@@ -1,0 +1,57 @@
+nextflow_workflow {
+
+    name "Test Subworkflow MERGE_FAMILIES"
+    script "../main.nf"
+    workflow "MERGE_FAMILIES"
+
+    test("fasta") {
+
+        when {
+            workflow {
+                """
+                def similarities_content = "family_1,family_2,similarity_score\\nmgnifams_test_1,mgnifams_test_2,0.94\\n"
+
+                def similarities_file = file('similarities.csv')
+                similarities_file.text = similarities_content
+
+                input[0] = [
+                    [ id: 'test' ],
+                    similarities_file
+                ]
+                input[1] = Channel.of([
+                    [ id: 'test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                    ]
+                ])
+                input[2] = Channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                ])
+                input[3] = "famsa"   // alignment_tool
+                input[4] = false     // skip_msa_trimming
+                input[5] = "clipkit" // clipkit_out_format
+                input[6] = false     // hmmsearch_write_target
+                input[7] = true      // hmmsearch_write_domain
+                input[8] = false     // skip_additional_sequence_recruiting
+                input[9] = 0.9       // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    file(workflow.out.hmm[0][1]).name,
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match()}
+            )
+        }
+    }
+
+}

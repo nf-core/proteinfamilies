@@ -1,36 +1,73 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
-name: "UPDATE_FAMILIES"
-description: Subworkflow that updates HMMs and full MSAs of existing families with new sequences.
+name: "update_families"
+description: Update HMMs and full MSAs of existing families with new sequences through homology search, clustering, alignment, and model building
 keywords:
   - update
-  - hmm model
-  - full alignment
+  - families
+  - hmm
+  - model
+  - alignment
+  - msa
+  - clustering
+  - homology
+  - search
+  - recruitment
 components:
   - untar
-  - cat/cat
+  - find/concatenate
   - hmmer/hmmsearch
   - branch_hits_fasta
   - seqkit/seq
-  - execute_clustering
+  - mmseqs_fasta_cluster
   - remove_redundant_seqs
   - align_sequences
   - clipkit
   - hmmer/hmmbuild
+  - extract_family_members
   - extract_family_reps
 input:
   - ch_samplesheet_for_update:
       type: file
       description: |
         CSV file with the following columns; meta, sequences, existing_hmms_to_update, existing_msas_to_update
+  - hmmsearch_query_length_threshold:
+      type: number
+      description: |
+        Query length threshold for hmmsearch filtering to determine sequence hits that will update existing families (between 0.0 and 1.0)
+      minimum: 0.0
+      maximum: 1.0
+  - skip_sequence_redundancy_removal:
+      type: boolean
+      description: |
+        Skip sequence redundancy removal step using clustering
+  - clustering_tool:
+      type: string
+      description: |
+        Tool to use for sequence clustering to remove redundancy
+      enum: ["linclust", "cluster"]
+  - alignment_tool:
+      type: string
+      description: |
+        Tool to use for multiple sequence alignment
+      enum: ["famsa", "mafft"]
+  - skip_msa_trimming:
+      type: boolean
+      description: |
+        Skip trimming of multiple sequence alignments with ClipKIT
+  - clipkit_out_format:
+      type: string
+      description: |
+        Output format for ClipKIT trimming tool
+      default: "clipkit"
 output:
   - versions:
       type: file
       description: |
-        Versions file containing the software versions used in the workflow.
+        Versions file containing the software versions used in the workflow
   - no_hit_seqs:
       type: file
       description: |
-        FASTA file with sequences without hits, to go through the base family generation workflow.
+        FASTA file with sequences without hits, to go through the base family generation workflow
   - updated_family_reps:
       type: file
       description: |

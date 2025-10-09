@@ -21,7 +21,7 @@
 ## Introduction
 
 **nf-core/proteinfamilies** is a bioinformatics pipeline that generates protein families from amino acid sequences and/or updates existing families with new sequences.
-It takes a protein fasta file as input, clusters the sequences and then generates protein family Hiden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
+It takes a protein fasta file as input, clusters the sequences and then generates protein family Hidden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
 Optionally, paths to existing family HMMs and MSAs can be given (must have matching base filenames one-to-one) in order to update with new sequences in case of matching hits.
 
 <p>
@@ -41,7 +41,7 @@ Generate input amino acid sequence statistics with ([`SeqFu`](https://github.com
 2. Perform multiple sequence alignment (MSA) ([`FAMSA`](https://github.com/refresh-bio/FAMSA/) or [`mafft`](https://github.com/GSLBiotech/mafft/))
 3. Optionally, clip gap parts of the MSA ([`ClipKIT`](https://github.com/JLSteenwyk/ClipKIT/))
 4. Generate family HMMs and fish additional sequences into the family ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
-5. Optionally, remove redundant families by comparing family representative sequences against family models with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
+5. Optionally, remove redundant and/or merge similar families by comparing family representative sequences against family models with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
 6. Optionally, from the remaining families, remove in-family redundant sequences by strictly clustering with ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/)) and keep cluster representatives
 7. Optionally, if in-family redundancy was not removed, reformat the `.sto` full MSAs to `.fas` with ([`HH-suite3`](https://github.com/soedinglab/hh-suite))
 8. Present statistics for remaining/updated family size distributions and representative sequence lengths ([`MultiQC`](http://multiqc.info/))

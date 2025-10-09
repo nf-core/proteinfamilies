@@ -31,7 +31,7 @@ Generating family models:
 
 Removing redundancy:
 
-- [hmmer](#hmmer-for-redundancy-removal) to match family representative sequences against other family models in order to keep non redundant ones
+- [hmmer](#hmmer-for-redundancy-removal) to match family representative sequences against other family models in order to keep non redundant and/or merge similar ones
 - [MMseqs2](#mmseqs2-for-redundancy-removal) to strictly cluster the sequences within each of the remaining families, in order to still capture the evolutionary diversity within a family, but without keeping all the almost identical sequences
 - [FAMSA](#famsa-for-redundancy-removal) aligner option. Re-align full MSA with final set of sequences
 - [mafft](#mafft-for-redundancy-removal) aligner option. Re-align full MSA with final set of sequences
@@ -137,6 +137,13 @@ The original mmseqs db and the clustered mmseqs db can be optional saved to the 
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.*`: filtered seed alignments after family redundancy removal
+- `remove_redundancy/`
+  - `merge_families/`
+    - `seed_msa/`
+      - `raw/`
+        - `famsa_align/`
+          - `<samplename>/`
+            - `<samplename>_*.aln`: fasta files with aligned amino acid sequences from merged families
 
 </details>
 
@@ -158,6 +165,13 @@ These MSA files only contain the original sequences of each cluster as calculate
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.*`: filtered seed alignments after family redundancy removal
+- `remove_redundancy/`
+  - `merge_families/`
+    - `seed_msa/`
+      - `raw/`
+        - `mafft_align/`
+          - `<samplename>/`
+            - `<samplename>_*.*`: fasta files with aligned amino acid sequences from merged families
 
 </details>
 
@@ -179,10 +193,17 @@ These MSA files only contain the original sequences of each cluster as calculate
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.*`: filtered seed alignments after family redundancy removal
+- `remove_redundancy/`
+  - `merge_families/`
+    - `seed_msa/`
+    - `raw/`
+      - `clipkit/`
+        - `<samplename>/`
+          - `<samplename>_*.clipkit`: gap-clipped fasta files of aligned amino acid sequences from merged families
 
 </details>
 
-If the `--trim_msa` parameter was set to `true`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
+If the `--skip_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
 gaps (above that threshold, across all aligned sequences) are either removed only at the ends of the MSA if `trim_ends_only` is set to `true`, or throughout the alignment otherwise.
 Results are stored in the `seed_msa/raw` folder.
 
@@ -196,8 +217,8 @@ Results are stored in the `seed_msa/raw` folder.
 - `hmmer/`
   - `hmmsearch/`
     - `<samplename>/`
-      - `<samplename>_*.domtbl.gz`: (optional) hmmsearch results along parameters info. Can be turned on with --save_hmmsearch_results
-      - `<samplename>_*.txt.gz`: (optional) hmmsearch execution log. Can be turned on with --save_hmmsearch_results
+      - `<samplename>_*.domtbl.gz`: (optional) hmmsearch results along parameters info. Can be turned on with `--save_hmmsearch_results`
+      - `<samplename>_*.txt.gz`: (optional) hmmsearch execution log. Can be turned on with `--save_hmmsearch_results`
 - `hmm/`
   - `filtered/`
     - `<samplename>/`
@@ -222,12 +243,33 @@ Results are stored in the `seed_msa/raw` folder.
   - `non_redundant_family_filtered/`
     - `<samplename>/`
       - `<samplename>_*.fasta.gz`: (optional) filtered full alignment sequences after family redundancy removal in fasta format
+- `remove_redundancy/`
+  - `merge_families/`
+    - `hmmer/`
+      - `hmmsearch/`
+        - `<samplename>/`
+          - `<samplename>_*.domtbl.gz`: (optional) hmmsearch results along parameters info. Can be turned on with `--save_hmmsearch_results`
+          - `<samplename>_*.txt.gz`: (optional) hmmsearch execution log. Can be turned on with `--save_hmmsearch_results`
+    - `hmm/`
+      - `raw/`
+        - `<samplename>/`
+          - `<samplename>_*.hmm.gz`: compressed hmm model for the merged family
+          - `<samplename>_*.hmmbuild.txt`: (optional) hmmbuild execution log
+    - `full_msa/`
+      - `raw/`
+        - `hmmer_hmmalign/`
+          - `<samplename>/`
+            - `<samplename>_*.sto.gz`: compressed merged family full MSA produced by hmmalign (after checking for redundancy)
+    - `fasta/`
+      - `hmmsearch_filtered_recruited/`
+        - `<samplename>/`
+          - `<samplename>_*.fasta.gz`: (optional) filtered fasta sequences of merged families after hmmsearch and applied thresholds
 
 </details>
 
 The `hmm/raw` folder contains all originally created family HMMs. These models will be used downstream to recruit additional sequences in families, to compute
-full MSAs if `--recruit_sequences_with_models` is set to `true`, and/or to remove among-families redundancy if `--remove_family_redundancy` is set to `true`.
-When `--remove_family_redundancy` is set to `true`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
+full MSAs if `--skip_additional_sequence_recruiting` is set to `false`, and/or to remove among-family redundancies if `--skip_family_redundancy_removal` is set to `false`.
+When `--skip_family_redundancy_removal` is set to `false`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
 The HMMs (raw or filtered) can also be used in the `update_families` execution mode of the pipeline,
 along with the families' respective full MSAs, to recruit sequences from a new input fasta file into the families, updating both family HMM and full MSA files.
 
@@ -241,6 +283,8 @@ along with the families' respective full MSAs, to recruit sequences from a new i
 - `remove_redundancy/`
   - `<samplename>/`
     - `redundant_fam_ids.txt`: redundant family identifiers that are being dropped
+    - `similar_fam_ids.txt`: similar family identifiers that are being dropped (their merged versions will be used instead)
+    - `similarities.csv`: CSV file containing pairwise family similarities above user-defined threshold
   - `hmmer/`
     - `concatenated/`
       - `<samplename>.hmm.gz`: (optional) concatenated compressed hmm model for all families in a given sample (pre redundancy removal)
@@ -251,13 +295,22 @@ along with the families' respective full MSAs, to recruit sequences from a new i
     - `<samplename>/`
       - `<samplename>_meta_mqc.csv`: (optional) CSV file with metadata (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
       - `<samplename>_reps.fa`: (optional) fasta file of all family representative sequences (one sequence per family)
+  - `merge_families/`
+    - `<samplename>/`
+      - `pooled_components.txt`: comma separated clusters of similar family ids
+      - `<merged_id>.fas`: (optional) merged seed alignment of each pooled component
+  - `skipped_ids/`
+    - `<samplename>.txt`: (optional) concatenated redundant and similar (single) family ids that are filtered out
 
 </details>
 
-If `--remove_family_redundancy` is set to true, the `hmmer/hmmsearch` module is used
-to identify family representative sequences that are highly identical to other family HMMs.
-In these cases, the smaller sized families are deemed redundant and flagged for removal.
-These `remove_redundancy` optional folders only contain intermediate pipeline results that by default are not saved in the output results.
+If one of `--skip_family_redundancy_removal` or `--skip_family_merging` is set to `false`, the `hmmer/hmmsearch` module is used
+to identify family representative sequences that are identical or similar (respectively) to other family HMMs.
+In case of redundancy, the smaller sized families are flagged for removal.
+If `--skip_family_merging` is set to `false`, and if `hmmsearch_family_similarity_length_threshold` is correctly set
+lower than `hmmsearch_family_redundancy_length_threshold` (or `skip_family_redundancy_removal` is set to `true`), then similar family seed alignments can be merged
+and go through the `generate_families` subworkflow once more.
+Most `remove_redundancy` outputs are optional folders that contain intermediate pipeline results, and therefore are not saved in the output results by default.
 
 [hmmer](https://github.com/EddyRivasLab/hmmer) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 
@@ -287,7 +340,7 @@ These `remove_redundancy` optional folders only contain intermediate pipeline re
 
 </details>
 
-If `--remove_sequence_redundancy` is set to true, the mmseqs clustering subworkflow will be executed
+If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs clustering subworkflow will be executed
 to very strictly cluster (`--cluster_seq_identity_for_redundancy` = 0.97, `cluster_coverage_for_redundancy` = 0.97,
 `cluster_cov_mode_for_redundancy` = 0 -meaning both strands) in-family sequences, keeping only cluster representatives
 before recalculating the family MSAs.
@@ -307,7 +360,7 @@ before recalculating the family MSAs.
 
 </details>
 
-If `--remove_sequence_redundancy` is set to `true`, then the full MSAs will be recalculated after in-family sequence redundancy is removed.
+If `--skip_sequence_redundancy_removal` is set to `false`, then the full MSAs will be recalculated after in-family sequence redundancy is removed.
 If the `--alignment_tool` is `famsa`, then this `famsa_align` folder will be created, containing the final full MSA files.
 
 [FAMSA](https://github.com/refresh-bio/FAMSA) is a progressive algorithm for large-scale multiple sequence alignments.
@@ -325,7 +378,7 @@ If the `--alignment_tool` is `famsa`, then this `famsa_align` folder will be cre
 
 </details>
 
-If `--remove_sequence_redundancy` is set to `true`, then the full MSAs will be recalculated after in-family sequence redundancy is removed.
+If `--skip_sequence_redundancy_removal` is set to `false`, then the full MSAs will be recalculated after in-family sequence redundancy is removed.
 If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be created, containing the final full MSA files.
 
 [mafft](https://github.com/GSLBiotech/mafft) is a fast but not very sensitive multiple sequence alignment tool.
@@ -347,7 +400,7 @@ If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be cre
 
 </details>
 
-If `--remove_sequence_redundancy` is set to `false`, then either the raw (if `--remove_family_redundancy` is set to `false`) or the filtered (if `--remove_family_redundancy` is set to `true`) full `.sto` MSAs will be reformatted to `.fas`.
+If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (if `--skip_family_redundancy_removal` is set to `true`) or the filtered (if `--skip_family_redundancy_removal` is set to `false`) full `.sto` MSAs will be reformatted to `.fas`.
 
 [HH-suite3](https://github.com/soedinglab/hh-suite) is an open-source software package for sensitive protein sequence searching based on the pairwise alignment of hidden Markov models (HMMs).
 
@@ -466,7 +519,7 @@ The new family representative sequences can now be found in the intermediate `mm
 </details>
 
 In the `update_families` mode, if new sequences are added in an existing family,
-and after (optionally) removing in-family sequence redundacny, if `--remove_sequence_redundancy` is set to `true`,
+and after (optionally) removing in-family sequence redundacny, if `--skip_sequence_redundancy_removal` is set to `false`,
 then the family MSA is recalculated.
 If the `--alignment_tool` is `famsa`, then this `famsa_align` folder will be created, containing the updated family MSA files.
 
@@ -486,7 +539,7 @@ If the `--alignment_tool` is `famsa`, then this `famsa_align` folder will be cre
 </details>
 
 In the `update_families` mode, if new sequences are added in an existing family,
-and after (optionally) removing in-family sequence redundacny, if `--remove_sequence_redundancy` is set to `true`,
+and after (optionally) removing in-family sequence redundacny, if `--skip_sequence_redundancy_removal` is set to `false`,
 then the family MSA is recalculated.
 If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be created, containing the updated family MSA files.
 
@@ -505,7 +558,7 @@ If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be cre
 
 </details>
 
-If the `--trim_msa` parameter was set to `true`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
+If the `--skip_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
 gaps (above that threshold, across all aligned sequences) are either removed only at the ends of the MSA if `trim_ends_only` is set to `true`, or throughout the alignment otherwise.
 Results are stored in the `update_families/full_msa` folder.
 

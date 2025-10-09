@@ -92,10 +92,10 @@ workflow PROTEINFAMILIES {
         UPDATE_FAMILIES (
             ch_samplesheet_for_update,
             params.hmmsearch_query_length_threshold,
-            params.remove_sequence_redundancy,
+            params.skip_sequence_redundancy_removal,
             params.clustering_tool,
             params.alignment_tool,
-            params.trim_msa,
+            params.skip_msa_trimming,
             params.clipkit_out_format
         )
         ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
@@ -118,32 +118,46 @@ workflow PROTEINFAMILIES {
     CHUNK_CLUSTERS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs, params.cluster_size_threshold )
     ch_versions = ch_versions.mix( CHUNK_CLUSTERS.out.versions )
 
-    // Multiple sequence alignment
+    ch_fasta_chunks = CHUNK_CLUSTERS.out.fasta_chunks
+        .transpose()
+        .map { meta, file_path ->
+            [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName], file_path ]
+        }
+
+    // Multiple sequence alignments, model building and sequence recruiting
     GENERATE_FAMILIES(
         ch_samplesheet_for_create,
-        CHUNK_CLUSTERS.out.fasta_chunks,
+        ch_fasta_chunks,
         params.alignment_tool,
-        params.trim_msa,
+        params.skip_msa_trimming,
         params.clipkit_out_format,
         params.hmmsearch_write_target,
         params.hmmsearch_write_domain,
-        params.recruit_sequences_with_models,
+        params.skip_additional_sequence_recruiting,
         params.hmmsearch_query_length_threshold
     )
     ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     // Remove redundant sequences and families
     REMOVE_REDUNDANCY (
+        ch_samplesheet_for_create,
         GENERATE_FAMILIES.out.seed_msa,
         GENERATE_FAMILIES.out.full_msa,
         GENERATE_FAMILIES.out.fasta,
         GENERATE_FAMILIES.out.hmm,
-        params.remove_family_redundancy,
+        params.skip_family_redundancy_removal,
+        params.skip_family_merging,
         params.hmmsearch_family_redundancy_length_threshold,
         params.hmmsearch_family_similarity_length_threshold,
-        params.remove_sequence_redundancy,
+        params.skip_sequence_redundancy_removal,
         params.clustering_tool,
-        params.alignment_tool
+        params.alignment_tool,
+        params.skip_msa_trimming,
+        params.clipkit_out_format,
+        params.hmmsearch_write_target,
+        params.hmmsearch_write_domain,
+        params.skip_additional_sequence_recruiting,
+        params.hmmsearch_query_length_threshold
     )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
