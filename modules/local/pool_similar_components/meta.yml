@@ -1,0 +1,53 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "pool_similar_components"
+description: Pool similar families based on pairwise scores
+keywords:
+  - pooling
+  - similarity
+  - components
+  - clustering
+  - network
+tools:
+  - "pool_similar_components":
+      description: "Pool similar families based on pairwise scores."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/pool_similar_components/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/pool_similar_components/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/pool_similar_components/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - similarities:
+        type: file
+        description: CSV file containing pairwise similarities of families
+        pattern: "*.csv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3752" # CSV
+output:
+  pooled_components:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "pooled_components.txt":
+          type: file
+          description: Text file containing pooled similar components
+          pattern: "pooled_components.txt"
+          ontologies:
+            - edam: "http://edamontology.org/format_2330" # Textual format
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"
