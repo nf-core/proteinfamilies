@@ -123,7 +123,7 @@ workflow PROTEINFAMILIES {
         .map { meta, file_path ->
             [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName], file_path ]
         }
-    
+
     // Multiple sequence alignments, model building and sequence recruiting
     GENERATE_FAMILIES(
         ch_samplesheet_for_create,

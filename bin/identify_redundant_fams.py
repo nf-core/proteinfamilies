@@ -114,7 +114,6 @@ def process_redundant(redundant_df, family_to_size, out_file, skip_family_redund
         redundant_df["query size"] = redundant_df["query name"].map(family_to_size)
         redundant_df["target size"] = redundant_df["target name"].map(family_to_size)
 
-        
         for _, row in redundant_df.iterrows():
             query = row["query name"]
             target = row["target name"]
