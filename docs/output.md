@@ -144,6 +144,7 @@ The original mmseqs db and the clustered mmseqs db can be optional saved to the 
         - `famsa_align/`
           - `<samplename>/`
             - `<samplename>_*.aln`: fasta files with aligned amino acid sequences from merged families
+
 </details>
 
 This folder contains the generated seed MSA family files, if `famsa` was chosen as the `--alignment_tool`.
@@ -300,6 +301,7 @@ along with the families' respective full MSAs, to recruit sequences from a new i
       - `<merged_id>.fas`: (optional) merged seed alignment of each pooled component
   - `skipped_ids/`
     - `<samplename>.txt`: (optional) concatenated redundant and similar (single) family ids that are filtered out
+
 </details>
 
 If one of `--skip_family_redundancy_removal` or `--skip_family_merging` is set to `false`, the `hmmer/hmmsearch` module is used
