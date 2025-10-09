@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx)
+- [#124](https://github.com/nf-core/proteinfamilies/pull/124)
   - Added new subworkflow `MERGE_FAMILIES` that can optionally merge similar (but not redundant) generated protein families. (by @vagkaratzas)
   - Added new functionality to local module `IDENTIFY_REDUNDANT_IDS` which now also identifies similar family ids, along with their pairwise similarity scores. (by @vagkaratzas)
   - Added new local module `POOL_SIMILAR_COMPONENTS` that generates family clusters, from a family-similarity edgelist. (by @vagkaratzas)
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx)
+- [#124](https://github.com/nf-core/proteinfamilies/pull/124)
   - Conditional workflow flags switched to their `skip` opposites; `--trim_msa` to `--skip_msa_trimming`, `--recruit_sequences_with_models` to `--skip_additional_sequence_recruiting`, `--remove_family_redundancy` to `--skip_family_redundancy_removal`, `--remove_sequence_redundancy` to `--skip_sequence_redundancy_removal`. (by @vagkaratzas)
 - [#118](https://github.com/nf-core/proteinfamilies/pull/118)
   - Swapped the local `CHECK_QUALITY` subworkflow with the new nf-core one `FAA_SEQFU_SEQKIT`. (by @vagkaratzas)
@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Deprecated`
 
-- [#xxx](https://github.com/nf-core/proteinfamilies/pull/xxx) - Deprecated `--trim_msa`, `--recruit_sequences_with_models`, `--remove_family_redundancy` and `--remove_sequence_redundancy`. (by @vagkaratzas)
+- [#124](https://github.com/nf-core/proteinfamilies/pull/124) - Deprecated `--trim_msa`, `--recruit_sequences_with_models`, `--remove_family_redundancy` and `--remove_sequence_redundancy`. (by @vagkaratzas)
 
 ## v1.3.1 - [2025/09/22]
 
