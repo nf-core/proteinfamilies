@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
-name: "MERGE_FAMILIES"
+name: "merge_families"
 description: Merge similar protein families by pooling components, merging seed alignments, and generating new family HMM profiles and full alignments
 keywords:
   - families

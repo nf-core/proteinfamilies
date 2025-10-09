@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
-name: "ALIGN_SEQUENCES"
+name: "align_sequences"
 description: Subworkflow that generates alignments from amino acid fasta files.
 keywords:
   - fasta
