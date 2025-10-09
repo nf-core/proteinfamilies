@@ -15,10 +15,18 @@
                         {
                             "id": "mqc"
                         },
-                        "similarities.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "similar_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
+                    [
+                        {
+                            "id": "mqc"
+                        },
+                        "similarities.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
                     "versions.yml:md5,ee9740f51b2073a4fc34f9ba4b2d0022"
                 ],
                 "redundant_ids": [
@@ -27,6 +35,14 @@
                             "id": "mqc"
                         },
                         "redundant_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "similar_ids": [
+                    [
+                        {
+                            "id": "mqc"
+                        },
+                        "similar_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "similarities": [
@@ -44,9 +60,9 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.7"
+            "nextflow": "25.04.8"
         },
-        "timestamp": "2025-10-03T15:33:38.36514929"
+        "timestamp": "2025-10-09T09:38:07.256735117"
     },
     "proteinfamilies - family redundancy": {
         "content": [
