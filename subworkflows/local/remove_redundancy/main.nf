@@ -178,7 +178,9 @@ workflow REMOVE_REDUNDANCY {
     } else if (!skip_family_redundancy_removal) {
         HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" )
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions )
-    } else { // both skip_family_redundancy_removal and skip_sequence_redundancy_removal true, different publish dir
+    } else if (!skip_additional_sequence_recruiting) {
+        // if both skip_family_redundancy_removal and skip_sequence_redundancy_removal true, 
+        // and skip_additional_sequence_recruiting also true (sequences not recruited, so not hmmalign .sto)
         HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" )
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions )
     }
