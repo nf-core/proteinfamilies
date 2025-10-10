@@ -96,7 +96,7 @@ workflow UPDATE_FAMILIES {
 
     // Keep fasta with family sequences by removing gaps
     SEQKIT_SEQ( ch_family_msas )
-    ch_versions = ch_versions.mix(SEQKIT_SEQ.out.versions)
+    ch_versions = ch_versions.mix( SEQKIT_SEQ.out.versions.first() )
 
     // Match newly recruited sequences with existing ones for each family
     ch_input_for_cat = SEQKIT_SEQ.out.fastx
@@ -107,7 +107,7 @@ workflow UPDATE_FAMILIES {
 
     // Aggregate each family's MSA sequences with the newly recruited ones
     CAT_FASTA( ch_input_for_cat )
-    ch_versions = ch_versions.mix( CAT_FASTA.out.versions )
+    ch_versions = ch_versions.mix( CAT_FASTA.out.versions.first() )
     ch_fasta = CAT_FASTA.out.file_out
 
     if (!skip_sequence_redundancy_removal) {
@@ -116,7 +116,7 @@ workflow UPDATE_FAMILIES {
         ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
-        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions )
+        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         ch_fasta = REMOVE_REDUNDANT_SEQS.out.fasta
     }
 
@@ -126,12 +126,12 @@ workflow UPDATE_FAMILIES {
 
     if (!skip_msa_trimming) {
         CLIPKIT( ch_msa, clipkit_out_format )
-        ch_versions = ch_versions.mix( CLIPKIT.out.versions )
+        ch_versions = ch_versions.mix( CLIPKIT.out.versions.first() )
         ch_msa = CLIPKIT.out.clipkit
     }
 
     HMMER_HMMBUILD( ch_msa, [] )
-    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions )
+    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions.first() )
 
     ch_fasta = ch_fasta
         .map { meta, faa -> [ [id: meta.id], faa ] }

@@ -33,7 +33,7 @@ workflow GENERATE_FAMILIES {
 
     if (!skip_msa_trimming) {
         CLIPKIT( ch_seed_msa, clipkit_out_format )
-        ch_versions = ch_versions.mix( CLIPKIT.out.versions )
+        ch_versions = ch_versions.mix( CLIPKIT.out.versions.first() )
         ch_seed_msa = CLIPKIT.out.clipkit
     }
 
@@ -49,7 +49,7 @@ workflow GENERATE_FAMILIES {
 
     if (!skip_additional_sequence_recruiting) {
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
-        ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions )
+        ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions.first() )
 
         // Combine with same id to ensure in sync
         ch_input_for_filter_recruited = HMMER_HMMSEARCH.out.domain_summary
@@ -58,7 +58,7 @@ workflow GENERATE_FAMILIES {
             .map { id, meta, domtbl, seqs -> [ meta, domtbl, seqs ] }
 
         FILTER_RECRUITED( ch_input_for_filter_recruited, hmmsearch_query_length_threshold )
-        ch_versions = ch_versions.mix( FILTER_RECRUITED.out.versions )
+        ch_versions = ch_versions.mix( FILTER_RECRUITED.out.versions.first() )
         ch_fasta = FILTER_RECRUITED.out.fasta
 
         // Join to ensure in sync
@@ -70,7 +70,7 @@ workflow GENERATE_FAMILIES {
             }
 
         HMMER_HMMALIGN( ch_input_for_hmmalign.seq, ch_input_for_hmmalign.hmm )
-        ch_versions = ch_versions.mix( HMMER_HMMALIGN.out.versions )
+        ch_versions = ch_versions.mix( HMMER_HMMALIGN.out.versions.first() )
         ch_full_msa = HMMER_HMMALIGN.out.sto
     } else {
         ch_full_msa = ch_seed_msa

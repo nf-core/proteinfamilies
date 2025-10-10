@@ -170,7 +170,7 @@ workflow REMOVE_REDUNDANCY {
         ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
-        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions )
+        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
         ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool )
