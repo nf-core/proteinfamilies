@@ -41,10 +41,10 @@ output:
           description: |
             Groovy Map containing mapping information
             e.g. `[ id:'sample1', single_end:false ]`
-    - ${prefix}_reps.fa:
+    - ${prefix}_reps.faa:
         type: file
         description: fasta file containing non-redundant, representative sequences
-        pattern: "*_reps.fa"
+        pattern: "*_reps.faa"
   versions:
     - versions.yml:
         type: file

@@ -113,7 +113,7 @@ that will together produce the updated family MSA.
   - `mmseqs_initial_clustering_filtered/`
     - `<samplename>/`
       - `chunked_fasta/`
-        - `*.fasta`: (optional) fasta files with amino acid sequences of each cluster above the membership threshold
+        - `*.faa`: (optional) fasta files with amino acid sequences of each cluster above the membership threshold
 
 </details>
 
@@ -294,7 +294,7 @@ along with the families' respective full MSAs, to recruit sequences from a new i
   - `family_reps/`
     - `<samplename>/`
       - `<samplename>_meta_mqc.csv`: (optional) CSV file with metadata (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
-      - `<samplename>_reps.fa`: (optional) fasta file of all family representative sequences (one sequence per family)
+      - `<samplename>_reps.faa`: (optional) fasta file of all family representative sequences (one sequence per family)
   - `merge_families/`
     - `<samplename>/`
       - `pooled_components.txt`: comma separated clusters of similar family ids
@@ -336,7 +336,7 @@ Most `remove_redundancy` outputs are optional folders that contain intermediate 
 - `fasta/`
   - `non_redundant_sequences_filtered/`
     - `<samplename>/`
-      - `<samplename>_reps.fa`: (optional) fasta file of all family representative sequences (one sequence per family)
+      - `<samplename>_reps.faa`: (optional) fasta file of all family representative sequences (one sequence per family)
 
 </details>
 
@@ -442,7 +442,7 @@ If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (i
   - `family_reps/`
     - `<samplename>/`
       - `<samplename>_meta_mqc.csv`: CSV file with metadata (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
-      - `<samplename>_reps.fa`: fasta file of all family representative sequences (one sequence per family)
+      - `<samplename>_reps.faa`: fasta file of all family representative sequences (one sequence per family)
       - `<samplename>.tsv`: 2-column TSV file with family ids and all sequence member ids
 
 </details>
@@ -495,7 +495,7 @@ that will together produce the updated family MSA.
         - `*`: (optional) mmseqs format clustered db
     - `non_redundant_sequences/`
       - `<samplename>/`
-        - `<samplename>_reps.fa`: (optional) fasta file of all family representative sequences (one sequence per family)
+        - `<samplename>_reps.faa`: (optional) fasta file of all family representative sequences (one sequence per family)
 
 </details>
 
@@ -572,19 +572,19 @@ Results are stored in the `update_families/full_msa` folder.
 - `family_reps/`
   - `<samplename>/`
     - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
-    - `<samplename>_reps.fa`: fasta file of all family representative sequences (one sequence per family)
+    - `<samplename>_reps.faa`: fasta file of all family representative sequences (one sequence per family)
     - `<samplename>.tsv`: 2-column TSV file with family ids and all sequence member ids
 - `update_families/`
   - `family_reps/`
     - `<samplename>/`
       - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
-      - `<samplename>_reps.fa`: fasta file of all family representative sequences (one sequence per family)
+      - `<samplename>_reps.faa`: fasta file of all family representative sequences (one sequence per family)
 
 </details>
 
 The final report of the nf-core/proteinfamilies pipeline.
 The `*_meta_mqc.csv` file are used to report family metadata and statistics in the browser, via the MultiQC software.
-The `*_reps.fa` protein fasta file contains all family representative sequence in one place.
+The `*_reps.faa` protein fasta file contains all family representative sequence in one place.
 This file can be further used as input in other pipelines such as nf-core/proteinfold for structural prediction
 or in fasta annotation pipelines.
 

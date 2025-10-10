@@ -121,7 +121,7 @@ workflow PROTEINFAMILIES {
     ch_fasta_chunks = CHUNK_CLUSTERS.out.fasta_chunks
         .transpose()
         .map { meta, file_path ->
-            [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName], file_path ]
+            [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName.tokenize('_').last()], file_path ]
         }
 
     // Multiple sequence alignments, model building and sequence recruiting

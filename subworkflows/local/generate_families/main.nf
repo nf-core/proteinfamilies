@@ -38,7 +38,7 @@ workflow GENERATE_FAMILIES {
     }
 
     HMMER_HMMBUILD( ch_seed_msa, [] )
-    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions )
+    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions.first() )
     ch_hmm = HMMER_HMMBUILD.out.hmm
 
     // Combine with same id to ensure in sync
