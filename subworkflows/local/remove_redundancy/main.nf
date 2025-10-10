@@ -51,20 +51,20 @@ workflow REMOVE_REDUNDANCY {
             .map { meta, faa -> [[id: meta.id], faa] }
             .groupTuple(by: 0)
         EXTRACT_FAMILY_REPS( ch_fasta )
-        ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
+        ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
 
         ch_hmm = hmm
             .map { meta, model -> [[id: meta.id], model] }
             .groupTuple(by: 0)
         FIND_CONCATENATE_HMMS( ch_hmm )
-        ch_versions = ch_versions.mix( FIND_CONCATENATE_HMMS.out.versions )
+        ch_versions = ch_versions.mix( FIND_CONCATENATE_HMMS.out.versions.first() )
 
         ch_input_for_hmmsearch = FIND_CONCATENATE_HMMS.out.file_out
             .combine(EXTRACT_FAMILY_REPS.out.fasta, by: 0)
             .map { meta, model, seqs -> [meta, model, seqs, false, false, true] }
 
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
-        ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions )
+        ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions.first() )
 
         // Join to ensure in sync
         ch_input_for_redundant_fam_identification = EXTRACT_FAMILY_REPS.out.map
@@ -77,7 +77,7 @@ workflow REMOVE_REDUNDANCY {
         IDENTIFY_REDUNDANT_FAMS( ch_input_for_redundant_fam_identification.map, \
             ch_input_for_redundant_fam_identification.domtbl, \
             hmmsearch_family_redundancy_length_threshold, hmmsearch_family_similarity_length_threshold )
-        ch_versions = ch_versions.mix( IDENTIFY_REDUNDANT_FAMS.out.versions )
+        ch_versions = ch_versions.mix( IDENTIFY_REDUNDANT_FAMS.out.versions.first() )
 
         ch_seed_msa = seed_msa
             .map { meta, fas -> [[id: meta.id], fas] }
@@ -120,7 +120,7 @@ workflow REMOVE_REDUNDANCY {
             .concat(IDENTIFY_REDUNDANT_FAMS.out.similar_ids)
             .groupTuple(by: 0)
         FIND_CONCATENATE_SKIP_IDS( ch_skip_ids )
-        ch_versions = ch_versions.mix( FIND_CONCATENATE_SKIP_IDS.out.versions )
+        ch_versions = ch_versions.mix( FIND_CONCATENATE_SKIP_IDS.out.versions.first() )
 
         // Join to ensure in sync
         ch_input_for_fam_removal = FIND_CONCATENATE_SKIP_IDS.out.file_out
@@ -137,13 +137,13 @@ workflow REMOVE_REDUNDANCY {
             }
 
         FILTER_NON_REDUNDANT_HMM( ch_input_for_fam_removal.model, ch_input_for_fam_removal.ids )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_HMM.out.versions )
+        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_HMM.out.versions.first() )
 
         FILTER_NON_REDUNDANT_SEED_MSA( ch_input_for_fam_removal.seed, ch_input_for_fam_removal.ids )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_SEED_MSA.out.versions )
+        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_SEED_MSA.out.versions.first() )
 
         FILTER_NON_REDUNDANT_FULL_MSA( ch_input_for_fam_removal.full, ch_input_for_fam_removal.ids )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_FULL_MSA.out.versions )
+        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_FULL_MSA.out.versions.first() )
 
         full_msa = FILTER_NON_REDUNDANT_FULL_MSA.out.filtered
             .transpose()
@@ -154,7 +154,7 @@ workflow REMOVE_REDUNDANCY {
             }
 
         FILTER_NON_REDUNDANT_FASTA( ch_input_for_fam_removal.seq, ch_input_for_fam_removal.ids  )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_FASTA.out.versions )
+        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_FASTA.out.versions.first() )
 
         fasta = FILTER_NON_REDUNDANT_FASTA.out.filtered
             .transpose()
@@ -177,12 +177,12 @@ workflow REMOVE_REDUNDANCY {
         ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     } else if (!skip_family_redundancy_removal) {
         HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" )
-        ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions )
+        ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions.first() )
     } else if (!skip_additional_sequence_recruiting) {
         // if both skip_family_redundancy_removal and skip_sequence_redundancy_removal true,
         // and skip_additional_sequence_recruiting also true (sequences not recruited, so not hmmalign .sto)
         HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" )
-        ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions )
+        ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions.first() )
     }
 
     emit:

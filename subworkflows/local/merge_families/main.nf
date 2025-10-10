@@ -23,7 +23,7 @@ workflow MERGE_FAMILIES {
     ch_versions = Channel.empty()
 
     POOL_SIMILAR_COMPONENTS( similarities )
-    ch_versions = ch_versions.mix( POOL_SIMILAR_COMPONENTS.out.versions )
+    ch_versions = ch_versions.mix( POOL_SIMILAR_COMPONENTS.out.versions.first() )
 
     ch_pooled_components = POOL_SIMILAR_COMPONENTS.out.pooled_components
         .splitCsv( by:1 )
