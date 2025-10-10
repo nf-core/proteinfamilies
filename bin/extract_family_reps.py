@@ -53,7 +53,7 @@ def extract_data(filepath):
     Extract the first sequence and total number of entries from a FASTA file.
 
     Args:
-        filepath (str): Path to the FASTA (.fa or .fa.gz) file.
+        filepath (str): Path to the FASTA (.faa or .faa.gz) file.
 
     Returns:
         tuple: (header, sequence, size), where:

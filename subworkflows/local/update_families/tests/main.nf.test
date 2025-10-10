@@ -12,7 +12,7 @@ nextflow_workflow {
                 """
                 input[0] = Channel.of([
                     [ id: 'test_update' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.fa', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'test_data/existing_hmms.tar.gz', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'test_data/existing_msas.tar.gz', checkIfExists: true)
                 ])

@@ -67,7 +67,7 @@ First, prepare a samplesheet with your input data that looks as follows:
 
 ```csv
 sample,fasta,existing_hmms_to_update,existing_msas_to_update
-CONTROL_REP1,input/mgnifams_input_small.fa,,
+CONTROL_REP1,input/mgnifams_input_small.faa,,
 ```
 
 Each row contains a fasta file with amino acid sequences (can be zipped or unzipped).

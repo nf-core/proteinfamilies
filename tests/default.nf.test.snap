@@ -178,11 +178,11 @@
             [
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "multiqc_mgnifams_test_after.txt:md5,908666b17d5a31b706ad82b71683ad33",
-                "multiqc_mgnifams_test_before.txt:md5,a06ef06961ba30c0b7cea9d1a68d059b",
+                "multiqc_mgnifams_test_before.txt:md5,7f975cad14f7dbd4769083e22cc05a83",
                 "multiqc_mgnifams_test_cluster_distribution.txt:md5,9f310a12f74e4e64764f5831e5f8b02c",
                 "mgnifams_test.log:md5,a41135cfe024baaf42f135583fe73f0d",
-                "mgnifams_test_before.tsv:md5,b36f8986046de88a7cd08500643bc601",
-                "mgnifams_test_before_mqc.txt:md5,909e80c33017b431e9a7f5159efaccca",
+                "mgnifams_test_before.tsv:md5,eb88faa675b2d0c6a9ebbff1aecb33a3",
+                "mgnifams_test_before_mqc.txt:md5,45de3e3c31c354347494309581b9ad2a",
                 "similar_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
             ],
             "/hmm/filtered/mgnifams_test: 5",
@@ -194,6 +194,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.8"
         },
-        "timestamp": "2025-10-09T13:16:13.712403946"
+        "timestamp": "2025-10-10T11:07:26.055914847"
     }
 }
