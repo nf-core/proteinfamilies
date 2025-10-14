@@ -125,7 +125,7 @@ workflow PROTEINFAMILIES {
         }
 
     // Multiple sequence alignments, model building and sequence recruiting
-    GENERATE_FAMILIES(
+    GENERATE_FAMILIES (
         ch_samplesheet_for_create,
         ch_fasta_chunks,
         params.alignment_tool,

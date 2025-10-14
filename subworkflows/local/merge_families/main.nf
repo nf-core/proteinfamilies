@@ -42,10 +42,17 @@ workflow MERGE_FAMILIES {
     MERGE_SEEDS( ch_pooled_components, seed_msa.first() )
     ch_versions = ch_versions.mix( MERGE_SEEDS.out.versions.first() )
 
-    GENERATE_FAMILIES( sequences, MERGE_SEEDS.out.merged_seed_msa, \
-            alignment_tool, skip_msa_trimming, clipkit_out_format, \
-            hmmsearch_write_target, hmmsearch_write_domain, \
-            skip_additional_sequence_recruiting, hmmsearch_query_length_threshold )
+    GENERATE_FAMILIES (
+        sequences,
+        MERGE_SEEDS.out.merged_seed_msa,
+        alignment_tool,
+        skip_msa_trimming,
+        clipkit_out_format,
+        hmmsearch_write_target,
+        hmmsearch_write_domain,
+        skip_additional_sequence_recruiting,
+        hmmsearch_query_length_threshold
+    )
     ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     emit:

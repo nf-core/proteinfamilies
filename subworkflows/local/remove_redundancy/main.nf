@@ -74,9 +74,12 @@ workflow REMOVE_REDUNDANCY {
                 domtbl: [meta, domtbl]
             }
 
-        IDENTIFY_REDUNDANT_FAMS( ch_input_for_redundant_fam_identification.map, \
-            ch_input_for_redundant_fam_identification.domtbl, \
-            hmmsearch_family_redundancy_length_threshold, hmmsearch_family_similarity_length_threshold )
+        IDENTIFY_REDUNDANT_FAMS (
+            ch_input_for_redundant_fam_identification.map,
+            ch_input_for_redundant_fam_identification.domtbl,
+            hmmsearch_family_redundancy_length_threshold,
+            hmmsearch_family_similarity_length_threshold
+        )
         ch_versions = ch_versions.mix( IDENTIFY_REDUNDANT_FAMS.out.versions.first() )
 
         ch_seed_msa = seed_msa
@@ -84,10 +87,18 @@ workflow REMOVE_REDUNDANCY {
             .groupTuple(by: 0)
 
         if (!skip_family_merging) {
-            MERGE_FAMILIES( IDENTIFY_REDUNDANT_FAMS.out.similarities, ch_seed_msa, \
-            sequences, alignment_tool, skip_msa_trimming, clipkit_out_format, \
-            hmmsearch_write_target, hmmsearch_write_domain, \
-            skip_additional_sequence_recruiting, hmmsearch_query_length_threshold )
+            MERGE_FAMILIES (
+                IDENTIFY_REDUNDANT_FAMS.out.similarities,
+                ch_seed_msa,
+                sequences,
+                alignment_tool,
+                skip_msa_trimming,
+                clipkit_out_format,
+                hmmsearch_write_target,
+                hmmsearch_write_domain,
+                skip_additional_sequence_recruiting,
+                hmmsearch_query_length_threshold
+            )
             ch_versions = ch_versions.mix( MERGE_FAMILIES.out.versions )
 
             ch_merged_seed_msa = MERGE_FAMILIES.out.seed_msa
