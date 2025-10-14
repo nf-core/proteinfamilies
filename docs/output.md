@@ -196,10 +196,10 @@ These MSA files only contain the original sequences of each cluster as calculate
 - `remove_redundancy/`
   - `merge_families/`
     - `seed_msa/`
-    - `raw/`
-      - `clipkit/`
-        - `<samplename>/`
-          - `<samplename>_*.clipkit`: gap-clipped fasta files of aligned amino acid sequences from merged families
+      - `raw/`
+        - `clipkit/`
+          - `<samplename>/`
+            - `<samplename>_*.clipkit`: gap-clipped fasta files of aligned amino acid sequences from merged families
 
 </details>
 
