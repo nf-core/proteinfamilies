@@ -19,7 +19,7 @@ process FILTER_NON_REDUNDANT_FAMS {
     task.ext.when == null || task.ext.when
 
     script:
-    extension = files[0].extension
+    extension = files instanceof List ? files[0].extension : files.extension
     """
     filter_non_redundant_fams.py \\
         --input_folder input_folder  \\
