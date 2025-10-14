@@ -53,8 +53,8 @@ def load_sequences(fasta_file, needed_ids):
     return sequences
 
 
-def write_cluster(chunk_num, members, sequences, out_folder):
-    output_file = os.path.join(out_folder, f"{chunk_num}.fasta")
+def write_cluster(prefix, chunk_num, members, sequences, out_folder):
+    output_file = os.path.join(out_folder, f"{prefix}_{chunk_num}.faa")
     with open(output_file, "w") as out_handle:
         for member in members:
             if member in sequences:
@@ -64,8 +64,10 @@ def write_cluster(chunk_num, members, sequences, out_folder):
 
 def main(args=None):
     args = parse_args(args)
-
     os.makedirs(args.out_folder, exist_ok=True)
+
+    # Extract base name (without extension) of clustering file
+    prefix = os.path.splitext(os.path.basename(args.clustering))[0]
 
     # Step 1: Parse clusters
     clusters = collect_clusters(args.clustering, args.threshold)
@@ -85,7 +87,7 @@ def main(args=None):
     with ThreadPoolExecutor(max_workers=args.threads) as executor:
         futures = []
         for chunk_num, (_, members) in enumerate(clusters.items(), 1):
-            futures.append(executor.submit(write_cluster, chunk_num, members, sequences, args.out_folder))
+            futures.append(executor.submit(write_cluster, prefix, chunk_num, members, sequences, args.out_folder))
 
     print(f"Done. {len(clusters)} clusters written to {args.out_folder}")
 

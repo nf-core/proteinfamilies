@@ -7,7 +7,7 @@
 ## Introduction
 
 **nf-core/proteinfamilies** is a bioinformatics pipeline that generates protein families from amino acid sequences and/or updates existing families with new sequences.
-It takes a protein fasta file as input, clusters the sequences and then generates protein family Hiden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
+It takes a protein fasta file as input, clusters the sequences and then generates protein family Hidden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
 Optionally, paths to existing family HMMs and MSAs can be given (must have matching base filenames one-to-one) in order to update with new sequences in case of matching hits.
 
 ## Samplesheet input
@@ -20,29 +20,32 @@ You will need to create a samplesheet with information about the samples you wou
 
 ```csv
 sample,fasta,existing_hmms_to_update,existing_msas_to_update
-CONTROL_REP1,amino_acid_sequences_input.fasta,,
-CONTROL_REP2,amino_acid_sequences_extra.fa.gz,existing_hmms.tar.gz,existing_msas.tar.gz
+CONTROL_REP1,amino_acid_sequences_input.faa,,
+CONTROL_REP2,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,existing_msas.tar.gz
 ```
 
-| Column                    | Description                                                                                                                      |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`                  | Custom sample name. Spaces in sample names are automatically converted to underscores (`_`).                                     |
-| `fasta`                   | Full path to amino acid fasta file. File can be gzipped and allowed extensions include ".fasta", ".fasta.gz", ".fa" or ".fa.gz". |
-| `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. Allowed extension should be ".tar.gz".                                |
-| `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. Allowed extension should be ".tar.gz".                                |
+| Column                    | Description                                                                                                                                         |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`                  | Custom sample name. Spaces in sample names are automatically converted to underscores (`_`).                                                        |
+| `fasta`                   | Full path to amino acid fasta file. File can be gzipped and allowed extensions include ".faa", ".faa.gz", ".fasta", ".fasta.gz", ".fa" or ".fa.gz". |
+| `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. Allowed extension should be ".tar.gz".                                                   |
+| `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. Allowed extension should be ".tar.gz".                                                   |
 
 ## Parameter specifications
 
 Here we provide guidance regarding some parameter choices.
 
-- clustering_tool ["cluster", "linclust"]: The mmseqs algorithm used for clustering.
-  The `cluster` option is very slow and should only be used for small or medium size inputs.
-  The `linclust` option is somewhat less sensitive, but extremely fast for clustering larger datasets.
-- alignment_tool ["famsa", "mafft"]: Multiple Sequence Alignment (MSA) options.
+- `clustering_tool` ["cluster", "linclust"]: The mmseqs algorithm used for clustering.
+  The `cluster` option is slower but more sensitive, and is recommended where there is sufficient compute available.
+  It tends to produce fewer and larger clusters than `linclust`.
+  The `linclust` option is less sensitive, but extremely fast for clustering larger datasets.
+- `cluster_cov_mode` [0, 1, 2]: The default bidirectional value for coverage mode (`cluster_cov_mode` = 0) automatically sets the MMseqs2 clustering mode to greedy cluster set.
+  However, the users can opt to override this parameter either indirectly, by changing the coverage mode, or directly, by setting the `--cluster-mode` argument in the modules configuration file.
+- `alignment_tool` ["famsa", "mafft"]: Multiple Sequence Alignment (MSA) options.
   The `famsa` option is generally recommended as the best time-memory-accuracy combination.
   The `mafft` option offers various alignment strategies, but in general is slower and less sensitive than `famsa`.
-- trim_ends_only: Flag to either clip MSA gaps throughout the alignment, or only at the ends.
-  Only used if `trim_msa` is on.
+- `trim_ends_only`: Flag to either clip MSA gaps throughout the alignment, or only at the ends.
+  Only used if `skip_msa_trimming` is off.
   The authors suggest keeping the `trim_ends_only` on, since the gaps inside the sequences may still carry evolutionary significance.
 
 ## Running the pipeline

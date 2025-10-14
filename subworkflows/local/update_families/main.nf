@@ -22,10 +22,10 @@ workflow UPDATE_FAMILIES {
     take:
     ch_samplesheet_for_update        // channel: [meta, sequences, existing_hmms_to_update, existing_msas_to_update]
     hmmsearch_query_length_threshold // number [0.0, 1.0]
-    remove_sequence_redundancy       // boolean
+    skip_sequence_redundancy_removal // boolean
     clustering_tool                  // string ["linclust", "cluster"]
     alignment_tool                   // string ["famsa", "mafft"]
-    trim_msa                         // boolean
+    skip_msa_trimming                // boolean
     clipkit_out_format               // string (default: clipkit)
 
     main:
@@ -40,10 +40,10 @@ workflow UPDATE_FAMILIES {
         }
 
     UNTAR_HMM( ch_input_for_untar.hmm )
-    ch_versions = ch_versions.mix( UNTAR_HMM.out.versions )
+    ch_versions = ch_versions.mix( UNTAR_HMM.out.versions.first() )
 
     UNTAR_MSA( ch_input_for_untar.msa )
-    ch_versions = ch_versions.mix( UNTAR_MSA.out.versions )
+    ch_versions = ch_versions.mix( UNTAR_MSA.out.versions.first() )
 
     // check that the HMMs and the MSAs match
     // join to ensure in sync
@@ -57,7 +57,7 @@ workflow UPDATE_FAMILIES {
 
     // Squeeze the HMMs into a single file
     CAT_HMM( UNTAR_HMM.out.untar.map { meta, folder -> [meta, file("${folder.toUriString()}/*", checkIfExists: true)] } )
-    ch_versions = ch_versions.mix( CAT_HMM.out.versions )
+    ch_versions = ch_versions.mix( CAT_HMM.out.versions.first() )
 
     // Prep the sequences to search against the HMM concatenated model of families
     ch_input_for_hmmsearch = CAT_HMM.out.file_out
@@ -65,7 +65,7 @@ workflow UPDATE_FAMILIES {
         .map { meta, concatenated_hmm, fasta, _existing_hmms_to_update, _existing_msas_to_update -> [meta, concatenated_hmm, fasta, false, false, true] }
 
     HMMER_HMMSEARCH( ch_input_for_hmmsearch )
-    ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions )
+    ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions.first() )
 
     ch_input_for_branch_hits = HMMER_HMMSEARCH.out.domain_summary
         .join(ch_samplesheet_for_update)
@@ -76,7 +76,7 @@ workflow UPDATE_FAMILIES {
 
     // Branch hit families/fasta proteins from non hit fasta proteins
     BRANCH_HITS_FASTA ( ch_input_for_branch_hits.fasta, ch_input_for_branch_hits.domtbl, hmmsearch_query_length_threshold )
-    ch_versions = ch_versions.mix( BRANCH_HITS_FASTA.out.versions )
+    ch_versions = ch_versions.mix( BRANCH_HITS_FASTA.out.versions.first() )
     ch_no_hit_seqs = BRANCH_HITS_FASTA.out.non_hit_fasta
 
     ch_hits_fasta = BRANCH_HITS_FASTA.out.hits
@@ -96,7 +96,7 @@ workflow UPDATE_FAMILIES {
 
     // Keep fasta with family sequences by removing gaps
     SEQKIT_SEQ( ch_family_msas )
-    ch_versions = ch_versions.mix(SEQKIT_SEQ.out.versions)
+    ch_versions = ch_versions.mix( SEQKIT_SEQ.out.versions.first() )
 
     // Match newly recruited sequences with existing ones for each family
     ch_input_for_cat = SEQKIT_SEQ.out.fastx
@@ -107,16 +107,16 @@ workflow UPDATE_FAMILIES {
 
     // Aggregate each family's MSA sequences with the newly recruited ones
     CAT_FASTA( ch_input_for_cat )
-    ch_versions = ch_versions.mix( CAT_FASTA.out.versions )
+    ch_versions = ch_versions.mix( CAT_FASTA.out.versions.first() )
     ch_fasta = CAT_FASTA.out.file_out
 
-    if (remove_sequence_redundancy) {
+    if (!skip_sequence_redundancy_removal) {
         // Strict clustering to remove redundancy
         MMSEQS_FASTA_CLUSTER( ch_fasta, clustering_tool )
         ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
-        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions )
+        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         ch_fasta = REMOVE_REDUNDANT_SEQS.out.fasta
     }
 
@@ -124,24 +124,24 @@ workflow UPDATE_FAMILIES {
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_msa = ALIGN_SEQUENCES.out.alignments
 
-    if (trim_msa) {
+    if (!skip_msa_trimming) {
         CLIPKIT( ch_msa, clipkit_out_format )
-        ch_versions = ch_versions.mix( CLIPKIT.out.versions )
+        ch_versions = ch_versions.mix( CLIPKIT.out.versions.first() )
         ch_msa = CLIPKIT.out.clipkit
     }
 
     HMMER_HMMBUILD( ch_msa, [] )
-    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions )
+    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions.first() )
 
     ch_fasta = ch_fasta
         .map { meta, faa -> [ [id: meta.id], faa ] }
         .groupTuple(by: 0)
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions )
+    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions.first() )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
+    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
     ch_updated_family_reps = ch_updated_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     emit:

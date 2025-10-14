@@ -9,7 +9,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of(
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = Channel.of(
                     [
                         [ id: 'chunk', chunk:1 ],
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
@@ -23,7 +27,7 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
                     ]
                 )
-                input[1] = Channel.of(
+                input[2] = Channel.of(
                     [
                         [ id: 'chunk', chunk:1 ],
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.sto.gz', checkIfExists: true)
@@ -37,21 +41,21 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.sto.gz', checkIfExists: true)
                     ]
                 )
-                input[2] = Channel.of(
+                input[3] = Channel.of(
                     [
                         [ id: 'chunk', chunk:1 ],
-                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.fasta.gz', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa.gz', checkIfExists: true)
                     ],
                     [
                         [ id: 'chunk', chunk:2 ],
-                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.fasta.gz', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.faa.gz', checkIfExists: true)
                     ],
                     [
                         [ id: 'chunk', chunk:3 ],
-                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.fasta.gz', checkIfExists: true)
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.faa.gz', checkIfExists: true)
                     ]
                 )
-                input[3] = Channel.of(
+                input[4] = Channel.of(
                     [
                         [ id: 'chunk', chunk:1 ],
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.hmm.gz', checkIfExists: true)
@@ -65,11 +69,19 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
-                input[4] = true       // remove_family_redundancy
-                input[5] = 0.9        // hmmsearch_family_length_threshold
-                input[6] = true       // remove_sequence_redundancy
-                input[7] = "linclust" // clustering_tool
-                input[8] = "famsa"    // alignment_tool
+                input[5]  = false      // skip_family_redundancy_removal
+                input[6]  = false      // skip_family_merging
+                input[7]  = 0.1        // hmmsearch_family_redundancy_length_threshold
+                input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
+                input[9]  = false      // skip_sequence_redundancy_removal
+                input[10] = "linclust" // clustering_tool
+                input[11] = "famsa"    // alignment_tool
+                input[12] = false      //skip_msa_trimming
+                input[13] = "clipkit"  // clipkit_out_format
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }

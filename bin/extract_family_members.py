@@ -47,7 +47,7 @@ def extract_ids(filepath):
     Extract all sequence IDs from a FASTA file.
 
     Args:
-        filepath (str): Path to the FASTA (.fa or .fa.gz) file.
+        filepath (str): Path to the FASTA (.faa or .faa.gz) file.
 
     Returns:
         list of str: List of sequence IDs.

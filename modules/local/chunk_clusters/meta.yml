@@ -33,7 +33,7 @@ input:
     - sequences:
         type: file
         description: FASTA file containing amino acid sequences.
-        pattern: "*.{fa,fa.gz,fasta,fasta.gz}"
+        pattern: "*.{faa,faa.gz,fa,fa.gz,fasta,fasta.gz}"
   - - size_threshold:
         type: integer
         description: Integer value representing the minimum allowed cluster size to chunk.
@@ -47,7 +47,7 @@ output:
     - chunked_fasta/*:
         type: file
         description: List of files containing chunked FASTA files produced from the clustering process.
-        pattern: "chunked_fasta/*.fasta"
+        pattern: "*.faa"
   versions:
     - versions.yml:
         type: file

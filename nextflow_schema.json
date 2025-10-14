@@ -293,10 +293,10 @@
                     "help_text": "Available tools: 'famsa' or 'mafft'.",
                     "enum": ["famsa", "mafft"]
                 },
-                "trim_msa": {
+                "skip_msa_trimming": {
                     "type": "boolean",
-                    "description": "Boolean whether to trim the Multiple Sequence Alignment (MSA) gaps",
-                    "default": true,
+                    "description": "Boolean whether to skip trimming off gappy positions from Multiple Sequence Alignments (MSAs)",
+                    "default": false,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
@@ -319,13 +319,13 @@
                     "maximum": 1.0,
                     "description": "Multiple Sequence Alignment (MSA) positions with gappiness greater than this threshold will be trimmed"
                 },
-                "recruit_sequences_with_models": {
+                "skip_additional_sequence_recruiting": {
                     "type": "boolean",
-                    "description": "Set to true to recruit additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) to refine the alignments",
-                    "default": true,
+                    "description": "Skip recruitment of additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) into the full alignment",
+                    "default": false,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true,
-                    "help_text": "If this is set to true, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the hmmsearch_query_length_threshold), resulting in bigger but better described families"
+                    "help_text": "If this is set to false, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the hmmsearch_query_length_threshold), resulting in bigger but better described families"
                 },
                 "hmmsearch_write_target": {
                     "type": "boolean",
@@ -373,30 +373,46 @@
             "type": "object",
             "description": "Use these parameters to control the redundancy removal subworkflow execution.",
             "properties": {
-                "remove_family_redundancy": {
+                "skip_family_redundancy_removal": {
                     "type": "boolean",
-                    "description": "Removal of between-family redundancy via hmmsearch.",
-                    "default": true,
+                    "description": "Skip removal of between-family redundancy via hmmsearch sequence to family model matching.",
+                    "default": false,
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true,
-                    "help_text": "Similar families should not be further processed, for better resource management and to avoid duplication of families."
+                    "help_text": "Suggested to keep false, so that redundant families are not further processed, for better resource management and to avoid duplication."
                 },
-                "hmmsearch_family_length_threshold": {
+                "skip_family_merging": {
+                    "type": "boolean",
+                    "description": "Flag to skip merging of similar families.",
+                    "default": false,
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true,
+                    "help_text": "If false, similar families (but not redundant!) will be merged, depending on the hmmsearch_family_similarity_length_threshold parameter."
+                },
+                "hmmsearch_family_redundancy_length_threshold": {
+                    "type": "number",
+                    "default": 1.0,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
+                },
+                "hmmsearch_family_similarity_length_threshold": {
                     "type": "number",
                     "default": 0.9,
                     "minimum": 0.0,
                     "maximum": 1.0,
-                    "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
+                    "description": "hmmsearch minimum length percentage of hit env vs query length, to flag and report similar families (and to optionally merge)",
+                    "help_text": "Must be below the hmmsearch_family_redundancy_length_threshold to be valid."
                 },
                 "save_non_redundant_fams_fasta": {
                     "type": "boolean",
                     "description": "Save only the fasta files of non-redundant families (might still contain redundant sequences)",
                     "help_text": "Specify to save the fasta files of non-redundant families."
                 },
-                "remove_sequence_redundancy": {
+                "skip_sequence_redundancy_removal": {
                     "type": "boolean",
-                    "description": "Removal of inside-family redundancy of sequences via mmseqs clustering.",
-                    "default": true,
+                    "description": "Skip removal of inside-family redundancy of sequences via mmseqs clustering.",
+                    "default": false,
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true,
                     "help_text": "Highly similar sequences within the same family should be removed, while making sure that the protein family diversity is still well captured."
