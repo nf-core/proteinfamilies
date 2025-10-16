@@ -28,19 +28,19 @@ CONTROL_REP2,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,existing_msa
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sample`                  | Custom sample name. Spaces in sample names are automatically converted to underscores (`_`).                                                |
 | `fasta`                   | Full path to amino acid fasta file. Allowed extensions are ".faa", ".fasta" and ".fa", with or without a following ".gz" for gzipped files. |
-| `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. Allowed extension are ".tar.gz".                                                 |
-| `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. Allowed extension are ".tar.gz".                                                 |
+| `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. The filename needs to end with ".tar.gz".                                        |
+| `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. The filename needs to end with ".tar.gz".                                        |
 
 ## Parameter specifications
 
 Here we provide guidance regarding some parameter choices.
 
 - `clustering_tool` ["cluster", "linclust"]: The mmseqs algorithm used for clustering.
-  The `cluster` option is slower but more sensitive, and is recommended where there is sufficient compute available.
+  The `cluster` option is slower but more sensitive, and is recommended where there are sufficient compute resources available and a more sensitive search is called for.
   It tends to produce fewer and larger clusters than `linclust`.
   The `linclust` option is less sensitive, but extremely fast for clustering larger datasets.
 - `cluster_cov_mode` [0, 1, 2]: The default bidirectional value for coverage mode (`cluster_cov_mode` = 0) automatically sets the MMseqs2 clustering mode to greedy cluster set.
-  However, the users can opt to override this parameter either indirectly, by changing the coverage mode, or directly, by setting the `--cluster-mode` argument in the modules configuration file.
+  However, users can opt to override this parameter either indirectly, by changing the coverage mode, or directly, by setting the `--cluster-mode` argument in the modules configuration file.
 - `alignment_tool` ["famsa", "mafft"]: Multiple Sequence Alignment (MSA) options.
   The `famsa` option is generally recommended as the best time-memory-accuracy combination.
   The `mafft` option offers various alignment strategies, but in general is slower and less sensitive than `famsa`.
