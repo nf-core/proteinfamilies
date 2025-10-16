@@ -28,8 +28,8 @@ CONTROL_REP2,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,existing_msa
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sample`                  | Custom sample name. Spaces in sample names are automatically converted to underscores (`_`).                                                |
 | `fasta`                   | Full path to amino acid fasta file. Allowed extensions are ".faa", ".fasta" and ".fa", with or without a following ".gz" for gzipped files. |
-| `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. Allowed extension should be ".tar.gz".                                           |
-| `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. Allowed extension should be ".tar.gz".                                           |
+| `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. Allowed extension are ".tar.gz".                                                 |
+| `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. Allowed extension are ".tar.gz".                                                 |
 
 ## Parameter specifications
 
