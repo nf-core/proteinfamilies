@@ -3,11 +3,6 @@
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
 
-#!/usr/bin/env python
-
-## Originally written by Evangelos Karatzas and released under the MIT license.
-## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
-
 import sys
 import argparse
 import pandas as pd
