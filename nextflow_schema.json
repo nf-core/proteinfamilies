@@ -295,7 +295,7 @@
                 },
                 "skip_msa_trimming": {
                     "type": "boolean",
-                    "description": "Boolean whether to skip trimming off gappy positions from Multiple Sequence Alignments (MSAs)",
+                    "description": "Boolean whether to skip the trimming process of gappy positions from Multiple Sequence Alignments (MSAs)",
                     "default": false,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
