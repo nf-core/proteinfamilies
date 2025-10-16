@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#124](https://github.com/nf-core/proteinfamilies/pull/124)
   - Added new subworkflow `MERGE_FAMILIES` that can optionally merge similar (but not redundant) generated protein families. (by @vagkaratzas)
-  - Added new functionality to the local module `IDENTIFY_REDUNDANT_IDS` which now also detects and outputs similar family IDs that can optionally be merged downstream. The similar IDs are written to _"/remove_redundancy/&lt;samplename&gt;/similar_fam_ids.txt"_, and the corresponding pairwise similarity scores to _"/remove_redundancy/&lt;samplename&gt;/similarities.csv"_. (by @vagkaratzas)
+  - Added new functionality to the local module `IDENTIFY_REDUNDANT_FAMS` which now also detects and outputs the identifiers of similar families that can optionally be merged downstream. These identifiers are written to _"/remove_redundancy/&lt;samplename&gt;/similar_fam_ids.txt"_, and the corresponding family pairwise similarity scores to _"/remove_redundancy/&lt;samplename&gt;/similarities.csv"_. (by @vagkaratzas)
   - Added new local module `POOL_SIMILAR_COMPONENTS` that generates family clusters, from a family-similarity edgelist. (by @vagkaratzas)
   - Added new local module `MERGE_SEEDS` that merges seed alignments of similar families, before restarting the family generation subworkflow. (by @vagkaratzas)
 - [#118](https://github.com/nf-core/proteinfamilies/pull/118)
