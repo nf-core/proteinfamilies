@@ -248,7 +248,7 @@
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "mmseqs parameter for minimum sequence identity",
-                    "help_text": "Minimum sequence identity required for clustering. The mmseqs default is 0.9, but protein families contain way more diverse sequences (https://doi.org/10.1093/protein/12.2.85)."
+                    "help_text": "Minimum sequence identity required for clustering. Metagenomics protein families include diverse sequences, so using the mmseqs default identity (0.9) would oversplit them. A default value of 0.3 allows grouping more distant homologs while still maintaining meaningful functional relationships (https://doi.org/10.1093/protein/12.2.85)."
                 },
                 "cluster_coverage": {
                     "type": "number",
@@ -256,7 +256,7 @@
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "mmseqs parameter for minimum sequence coverage ratio",
-                    "help_text": "Minimum sequence length coverage required for clustering"
+                    "help_text": "Minimum sequence length coverage required for clustering. Similarly to the cluster_seq_identity parameter, a lower value (i.e., 0.5) than the mmseqs default (i.e., 0.8) enables the generation of protein families that are composed of more distant homologs."
                 },
                 "cluster_cov_mode": {
                     "type": "integer",
