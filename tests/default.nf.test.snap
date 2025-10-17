@@ -1,7 +1,6 @@
 {
     "-profile test": {
         "content": [
-            89,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -194,6 +193,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.8"
         },
-        "timestamp": "2025-10-14T12:42:02.547649669"
+        "timestamp": "2025-10-17T09:59:11.479926073"
     }
 }
