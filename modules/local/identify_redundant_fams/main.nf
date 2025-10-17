@@ -30,9 +30,9 @@ process IDENTIFY_REDUNDANT_FAMS {
         --domtbl ${domtbl} \\
         --redundancy_length_threshold ${redundancy_length_threshold} \\
         --similarity_length_threshold ${similarity_length_threshold} \\
-        --out_file redundant_fam_ids.txt \\
-        --similar_file similar_fam_ids.txt \\
-        --similarities_csv similarities.csv \\
+        --redundant_ids_file redundant_fam_ids.txt \\
+        --similar_ids_file similar_fam_ids.txt \\
+        --pairwise_similarities_file similarities.csv \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
