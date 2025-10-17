@@ -137,25 +137,29 @@ def process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_fam
 
 
 def process_similar(similar_df, redundant_fam_names, pairwise_similarities_file, similar_ids_file):
+    if similar_df.empty:
+        return
+
     # remove any similarity rows involving families already marked redundant
-    if not similar_df.empty:
-        similar_df = similar_df[
-            ~similar_df["query name"].isin(redundant_fam_names)
-            & ~similar_df["target name"].isin(redundant_fam_names)
-        ]
+    similar_df = similar_df[
+        ~similar_df["query name"].isin(redundant_fam_names)
+        & ~similar_df["target name"].isin(redundant_fam_names)
+    ]
 
-    if not similar_df.empty:
-        similar_out = similar_df[["query name", "target name", "similarity_score"]].copy()
-        similar_out = similar_out.rename(
-            columns={"query name": "family_1", "target name": "family_2"}
-        )
-        similar_out.to_csv(pairwise_similarities_file, index=False)
+    if similar_df.empty:
+        return
 
-        # collect all unique family IDs that appear at least once in similarities
-        similar_ids = set(similar_out["family_1"]) | set(similar_out["family_2"])
-        with open(similar_ids_file, "w") as f:
-            for fam in sorted(similar_ids):
-                f.write(f"{fam}\n")
+    similar_out = similar_df[["query name", "target name", "similarity_score"]].copy()
+    similar_out = similar_out.rename(
+        columns={"query name": "family_1", "target name": "family_2"}
+    )
+    similar_out.to_csv(pairwise_similarities_file, index=False)
+
+    # collect all unique family IDs that appear at least once in similarities
+    similar_ids = set(similar_out["family_1"]) | set(similar_out["family_2"])
+    with open(similar_ids_file, "w") as f:
+        for fam in sorted(similar_ids):
+            f.write(f"{fam}\n")
 
 
 def process_family_similarity(mapping, domtbl, redundancy_length_threshold, similarity_length_threshold, redundant_ids_file, similar_ids_file, pairwise_similarities_file, skip_family_redundancy_removal):

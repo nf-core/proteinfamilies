@@ -13,7 +13,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 Quality check:
 
 - [SeqFu](#seqfu) for input amino acid sequences quality check (QC)
-- [SeqKit](#seqkit) for preprocessing input amino acid sequences
+- [SeqKit](#seqkit) for preprocessing input amino acid sequences (i.e., gap removal, convert to upper case, validate, filter by length, replace special characters such as `/`, and remove duplicate sequences)
 
 Initial clustering:
 
