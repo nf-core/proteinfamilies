@@ -111,26 +111,27 @@ def process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_fam
 
     if skip_family_redundancy_removal:
         return redundant_fam_names
-        redundant_df = redundant_df.drop(columns=["qlen", "env from", "env to"])
-        redundant_df["query size"] = redundant_df["query name"].map(family_to_size)
-        redundant_df["target size"] = redundant_df["target name"].map(family_to_size)
 
-        for _, row in redundant_df.iterrows():
-            query = row["query name"]
-            target = row["target name"]
-            query_size = int(row["query size"])
-            target_size = int(row["target size"])
+    redundant_df = redundant_df.drop(columns=["qlen", "env from", "env to"])
+    redundant_df["query size"] = redundant_df["query name"].map(family_to_size)
+    redundant_df["target size"] = redundant_df["target name"].map(family_to_size)
 
-            if query_size < target_size:
-                redundant_fam_names.add(query)
-            elif target_size < query_size:
-                redundant_fam_names.add(target)
-            else: # sizes equal, keep alphabetically first as non-redundant to avoid triangular deletions
-                redundant_fam_names.add(max(query, target))
+    for _, row in redundant_df.iterrows():
+        query = row["query name"]
+        target = row["target name"]
+        query_size = int(row["query size"])
+        target_size = int(row["target size"])
 
-        with open(redundant_ids_file, "w") as f:
-            for name in sorted(redundant_fam_names):
-                f.write(name + "\n")
+        if query_size < target_size:
+            redundant_fam_names.add(query)
+        elif target_size < query_size:
+            redundant_fam_names.add(target)
+        else: # sizes equal, keep alphabetically first as non-redundant to avoid triangular deletions
+            redundant_fam_names.add(max(query, target))
+
+    with open(redundant_ids_file, "w") as f:
+        for name in sorted(redundant_fam_names):
+            f.write(name + "\n")
 
     return redundant_fam_names
 
