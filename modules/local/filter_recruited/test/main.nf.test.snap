@@ -1,0 +1,60 @@
+{
+    "proteinfamilies - hmmsearch - fasta": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "filtering"
+                    },
+                    "filtering_null.fasta.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
+                ]
+            ],
+            [
+                {
+                    "FILTER_RECRUITED": {
+                        "python": "3.13.1",
+                        "biopython": 1.85
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.3"
+        },
+        "timestamp": "2025-06-13T15:19:25.989434663"
+    },
+    "proteinfamilies - hmmsearch - fasta - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "filtering"
+                        },
+                        "filtering_null.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,bbd4ade59554c36516908d1325b288af"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "filtering"
+                        },
+                        "filtering_null.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,bbd4ade59554c36516908d1325b288af"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.3"
+        },
+        "timestamp": "2025-06-13T15:19:42.603340138"
+    }
+}

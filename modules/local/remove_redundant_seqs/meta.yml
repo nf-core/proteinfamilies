@@ -1,0 +1,57 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "remove_redundant_seqs"
+description: Remove redundant sequences.
+keywords:
+  - strict clustering
+  - representative sequences
+  - filtering
+tools:
+  - "remove_redundant_seqs":
+      description: "Keep a fasta with non-redundant amino acid sequences of a family."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/remove_redundant_seqs/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/remove_redundant_seqs/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/remove_redundant_seqs/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing mapping information.
+          e.g. `[ id:'sample1', single_end:false ]`
+    - clustering:
+        type: file
+        description: 2-column TSV file mapping sequences to clusters
+        pattern: "*.tsv"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing mapping information.
+          e.g. `[ id:'sample1', single_end:false ]`
+    - sequences:
+        type: file
+        description: fasta file containing amino acid sequences in this family
+        pattern: "*.{fa,fa.gz,fasta,fasta.gz}"
+output:
+  fasta:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing mapping information
+            e.g. `[ id:'sample1', single_end:false ]`
+    - ${prefix}_reps.faa:
+        type: file
+        description: fasta file containing non-redundant, representative sequences
+        pattern: "*_reps.faa"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+  - "@sillitoe"
+maintainers:
+  - "@vagkaratzas"

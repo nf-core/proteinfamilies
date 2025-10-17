@@ -1,0 +1,84 @@
+{
+    "fasta": {
+        "content": [
+            "test_null.hmm.gz",
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_1_2"
+                    },
+                    "test_null.clipkit:md5,28f6460dd199c925d44b37a838552aad"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_1_2"
+                    },
+                    "test_null.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_1_2"
+                    },
+                    "test_null.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                ]
+            ],
+            [
+                {
+                    "MERGE_FAMILIES:GENERATE_FAMILIES:HMMER_HMMALIGN": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "MERGE_FAMILIES:GENERATE_FAMILIES:HMMER_HMMBUILD": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "MERGE_FAMILIES:GENERATE_FAMILIES:FILTER_RECRUITED": {
+                        "python": "3.13.1",
+                        "biopython": 1.85
+                    }
+                },
+                {
+                    "MERGE_FAMILIES:GENERATE_FAMILIES:HMMER_HMMSEARCH": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "MERGE_FAMILIES:POOL_SIMILAR_COMPONENTS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.3",
+                        "networkx": 3.5
+                    }
+                },
+                {
+                    "MERGE_FAMILIES:MERGE_SEEDS": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "MERGE_FAMILIES:GENERATE_FAMILIES:CLIPKIT": {
+                        "clipkit": "2.4.1"
+                    }
+                },
+                {
+                    "MERGE_FAMILIES:GENERATE_FAMILIES:ALIGN_SEQUENCES:FAMSA_ALIGN": {
+                        "famsa": "2.4.1-45c9b2b (2025-05-09)"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
+        },
+        "timestamp": "2025-10-09T11:59:22.313724388"
+    }
+}

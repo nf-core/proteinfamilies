@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "extract_family_members"
+description: From a list of faa files extract a TSV file with family and member sequence identifiers.
+keywords:
+  - fasta
+  - member sequences
+  - family edgelist
+tools:
+  - "extract_family_members":
+      description: "From a list of faa files extract a TSV file with family and member sequence identifiers."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/extract_family_members/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/extract_family_members/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/extract_family_members/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - faa:
+        type: file
+        description: A list of faa files that will be staged as a directory.
+        pattern: "*.{faa.gz,faa,fasta.gz,fasta}"
+output:
+  tsv:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+    - ${prefix}.tsv:
+        type: file
+        description: a TSV file with family id and sequence member id columns
+        pattern: "*.tsv"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "extract_family_reps"
+description: From a list of alignment files (Stockholm or fasta format) extract a fasta file with the first sequences of each file, as well as a MultiQC CSV with metadata.
+keywords:
+  - fasta
+  - representative sequences
+  - multiqc metadata
+tools:
+  - "extract_family_reps":
+      description: "From a list of alignment files (Stockholm or fasta format) extract a fasta file with the first sequences of each file, as well as a MultiQC CSV with metadata."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/extract_family_reps/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/extract_family_reps/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/extract_family_reps/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - aln:
+        type: file
+        description: A list of alignment files that will be staged as a directory.
+        pattern: "*.{sto.gz,fasta,fasta.gz}"
+output:
+  fasta:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+    - ${prefix}_reps.faa:
+        type: file
+        description: a fasta file with all family representative sequences
+        pattern: "*_reps.faa"
+  map:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+    - ${prefix}_meta_mqc.csv:
+        type: file
+        description: |
+          a MultiQC CSV file with all family representative sequence metadata:
+          "Sample Name","Family Id","Size","Representative Length","Representative Id","Sequence"
+        pattern: "*_meta_mqc.csv"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"
