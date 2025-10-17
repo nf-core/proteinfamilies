@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#128](https://github.com/nf-core/proteinfamilies/pull/128) - nf-core tools template update to 3.4.1.
 - [#124](https://github.com/nf-core/proteinfamilies/pull/124)
   - Conditional workflow flags switched to their `skip` opposites; `--trim_msa` to `--skip_msa_trimming`, `--recruit_sequences_with_models` to `--skip_additional_sequence_recruiting`, `--remove_family_redundancy` to `--skip_family_redundancy_removal`, `--remove_sequence_redundancy` to `--skip_sequence_redundancy_removal`. (by @vagkaratzas)
 - [#118](https://github.com/nf-core/proteinfamilies/pull/118)
