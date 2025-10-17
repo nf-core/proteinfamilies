@@ -109,7 +109,8 @@ def filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_
 def process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_family_redundancy_removal):
     redundant_fam_names = set()
 
-    if not skip_family_redundancy_removal:
+    if skip_family_redundancy_removal:
+        return redundant_fam_names
         redundant_df = redundant_df.drop(columns=["qlen", "env from", "env to"])
         redundant_df["query size"] = redundant_df["query name"].map(family_to_size)
         redundant_df["target size"] = redundant_df["target name"].map(family_to_size)
