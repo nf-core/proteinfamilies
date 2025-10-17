@@ -6,7 +6,7 @@ lint:
     - conf/igenomes_ignored.config
   files_unchanged:
     - .github/PULL_REQUEST_TEMPLATE.md
-nf_core_version: 3.3.2
+nf_core_version: 3.4.1
 repository_type: pipeline
 template:
   author: Evangelos Karatzas
@@ -21,4 +21,4 @@ template:
   skip_features:
     - igenomes
     - fastqc
-  version: 1.3.1
+  version: 2.0.0

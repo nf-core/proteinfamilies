@@ -5,12 +5,13 @@
   </picture>
 </h1>
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new/nf-core/proteinfamilies)
 [![GitHub Actions CI Status](https://github.com/nf-core/proteinfamilies/actions/workflows/nf-test.yml/badge.svg)](https://github.com/nf-core/proteinfamilies/actions/workflows/nf-test.yml)
 [![GitHub Actions Linting Status](https://github.com/nf-core/proteinfamilies/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/proteinfamilies/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/proteinfamilies/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.14881993-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.14881993)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
-[![Nextflow](https://img.shields.io/badge/version-%E2%89%A524.10.5-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
-[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.3.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.3.2)
+[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.04.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.4.1-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.4.1)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -21,16 +22,19 @@
 ## Introduction
 
 **nf-core/proteinfamilies** is a bioinformatics pipeline that generates protein families from amino acid sequences and/or updates existing families with new sequences.
-It takes a protein fasta file as input, clusters the sequences and then generates protein family Hiden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
+It takes a protein fasta file as input, clusters the sequences and then generates protein family Hidden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
 Optionally, paths to existing family HMMs and MSAs can be given (must have matching base filenames one-to-one) in order to update with new sequences in case of matching hits.
 
-<p align="center">
-    <img src="docs/images/proteinfamilies_workflow.png" alt="nf-core/proteinfamilies workflow overview">
+<p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/proteinfamilies_workflow_dark.png">
+    <img alt="nf-core/proteinfamilies workflow overview" src="docs/images/proteinfamilies_workflow_light.png">
+  </picture>
 </p>
 
-### Check quality
+### Check quality and pre-process
 
-Generate input amino acid sequence statistics with ([`SeqKit`](https://github.com/shenwei356/seqkit/))
+Generate input amino acid sequence statistics with ([`SeqFu`](https://github.com/telatin/seqfu2/)) and pre-process them (i.e., gap removal, convert to upper case, validate, filter by length, replace special characters such as `/`, and remove duplicate sequences) with ([`SeqKit`](https://github.com/shenwei356/seqkit/))
 
 ### Create families
 
@@ -38,7 +42,7 @@ Generate input amino acid sequence statistics with ([`SeqKit`](https://github.co
 2. Perform multiple sequence alignment (MSA) ([`FAMSA`](https://github.com/refresh-bio/FAMSA/) or [`mafft`](https://github.com/GSLBiotech/mafft/))
 3. Optionally, clip gap parts of the MSA ([`ClipKIT`](https://github.com/JLSteenwyk/ClipKIT/))
 4. Generate family HMMs and fish additional sequences into the family ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
-5. Optionally, remove redundant families by comparing family representative sequences against family models with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
+5. Optionally, remove redundant and/or merge similar families by comparing family representative sequences against family models with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
 6. Optionally, from the remaining families, remove in-family redundant sequences by strictly clustering with ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/)) and keep cluster representatives
 7. Optionally, if in-family redundancy was not removed, reformat the `.sto` full MSAs to `.fas` with ([`HH-suite3`](https://github.com/soedinglab/hh-suite))
 8. Present statistics for remaining/updated family size distributions and representative sequence lengths ([`MultiQC`](http://multiqc.info/))
@@ -64,7 +68,7 @@ First, prepare a samplesheet with your input data that looks as follows:
 
 ```csv
 sample,fasta,existing_hmms_to_update,existing_msas_to_update
-CONTROL_REP1,input/mgnifams_input_small.fa,,
+CONTROL_REP1,input/mgnifams_input_small.faa,,
 ```
 
 Each row contains a fasta file with amino acid sequences (can be zipped or unzipped).
@@ -108,7 +112,15 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 ## Citations
 
-If you use nf-core/proteinfamilies for your analysis, please cite it using the following doi: [10.5281/zenodo.14881993](https://doi.org/10.5281/zenodo.14881993).
+If you use nf-core/proteinfamilies for your analysis, please cite the article as follows:
+
+> **nf-core/proteinfamilies: A scalable pipeline for the generation of protein families.**
+>
+> Evangelos Karatzas, Martin Beracochea, Fotis A. Baltoumas, Eleni Aplakidou, Lorna Richardson, James A. Fellows Yates, Daniel Lundin, nf-core community, Aydin Buluç, Nikos C. Kyrpides, Ilias Georgakopoulos-Soares, Georgios A. Pavlopoulos & Robert D. Finn
+>
+> _biorxiv._ 2025 Aug. doi: [10.1101/2025.08.12.670010](https://dx.doi.org/10.1101/2025.08.12.670010).
+
+You can cite the nf-core/proteinfamilies zenodo record for a specific version using the following doi: [10.5281/zenodo.14881993](https://doi.org/10.5281/zenodo.14881993).
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

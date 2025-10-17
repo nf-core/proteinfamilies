@@ -15,7 +15,7 @@ nextflow_process {
                 ])
                 input[1] = Channel.of([
                     [ id: 'test_fasta' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
                 input[2] = 5
                 """
@@ -46,7 +46,7 @@ nextflow_process {
                 ])
                 input[1] = Channel.of([
                     [ id: 'test_fasta' ], // meta map
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.fa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
                 input[2] = 5
                 """

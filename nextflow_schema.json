@@ -89,6 +89,11 @@
                     "description": "Institutional config URL link.",
                     "hidden": true,
                     "fa_icon": "fas fa-users-cog"
+                },
+                "modules_testdata_base_path": {
+                    "type": "string",
+                    "description": "Base path / URL for data used in the modules",
+                    "hidden": true
                 }
             }
         },
@@ -186,6 +191,50 @@
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
                     "hidden": true
+                },
+                "help": {
+                    "type": ["boolean", "string"],
+                    "description": "Display the help message."
+                },
+                "help_full": {
+                    "type": "boolean",
+                    "description": "Display the full detailed help message."
+                },
+                "show_hidden": {
+                    "type": "boolean",
+                    "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
+                }
+            }
+        },
+        "quality_check_params": {
+            "title": "Quality check parameters",
+            "type": "object",
+            "description": "Use these parameters to control the flow of the quality check subworkflow execution.",
+            "properties": {
+                "skip_preprocessing": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-ban",
+                    "description": "Skip all default QC steps for sequences (gap trimming, length filtering, validation, duplicate removal).",
+                    "help": "Skips input amino acid sequence preprocessing transformations, length filtering, duplicate removal and validation checks."
+                },
+                "min_seq_length": {
+                    "type": "integer",
+                    "default": 30,
+                    "fa_icon": "fas fa-ruler-horizontal",
+                    "description": "The minimum allowed sequence length",
+                    "help_text": "Specify the minimum length of amino acid sequences that go into clustering."
+                },
+                "max_seq_length": {
+                    "type": "integer",
+                    "default": 5000,
+                    "fa_icon": "fas fa-ruler-horizontal",
+                    "description": "The maximum allowed sequence length",
+                    "help_text": "Specify the maximum length of amino acid sequences that go into clustering."
+                },
+                "remove_duplicates_on_sequence": {
+                    "type": "boolean",
+                    "description": "Remove duplicate input amino acid sequences, based on the sequence.",
+                    "help": "Instead of just removing by similar identifier, the tool also removes duplicate sequences."
                 }
             }
         },
@@ -207,19 +256,19 @@
                 },
                 "cluster_seq_identity": {
                     "type": "number",
-                    "default": 0.5,
+                    "default": 0.3,
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "mmseqs parameter for minimum sequence identity",
-                    "help_text": "Minimum sequence identity required for clustering. The mmseqs default is 0.9, but protein families contain way more diverse sequences (https://doi.org/10.1093/protein/12.2.85)."
+                    "help_text": "Minimum sequence identity required for clustering. Metagenomics protein families include diverse sequences, so using the mmseqs default identity (0.9) would oversplit them. A default value of 0.3 allows grouping more distant homologs while still maintaining meaningful functional relationships (https://doi.org/10.1093/protein/12.2.85)."
                 },
                 "cluster_coverage": {
                     "type": "number",
-                    "default": 0.9,
+                    "default": 0.5,
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "mmseqs parameter for minimum sequence coverage ratio",
-                    "help_text": "Minimum sequence length coverage required for clustering"
+                    "help_text": "Minimum sequence length coverage required for clustering. Similarly to the cluster_seq_identity parameter, a lower value (i.e., 0.5) than the mmseqs default (i.e., 0.8) enables the generation of protein families that are composed of more distant homologs."
                 },
                 "cluster_cov_mode": {
                     "type": "integer",
@@ -256,10 +305,10 @@
                     "help_text": "Available tools: 'famsa' or 'mafft'.",
                     "enum": ["famsa", "mafft"]
                 },
-                "trim_msa": {
+                "skip_msa_trimming": {
                     "type": "boolean",
-                    "description": "Boolean whether to trim the Multiple Sequence Alignment (MSA) gaps",
-                    "default": true,
+                    "description": "Boolean whether to skip the trimming process of gappy positions from Multiple Sequence Alignments (MSAs)",
+                    "default": false,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
@@ -282,13 +331,13 @@
                     "maximum": 1.0,
                     "description": "Multiple Sequence Alignment (MSA) positions with gappiness greater than this threshold will be trimmed"
                 },
-                "recruit_sequences_with_models": {
+                "skip_additional_sequence_recruiting": {
                     "type": "boolean",
-                    "description": "Set to true to recruit additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) to refine the alignments",
-                    "default": true,
+                    "description": "Skip recruitment of additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) into the full alignment",
+                    "default": false,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true,
-                    "help_text": "If this is set to true, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the hmmsearch_query_length_threshold), resulting in bigger but better described families"
+                    "help_text": "If this is set to false, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the hmmsearch_query_length_threshold), resulting in bigger but better described families"
                 },
                 "hmmsearch_write_target": {
                     "type": "boolean",
@@ -336,30 +385,46 @@
             "type": "object",
             "description": "Use these parameters to control the redundancy removal subworkflow execution.",
             "properties": {
-                "remove_family_redundancy": {
+                "skip_family_redundancy_removal": {
                     "type": "boolean",
-                    "description": "Removal of between-family redundancy via hmmsearch.",
-                    "default": true,
+                    "description": "Skip removal of between-family redundancy via hmmsearch sequence to family model matching.",
+                    "default": false,
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true,
-                    "help_text": "Similar families should not be further processed, for better resource management and to avoid duplication of families."
+                    "help_text": "Suggested to keep false, so that redundant families are not further processed, for better resource management and to avoid duplication."
                 },
-                "hmmsearch_family_length_threshold": {
+                "skip_family_merging": {
+                    "type": "boolean",
+                    "description": "Flag to skip merging of similar families.",
+                    "default": false,
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true,
+                    "help_text": "If false, similar families (but not redundant!) will be merged, depending on the hmmsearch_family_similarity_length_threshold parameter."
+                },
+                "hmmsearch_family_redundancy_length_threshold": {
+                    "type": "number",
+                    "default": 1.0,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
+                },
+                "hmmsearch_family_similarity_length_threshold": {
                     "type": "number",
                     "default": 0.9,
                     "minimum": 0.0,
                     "maximum": 1.0,
-                    "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal"
+                    "description": "hmmsearch minimum length percentage of hit env vs query length, to flag and report similar families (and to optionally merge)",
+                    "help_text": "Must be below the hmmsearch_family_redundancy_length_threshold to be valid."
                 },
                 "save_non_redundant_fams_fasta": {
                     "type": "boolean",
                     "description": "Save only the fasta files of non-redundant families (might still contain redundant sequences)",
                     "help_text": "Specify to save the fasta files of non-redundant families."
                 },
-                "remove_sequence_redundancy": {
+                "skip_sequence_redundancy_removal": {
                     "type": "boolean",
-                    "description": "Removal of inside-family redundancy of sequences via mmseqs clustering.",
-                    "default": true,
+                    "description": "Skip removal of inside-family redundancy of sequences via mmseqs clustering.",
+                    "default": false,
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true,
                     "help_text": "Highly similar sequences within the same family should be removed, while making sure that the protein family diversity is still well captured."
@@ -403,6 +468,9 @@
         },
         {
             "$ref": "#/$defs/generic_options"
+        },
+        {
+            "$ref": "#/$defs/quality_check_params"
         },
         {
             "$ref": "#/$defs/clustering_params"

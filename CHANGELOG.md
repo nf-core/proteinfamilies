@@ -3,6 +3,45 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.0.0 - [2025/10/14]
+
+### `Added`
+
+- [#124](https://github.com/nf-core/proteinfamilies/pull/124)
+  - Added new subworkflow `MERGE_FAMILIES` that can optionally merge similar (but not redundant) generated protein families. (by @vagkaratzas)
+  - Added new functionality to the local module `IDENTIFY_REDUNDANT_FAMS` which now also detects and outputs the identifiers of similar families that can optionally be merged downstream. These identifiers are written to _"/remove_redundancy/&lt;samplename&gt;/similar_fam_ids.txt"_, and the corresponding family pairwise similarity scores to _"/remove_redundancy/&lt;samplename&gt;/similarities.csv"_. (by @vagkaratzas)
+  - Added new local module `POOL_SIMILAR_COMPONENTS` that generates family clusters, from a family-similarity edgelist. (by @vagkaratzas)
+  - Added new local module `MERGE_SEEDS` that merges seed alignments of similar families, before restarting the family generation subworkflow. (by @vagkaratzas)
+- [#118](https://github.com/nf-core/proteinfamilies/pull/118)
+  - Added preprint citation to the repo. (by @vagkaratzas)
+  - Added separate metro map files for dark and light browser modes. (by @vagkaratzas)
+  - Added new local module `EXTRACT_FAMILY_MEMBERS` which outputs a two-column TSV file containing the final family identifiers and their corresponding member sequence identifiers. The file is saved at _"/family_reps/&lt;samplename&gt;/&lt;samplename&gt;.tsv"_. (by @vagkaratzas)
+- [#117](https://github.com/nf-core/proteinfamilies/pull/117)
+  - Added `SEQKIT_SEQ` for optional sequence preprocessing in the quality check subworkflow. (by @vagkaratzas)
+  - Added `SEQKIT_REPLACE` for optional sequence name parsing in the quality check subworkflow. (by @vagkaratzas)
+  - Added `SEQKIT_RMDUP` for optional removal of duplicate names and sequences in the quality check subworkflow. (by @vagkaratzas)
+
+### `Changed`
+
+- [#128](https://github.com/nf-core/proteinfamilies/pull/128) - nf-core tools template update to 3.4.1.
+- [#124](https://github.com/nf-core/proteinfamilies/pull/124)
+  - Conditional workflow flags switched to their `skip` opposites; `--trim_msa` to `--skip_msa_trimming`, `--recruit_sequences_with_models` to `--skip_additional_sequence_recruiting`, `--remove_family_redundancy` to `--skip_family_redundancy_removal`, `--remove_sequence_redundancy` to `--skip_sequence_redundancy_removal`. (by @vagkaratzas)
+- [#118](https://github.com/nf-core/proteinfamilies/pull/118)
+  - Swapped the local `CHECK_QUALITY` subworkflow with the new nf-core one `FAA_SEQFU_SEQKIT`. (by @vagkaratzas)
+  - Based on protein family reproducibility benchmarks (i.e., computationally reproducing manually curated protein family resources), the `cluster_seq_identity` and `cluster_coverage` parameter default values have been updated to `0.3` and `0.5` (down from `0.5` and `0.9`) respectively. (by @vagkaratzas)
+- [#117](https://github.com/nf-core/proteinfamilies/pull/117) - Swapped the local `SEQKIT_STATS` and the local `SEQKIT_STATS_TO_MQC` modules with the `SEQFU_STATS` one, which runs a bit faster and produces a MultiQC-ready output without the need for manual parsing. (by @vagkaratzas)
+
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| seqfu   | -                | 1.20.3      |
+| multiqc | 1.30             | 1.31        |
+
+### `Deprecated`
+
+- [#124](https://github.com/nf-core/proteinfamilies/pull/124) - Deprecated `--trim_msa`, `--recruit_sequences_with_models`, `--remove_family_redundancy` and `--remove_sequence_redundancy`. (by @vagkaratzas)
+
 ## v1.3.1 - [2025/09/22]
 
 ### `Fixed`

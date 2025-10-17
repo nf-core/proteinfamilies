@@ -1,5 +1,9 @@
 # nf-core/proteinfamilies: Citations
 
+## [nf-core/proteinfamilies](https://www.biorxiv.org/content/10.1101/2025.08.12.670010/)
+
+> Karatzas E, Beracochea M, Baltoumas FA, Aplakidou E, Richardson L, Fellows Yates JA, Lundin D, nf-core community, Buluc A, Kyrpides N, Georgakopoulos-Soares I. nf-core/proteinfamilies: A scalable pipeline for the generation of protein families. bioRxiv. 2025:2025-08. doi: 10.1101/2025.08.12.670010.
+
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
 > Ewels PA, Peltzer A, Fillinger S, Patel H, Alneberg J, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. The nf-core framework for community-curated bioinformatics pipelines. Nat Biotechnol. 2020 Mar;38(3):276-278. doi: 10.1038/s41587-020-0439-x. PubMed PMID: 32055031.
@@ -9,6 +13,14 @@
 > Di Tommaso P, Chatzou M, Floden EW, Barja PP, Palumbo E, Notredame C. Nextflow enables reproducible computational workflows. Nat Biotechnol. 2017 Apr 11;35(4):316-319. doi: 10.1038/nbt.3820. PubMed PMID: 28398311.
 
 ## Pipeline tools
+
+- [SeqFu](https://pubmed.ncbi.nlm.nih.gov/34066939/)
+
+> Telatin A, Fariselli P, Birolo G. SeqFu: a suite of utilities for the robust and reproducible manipulation of sequence files. Bioengineering. 2021 May 7;8(5):59. doi: 10.3390/bioengineering8050059. PubMed PMID: 34066939; PubMed Central PMCID: PMC8148589.
+
+- [SeqKit](https://pubmed.ncbi.nlm.nih.gov/38898985/)
+
+> Shen W, Sipos B, Zhao L. SeqKit2: A Swiss army knife for sequence and alignment processing. iMeta. 2024 Apr 5:e191. doi: 10.1002/imt2.191. PubMed PMID: 38898985; PubMed Central PMCID: PMC11183193.
 
 - [MMseqs2](https://pubmed.ncbi.nlm.nih.gov/33734313/)
 
@@ -33,10 +45,6 @@
 - [HH-suite3](https://pubmed.ncbi.nlm.nih.gov/31521110/)
 
 > Steinegger M, Meier M, Mirdita M, Vöhringer H, Haunsberger SJ, Söding J. HH-suite3 for fast remote homology detection and deep protein annotation. BMC bioinformatics. 2019 Dec;20:1-5. doi: 110.1186/s12859-019-3019-7. PubMed PMID: 31521110; PubMed Central PMCID: PMC6744700.
-
-- [SeqKit](https://pubmed.ncbi.nlm.nih.gov/38898985/)
-
-> Shen W, Sipos B, Zhao L. SeqKit2: A Swiss army knife for sequence and alignment processing. iMeta. 2024 Apr 5:e191. doi: 10.1002/imt2.191. PubMed PMID: 38898985; PubMed Central PMCID: PMC11183193.
 
 - [Biopython](https://pubmed.ncbi.nlm.nih.gov/19304878/)
 

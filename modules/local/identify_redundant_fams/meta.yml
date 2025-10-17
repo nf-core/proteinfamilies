@@ -34,20 +34,43 @@ input:
         type: file
         description: The result of hmmsearch with family rep to family HMM hits.
         pattern: "*.domtbl.gz"
-  - - length_threshold:
+  - - redundancy_length_threshold:
         type: float
         description: The minimum HMM query hit length percentage to consider for redundancy.
+  - - similarity_length_threshold:
+        type: float
+        description: The minimum HMM query hit length percentage to consider for similarity reporting.
 output:
   redundant_ids:
     - - meta:
           type: map
           description: |
             Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
-    - redundant_fam_ids.txt:
-        type: file
-        description: a text file with redundant family IDs
-        pattern: "redundant_fam_ids.txt"
+            e.g. `[ id:'sample1' ]`
+      - redundant_fam_ids.txt:
+          type: file
+          description: A text file with redundant family IDs
+          pattern: "redundant_fam_ids.txt"
+  similar_ids:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - similar_fam_ids.txt:
+          type: file
+          description: A text file with similar family IDs
+          pattern: "similar_fam_ids.txt"
+  similarities:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - similarities.csv:
+          type: file
+          description: A CSV file with pairwise family similarities based on hmmsearch length threshold scores
+          pattern: "similarities.csv"
   versions:
     - versions.yml:
         type: file
