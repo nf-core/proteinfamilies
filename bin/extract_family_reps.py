@@ -76,7 +76,7 @@ def extract_data(filepath):
             if line.startswith(">"):
                 size += 1
                 if header is None:
-                    header = line[1:].split()[0]
+                    header = line[1:].strip().split()[0]
                 elif collecting:
                     # we’ve seen second header → stop collecting
                     collecting = False

@@ -57,7 +57,7 @@ def extract_ids(filepath):
     with open_func(filepath, "rt") as f:
         for line in f:
             if line.startswith(">"):
-                ids.append(line[1:].split()[0])
+                ids.append(line[1:].strip().split()[0])
     return ids
 
 
