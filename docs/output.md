@@ -635,6 +635,7 @@ This custom metadata is presented as a data table in the MultiQC report file.
 - `proteinfold/`
   - `<samplename>/`
     - `<id>.faa`: Amino acid file(s) containing one family representative sequence each.
+  - `samplesheet_<samplename>.csv`: Downstream samplesheet to be used as nf-core/proteinfold input.
 
 </details>
 

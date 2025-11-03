@@ -175,11 +175,13 @@ workflow PROTEINFAMILIES {
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
     ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
-    SPLIT_FASTA( EXTRACT_FAMILY_REPS.out.fasta )
-    ch_versions = ch_versions.mix( SPLIT_FASTA.out.versions )
+    if (!params.skip_proteinfold_samplesheet) {
+        SPLIT_FASTA( EXTRACT_FAMILY_REPS.out.fasta )
+        ch_versions = ch_versions.mix( SPLIT_FASTA.out.versions )
 
-    CREATE_PROTEINFOLD_SAMPLESHEET( SPLIT_FASTA.out.split_files )
-    ch_versions = ch_versions.mix( CREATE_PROTEINFOLD_SAMPLESHEET.out.versions )
+        CREATE_PROTEINFOLD_SAMPLESHEET( SPLIT_FASTA.out.split_files )
+        ch_versions = ch_versions.mix( CREATE_PROTEINFOLD_SAMPLESHEET.out.versions )
+    }
 
     //
     // Collate and save software versions
