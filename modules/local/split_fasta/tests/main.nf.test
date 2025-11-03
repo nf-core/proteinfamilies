@@ -1,0 +1,58 @@
+nextflow_process {
+
+    name "Test Process SPLIT_FASTA"
+    script "../main.nf"
+    process "SPLIT_FASTA"
+
+    test("proteinfamilies - faa") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.split_files,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - faa - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}

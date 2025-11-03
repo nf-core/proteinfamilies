@@ -31,6 +31,7 @@ include { CALCULATE_CLUSTER_DISTRIBUTION } from '../modules/local/calculate_clus
 include { CHUNK_CLUSTERS                 } from '../modules/local/chunk_clusters/main'
 include { EXTRACT_FAMILY_MEMBERS         } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
+include { SPLIT_FASTA                    } from '../modules/local/split_fasta/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,6 +173,9 @@ workflow PROTEINFAMILIES {
     EXTRACT_FAMILY_REPS( ch_fasta )
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
     ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
+
+    SPLIT_FASTA( EXTRACT_FAMILY_REPS.out.fasta )
+    ch_versions = ch_versions.mix( SPLIT_FASTA.out.versions )
 
     //
     // Collate and save software versions

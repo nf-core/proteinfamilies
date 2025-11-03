@@ -1,0 +1,63 @@
+{
+    "proteinfamilies - faa - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,8df1329da0d79fad44e665a738ba9c74"
+                ],
+                "split_files": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,8df1329da0d79fad44e665a738ba9c74"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
+        },
+        "timestamp": "2025-11-03T17:14:26.45874287"
+    },
+    "proteinfamilies - faa": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    [
+                        "1105900386_1_131.faa:md5,e3e267fdc9d69504020ed87004015804",
+                        "1168855252_1_134_4-134.faa:md5,969387acd51deb881d0ffef2495fd110",
+                        "1446399400_1_131.faa:md5,c18753010511cc2c52104a8cacc810f5"
+                    ]
+                ]
+            ],
+            [
+                {
+                    "SPLIT_FASTA": {
+                        "sed": 4.7
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
+        },
+        "timestamp": "2025-11-03T17:14:19.004164824"
+    }
+}

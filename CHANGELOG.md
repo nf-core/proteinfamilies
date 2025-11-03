@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#133](https://github.com/nf-core/proteinfamilies/pull/133) - Added local subworkflow and modules that prepare the downstream nf-core/proteinfold samplesheet. (by @vagkaratzas)
 - [#132](https://github.com/nf-core/proteinfamilies/pull/132) - Added optimized memory and time resources for `test` and `test_full` profiles. (by @vagkaratzas)
 
 ## v2.0.0 - [2025/10/14]

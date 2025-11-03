@@ -53,6 +53,10 @@ Reporting:
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
+Downstream pipelines:
+
+- [nf-core/proteinfold](#nf-coreproteinfold) downstream samplesheet generation from final family representative sequences
+
 ### SeqFu
 
 <details markdown="1">
@@ -622,3 +626,16 @@ This custom metadata is presented as a data table in the MultiQC report file.
 </details>
 
 [Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
+
+### nf-core/proteinfold
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `proteinfold/`
+  - `<samplename>/`
+    - `<id>.faa`: Amino acid file(s) containing one family representative sequence each.
+
+</details>
+
+[nf-core/proteinfold](https://nf-co.re/proteinfold) is a bioinformatics best-practice analysis pipeline for Protein 3D structure prediction.
