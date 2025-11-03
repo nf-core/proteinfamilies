@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "create_proteinfold_samplesheet"
+description: Create a samplesheet.csv for proteinfold from split FASTA files
+keywords:
+  - samplesheet
+  - csv
+  - proteinfold
+  - fasta
+  - metadata
+tools:
+  - "create_proteinfold_samplesheet":
+      description: "Create a samplesheet.csv for proteinfold from split FASTA files"
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/create_proteinfold_samplesheet/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/create_proteinfold_samplesheet/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/create_proteinfold_samplesheet/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - split_files:
+        type: file
+        description: Amino acid sequence files - one sequence per file
+        pattern: "*.faa"
+output:
+  samplesheet:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - samplesheet_${prefix}.csv:
+          type: file
+          description: CSV samplesheet for proteinfold pipeline
+          pattern: "*.csv"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

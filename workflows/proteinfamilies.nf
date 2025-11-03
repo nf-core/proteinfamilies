@@ -32,6 +32,7 @@ include { CHUNK_CLUSTERS                 } from '../modules/local/chunk_clusters
 include { EXTRACT_FAMILY_MEMBERS         } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
 include { SPLIT_FASTA                    } from '../modules/local/split_fasta/main'
+include { CREATE_PROTEINFOLD_SAMPLESHEET } from '../modules/local/create_proteinfold_samplesheet/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -176,6 +177,9 @@ workflow PROTEINFAMILIES {
 
     SPLIT_FASTA( EXTRACT_FAMILY_REPS.out.fasta )
     ch_versions = ch_versions.mix( SPLIT_FASTA.out.versions )
+
+    CREATE_PROTEINFOLD_SAMPLESHEET( SPLIT_FASTA.out.split_files )
+    ch_versions = ch_versions.mix( CREATE_PROTEINFOLD_SAMPLESHEET.out.versions )
 
     //
     // Collate and save software versions
