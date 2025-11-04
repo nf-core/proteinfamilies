@@ -36,7 +36,7 @@ nextflow_process {
                 { assert snapshot(
                     path(process.out.samplesheet[0][1]).readLines().size(),
                     process.out.versions.collect { path(it).yaml }
-                    ).match()}
+                ).match()}
             )
         }
     }
