@@ -26,7 +26,7 @@ process SPLIT_FASTA {
         seq_id = substr(\$1, 2)
         gsub("/", "_", seq_id)
         filename = seq_id ".fa"
-        print > filename
+        print ">" seq_id > filename
         next
     }
     {
