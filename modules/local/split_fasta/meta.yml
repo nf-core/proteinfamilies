@@ -24,7 +24,7 @@ input:
           e.g. `[ id:'sample1', single_end:false ]`
     - fasta:
         type: file
-        description: Input FASTA file (.faa)
+        description: Input FASTA file (.fa)
         pattern: "*.{fa,faa,fasta}"
 output:
   split_files:
@@ -33,10 +33,10 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1', single_end:false ]`
-      - "*.faa":
+      - "*.fa":
           type: file
           description: Individual FASTA files, one per sequence
-          pattern: "*.faa"
+          pattern: "*.fa"
   versions:
     - versions.yml:
         type: file

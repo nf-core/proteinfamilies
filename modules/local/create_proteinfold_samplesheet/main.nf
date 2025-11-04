@@ -23,7 +23,7 @@ process CREATE_PROTEINFOLD_SAMPLESHEET {
     """
     echo "id,fasta" > samplesheet_${prefix}.csv
 
-    for fasta_file in *.faa; do
+    for fasta_file in *.fa; do
         if [ -f "\$fasta_file" ]; then
             seq_id=\$(head -n1 "\$fasta_file" | sed 's/^>//' )
             # Get the full path to the original file by following symlinks
@@ -43,7 +43,7 @@ process CREATE_PROTEINFOLD_SAMPLESHEET {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     echo "id,fasta" > samplesheet_${prefix}.csv
-    echo "test_seq1,/path/to/test_seq1.faa" >> samplesheet_${prefix}.csv
+    echo "test_seq1,/path/to/test_seq1.fa" >> samplesheet_${prefix}.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -11,8 +11,8 @@ process SPLIT_FASTA {
     tuple val(meta), path(fasta)
 
     output:
-    tuple val(meta), path("*.faa"), emit: split_files
-    path "versions.yml"           , emit: versions
+    tuple val(meta), path("*.fa"), emit: split_files
+    path "versions.yml"          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,7 +25,7 @@ process SPLIT_FASTA {
         # Extract sequence ID, remove ">" and convert "/" to "_"
         seq_id = substr(\$1, 2)
         gsub("/", "_", seq_id)
-        filename = seq_id ".faa"
+        filename = seq_id ".fa"
         print > filename
         next
     }
@@ -45,7 +45,7 @@ process SPLIT_FASTA {
 
     stub:
     """
-    touch test.faa
+    touch test.fa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
