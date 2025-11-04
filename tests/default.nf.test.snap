@@ -164,7 +164,6 @@
                 "proteinfold/mgnifams_test/1446399400_1_131.fa",
                 "proteinfold/mgnifams_test/1546033206_1_127.fa",
                 "proteinfold/mgnifams_test/1622851798_832_939.fa",
-                "proteinfold/mgnifams_test/2632373804_177_299_1-122.fa",
                 "proteinfold/mgnifams_test/4529851305_271_377_1-104.fa",
                 "proteinfold/samplesheet_mgnifams_test.csv",
                 "qc",
@@ -211,6 +210,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.8"
         },
-        "timestamp": "2025-11-04T13:07:37.812535607"
+        "timestamp": "2025-11-04T13:42:35.411291497"
     }
 }
