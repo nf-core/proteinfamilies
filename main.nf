@@ -41,6 +41,7 @@ workflow NFCORE_PROTEINFAMILIES {
         samplesheet
     )
     emit:
+    family_reps    = PROTEINFAMILIES.out.family_reps
     multiqc_report = PROTEINFAMILIES.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
@@ -85,6 +86,30 @@ workflow {
         params.hook_url,
         NFCORE_PROTEINFAMILIES.out.multiqc_report
     )
+
+    proteinfold_samplesheet = NFCORE_PROTEINFAMILIES.out.family_reps
+        .map { meta, file ->
+            [
+                id: meta.id,
+                fasta: file
+            ]
+        }
+
+    publish:
+    proteinfold_samplesheet = proteinfold_samplesheet
+}
+
+output {
+    proteinfold_samplesheet {
+        path 'proteinfold'
+        mode params.publish_dir_mode
+        enabled !params.skip_proteinfold_samplesheet
+        index {
+            path 'proteinfold/taxpasta.csv'
+            header true
+            sep ','
+        }
+    }
 }
 
 /*
