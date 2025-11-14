@@ -466,7 +466,7 @@
                 "skip_proteinfold_samplesheet": {
                     "type": "boolean",
                     "description": "Skip the generation of the proteinfold samplesheet.",
-                    "default": false,
+                    "default": true,
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 }

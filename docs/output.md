@@ -639,4 +639,21 @@ This custom metadata is presented as a data table in the MultiQC report file.
 
 </details>
 
-[nf-core/proteinfold](https://nf-co.re/proteinfold) is a bioinformatics best-practice analysis pipeline for Protein 3D structure prediction.
+[nf-core/proteinfold](https://nf-co.re/proteinfold) is a bioinformatics best-practice analysis pipeline for protein 3D structure prediction.
+The samplesheet contains two columns; `id` and `fasta`, where `id` is the sequence identifier, and `fasta` the path to the sequence file.
+
+Example samplesheet:
+
+```csv title="samplesheet.csv"
+id,fasta
+T1024,https://raw.githubusercontent.com/nf-core/test-datasets/proteinfold/testdata/sequences/T1024.fasta
+T1026,https://raw.githubusercontent.com/nf-core/test-datasets/proteinfold/testdata/sequences/T1026.fasta
+```
+
+An `nf-core/proteinfold` run command would look something like this:
+
+```
+nextflow run proteinfold -profile singularity,gpu --input /path/to/proteinfamilies/results/proteinfold/samplesheet.csv --outdir result --use_gpu true --mode alphafold2 --alphafold2_mode split_msa_prediction --alphafold2_db '/path/to/alphafold_db' --alphafold2_params_link '/path/to/alphafold_db/' --foldseek_search easysearch --foldseek_db pdb --foldseek_db_path '/path/to/foldseek/8-ef4e960/pdb/'
+```
+
+For more information, visit the [usage page](https://nf-co.re/proteinfold/dev/docs/usage) of the `nf-core/proteinfold` pipeline.
