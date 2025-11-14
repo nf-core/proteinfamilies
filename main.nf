@@ -101,11 +101,11 @@ workflow {
 
 output {
     proteinfold_samplesheet {
-        path 'proteinfold'
+        path { sample -> "proteinfold/${sample.id}/" }
         mode params.publish_dir_mode
         enabled !params.skip_proteinfold_samplesheet
         index {
-            path 'proteinfold/taxpasta.csv'
+            path 'proteinfold/samplesheet.csv'
             header true
             sep ','
         }
