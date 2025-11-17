@@ -5,6 +5,8 @@ nextflow_pipeline {
     tag "pipeline"
 
     test("-profile test") {
+        // This allows to also check files published with the new workflow output syntax
+        options "-output-dir $outputDir"
 
         when {
             params {
@@ -19,8 +21,7 @@ nextflow_pipeline {
                 'seed_msa/filtered/mgnifams_test/*.clipkit', 'mmseqs/redundancy_clustering/mmseqs_createtsv/mgnifams_test/*.tsv',
                 'hmm/raw/mgnifams_test/*.hmm.gz', 'hmm/filtered/mgnifams_test/*.hmm.gz',
                 'full_msa/raw/hmmer_hmmalign/mgnifams_test/*.sto.gz', 'full_msa/filtered/famsa_align/mgnifams_test/*.aln',
-                'fasta/non_redundant_sequences_filtered/mgnifams_test/*.faa', 'proteinfold/mgnifams_test/2632373804_177_299_1-122.fa',
-                'proteinfold/mgnifams_test/190761241_322_438.fa'])
+                'fasta/non_redundant_sequences_filtered/mgnifams_test/*.faa'])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             // paths to check for sizes
@@ -36,6 +37,8 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_proteinfamilies_software_mqc_versions.yml"),
                     // All stable path name, with a relative path
