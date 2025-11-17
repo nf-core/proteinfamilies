@@ -21,3 +21,5 @@ seed_msa/**/*
 full_msa/**/*
 hmm/**/*
 remove_redundancy/mgnifams_test/redundant_fam_ids.txt
+proteinfold/mgnifams_test/mgnifams_test_reps.faa
+proteinfold/samplesheet.csv
