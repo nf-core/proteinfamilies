@@ -1,6 +1,7 @@
 {
     "-profile test": {
         "content": [
+            89,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -153,6 +154,10 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_proteinfamilies_software_mqc_versions.yml",
+                "proteinfold",
+                "proteinfold/mgnifams_test",
+                "proteinfold/mgnifams_test/mgnifams_test_reps.faa",
+                "proteinfold/samplesheet.csv",
                 "qc",
                 "qc/mgnifams_test",
                 "qc/mgnifams_test/mgnifams_test.fasta",
@@ -191,8 +196,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.0"
         },
-        "timestamp": "2025-10-17T14:49:34.781996822"
+        "timestamp": "2025-11-17T09:55:38.468168761"
     }
 }

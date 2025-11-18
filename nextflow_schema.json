@@ -457,6 +457,20 @@
                     "help_text": "Specify to save the family fasta files with non-redundant sequence sets."
                 }
             }
+        },
+        "downstream_params": {
+            "title": "Downstream samplsheet creation parameters",
+            "type": "object",
+            "description": "Use these parameters to produce samplsheets for downstream pipelines execution.",
+            "properties": {
+                "skip_proteinfold_samplesheet": {
+                    "type": "boolean",
+                    "description": "Skip the generation of the proteinfold samplesheet.",
+                    "default": true,
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                }
+            }
         }
     },
     "allOf": [
@@ -480,6 +494,9 @@
         },
         {
             "$ref": "#/$defs/redundancy_params"
+        },
+        {
+            "$ref": "#/$defs/downstream_params"
         }
     ]
 }
