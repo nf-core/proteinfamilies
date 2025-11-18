@@ -653,7 +653,7 @@ T1026,https://raw.githubusercontent.com/nf-core/test-datasets/proteinfold/testda
 An `nf-core/proteinfold` run command would look something like this:
 
 ```
-nextflow run proteinfold -profile singularity,gpu --input /path/to/proteinfamilies/results/proteinfold/samplesheet.csv --outdir result --use_gpu true --mode alphafold2 --alphafold2_mode split_msa_prediction --alphafold2_db '/path/to/alphafold_db' --alphafold2_params_link '/path/to/alphafold_db/' --foldseek_search easysearch --foldseek_db pdb --foldseek_db_path '/path/to/foldseek/8-ef4e960/pdb/'
+nextflow run proteinfold -profile singularity,gpu --input /path/to/proteinfamilies/results/proteinfold/samplesheet.csv --outdir result --split_fasta --use_gpu true --mode alphafold2 --alphafold2_mode split_msa_prediction --alphafold2_db '/path/to/alphafold_db' --alphafold2_params_link '/path/to/alphafold_db/' --foldseek_search easysearch --foldseek_db pdb --foldseek_db_path '/path/to/foldseek/8-ef4e960/pdb/'
 ```
 
 For more information, visit the [usage page](https://nf-co.re/proteinfold/dev/docs/usage) of the `nf-core/proteinfold` pipeline.
