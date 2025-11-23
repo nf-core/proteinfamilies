@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "filter_non_redundant_fams"
+description: Given a list of family files and a text with redundant family IDs, remove all redundant family files.
+keywords:
+  - filter
+  - nonredundant
+  - diverse families
+tools:
+  - "filter_non_redundant_fams":
+      description: "Given a list of family files and a text with redundant family IDs, remove all redundant family files."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/filter_non_redundant_fams/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/filter_non_redundant_fams/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/filter_non_redundant_fams/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - files:
+        type: file
+        description: A list of files (can be anything in any format --fasta,alns,hmms) that will be staged as a directory.
+        pattern: "*.*"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - redundant_ids:
+        type: file
+        description: A text file with redundant family IDs.
+        pattern: "*.txt"
+output:
+  filtered:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+    - .${extension}:
+        type: file
+        description: the family files that passed the redundancy checks
+        pattern: "*.${extension}"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

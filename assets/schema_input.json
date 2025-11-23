@@ -13,21 +13,28 @@
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "fasta": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.(fa|fasta|faa|fas)(\\.gz)?$",
+                "errorMessage": "Fasta file for amino acid sequences must be provided, cannot contain spaces and must have extension '.fa', '.fasta', '.faa', '.fas', '.fa.gz', '.fasta.gz', '.faa.gz' or '.fas.gz'"
             },
-            "fastq_2": {
+            "existing_hmms_to_update": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
+                "description": "Gzipped tarball file containing existing protein family Hidden Markov Models (HMMs). These models will be used to 'fish' new sequences from the input and then be updated accordingly. Example: 'example.tar.gz'"
+            },
+            "existing_msas_to_update": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
+                "description": "Tarball file containing Multiple Sequence Alignments (MSAs) for the families to be updated. These alignments are essential for the update process and should match the Hidden Markov Model (HMM) filenames one by one. Example: 'example.tar.gz'"
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "fasta"]
     }
 }
