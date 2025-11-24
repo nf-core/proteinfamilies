@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#133](https://github.com/nf-core/proteinfamilies/pull/133) - Using the new workflow output syntax to publish the downstream `nf-core/proteinfold` samplesheet. (by @vagkaratzas)
 - [#132](https://github.com/nf-core/proteinfamilies/pull/132) - Added optimized memory and time resources for `test` and `test_full` profiles. (by @vagkaratzas)
 
+### `Changed`
+
+- [#135](https://github.com/nf-core/proteinfamilies/pull/135) - nf-core tools template update to 3.5.1. (by @vagkaratzas)
+
 ## v2.0.0 - [2025/10/14]
 
 ### `Added`
