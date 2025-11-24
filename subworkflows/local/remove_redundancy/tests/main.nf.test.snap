@@ -25,16 +25,6 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
-                        "mmseqs": "17.b804f"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
-                        "mmseqs": "17.b804f"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
                         "python": "3.13.1"
                     }
@@ -48,11 +38,6 @@
                     "REMOVE_REDUNDANCY:REMOVE_REDUNDANT_SEQS": {
                         "python": "3.13.1",
                         "biopython": 1.85
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
-                        "mmseqs": "17.b804f"
                     }
                 },
                 {
@@ -78,6 +63,21 @@
                     }
                 },
                 {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
+                        "mmseqs": "18.8cc5c"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
+                        "mmseqs": "18.8cc5c"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
+                        "mmseqs": "18.8cc5c"
+                    }
+                },
+                {
                     "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
                         "famsa": "2.4.1-45c9b2b (2025-05-09)"
                     }
@@ -98,8 +98,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.0"
         },
-        "timestamp": "2025-10-09T12:14:24.889333573"
+        "timestamp": "2025-11-24T12:56:30.969600659"
     }
 }
