@@ -62,13 +62,13 @@
                     "pandas": "2.3.0"
                 },
                 "MMSEQS_CREATEDB": {
-                    "mmseqs": "17.b804f"
+                    "mmseqs": "18.8cc5c"
                 },
                 "MMSEQS_CREATETSV": {
-                    "mmseqs": "17.b804f"
+                    "mmseqs": "18.8cc5c"
                 },
                 "MMSEQS_LINCLUST": {
-                    "mmseqs": "17.b804f"
+                    "mmseqs": "18.8cc5c"
                 },
                 "REMOVE_REDUNDANT_SEQS": {
                     "python": "3.13.1",
@@ -198,6 +198,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.0"
         },
-        "timestamp": "2025-11-17T09:55:38.468168761"
+        "timestamp": "2025-11-24T12:42:55.233801401"
     }
 }
