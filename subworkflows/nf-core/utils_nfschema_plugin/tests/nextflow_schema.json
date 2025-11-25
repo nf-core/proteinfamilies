@@ -30,11 +30,6 @@
                     "description": "Base for test data directory",
                     "hidden": true
                 },
-                "modules_testdata_base_path": {
-                    "type": "string",
-                    "description": "Base path / URL for data used in the modules",
-                    "hidden": true
-                },
                 "test_data": {
                     "type": "string",
                     "description": "Fake test data param",

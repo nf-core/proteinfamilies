@@ -3,6 +3,24 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.1.0 - [2025/11/25]
+
+### `Added`
+
+- [#133](https://github.com/nf-core/proteinfamilies/pull/133) - Using the new workflow output syntax to publish the downstream `nf-core/proteinfold` samplesheet. (by @vagkaratzas)
+- [#132](https://github.com/nf-core/proteinfamilies/pull/132) - Added optimized memory and time resources for `test` and `test_full` profiles. (by @vagkaratzas)
+
+### `Changed`
+
+- [#136](https://github.com/nf-core/proteinfamilies/pull/136) - Based on protein family reproducibility benchmarks, `cluster` is now the default MMseqs2 mode, due to its increased sensitivity compared to `linclust`. (by @vagkaratzas)
+- [#135](https://github.com/nf-core/proteinfamilies/pull/135) - nf-core tools template update to 3.5.1. (by @vagkaratzas)
+
+### `Dependencies`
+
+| Tool   | Previous version | New version |
+| ------ | ---------------- | ----------- |
+| mmseqs | 17.b804f         | 18.8cc5c    |
+
 ## v2.0.0 - [2025/10/14]
 
 ### `Added`

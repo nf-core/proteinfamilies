@@ -1,6 +1,7 @@
 {
     "-profile test": {
         "content": [
+            89,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -61,13 +62,13 @@
                     "pandas": "2.3.0"
                 },
                 "MMSEQS_CREATEDB": {
-                    "mmseqs": "17.b804f"
+                    "mmseqs": "18.8cc5c"
                 },
                 "MMSEQS_CREATETSV": {
-                    "mmseqs": "17.b804f"
+                    "mmseqs": "18.8cc5c"
                 },
                 "MMSEQS_LINCLUST": {
-                    "mmseqs": "17.b804f"
+                    "mmseqs": "18.8cc5c"
                 },
                 "REMOVE_REDUNDANT_SEQS": {
                     "python": "3.13.1",
@@ -89,7 +90,7 @@
                     "seqkit": "v2.9.0"
                 },
                 "Workflow": {
-                    "nf-core/proteinfamilies": "v2.0.0"
+                    "nf-core/proteinfamilies": "v2.1.0"
                 }
             },
             [
@@ -153,6 +154,10 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_proteinfamilies_software_mqc_versions.yml",
+                "proteinfold",
+                "proteinfold/mgnifams_test",
+                "proteinfold/mgnifams_test/mgnifams_test_reps.faa",
+                "proteinfold/samplesheet.csv",
                 "qc",
                 "qc/mgnifams_test",
                 "qc/mgnifams_test/mgnifams_test.fasta",
@@ -191,8 +196,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
+            "nextflow": "25.10.0"
         },
-        "timestamp": "2025-10-17T09:59:11.479926073"
+        "timestamp": "2025-11-25T09:57:36.268682981"
     }
 }

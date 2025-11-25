@@ -5,7 +5,7 @@ Changes in 'mmseqs/linclust/main.nf':
 --- modules/nf-core/mmseqs/linclust/main.nf
 +++ modules/nf-core/mmseqs/linclust/main.nf
 @@ -8,7 +8,7 @@
-         'biocontainers/mmseqs2:17.b804f--hd6d6fdc_1' }"
+         : 'community.wave.seqera.io/library/mmseqs2:18.8cc5c--af05c9a98d9f6139'}"
  
      input:
 -    tuple val(meta), path(db_input)

@@ -53,6 +53,10 @@ Reporting:
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
+Downstream pipelines:
+
+- [nf-core/proteinfold](#nf-coreproteinfold) downstream samplesheet generation from final family representative sequences
+
 ### SeqFu
 
 <details markdown="1">
@@ -622,3 +626,34 @@ This custom metadata is presented as a data table in the MultiQC report file.
 </details>
 
 [Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
+
+### nf-core/proteinfold
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `proteinfold/`
+  - `<samplename>/`
+    - `<samplename>_reps.faa`: A copy of the amino acid fasta file with all family representative sequences.
+  - `samplesheet.csv`: Downstream samplesheet to be used as the `nf-core/proteinfold` input.
+
+</details>
+
+[nf-core/proteinfold](https://nf-co.re/proteinfold) is a bioinformatics best-practice analysis pipeline for protein 3D structure prediction.
+The samplesheet contains two columns; `id` and `fasta`, where `id` is the sequence identifier, and `fasta` the path to the sequence file.
+
+Example samplesheet:
+
+```csv title="samplesheet.csv"
+id,fasta
+T1024,https://raw.githubusercontent.com/nf-core/test-datasets/proteinfold/testdata/sequences/T1024.fasta
+T1026,https://raw.githubusercontent.com/nf-core/test-datasets/proteinfold/testdata/sequences/T1026.fasta
+```
+
+An `nf-core/proteinfold` run command would look something like this:
+
+```
+nextflow run proteinfold -profile singularity,gpu --input /path/to/proteinfamilies/results/proteinfold/samplesheet.csv --outdir result --split_fasta --use_gpu true --mode alphafold2 --alphafold2_mode split_msa_prediction --alphafold2_db '/path/to/alphafold_db' --alphafold2_params_link '/path/to/alphafold_db/' --foldseek_search easysearch --foldseek_db pdb --foldseek_db_path '/path/to/foldseek/8-ef4e960/pdb/'
+```
+
+For more information, visit the [usage page](https://nf-co.re/proteinfold/dev/docs/usage) of the `nf-core/proteinfold` pipeline.
