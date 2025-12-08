@@ -470,6 +470,13 @@
                     "default": true,
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
+                },
+                "skip_proteinannotator_samplesheet": {
+                    "type": "boolean",
+                    "description": "Skip the generation of the proteinannotator samplesheet.",
+                    "default": true,
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
                 }
             }
         }

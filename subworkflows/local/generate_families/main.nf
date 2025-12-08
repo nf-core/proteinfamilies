@@ -22,10 +22,10 @@ workflow GENERATE_FAMILIES {
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
     main:
-    ch_versions = Channel.empty()
-    ch_seed_msa = Channel.empty()
-    ch_full_msa = Channel.empty()
-    ch_hmm      = Channel.empty()
+    ch_versions = channel.empty()
+    ch_seed_msa = channel.empty()
+    ch_full_msa = channel.empty()
+    ch_hmm      = channel.empty()
 
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )

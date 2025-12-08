@@ -5,6 +5,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v2.2.0dev - [date]
 
+### `Added`
+
+- [#140](https://github.com/nf-core/proteinfamilies/pull/140) - Using the new workflow output syntax to publish the downstream `nf-core/proteinannotator` samplesheet. (by @vagkaratzas)
+
+### `Changed`
+
+- [#140](https://github.com/nf-core/proteinfamilies/pull/140)
+  - Updated metromap to also depict the optional creation of downstream samplesheets for `nf-core/proteinfold` and `nf-core/proteinannotator`. Also swapped `seqkit/rmdup` and `seqkit/replace` modules to their proper execution sequence. (by @vagkaratzas)
+  - Updated the `test_full` profile time and memory requirements to avoid AWS failures on release. (by @vagkaratzas)
+
 ## v2.1.0 - [2025/11/25]
 
 ### `Added`
