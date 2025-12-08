@@ -193,7 +193,7 @@ def toolCitationText() {
 
     def clipping_text = "MSAs were gap-trimmed with ClipKIT (Steenwyk et al. 2020)."
 
-    def model_text = "Family Hidden Markov Models (HMMs) were built with hmmer (Potter et al. 2018)."
+    def model_text = "Family Hidden Markov Models (HMMs) were built with hmmer (Eddy et al. 2011)."
 
     def postprocessing_text = "Run statistics were reported using MultiQC (Ewels et al. 2016)."
 
