@@ -87,7 +87,7 @@ workflow {
         NFCORE_PROTEINFAMILIES.out.multiqc_report
     )
 
-    proteinfold_samplesheet = NFCORE_PROTEINFAMILIES.out.family_reps
+    protein_reps_samplesheet = NFCORE_PROTEINFAMILIES.out.family_reps
         .map { meta, file ->
             [
                 id: meta.id,
@@ -96,7 +96,8 @@ workflow {
         }
 
     publish:
-    proteinfold_samplesheet = proteinfold_samplesheet
+    proteinfold_samplesheet      = protein_reps_samplesheet
+    proteinannotator_samplesheet = protein_reps_samplesheet
 }
 
 output {
@@ -106,6 +107,17 @@ output {
         enabled !params.skip_proteinfold_samplesheet
         index {
             path 'proteinfold/samplesheet.csv'
+            header true
+            sep ','
+        }
+    }
+
+    proteinannotator_samplesheet {
+        path { sample -> "proteinannotator/${sample.id}/" }
+        mode params.publish_dir_mode
+        enabled !params.skip_proteinannotator_samplesheet
+        index {
+            path 'proteinannotator/samplesheet.csv'
             header true
             sep ','
         }
