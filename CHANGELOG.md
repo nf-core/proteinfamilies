@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v2.2.0dev - [date]
 
+### `Added`
+
+- [#140](https://github.com/nf-core/proteinfamilies/pull/140) - Using the new workflow output syntax to publish the downstream `nf-core/proteinannotator` samplesheet. (by @vagkaratzas)
+
 ## v2.1.0 - [2025/11/25]
 
 ### `Added`

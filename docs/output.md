@@ -56,6 +56,7 @@ Reporting:
 Downstream pipelines:
 
 - [nf-core/proteinfold](#nf-coreproteinfold) downstream samplesheet generation from final family representative sequences
+- [nf-core/proteinannotator](#nf-coreproteinannotator) downstream samplesheet generation from final family representative sequences
 
 ### SeqFu
 
@@ -589,8 +590,8 @@ Results are stored in the `update_families/full_msa` folder.
 The final report of the nf-core/proteinfamilies pipeline.
 The `*_meta_mqc.csv` file are used to report family metadata and statistics in the browser, via the MultiQC software.
 The `*_reps.faa` protein fasta file contains all family representative sequence in one place.
-This file can be further used as input in other pipelines such as nf-core/proteinfold for structural prediction
-or in fasta annotation pipelines.
+This file can be further used as input in other pipelines such as `nf-core/proteinfold` for structural prediction
+or `nf-core/proteinannotator` for amino acid sequence annotation.
 
 ### MultiQC
 
@@ -657,3 +658,34 @@ nextflow run proteinfold -profile singularity,gpu --input /path/to/proteinfamili
 ```
 
 For more information, visit the [usage page](https://nf-co.re/proteinfold/dev/docs/usage) of the `nf-core/proteinfold` pipeline.
+
+### nf-core/proteinannotator
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `proteinannotator/`
+  - `<samplename>/`
+    - `<samplename>_reps.faa`: A copy of the amino acid fasta file with all family representative sequences.
+  - `samplesheet.csv`: Downstream samplesheet to be used as the `nf-core/proteinannotator` input.
+
+</details>
+
+[nf-core/proteinannotator](https://nf-co.re/proteinannotator) is a bioinformatics pipeline that runs statistics of input protein fasta files and identifies the function of proteins based on their sequence data, using state-of-the-art protein annotation tools such as InterProScan.
+The samplesheet contains two columns; `id` and `fasta`, where `id` is the sequence identifier, and `fasta` the path to the sequence file.
+
+Example samplesheet:
+
+```csv title="samplesheet.csv"
+id,fasta
+snap25a,https://raw.githubusercontent.com/nf-core/test-datasets/kmerseek/testdata/snap25a_mxe_exon_human.fa
+snap25b,https://raw.githubusercontent.com/nf-core/test-datasets/kmerseek/testdata/snap25b_mxe_exon_human.fa
+```
+
+An `nf-core/proteinannotator` run command would look something like this:
+
+```
+nextflow run proteinannotator -profile singularity --input /path/to/proteinfamilies/results/proteinannotator/samplesheet.csv --outdir result
+```
+
+For more information, visit the [usage page](https://nf-co.re/proteinannotator/dev/docs/usage) of the `nf-core/proteinannotator` pipeline.
