@@ -20,7 +20,7 @@ workflow MERGE_FAMILIES {
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     POOL_SIMILAR_COMPONENTS( similarities )
     ch_versions = ch_versions.mix( POOL_SIMILAR_COMPONENTS.out.versions.first() )

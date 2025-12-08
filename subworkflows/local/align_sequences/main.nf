@@ -11,8 +11,8 @@ workflow ALIGN_SEQUENCES {
     alignment_tool // string: MSA tool
 
     main:
-    ch_versions   = Channel.empty()
-    ch_alignments = Channel.empty()
+    ch_versions   = channel.empty()
+    ch_alignments = channel.empty()
 
     if (alignment_tool == 'famsa') {
         alignment_res = FAMSA_ALIGN( sequences, [[:],[]], false )

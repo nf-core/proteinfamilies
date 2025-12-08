@@ -40,11 +40,11 @@ workflow REMOVE_REDUNDANCY {
     hmmsearch_query_length_threshold             // number [0.0, 1.0]
 
     main:
-    ch_versions        = Channel.empty()
-    ch_merged_seed_msa = Channel.empty()
-    ch_merged_full_msa = Channel.empty()
-    ch_merged_fasta    = Channel.empty()
-    ch_merged_hmm      = Channel.empty()
+    ch_versions        = channel.empty()
+    ch_merged_seed_msa = channel.empty()
+    ch_merged_full_msa = channel.empty()
+    ch_merged_fasta    = channel.empty()
+    ch_merged_hmm      = channel.empty()
 
     if (!skip_family_redundancy_removal || !skip_family_merging) {
         ch_fasta = fasta
