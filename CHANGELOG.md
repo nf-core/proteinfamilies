@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated metromap to also depict the optional creation of downstream samplesheets for `nf-core/proteinfold` and `nf-core/proteinannotator`. Also swapped `seqkit/rmdup` and `seqkit/replace` modules to their proper execution sequence. (by @vagkaratzas)
   - Updated the `test_full` profile time and memory requirements to avoid AWS failures on release. (by @vagkaratzas)
 
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| multiqc | 1.32             | 1.33        |
+
 ## v2.1.0 - [2025/11/25]
 
 ### `Added`
@@ -30,9 +36,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
-| Tool   | Previous version | New version |
-| ------ | ---------------- | ----------- |
-| mmseqs | 17.b804f         | 18.8cc5c    |
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| mmseqs  | 17.b804f         | 18.8cc5c    |
+| multiqc | 1.31             | 1.32        |
 
 ## v2.0.0 - [2025/10/14]
 
