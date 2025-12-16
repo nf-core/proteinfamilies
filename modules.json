@@ -10,6 +10,11 @@
                         "git_sha": "5a0f7c1d0ed924eb6ec939bd92ace755905c2014",
                         "installed_by": ["modules"]
                     },
+                    "cmaple": {
+                        "branch": "master",
+                        "git_sha": "e5026060e787d429109214a2b8d1ed4ea2b137d6",
+                        "installed_by": ["modules"]
+                    },
                     "famsa/align": {
                         "branch": "master",
                         "git_sha": "5c07517e7b526d4c3058fa88009e765b130ea5e8",
