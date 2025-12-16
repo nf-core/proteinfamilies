@@ -1,0 +1,36 @@
+{
+    "clipkit": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "chunk": 1
+                    },
+                    "test.treefile:md5,8f0fda797fc31adfc8a9afae38d4decd"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "chunk": 1
+                    },
+                    "test.log:md5,c651a510f379be96eb1c179b79571ee6"
+                ]
+            ],
+            [
+                {
+                    "INFER_PHYLOGENY:CMAPLE": {
+                        "cmaple": "1.1.0"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-16T15:15:19.639422019"
+    }
+}

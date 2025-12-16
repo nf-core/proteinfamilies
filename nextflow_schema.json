@@ -459,6 +459,20 @@
                 }
             }
         },
+        "phylogeny_params": {
+            "title": "Parameters for phylogenetic inference of full alignment sequences",
+            "type": "object",
+            "description": "Use these parameters to enable the phylogenetic tree construction of the final full MSAs.",
+            "properties": {
+                "skip_phylogenetic_inference": {
+                    "type": "boolean",
+                    "description": "Skip the phylogenetic inference with the cmaple tool.",
+                    "default": true,
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                }
+            }
+        },
         "downstream_params": {
             "title": "Downstream samplsheet creation parameters",
             "type": "object",
@@ -502,6 +516,9 @@
         },
         {
             "$ref": "#/$defs/redundancy_params"
+        },
+        {
+            "$ref": "#/$defs/phylogeny_params"
         },
         {
             "$ref": "#/$defs/downstream_params"

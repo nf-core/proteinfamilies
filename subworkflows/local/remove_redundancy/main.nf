@@ -184,15 +184,15 @@ workflow REMOVE_REDUNDANCY {
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
-        ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool )
+        full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool ).alignments
         ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     } else if (!skip_family_redundancy_removal) {
-        HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" )
+        full_msa = HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" ).msa
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions.first() )
     } else if (!skip_additional_sequence_recruiting) {
         // if both skip_family_redundancy_removal and skip_sequence_redundancy_removal true,
         // and skip_additional_sequence_recruiting also true (sequences not recruited, so not hmmalign .sto)
-        HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" )
+        full_msa = HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" ).msa
         ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions.first() )
     }
 

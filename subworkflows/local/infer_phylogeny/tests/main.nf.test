@@ -1,0 +1,35 @@
+nextflow_workflow {
+
+    name "test Subworkflow INFER_PHYLOGENY"
+    script "../main.nf"
+    workflow "INFER_PHYLOGENY"
+
+    test("clipkit") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test', chunk:1 ],
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                ])
+                input[1] = false
+                input[2] = false
+                input[3] = false
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                        workflow.out.treefile,
+                        workflow.out.cmaple_log,
+                        workflow.out.versions.collect { path(it).yaml }.unique()
+                    ).match()}
+            )
+        }
+    }
+
+}
