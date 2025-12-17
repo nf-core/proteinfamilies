@@ -4,12 +4,13 @@
 
 include { GUNZIP } from '../../../modules/nf-core/gunzip/main'
 include { CMAPLE } from '../../../modules/nf-core/cmaple/main'
+
 workflow INFER_PHYLOGENY {
     take:
     full_msa                             // tuple val(meta), path({aln,fas,clipkit,fas.gz})
-    skip_sequence_redundancy_removal     // boolean
     skip_additional_sequence_recruiting  // boolean
     skip_family_redundancy_removal       // boolean
+    skip_sequence_redundancy_removal     // boolean
 
     main:
 

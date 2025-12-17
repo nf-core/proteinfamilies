@@ -155,9 +155,9 @@ workflow PROTEINFAMILIES {
     if (!params.skip_phylogenetic_inference) {
         INFER_PHYLOGENY (
             REMOVE_REDUNDANCY.out.full_msa,
-            params.skip_sequence_redundancy_removal,
             params.skip_additional_sequence_recruiting,
-            params.skip_family_redundancy_removal
+            params.skip_family_redundancy_removal,
+            params.skip_sequence_redundancy_removal
         )
         ch_versions = ch_versions.mix( INFER_PHYLOGENY.out.versions )
     }

@@ -4,18 +4,18 @@ nextflow_workflow {
     script "../main.nf"
     workflow "INFER_PHYLOGENY"
 
-    test("clipkit") {
+    test("aln") {
 
         when {
             workflow {
                 """
                 input[0] = channel.of([
                     [ id: 'test', chunk:1 ],
-                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true)
                 ])
-                input[1] = false  // skip_sequence_redundancy_removal
-                input[2] = false  // skip_additional_sequence_recruiting
-                input[3] = false  // skip_family_redundancy_removal
+                input[1] = false  // skip_additional_sequence_recruiting
+                input[2] = false  // skip_family_redundancy_removal
+                input[3] = false  // skip_sequence_redundancy_removal
                 """
             }
         }
@@ -31,5 +31,33 @@ nextflow_workflow {
             )
         }
     }
+
+    // test("clipkit") {
+
+    //     when {
+    //         workflow {
+    //             """
+    //             input[0] = channel.of([
+    //                 [ id: 'test', chunk:1 ],
+    //                 file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+    //             ])
+    //             input[1] = false  // skip_sequence_redundancy_removal
+    //             input[2] = false  // skip_additional_sequence_recruiting
+    //             input[3] = false  // skip_family_redundancy_removal
+    //             """
+    //         }
+    //     }
+
+    //     then {
+    //         assertAll(
+    //             { assert workflow.success},
+    //             { assert snapshot(
+    //                     workflow.out.treefile,
+    //                     file(workflow.out.cmaple_log[0][1]).name,
+    //                     workflow.out.versions.collect { path(it).yaml }.unique()
+    //                 ).match()}
+    //         )
+    //     }
+    // }
 
 }
