@@ -195,6 +195,8 @@ def toolCitationText() {
 
     def model_text = "Family Hidden Markov Models (HMMs) were built with hmmer (Eddy et al. 2011)."
 
+    def phylogeny_text = "Sequence phylogenetic trees were calculated with CMAPLE (Ly-Trong et al. 2024)."
+
     def postprocessing_text = "Run statistics were reported using MultiQC (Ewels et al. 2016)."
 
     def citation_text = [
@@ -203,6 +205,7 @@ def toolCitationText() {
         alignment_text,
         !params.skip_msa_trimming ? clipping_text : "",
         model_text,
+        !params.skip_phylogenetic_inference ? phylogeny_text : "",
         postprocessing_text
     ].join(' ').trim()
 
@@ -228,6 +231,8 @@ def toolBibliographyText() {
 
     def model_text = '<li>Eddy, S. R. (2011). Accelerated profile HMM searches. PLoS computational biology, 7(10), e1002195. doi: <a href="https://doi.org/10.1371/journal.pcbi.1002195">10.1371/journal.pcbi.1002195</a></li>'
 
+    def phylogeny_text = '<li>Ly-Trong, N., Bielow, C., De Maio, N., & Minh, B. Q. (2024). CMAPLE: efficient phylogenetic inference in the pandemic era. Molecular Biology and Evolution, 41(7), msae134. doi: <a href="https://doi.org/10.1093/molbev/msae134">10.1093/molbev/msae134</a></li>'
+
     def postprocessing_text = '<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 32(19), 3047–3048. doi: <a href="https://doi.org/10.1093/bioinformatics/btw354">10.1093/bioinformatics/btw354</a></li>'
 
     def reference_text = [
@@ -236,6 +241,7 @@ def toolBibliographyText() {
         alignment_text,
         !params.skip_msa_trimming ? clipping_text : "",
         model_text,
+        !params.skip_phylogenetic_inference ? phylogeny_text : "",
         postprocessing_text
     ].join(' ').trim()
 
