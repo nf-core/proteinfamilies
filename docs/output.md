@@ -47,6 +47,10 @@ Updating families:
 - [mafft](#mafft-for-updating-families) aligner option. Re-align full MSA with final set of sequences
 - [ClipKIT](#clipkit-for-updating-families) to optionally clip gapped portions of the multiple sequence alignment (MSA)
 
+Phylogenetic tree inference:
+
+- [CMAPLE](#cmaple) - Reconstruct phylogenetic trees from family member sequences
+
 Reporting:
 
 - [Extract family representatives](#extract-family-representatives) to produce the final metadata file along with a fasta of all family representative sequences (can be used downstream for structural prediction).
@@ -568,6 +572,24 @@ gaps (above that threshold, across all aligned sequences) are either removed onl
 Results are stored in the `update_families/full_msa` folder.
 
 [ClipKIT](https://github.com/JLSteenwyk/ClipKIT) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
+
+### CMAPLE
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `phylogeny/`
+  - `cmaple/`
+    - `<samplename>/`
+      - `<family_name>.treefile`: the maximum likelihood phylogenetic tree of full MSA family sequences in Newick format.
+      - `<family_name>.log`: a log file containing detailed information about the tree reconstruction process.
+
+</details>
+
+[CMAPLE](https://github.com/iqtree/cmaple) MAximum Parsimonious Likelihood Estimation in C/C++.
+
+If the `--skip_phylogenetic_inference` is set to `false`, the full MSA treefiles will be calculated for the final protein families.
+The generated treefiles can be visualized externally with any Newick phylogenetic tree viewer.
 
 ### Extract family representatives
 
