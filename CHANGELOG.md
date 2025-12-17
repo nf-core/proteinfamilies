@@ -5,8 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v2.2.0dev - [date]
 
+### `Fixed`
+
+- [#142](https://github.com/nf-core/proteinfamilies/pull/142) - Fixed a bug in `REMOVE_REDUNDANCY` subworkflow, where the combination of these skip flags `--skip_sequence_redundancy_removal true`, `--skip_additional_sequence_recruiting true` and `--skip_additional_sequence_recruiting false`, would execute `HHSUITE_REFORMAT_FILTERED` to reformat Stockholm alignments while they were already in fasta (or clipkit) format. (by @vagkaratzas)
+
 ### `Added`
 
+- [#142](https://github.com/nf-core/proteinfamilies/pull/142) - Added the `cmaple` module for optional phylogenetic tree inference for final family full MSAs. (by @vagkaratzas)
 - [#140](https://github.com/nf-core/proteinfamilies/pull/140) - Using the new workflow output syntax to publish the downstream `nf-core/proteinannotator` samplesheet. (by @vagkaratzas)
 
 ### `Changed`
@@ -21,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Tool    | Previous version | New version |
 | ------- | ---------------- | ----------- |
 | multiqc | 1.32             | 1.33        |
+| cmaple  | -                | 1.1.0       |
 
 ## v2.1.0 - [2025/11/25]
 

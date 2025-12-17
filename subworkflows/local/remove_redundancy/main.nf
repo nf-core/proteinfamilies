@@ -187,8 +187,10 @@ workflow REMOVE_REDUNDANCY {
         full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool ).alignments
         ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     } else if (!skip_family_redundancy_removal) {
-        full_msa = HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" ).msa
-        ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions.first() )
+        if (!skip_additional_sequence_recruiting) {
+            full_msa = HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" ).msa
+            ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions.first() )
+        }
     } else if (!skip_additional_sequence_recruiting) {
         // if both skip_family_redundancy_removal and skip_sequence_redundancy_removal true,
         // and skip_additional_sequence_recruiting also true (sequences not recruited, so not hmmalign .sto)

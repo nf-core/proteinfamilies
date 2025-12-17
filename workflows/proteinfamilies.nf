@@ -16,8 +16,6 @@ include { CALCULATE_CLUSTER_DISTRIBUTION } from '../modules/local/calculate_clus
 include { CHUNK_CLUSTERS                 } from '../modules/local/chunk_clusters/main'
 include { GENERATE_FAMILIES              } from '../subworkflows/local/generate_families'
 include { REMOVE_REDUNDANCY              } from '../subworkflows/local/remove_redundancy'
-include { INFER_PHYLOGENY                } from '../subworkflows/local/infer_phylogeny'
-include { GUNZIP                         } from '../modules/nf-core/gunzip/main'
 include { CMAPLE                         } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS         } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
@@ -38,7 +36,6 @@ workflow PROTEINFAMILIES {
     ch_multiqc_files = channel.empty()
     ch_samplesheet_for_create = channel.empty()
     ch_samplesheet_for_update = channel.empty()
-    ch_full_msa               = channel.empty()
     ch_family_reps            = channel.empty()
 
     ch_input_for_qc = ch_samplesheet
@@ -153,13 +150,10 @@ workflow PROTEINFAMILIES {
 
     // Infer Phylogenetic relations of full MSAs
     if (!params.skip_phylogenetic_inference) {
-        INFER_PHYLOGENY (
-            REMOVE_REDUNDANCY.out.full_msa,
-            params.skip_additional_sequence_recruiting,
-            params.skip_family_redundancy_removal,
-            params.skip_sequence_redundancy_removal
+        CMAPLE (
+            REMOVE_REDUNDANCY.out.full_msa
+                .map { meta, file -> [ meta, file, [] ] }
         )
-        ch_versions = ch_versions.mix( INFER_PHYLOGENY.out.versions )
     }
 
     // Post-processing
