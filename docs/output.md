@@ -581,7 +581,7 @@ Results are stored in the `update_families/full_msa` folder.
 - `phylogeny/`
   - `cmaple/`
     - `<samplename>/`
-      - `<family_name>.treefile`: the maximum likelihood phylogenetic tree of full MSA family sequences in Newick format.
+      - `<family_name>.treefile`: the maximum parsimonious likelihood estimation phylogenetic tree of full MSA family sequences in Newick format.
       - `<family_name>.log`: a log file containing detailed information about the tree reconstruction process.
 
 </details>
