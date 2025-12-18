@@ -4,16 +4,16 @@ nextflow_workflow {
     script "../main.nf"
     workflow "REMOVE_REDUNDANCY"
 
-    test("fasta") {
+    test("faa - skip none") {
 
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
-                input[1] = Channel.of(
+                input[1] = channel.of(
                     [
                         [ id: 'chunk', chunk:1 ],
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
@@ -27,7 +27,7 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
                     ]
                 )
-                input[2] = Channel.of(
+                input[2] = channel.of(
                     [
                         [ id: 'chunk', chunk:1 ],
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.sto.gz', checkIfExists: true)
@@ -41,7 +41,7 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.sto.gz', checkIfExists: true)
                     ]
                 )
-                input[3] = Channel.of(
+                input[3] = channel.of(
                     [
                         [ id: 'chunk', chunk:1 ],
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa.gz', checkIfExists: true)
@@ -55,7 +55,7 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.faa.gz', checkIfExists: true)
                     ]
                 )
-                input[4] = Channel.of(
+                input[4] = channel.of(
                     [
                         [ id: 'chunk', chunk:1 ],
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.hmm.gz', checkIfExists: true)
@@ -76,7 +76,7 @@ nextflow_workflow {
                 input[9]  = false      // skip_sequence_redundancy_removal
                 input[10] = "linclust" // clustering_tool
                 input[11] = "famsa"    // alignment_tool
-                input[12] = false      //skip_msa_trimming
+                input[12] = false      // skip_msa_trimming
                 input[13] = "clipkit"  // clipkit_out_format
                 input[14] = false      // hmmsearch_write_target
                 input[15] = true       // hmmsearch_write_domain
@@ -91,10 +91,670 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.fasta,
+                    workflow.out.full_msa,
                     workflow.out.versions.collect { path(it).yaml }.unique()
-                    ).match()}
+                ).match()}
             )
         }
     }
 
+    test("faa - skip_family_merging") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
+                    ]
+                )
+                input[2] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.sto.gz', checkIfExists: true)
+                    ]
+                )
+                input[3] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.faa.gz', checkIfExists: true)
+                    ]
+                )
+                input[4] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
+                    ]
+                )
+                input[5]  = false      // skip_family_redundancy_removal
+                input[6]  = true       // skip_family_merging
+                input[7]  = 0.1        // hmmsearch_family_redundancy_length_threshold
+                input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
+                input[9]  = false      // skip_sequence_redundancy_removal
+                input[10] = "linclust" // clustering_tool
+                input[11] = "famsa"    // alignment_tool
+                input[12] = false      // skip_msa_trimming
+                input[13] = "clipkit"  // clipkit_out_format
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.fasta,
+                    workflow.out.full_msa,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                ).match()}
+            )
+        }
+    }
+
+    test("faa - skip_sequence_redundancy_removal") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
+                    ]
+                )
+                input[2] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.sto.gz', checkIfExists: true)
+                    ]
+                )
+                input[3] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.faa.gz', checkIfExists: true)
+                    ]
+                )
+                input[4] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
+                    ]
+                )
+                input[5]  = false      // skip_family_redundancy_removal
+                input[6]  = false      // skip_family_merging
+                input[7]  = 0.1        // hmmsearch_family_redundancy_length_threshold
+                input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
+                input[9]  = true       // skip_sequence_redundancy_removal
+                input[10] = "linclust" // clustering_tool
+                input[11] = "famsa"    // alignment_tool
+                input[12] = false      // skip_msa_trimming
+                input[13] = "clipkit"  // clipkit_out_format
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.fasta,
+                    workflow.out.full_msa,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                ).match()}
+            )
+        }
+    }
+
+    test("faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
+                    ]
+                )
+                input[2] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.sto.gz', checkIfExists: true)
+                    ]
+                )
+                input[3] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.faa.gz', checkIfExists: true)
+                    ]
+                )
+                input[4] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
+                    ]
+                )
+                input[5]  = true       // skip_family_redundancy_removal
+                input[6]  = false      // skip_family_merging
+                input[7]  = 0.1        // hmmsearch_family_redundancy_length_threshold
+                input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
+                input[9]  = true       // skip_sequence_redundancy_removal
+                input[10] = "linclust" // clustering_tool
+                input[11] = "famsa"    // alignment_tool
+                input[12] = false      // skip_msa_trimming
+                input[13] = "clipkit"  // clipkit_out_format
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.fasta,
+                    workflow.out.full_msa,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                ).match()}
+            )
+        }
+    }
+
+    test("faa - skip_sequence_redundancy_removal - skip_family_merging") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
+                    ]
+                )
+                input[2] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.sto.gz', checkIfExists: true)
+                    ]
+                )
+                input[3] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.faa.gz', checkIfExists: true)
+                    ]
+                )
+                input[4] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
+                    ]
+                )
+                input[5]  = false      // skip_family_redundancy_removal
+                input[6]  = true       // skip_family_merging
+                input[7]  = 0.1        // hmmsearch_family_redundancy_length_threshold
+                input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
+                input[9]  = true       // skip_sequence_redundancy_removal
+                input[10] = "linclust" // clustering_tool
+                input[11] = "famsa"    // alignment_tool
+                input[12] = false      // skip_msa_trimming
+                input[13] = "clipkit"  // clipkit_out_format
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.fasta,
+                    workflow.out.full_msa,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                ).match()}
+            )
+        }
+    }
+
+    test("faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal - skip_family_merging") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
+                    ]
+                )
+                input[2] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.sto.gz', checkIfExists: true)
+                    ]
+                )
+                input[3] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.faa.gz', checkIfExists: true)
+                    ]
+                )
+                input[4] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
+                    ]
+                )
+                input[5]  = true       // skip_family_redundancy_removal
+                input[6]  = true       // skip_family_merging
+                input[7]  = 0.1        // hmmsearch_family_redundancy_length_threshold
+                input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
+                input[9]  = true       // skip_sequence_redundancy_removal
+                input[10] = "linclust" // clustering_tool
+                input[11] = "famsa"    // alignment_tool
+                input[12] = false      // skip_msa_trimming
+                input[13] = "clipkit"  // clipkit_out_format
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.fasta,
+                    workflow.out.full_msa,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                ).match()}
+            )
+        }
+    }
+
+    test("faa - skip all but msa trimming") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
+                    ]
+                )
+                input[2] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
+                    ]
+                )
+                input[3] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.faa.gz', checkIfExists: true)
+                    ]
+                )
+                input[4] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
+                    ]
+                )
+                input[5]  = true       // skip_family_redundancy_removal
+                input[6]  = true       // skip_family_merging
+                input[7]  = 0.1        // hmmsearch_family_redundancy_length_threshold
+                input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
+                input[9]  = true       // skip_sequence_redundancy_removal
+                input[10] = "linclust" // clustering_tool
+                input[11] = "famsa"    // alignment_tool
+                input[12] = false      // skip_msa_trimming
+                input[13] = "clipkit"  // clipkit_out_format
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = true       // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.fasta,
+                    workflow.out.full_msa,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                ).match()}
+            )
+        }
+    }
+
+    test("faa - skip none - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.clipkit', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.clipkit', checkIfExists: true)
+                    ]
+                )
+                input[2] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.sto.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.sto.gz', checkIfExists: true)
+                    ]
+                )
+                input[3] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.faa.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.faa.gz', checkIfExists: true)
+                    ]
+                )
+                input[4] = channel.of(
+                    [
+                        [ id: 'chunk', chunk:1 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:2 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.hmm.gz', checkIfExists: true)
+                    ],
+                    [
+                        [ id: 'chunk', chunk:3 ],
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
+                    ]
+                )
+                input[5]  = false      // skip_family_redundancy_removal
+                input[6]  = false      // skip_family_merging
+                input[7]  = 0.1        // hmmsearch_family_redundancy_length_threshold
+                input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
+                input[9]  = false      // skip_sequence_redundancy_removal
+                input[10] = "linclust" // clustering_tool
+                input[11] = "famsa"    // alignment_tool
+                input[12] = false      // skip_msa_trimming
+                input[13] = "clipkit"  // clipkit_out_format
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.fasta,
+                    workflow.out.full_msa,
+                    workflow.out.versions.collect { path(it).yaml }.unique()
+                ).match()}
+            )
+        }
+    }
 }

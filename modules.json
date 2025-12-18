@@ -10,6 +10,11 @@
                         "git_sha": "5a0f7c1d0ed924eb6ec939bd92ace755905c2014",
                         "installed_by": ["modules"]
                     },
+                    "cmaple": {
+                        "branch": "master",
+                        "git_sha": "4f9dbf7950214ccdf1e117a736b5cb78d5c4bcfe",
+                        "installed_by": ["modules"]
+                    },
                     "famsa/align": {
                         "branch": "master",
                         "git_sha": "5c07517e7b526d4c3058fa88009e765b130ea5e8",
@@ -69,7 +74,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "9656d955b700a8707c4a67821ab056f8c1095675",
+                        "git_sha": "5bdb098216aaf5df9c3b6343e6204cd932503c16",
                         "installed_by": ["modules"]
                     },
                     "seqfu/stats": {

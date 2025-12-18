@@ -32,9 +32,10 @@ process FILTER_NON_REDUNDANT_FAMS {
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     extension = files[0].extension
     """
-    touch test.${extension}
+    touch ${prefix}_1.${extension}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

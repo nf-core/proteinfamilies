@@ -1,5 +1,433 @@
 {
-    "fasta": {
+    "faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal - skip_family_merging": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 1
+                    },
+                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_1.faa.gz"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 2
+                    },
+                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_2.faa.gz"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 3
+                    },
+                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_3.faa.gz"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 1
+                    },
+                    "chunk_1.fas.gz:md5,8ccd10b05b1d224b57df77dc2b1077ce"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 2
+                    },
+                    "chunk_2.fas.gz:md5,eaf8104240fcfb46752ceabaf989b661"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 3
+                    },
+                    "chunk_3.fas.gz:md5,20a3bf82ff5f93f8faf88170e75e9e59"
+                ]
+            ],
+            [
+                {
+                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_RAW": {
+                        "hhsuite": "3.3.0"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-18T12:21:52.689110939"
+    },
+    "faa - skip all but msa trimming": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 1
+                    },
+                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_1.faa.gz"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 2
+                    },
+                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_2.faa.gz"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 3
+                    },
+                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_3.faa.gz"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 1
+                    },
+                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_1.clipkit"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 2
+                    },
+                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_2.clipkit"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": 3
+                    },
+                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_3.clipkit"
+                ]
+            ],
+            [
+                
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-18T11:55:44.217773585"
+    },
+    "faa - skip none - stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                {
+                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.0"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MERGE_FAMILIES:POOL_SIMILAR_COMPONENTS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.3",
+                        "networkx": 3.5
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:REMOVE_REDUNDANT_SEQS": {
+                        "python": "3.13.1",
+                        "biopython": 1.85
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
+                        "mmseqs": "18.8cc5c"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
+                        "mmseqs": "18.8cc5c"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
+                        "mmseqs": "18.8cc5c"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
+                        "famsa": "2.4.1-45c9b2b (2025-05-09)"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-18T12:10:55.15528594"
+    },
+    "faa - skip_sequence_redundancy_removal - skip_family_merging": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.faa.gz:md5,7ae62909eb81f92c331b2048a8ac34d3"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.faa.gz:md5,40cd2c9c2ff618bb1d0ed29852499db8"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.fas.gz:md5,8ccd10b05b1d224b57df77dc2b1077ce"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.fas.gz:md5,eaf8104240fcfb46752ceabaf989b661"
+                ]
+            ],
+            [
+                {
+                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.0"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_FILTERED": {
+                        "hhsuite": "3.3.0"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-18T12:25:53.822584231"
+    },
+    "faa - skip_sequence_redundancy_removal": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.faa.gz:md5,7ae62909eb81f92c331b2048a8ac34d3"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.faa.gz:md5,40cd2c9c2ff618bb1d0ed29852499db8"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.fas.gz:md5,8ccd10b05b1d224b57df77dc2b1077ce"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.fas.gz:md5,eaf8104240fcfb46752ceabaf989b661"
+                ]
+            ],
+            [
+                {
+                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.0"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_FILTERED": {
+                        "hhsuite": "3.3.0"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-18T12:19:07.10873062"
+    },
+    "faa - skip none": {
         "content": [
             [
                 [
@@ -15,6 +443,22 @@
                         "chunk": "2"
                     },
                     "chunk_2.faa:md5,ebcda473387ebd3d1cdeb7179d4915d2"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.aln:md5,eb65c919dd074c6c25420163675de2c4"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.aln:md5,ed2a2cbbb5f207f44ddef4781cd75ff7"
                 ]
             ],
             [
@@ -98,8 +542,225 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-11-24T12:56:30.969600659"
+        "timestamp": "2025-12-18T11:43:26.340078207"
+    },
+    "faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.faa.gz:md5,7ae62909eb81f92c331b2048a8ac34d3"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.faa.gz:md5,40cd2c9c2ff618bb1d0ed29852499db8"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.fas.gz:md5,8ccd10b05b1d224b57df77dc2b1077ce"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.fas.gz:md5,eaf8104240fcfb46752ceabaf989b661"
+                ]
+            ],
+            [
+                {
+                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.0"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_FILTERED": {
+                        "hhsuite": "3.3.0"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-18T12:24:03.342259494"
+    },
+    "faa - skip_family_merging": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.faa:md5,6a54d12b222346b1df685867c0bdd151"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.faa:md5,ebcda473387ebd3d1cdeb7179d4915d2"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "1"
+                    },
+                    "chunk_1.aln:md5,eb65c919dd074c6c25420163675de2c4"
+                ],
+                [
+                    {
+                        "id": "chunk",
+                        "chunk": "2"
+                    },
+                    "chunk_2.aln:md5,ed2a2cbbb5f207f44ddef4781cd75ff7"
+                ]
+            ],
+            [
+                {
+                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.0"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:REMOVE_REDUNDANT_SEQS": {
+                        "python": "3.13.1",
+                        "biopython": 1.85
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
+                        "hmmer": 3.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
+                        "mmseqs": "18.8cc5c"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
+                        "mmseqs": "18.8cc5c"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
+                        "mmseqs": "18.8cc5c"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
+                        "famsa": "2.4.1-45c9b2b (2025-05-09)"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
+                        "python": "3.13.1"
+                    }
+                },
+                {
+                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
+                        "find": "4.6.0",
+                        "pigz": 2.8,
+                        "coreutils": 9.4
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-18T12:29:57.155183942"
     }
 }

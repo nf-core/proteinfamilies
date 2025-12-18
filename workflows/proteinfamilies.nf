@@ -9,26 +9,14 @@ include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pi
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT LOCAL MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
-//
-include { FAA_SEQFU_SEQKIT     } from '../subworkflows/nf-core/faa_seqfu_seqkit/main'
-include { UPDATE_FAMILIES      } from '../subworkflows/local/update_families'
-include { MMSEQS_FASTA_CLUSTER } from '../subworkflows/nf-core/mmseqs_fasta_cluster'
-include { GENERATE_FAMILIES    } from '../subworkflows/local/generate_families'
-include { REMOVE_REDUNDANCY    } from '../subworkflows/local/remove_redundancy'
-
-//
-// MODULE: Local to the pipeline
-//
+include { FAA_SEQFU_SEQKIT               } from '../subworkflows/nf-core/faa_seqfu_seqkit/main'
+include { UPDATE_FAMILIES                } from '../subworkflows/local/update_families'
+include { MMSEQS_FASTA_CLUSTER           } from '../subworkflows/nf-core/mmseqs_fasta_cluster'
 include { CALCULATE_CLUSTER_DISTRIBUTION } from '../modules/local/calculate_cluster_distribution/main'
 include { CHUNK_CLUSTERS                 } from '../modules/local/chunk_clusters/main'
+include { GENERATE_FAMILIES              } from '../subworkflows/local/generate_families'
+include { REMOVE_REDUNDANCY              } from '../subworkflows/local/remove_redundancy'
+include { CMAPLE                         } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS         } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
 
@@ -46,10 +34,9 @@ workflow PROTEINFAMILIES {
 
     ch_versions      = channel.empty()
     ch_multiqc_files = channel.empty()
-    ch_family_reps   = channel.empty()
-
     ch_samplesheet_for_create = channel.empty()
     ch_samplesheet_for_update = channel.empty()
+    ch_family_reps            = channel.empty()
 
     ch_input_for_qc = ch_samplesheet
         .map { meta, fasta, _existing_hmms_to_update, _existing_msas_to_update ->
@@ -113,10 +100,10 @@ workflow PROTEINFAMILIES {
     ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
     CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
-    ch_versions = ch_versions.mix( CALCULATE_CLUSTER_DISTRIBUTION.out.versions )
+    ch_versions = ch_versions.mix( CALCULATE_CLUSTER_DISTRIBUTION.out.versions.first() )
 
     CHUNK_CLUSTERS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs, params.cluster_size_threshold )
-    ch_versions = ch_versions.mix( CHUNK_CLUSTERS.out.versions )
+    ch_versions = ch_versions.mix( CHUNK_CLUSTERS.out.versions.first() )
 
     ch_fasta_chunks = CHUNK_CLUSTERS.out.fasta_chunks
         .transpose()
@@ -161,17 +148,25 @@ workflow PROTEINFAMILIES {
     )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
+    // Infer Phylogenetic relations of full MSAs
+    if (!params.skip_phylogenetic_inference) {
+        CMAPLE (
+            REMOVE_REDUNDANCY.out.full_msa
+                .map { meta, file -> [ meta, file, [] ] }
+        )
+    }
+
     // Post-processing
     ch_fasta = REMOVE_REDUNDANCY.out.fasta
         .map { meta, aln -> [ [id: meta.id], aln ] }
         .groupTuple(by: 0)
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions )
+    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions.first() )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
-    ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
+    ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map.first() )
 
     //
     // Collate and save software versions
