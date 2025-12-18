@@ -90,7 +90,7 @@
                     "seqkit": "v2.9.0"
                 },
                 "Workflow": {
-                    "nf-core/proteinfamilies": "v2.2.0dev"
+                    "nf-core/proteinfamilies": "v2.2.0"
                 }
             },
             [
@@ -202,6 +202,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-08T10:57:34.535518526"
+        "timestamp": "2025-12-18T13:23:11.673517033"
     }
 }
