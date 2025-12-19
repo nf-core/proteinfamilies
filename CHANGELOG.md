@@ -3,6 +3,36 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.2.0 - [2025/12/18]
+
+### `Added`
+
+- [#143](https://github.com/nf-core/proteinfamilies/pull/143)
+  - Added the `cmaple` module for optional phylogenetic tree inference for final family full MSAs. (by @vagkaratzas)
+  - Added extra nf-tests for the `REMOVE_REDUNDANCY` subworkflow. (by @vagkaratzas)
+- [#140](https://github.com/nf-core/proteinfamilies/pull/140) - Using the new workflow output syntax to publish the downstream `nf-core/proteinannotator` samplesheet. (by @vagkaratzas)
+
+### `Changed`
+
+- [#143](https://github.com/nf-core/proteinfamilies/pull/143) - Updated metro-maps, citations, README.md and output.md to include `cmaple` phylogenetic trees. (by @vagkaratzas)
+- [#141](https://github.com/nf-core/proteinfamilies/pull/141) - Aligning the default output directory of the new output syntax with the publishing directory of the pipeline. (by @vagkaratzas)
+- [#140](https://github.com/nf-core/proteinfamilies/pull/140)
+  - Updated metro-map to also depict the optional creation of downstream samplesheets for `nf-core/proteinfold` and `nf-core/proteinannotator`. Also swapped `seqkit/rmdup` and `seqkit/replace` modules to their proper execution sequence. (by @vagkaratzas)
+  - Updated the `test_full` profile time and memory requirements to avoid AWS failures on release. (by @vagkaratzas)
+
+### `Fixed`
+
+- [#143](https://github.com/nf-core/proteinfamilies/pull/143)
+  - Fixed a bug in `REMOVE_REDUNDANCY` subworkflow, where the combination of these skip flags `--skip_sequence_redundancy_removal true`, `--skip_additional_sequence_recruiting true` and `--skip_additional_sequence_recruiting false`, would execute `HHSUITE_REFORMAT_FILTERED` to reformat Stockholm alignments while they were already in fasta (or clipkit) format. (by @vagkaratzas)
+  - Fixed a bug in `REMOVE_REDUNDANCY` subworkflow, where unmerged similar families would be removed along with redundant ones, when `--skip_family_merging` was `true` and `--skip_family_redundancy_removal` was `false`. (by @vagkaratzas)
+
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| multiqc | 1.32             | 1.33        |
+| cmaple  | -                | 1.1.0       |
+
 ## v2.1.0 - [2025/11/25]
 
 ### `Added`
@@ -17,9 +47,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
-| Tool   | Previous version | New version |
-| ------ | ---------------- | ----------- |
-| mmseqs | 17.b804f         | 18.8cc5c    |
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| mmseqs  | 17.b804f         | 18.8cc5c    |
+| multiqc | 1.31             | 1.32        |
 
 ## v2.0.0 - [2025/10/14]
 
@@ -32,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added new local module `MERGE_SEEDS` that merges seed alignments of similar families, before restarting the family generation subworkflow. (by @vagkaratzas)
 - [#118](https://github.com/nf-core/proteinfamilies/pull/118)
   - Added preprint citation to the repo. (by @vagkaratzas)
-  - Added separate metro map files for dark and light browser modes. (by @vagkaratzas)
+  - Added separate metro-map files for dark and light browser modes. (by @vagkaratzas)
   - Added new local module `EXTRACT_FAMILY_MEMBERS` which outputs a two-column TSV file containing the final family identifiers and their corresponding member sequence identifiers. The file is saved at _"/family_reps/&lt;samplename&gt;/&lt;samplename&gt;.tsv"_. (by @vagkaratzas)
 - [#117](https://github.com/nf-core/proteinfamilies/pull/117)
   - Added `SEQKIT_SEQ` for optional sequence preprocessing in the quality check subworkflow. (by @vagkaratzas)
@@ -168,7 +199,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `REMOVE_REDUNDANT_FAMS` local module converted to `IDENTIFY_REDUNDANT_FAMS` to extract redundant family ids which will then be used downstream.
   - `FILTER_NON_REDUNDANT_HMMS` local module converted to `FILTER_NON_REDUNDANT_FAMS` and reused four times (HMM, seed MSA, full MSA, FASTA).
   - Changed the output format of the `EXTRACT_FAMILY_REPS` and `REMOVE_REDUNDANT_SEQS` local modules from `.fa` to `.faa`.
-  - Metro map updated with new `hhsuite/reformat` module.
+  - Metro-map updated with new `hhsuite/reformat` module.
 - [#57](https://github.com/nf-core/proteinfamilies/pull/57) - slight improvements of `nextflow_schema.json` (Hackathon 2025)
 - [#57](https://github.com/nf-core/proteinfamilies/pull/57) - slight improtmenets of `assets/schema_input.json` (Hackathon 2025)
 - [#34](https://github.com/nf-core/proteinfamilies/pull/34) - Swapped the `SeqIO` python library with `pyfastx` for the `CHUNK_CLUSTERS` module, quartering its duration

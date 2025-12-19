@@ -29,9 +29,9 @@ workflow UPDATE_FAMILIES {
     clipkit_out_format               // string (default: clipkit)
 
     main:
-    ch_versions            = Channel.empty()
-    ch_updated_family_reps = Channel.empty()
-    ch_no_hit_seqs         = Channel.empty()
+    ch_versions            = channel.empty()
+    ch_updated_family_reps = channel.empty()
+    ch_no_hit_seqs         = channel.empty()
 
     ch_input_for_untar = ch_samplesheet_for_update
         .multiMap { meta, _fasta, existing_hmms_to_update, existing_msas_to_update ->

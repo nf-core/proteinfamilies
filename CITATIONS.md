@@ -50,6 +50,10 @@
 
 > Cock PJ, Antao T, Chang JT, Chapman BA, Cox CJ, Dalke A, Friedberg I, Hamelryck T, Kauff F, Wilczynski B, De Hoon MJ. Biopython: freely available Python tools for computational molecular biology and bioinformatics. Bioinformatics. 2009 Jun 6;25(11):1422. doi: 10.1093/bioinformatics/btp163. PubMed PMID: 19304878; PubMed Central PMCID: PMC2682512.
 
+- [CMAPLE](https://pubmed.ncbi.nlm.nih.gov/38934791/)
+
+> Ly-Trong N, Bielow C, De Maio N, Minh BQ. CMAPLE: efficient phylogenetic inference in the pandemic era. Molecular Biology and Evolution. 2024 Jul;41(7):msae134. doi: 10.1093/molbev/msae134. PubMed PMID: 38934791; PubMed Central PMCID: PMC11232695.
+
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
 > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.

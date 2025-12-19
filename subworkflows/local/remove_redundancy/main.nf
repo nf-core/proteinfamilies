@@ -20,10 +20,10 @@ include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_RAW                   } from '../
 
 workflow REMOVE_REDUNDANCY {
     take:
-    sequences                                    // tuple val(meta), path(fasta)
-    seed_msa                                     // tuple val(meta), path(clipkit)
-    full_msa                                     // tuple val(meta), path(sto.gz)
-    fasta                                        // tuple val(meta), path(fasta.gz)
+    sequences                                    // tuple val(meta), path(faa)
+    seed_msa                                     // tuple val(meta), path({clipkit,aln,fas})
+    full_msa                                     // tuple val(meta), path({sto.gz,clipkit,aln,fas})
+    fasta                                        // tuple val(meta), path(faa.gz)
     hmm                                          // tuple val(meta), path(hmm.gz)
     skip_family_redundancy_removal               // boolean
     skip_family_merging                          // boolean
@@ -40,22 +40,25 @@ workflow REMOVE_REDUNDANCY {
     hmmsearch_query_length_threshold             // number [0.0, 1.0]
 
     main:
-    ch_versions        = Channel.empty()
-    ch_merged_seed_msa = Channel.empty()
-    ch_merged_full_msa = Channel.empty()
-    ch_merged_fasta    = Channel.empty()
-    ch_merged_hmm      = Channel.empty()
+    ch_merged_seed_msa = channel.empty()
+    ch_merged_full_msa = channel.empty()
+    ch_merged_fasta    = channel.empty()
+    ch_merged_hmm      = channel.empty()
+    ch_versions        = channel.empty()
 
+    // FAMILY REDUNDANCY REMOVAL MECHANISM
     if (!skip_family_redundancy_removal || !skip_family_merging) {
         ch_fasta = fasta
             .map { meta, faa -> [[id: meta.id], faa] }
             .groupTuple(by: 0)
+
         EXTRACT_FAMILY_REPS( ch_fasta )
         ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
 
         ch_hmm = hmm
             .map { meta, model -> [[id: meta.id], model] }
             .groupTuple(by: 0)
+
         FIND_CONCATENATE_HMMS( ch_hmm )
         ch_versions = ch_versions.mix( FIND_CONCATENATE_HMMS.out.versions.first() )
 
@@ -117,28 +120,33 @@ workflow REMOVE_REDUNDANCY {
                 .groupTuple(by: 0)
         }
 
-        fasta = fasta
+        ch_fasta = fasta
             .mix(ch_merged_fasta)
             .map { meta, fas -> [[id: meta.id], fas] }
             .groupTuple(by: 0)
 
-        full_msa = full_msa
+        ch_full_msa = full_msa
             .mix(ch_merged_full_msa)
             .map { meta, fas -> [[id: meta.id], fas] }
             .groupTuple(by: 0)
 
+        // if --skip_family_redundancy_removal true, redundant_ids is returned empty by the script
         ch_skip_ids = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids
-            .concat(IDENTIFY_REDUNDANT_FAMS.out.similar_ids)
-            .groupTuple(by: 0)
+        // will only remove similar families (e.g., _1 and _7) if merging them (i.e., will keep _1_7)
+        if (!skip_family_merging) {
+            ch_skip_ids = ch_skip_ids.concat( IDENTIFY_REDUNDANT_FAMS.out.similar_ids )
+        }
+        ch_skip_ids = ch_skip_ids.groupTuple(by: 0)
+
         FIND_CONCATENATE_SKIP_IDS( ch_skip_ids )
         ch_versions = ch_versions.mix( FIND_CONCATENATE_SKIP_IDS.out.versions.first() )
 
         // Join to ensure in sync
         ch_input_for_fam_removal = FIND_CONCATENATE_SKIP_IDS.out.file_out
-            .join(fasta)
+            .join(ch_fasta)
             .join(ch_hmm)
             .join(ch_seed_msa)
-            .join(full_msa)
+            .join(ch_full_msa)
             .multiMap { meta, ids, seq, model, seed, full ->
                 ids: [meta, ids]
                 seq: [meta, seq]
@@ -175,28 +183,35 @@ workflow REMOVE_REDUNDANCY {
                 [[id: meta.id, chunk: chunk], file]
             }
     }
+    // END FAMILY REDUNDANCY REMOVAL MECHANISM
 
     if (!skip_sequence_redundancy_removal) {
-        MMSEQS_FASTA_CLUSTER( fasta, clustering_tool )
+        // SEQUENCE REDUNDANCY REMOVAL MECHANISM
+        MMSEQS_FASTA_CLUSTER( fasta, clustering_tool ) // fasta channel contains all sequences of full MSA
         ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
-        ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool )
+        full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool ).alignments
         ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
-    } else if (!skip_family_redundancy_removal) {
-        HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" )
-        ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions.first() )
-    } else if (!skip_additional_sequence_recruiting) {
-        // if both skip_family_redundancy_removal and skip_sequence_redundancy_removal true,
-        // and skip_additional_sequence_recruiting also true (sequences not recruited, so not hmmalign .sto)
-        HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" )
-        ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions.first() )
+        // END SEQUENCE REDUNDANCY REMOVAL MECHANISM
+    } else if (!skip_additional_sequence_recruiting) { // full MSAs in Stockholm format
+        // REFORMATTING FULL MSA
+        // either filtered out redundant, or families that were merged into a new super-family
+        if (!skip_family_redundancy_removal || !skip_family_merging) {
+            full_msa = HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" ).msa
+            ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions.first() )
+        } else { // did not go through filtering processes
+            full_msa = HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" ).msa
+            ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions.first() )
+        }
+        // END REFORMATTING FULL MSA
     }
 
     emit:
+    fasta    = fasta
+    full_msa = full_msa
     versions = ch_versions
-    fasta = fasta
 }

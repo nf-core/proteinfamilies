@@ -7,7 +7,7 @@
                         {
                             "id": "aln"
                         },
-                        "test.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "aln_1.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -18,7 +18,7 @@
                         {
                             "id": "aln"
                         },
-                        "test.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "aln_1.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions": [
@@ -27,10 +27,10 @@
             }
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.3"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-06-13T15:17:06.261303697"
+        "timestamp": "2025-12-18T12:11:26.18829014"
     },
     "proteinfamilies - nonredundant": {
         "content": [
