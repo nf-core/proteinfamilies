@@ -228,9 +228,9 @@ workflow PROTEINFAMILIES {
         )
     )
 
-    ch_multiqc_files = ch_multiqc_files.mix(FAA_SEQFU_SEQKIT.out.multiqc_files.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { it[1] }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(FAA_SEQFU_SEQKIT.out.multiqc_files.collect{ f -> f[1] }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect{ f -> f[1] }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { f -> f[1] }.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),
