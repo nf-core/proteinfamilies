@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v2.3.0dev - [date]
 
+### `Changed`
+
+- [#147](https://github.com/nf-core/proteinfamilies/pull/147) - Modules, subworkflows and pipeline code updates to fix linting warnings and errors. (by @vagkaratzas)
+
 ## v2.2.0 - [2025/12/18]
 
 ### `Added`
