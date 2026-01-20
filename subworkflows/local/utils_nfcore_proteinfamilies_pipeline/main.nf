@@ -29,7 +29,7 @@ workflow PIPELINE_INITIALISATION {
     take:
     version           // boolean: Display version and exit
     validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
-    monochrome_logs   // boolean: Do not use coloured log outputs
+    _monochrome_logs  // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
     input             //  string: Path to input samplesheet
@@ -93,11 +93,11 @@ workflow PIPELINE_INITIALISATION {
     )
 
     //
-    // Create channel from input file provided through params.input
+    // Create channel from input file provided through input
     //
 
     ch_samplesheet = channel
-        .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
+        .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
 
     emit:
     samplesheet = ch_samplesheet
@@ -288,7 +288,7 @@ def validateMatchingFolders(channel1, channel2) {
     // Fetch the contents of the channels
     channel1
         .join(channel2)
-        .map { meta, folder1, folder2 ->
+        .map { _meta, folder1, folder2 ->
             def files1 = folder1.listFiles()
             def files2 = folder2.listFiles()
 
@@ -298,8 +298,8 @@ def validateMatchingFolders(channel1, channel2) {
             }
 
             // Extract base filenames (without extensions) and sort
-            def baseNames1 = files1.collect { it.getSimpleName() }.sort()
-            def baseNames2 = files2.collect { it.getSimpleName() }.sort()
+            def baseNames1 = files1.collect { f -> f.getSimpleName() }.sort()
+            def baseNames2 = files2.collect { f -> f.getSimpleName() }.sort()
 
             // Check if base filenames match one to one
             if (baseNames1 != baseNames2) {

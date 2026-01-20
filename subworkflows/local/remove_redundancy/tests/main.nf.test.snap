@@ -48,18 +48,14 @@
                 ]
             ],
             [
-                {
-                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_RAW": {
-                        "hhsuite": "3.3.0"
-                    }
-                }
+                
             ]
         ],
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-18T12:21:52.689110939"
+        "timestamp": "2026-01-20T10:17:30.649646081"
     },
     "faa - skip all but msa trimming": {
         "content": [
@@ -315,11 +311,6 @@
                         "pigz": 2.8,
                         "coreutils": 9.4
                     }
-                },
-                {
-                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_FILTERED": {
-                        "hhsuite": "3.3.0"
-                    }
                 }
             ]
         ],
@@ -327,7 +318,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-18T12:25:53.822584231"
+        "timestamp": "2026-01-20T10:17:18.267468554"
     },
     "faa - skip_sequence_redundancy_removal": {
         "content": [
@@ -413,11 +404,6 @@
                         "pigz": 2.8,
                         "coreutils": 9.4
                     }
-                },
-                {
-                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_FILTERED": {
-                        "hhsuite": "3.3.0"
-                    }
                 }
             ]
         ],
@@ -425,7 +411,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-18T12:19:07.10873062"
+        "timestamp": "2026-01-20T10:16:41.051557856"
     },
     "faa - skip none": {
         "content": [
@@ -630,11 +616,6 @@
                         "pigz": 2.8,
                         "coreutils": 9.4
                     }
-                },
-                {
-                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_FILTERED": {
-                        "hhsuite": "3.3.0"
-                    }
                 }
             ]
         ],
@@ -642,7 +623,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-18T12:24:03.342259494"
+        "timestamp": "2026-01-20T10:16:59.695234685"
     },
     "faa - skip_family_merging": {
         "content": [
