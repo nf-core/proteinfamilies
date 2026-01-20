@@ -202,10 +202,8 @@ workflow REMOVE_REDUNDANCY {
         // either filtered out redundant, or families that were merged into a new super-family
         if (!skip_family_redundancy_removal || !skip_family_merging) {
             full_msa = HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" ).msa
-            ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions.first() )
         } else { // did not go through filtering processes
             full_msa = HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" ).msa
-            ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions.first() )
         }
         // END REFORMATTING FULL MSA
     }
