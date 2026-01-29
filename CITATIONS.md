@@ -1,8 +1,8 @@
 # nf-core/proteinfamilies: Citations
 
-## [nf-core/proteinfamilies](https://www.biorxiv.org/content/10.1101/2025.08.12.670010/)
+## [nf-core/proteinfamilies](https://pubmed.ncbi.nlm.nih.gov/41563008/)
 
-> Karatzas E, Beracochea M, Baltoumas FA, Aplakidou E, Richardson L, Fellows Yates JA, Lundin D, nf-core community, Buluc A, Kyrpides N, Georgakopoulos-Soares I. nf-core/proteinfamilies: A scalable pipeline for the generation of protein families. bioRxiv. 2025:2025-08. doi: 10.1101/2025.08.12.670010.
+> Karatzas E, Beracochea M, Baltoumas FA, Aplakidou E, Richardson L, Yates JA, Lundin D, nf-core community, Buluc A, Kyrpides N, Georgakopoulos-Soares I. nf-core/proteinfamilies: A scalable pipeline for the generation of protein families. GigaScience. 2026 Jan 21:giag009. doi: 10.1093/gigascience/giag009. PubMed PMID: 41563008.
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 

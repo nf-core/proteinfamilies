@@ -123,7 +123,7 @@ If you use nf-core/proteinfamilies for your analysis, please cite the article as
 >
 > Evangelos Karatzas, Martin Beracochea, Fotis A. Baltoumas, Eleni Aplakidou, Lorna Richardson, James A. Fellows Yates, Daniel Lundin, nf-core community, Aydin Buluç, Nikos C. Kyrpides, Ilias Georgakopoulos-Soares, Georgios A. Pavlopoulos & Robert D. Finn
 >
-> _biorxiv._ 2025 Aug. doi: [10.1101/2025.08.12.670010](https://dx.doi.org/10.1101/2025.08.12.670010).
+> _GigaScience._ 2026 Jan. doi: [10.1093/gigascience/giag009](https://doi.org/10.1093/gigascience/giag009).
 
 You can cite the nf-core/proteinfamilies zenodo record for a specific version using the following doi: [10.5281/zenodo.14881993](https://doi.org/10.5281/zenodo.14881993).
 
