@@ -188,7 +188,6 @@ workflow REMOVE_REDUNDANCY {
     if (!skip_sequence_redundancy_removal) {
         // SEQUENCE REDUNDANCY REMOVAL MECHANISM
         MMSEQS_FASTA_CLUSTER( fasta, clustering_tool ) // fasta channel contains all sequences of full MSA
-        ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )

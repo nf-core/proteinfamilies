@@ -97,7 +97,6 @@ workflow PROTEINFAMILIES {
         ch_samplesheet_for_create,
         params.clustering_tool
     )
-    ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
     CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
     ch_versions = ch_versions.mix( CALCULATE_CLUSTER_DISTRIBUTION.out.versions.first() )
@@ -233,17 +232,21 @@ workflow PROTEINFAMILIES {
     ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { f -> f[1] }.ifEmpty([]))
 
     MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList(),
-        [],
-        []
+        ch_multiqc_files
+            .collect()
+            .map { files ->
+                def multiqc_config_files = [file("$projectDir/assets/multiqc_config.yml", checkIfExists: true)]
+                if (params.multiqc_config) {
+                    multiqc_config_files += [file(params.multiqc_config, checkIfExists: true)]
+                }
+                def multiqc_logo_file = params.multiqc_logo ? [file(params.multiqc_logo, checkIfExists: true)] : []
+                [ [id: 'multiqc'], files, multiqc_config_files, multiqc_logo_file, [], [] ]
+            }
     )
 
     emit:
     family_reps    = EXTRACT_FAMILY_REPS.out.fasta
-    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    multiqc_report = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
     versions       = ch_versions // channel: [ path(versions.yml) ]
 }
 
