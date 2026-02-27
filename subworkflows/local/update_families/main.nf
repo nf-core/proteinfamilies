@@ -40,10 +40,8 @@ workflow UPDATE_FAMILIES {
         }
 
     UNTAR_HMM( ch_input_for_untar.hmm )
-    ch_versions = ch_versions.mix( UNTAR_HMM.out.versions.first() )
 
     UNTAR_MSA( ch_input_for_untar.msa )
-    ch_versions = ch_versions.mix( UNTAR_MSA.out.versions.first() )
 
     // check that the HMMs and the MSAs match
     // join to ensure in sync
@@ -113,7 +111,6 @@ workflow UPDATE_FAMILIES {
     if (!skip_sequence_redundancy_removal) {
         // Strict clustering to remove redundancy
         MMSEQS_FASTA_CLUSTER( ch_fasta, clustering_tool )
-        ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )

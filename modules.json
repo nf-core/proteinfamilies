@@ -47,44 +47,44 @@
                     },
                     "mafft/align": {
                         "branch": "master",
-                        "git_sha": "cb9d6e0da369d4ba122b4d88d8cc28ad403f6247",
+                        "git_sha": "e657cdd0198cc26f2e501325eb7f70fbd740b6ee",
                         "installed_by": ["modules"]
                     },
                     "mmseqs/cluster": {
                         "branch": "master",
-                        "git_sha": "38697a933bef7041bb935c9b8374d9948ce6c794",
+                        "git_sha": "9ef13474c5ed9a2d740b0b8565209be636361b5a",
                         "installed_by": ["mmseqs_fasta_cluster"],
                         "patch": "modules/nf-core/mmseqs/cluster/mmseqs-cluster.diff"
                     },
                     "mmseqs/createdb": {
                         "branch": "master",
-                        "git_sha": "38697a933bef7041bb935c9b8374d9948ce6c794",
+                        "git_sha": "9ef13474c5ed9a2d740b0b8565209be636361b5a",
                         "installed_by": ["mmseqs_fasta_cluster"]
                     },
                     "mmseqs/createtsv": {
                         "branch": "master",
-                        "git_sha": "e753770db613ce014b3c4bc94f6cba443427b726",
+                        "git_sha": "9ef13474c5ed9a2d740b0b8565209be636361b5a",
                         "installed_by": ["mmseqs_fasta_cluster"]
                     },
                     "mmseqs/linclust": {
                         "branch": "master",
-                        "git_sha": "38697a933bef7041bb935c9b8374d9948ce6c794",
+                        "git_sha": "9ef13474c5ed9a2d740b0b8565209be636361b5a",
                         "installed_by": ["mmseqs_fasta_cluster"],
                         "patch": "modules/nf-core/mmseqs/linclust/mmseqs-linclust.diff"
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "80cba9452fb1e9bb79884976fa1ca0e671949aa2",
+                        "git_sha": "2c73cc8fa92cf48de3da0b643fdf357a8a290b36",
                         "installed_by": ["modules"]
                     },
                     "seqfu/stats": {
                         "branch": "master",
-                        "git_sha": "e753770db613ce014b3c4bc94f6cba443427b726",
+                        "git_sha": "6b81c03dc4465ac9351b293dc6caada2a5e7556c",
                         "installed_by": ["faa_seqfu_seqkit"]
                     },
                     "seqkit/replace": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "2eccc519c7d25e24c8ef2a5a94062630b8383daf",
                         "installed_by": ["faa_seqfu_seqkit"]
                     },
                     "seqkit/rmdup": {
@@ -99,7 +99,7 @@
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "00ee87ebb541af0008596400ce6d5f66d79d5408",
+                        "git_sha": "447f7bc0fa41dfc2400c8cad4c0291880dc060cf",
                         "installed_by": ["modules"]
                     }
                 }
@@ -108,12 +108,12 @@
                 "nf-core": {
                     "faa_seqfu_seqkit": {
                         "branch": "master",
-                        "git_sha": "911a3c360b0ebdae4e36beaf734e6905174d3507",
+                        "git_sha": "6b81c03dc4465ac9351b293dc6caada2a5e7556c",
                         "installed_by": ["subworkflows"]
                     },
                     "mmseqs_fasta_cluster": {
                         "branch": "master",
-                        "git_sha": "38697a933bef7041bb935c9b8374d9948ce6c794",
+                        "git_sha": "9ef13474c5ed9a2d740b0b8565209be636361b5a",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nextflow_pipeline": {

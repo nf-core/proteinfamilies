@@ -188,21 +188,6 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
                         "famsa": "2.4.1-45c9b2b (2025-05-09)"
                     }
@@ -223,9 +208,9 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nextflow": "25.10.4"
         },
-        "timestamp": "2025-12-18T12:10:55.15528594"
+        "timestamp": "2026-02-27T14:20:40.697067415"
     },
     "faa - skip_sequence_redundancy_removal - skip_family_merging": {
         "content": [
@@ -493,21 +478,6 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
                         "famsa": "2.4.1-45c9b2b (2025-05-09)"
                     }
@@ -528,9 +498,9 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nextflow": "25.10.4"
         },
-        "timestamp": "2025-12-18T11:43:26.340078207"
+        "timestamp": "2026-02-27T14:18:02.36051573"
     },
     "faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal": {
         "content": [
@@ -705,21 +675,6 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
                         "famsa": "2.4.1-45c9b2b (2025-05-09)"
                     }
@@ -740,8 +695,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nextflow": "25.10.4"
         },
-        "timestamp": "2025-12-18T12:29:57.155183942"
+        "timestamp": "2026-02-27T14:18:29.453143465"
     }
 }

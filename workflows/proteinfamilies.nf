@@ -97,7 +97,6 @@ workflow PROTEINFAMILIES {
         ch_samplesheet_for_create,
         params.clustering_tool
     )
-    ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
     CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
     ch_versions = ch_versions.mix( CALCULATE_CLUSTER_DISTRIBUTION.out.versions.first() )
@@ -232,18 +231,21 @@ workflow PROTEINFAMILIES {
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect{ f -> f[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { f -> f[1] }.ifEmpty([]))
 
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList(),
-        [],
-        []
-    )
+    // TODO
+    // MULTIQC (
+    //     channel.of([
+    //         [ id: 'multiqc' ],
+    //         ch_multiqc_files.collect(),
+    //         ch_multiqc_config.toList(),
+    //         ch_multiqc_logo,
+    //         [],
+    //         []
+    //     ])
+    // )
 
     emit:
     family_reps    = EXTRACT_FAMILY_REPS.out.fasta
-    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    multiqc_report = channel.empty() // MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html // TODO SWAP
     versions       = ch_versions // channel: [ path(versions.yml) ]
 }
 
