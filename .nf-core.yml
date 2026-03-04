@@ -2,8 +2,6 @@ lint:
   files_exist:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
-    - conf/igenomes.config
-    - conf/igenomes_ignored.config
   files_unchanged:
     - .github/PULL_REQUEST_TEMPLATE.md
     - docs/images/nf-core-proteinfamilies_logo_light.png
