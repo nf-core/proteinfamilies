@@ -75,21 +75,19 @@ workflow PROTEINFAMILIES {
     ch_samplesheet_for_update = ch_branch_result.to_update
 
     // Updating existing families
-    if (ch_branch_result.to_update) {
-        UPDATE_FAMILIES (
-            ch_samplesheet_for_update,
-            params.hmmsearch_query_length_threshold,
-            params.skip_sequence_redundancy_removal,
-            params.clustering_tool,
-            params.alignment_tool,
-            params.skip_msa_trimming,
-            params.clipkit_out_format
-        )
-        ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
+    UPDATE_FAMILIES (
+        ch_samplesheet_for_update,
+        params.hmmsearch_query_length_threshold,
+        params.skip_sequence_redundancy_removal,
+        params.clustering_tool,
+        params.alignment_tool,
+        params.skip_msa_trimming,
+        params.clipkit_out_format
+    )
+    ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
 
-        ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
-        ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
-    }
+    ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
+    ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
 
     // Creating new families
     // Clustering
@@ -164,8 +162,8 @@ workflow PROTEINFAMILIES {
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions.first() )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
-    ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map.first() )
+    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
+    ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     //
     // Collate and save software versions
