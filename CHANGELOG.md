@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#151](https://github.com/nf-core/proteinfamilies/pull/151)
+- [#152](https://github.com/nf-core/proteinfamilies/pull/152)
   - Removed an always-truthy if condition. (by @vagkaratzas)
   - Moved a wrongly placed `.first()` to now properly report all sample representative sequences on the MultiQC report. (by @vagkaratzas)
 - [#150](https://github.com/nf-core/proteinfamilies/pull/150) - Pipeline logos and workflow maps updated. (by @vagkaratzas)
