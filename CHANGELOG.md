@@ -5,8 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v2.3.0dev - [date]
 
+### `Added`
+
+- Added optional save parameters for `update_families` mode: `--save_update_families_fasta`, `--save_update_families_non_redundant_fasta`, and `--save_update_families_clipped_fasta` to save FASTA files (with gaps removed) from updated family MSAs at various stages of the subworkflow (`update_families/fasta/from_msa/`, `update_families/fasta/from_clipped_msa/`, and `update_families/fasta/non_redundant_sequences/` respectively).
+
 ### `Changed`
 
+- [#154](https://github.com/nf-core/proteinfamilies/pull/154) - Moved `update_families` non-redundant sequence FASTA output from `mmseqs/update_families/non_redundant_sequences/` to `update_families/fasta/non_redundant_sequences/` (now controlled by `--save_update_families_non_redundant_fasta`).
 - [#153](https://github.com/nf-core/proteinfamilies/pull/153) - Typo fixes and unused boilerplate removal. (by @vagkaratzas)
 - [#152](https://github.com/nf-core/proteinfamilies/pull/152)
   - Removed an always-truthy if condition. (by @vagkaratzas)
