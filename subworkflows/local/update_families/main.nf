@@ -22,13 +22,15 @@ include { EXTRACT_FAMILY_REPS                           } from '../../../modules
 
 workflow UPDATE_FAMILIES {
     take:
-    ch_samplesheet_for_update        // channel: [meta, sequences, existing_hmms_to_update, existing_msas_to_update]
-    hmmsearch_query_length_threshold // number [0.0, 1.0]
-    skip_sequence_redundancy_removal // boolean
-    clustering_tool                  // string ["linclust", "cluster"]
-    alignment_tool                   // string ["famsa", "mafft"]
-    skip_msa_trimming                // boolean
-    clipkit_out_format               // string (default: clipkit)
+    ch_samplesheet_for_update                   // channel: [meta, sequences, existing_hmms_to_update, existing_msas_to_update]
+    hmmsearch_query_length_threshold            // number [0.0, 1.0]
+    skip_sequence_redundancy_removal            // boolean
+    clustering_tool                             // string ["linclust", "cluster"]
+    alignment_tool                              // string ["famsa", "mafft"]
+    skip_msa_trimming                           // boolean
+    clipkit_out_format                          // string (default: clipkit)
+    save_update_families_fasta                  // boolean
+    save_update_families_clipped_fasta          // boolean
 
     main:
     ch_versions            = channel.empty()
@@ -121,8 +123,11 @@ workflow UPDATE_FAMILIES {
 
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
-    SEQKIT_SEQ_MSA_TO_FASTA( ALIGN_SEQUENCES.out.alignments )
-    ch_versions = ch_versions.mix( SEQKIT_SEQ_MSA_TO_FASTA.out.versions.first() )
+
+    if (save_update_families_fasta) {
+        SEQKIT_SEQ_MSA_TO_FASTA( ALIGN_SEQUENCES.out.alignments )
+        ch_versions = ch_versions.mix( SEQKIT_SEQ_MSA_TO_FASTA.out.versions.first() )
+    }
 
     ch_msa = ALIGN_SEQUENCES.out.alignments
 
@@ -131,8 +136,10 @@ workflow UPDATE_FAMILIES {
         ch_versions = ch_versions.mix( CLIPKIT.out.versions.first() )
         ch_msa = CLIPKIT.out.clipkit
 
-        SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA( CLIPKIT.out.clipkit )
-        ch_versions = ch_versions.mix( SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA.out.versions.first() )
+        if (save_update_families_clipped_fasta) {
+            SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA( CLIPKIT.out.clipkit )
+            ch_versions = ch_versions.mix( SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA.out.versions.first() )
+        }
     }
 
     HMMER_HMMBUILD( ch_msa, [] )
