@@ -8,7 +8,9 @@ include { validateMatchingFolders       } from '../../../subworkflows/local/util
 include { FIND_CONCATENATE as CAT_HMM   } from '../../../modules/nf-core/find/concatenate/main'
 include { HMMER_HMMSEARCH               } from '../../../modules/nf-core/hmmer/hmmsearch/main'
 include { BRANCH_HITS_FASTA             } from '../../../modules/local/branch_hits_fasta'
-include { SEQKIT_SEQ                    } from '../../../modules/nf-core/seqkit/seq/main'
+include { SEQKIT_SEQ                                    } from '../../../modules/nf-core/seqkit/seq/main'
+include { SEQKIT_SEQ as SEQKIT_SEQ_MSA_TO_FASTA         } from '../../../modules/nf-core/seqkit/seq/main'
+include { SEQKIT_SEQ as SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA } from '../../../modules/nf-core/seqkit/seq/main'
 include { FIND_CONCATENATE as CAT_FASTA } from '../../../modules/nf-core/find/concatenate/main'
 include { MMSEQS_FASTA_CLUSTER          } from '../../../subworkflows/nf-core/mmseqs_fasta_cluster'
 include { REMOVE_REDUNDANT_SEQS         } from '../../../modules/local/remove_redundant_seqs/main'
@@ -119,12 +121,18 @@ workflow UPDATE_FAMILIES {
 
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
+    SEQKIT_SEQ_MSA_TO_FASTA( ALIGN_SEQUENCES.out.alignments )
+    ch_versions = ch_versions.mix( SEQKIT_SEQ_MSA_TO_FASTA.out.versions.first() )
+
     ch_msa = ALIGN_SEQUENCES.out.alignments
 
     if (!skip_msa_trimming) {
         CLIPKIT( ch_msa, clipkit_out_format )
         ch_versions = ch_versions.mix( CLIPKIT.out.versions.first() )
         ch_msa = CLIPKIT.out.clipkit
+
+        SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA( CLIPKIT.out.clipkit )
+        ch_versions = ch_versions.mix( SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA.out.versions.first() )
     }
 
     HMMER_HMMBUILD( ch_msa, [] )
