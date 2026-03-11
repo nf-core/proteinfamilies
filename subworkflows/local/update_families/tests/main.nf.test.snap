@@ -37,6 +37,11 @@
                     }
                 },
                 {
+                    "UPDATE_FAMILIES:SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA": {
+                        "seqkit": "v2.9.0"
+                    }
+                },
+                {
                     "UPDATE_FAMILIES:EXTRACT_FAMILY_REPS": {
                         "python": "3.13.1"
                     }
@@ -44,6 +49,11 @@
                 {
                     "UPDATE_FAMILIES:CLIPKIT": {
                         "clipkit": "2.4.1"
+                    }
+                },
+                {
+                    "UPDATE_FAMILIES:SEQKIT_SEQ_MSA_TO_FASTA": {
+                        "seqkit": "v2.9.0"
                     }
                 },
                 {
@@ -75,10 +85,10 @@
                 }
             ]
         ],
+        "timestamp": "2026-03-11T14:59:08.80916",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-02-27T14:24:54.397463209"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.0"
+        }
     }
 }
