@@ -2,23 +2,23 @@
     UPDATE EXISTING FAMILIES HMM AND MSA
 */
 
-include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/main'
-include { UNTAR as UNTAR_MSA            } from '../../../modules/nf-core/untar/main'
-include { validateMatchingFolders       } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
-include { FIND_CONCATENATE as CAT_HMM   } from '../../../modules/nf-core/find/concatenate/main'
-include { HMMER_HMMSEARCH               } from '../../../modules/nf-core/hmmer/hmmsearch/main'
-include { BRANCH_HITS_FASTA             } from '../../../modules/local/branch_hits_fasta'
+include { UNTAR as UNTAR_HMM                            } from '../../../modules/nf-core/untar/main'
+include { UNTAR as UNTAR_MSA                            } from '../../../modules/nf-core/untar/main'
+include { validateMatchingFolders                       } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
+include { FIND_CONCATENATE as CAT_HMM                   } from '../../../modules/nf-core/find/concatenate/main'
+include { HMMER_HMMSEARCH                               } from '../../../modules/nf-core/hmmer/hmmsearch/main'
+include { BRANCH_HITS_FASTA                             } from '../../../modules/local/branch_hits_fasta'
 include { SEQKIT_SEQ                                    } from '../../../modules/nf-core/seqkit/seq/main'
 include { SEQKIT_SEQ as SEQKIT_SEQ_MSA_TO_FASTA         } from '../../../modules/nf-core/seqkit/seq/main'
 include { SEQKIT_SEQ as SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA } from '../../../modules/nf-core/seqkit/seq/main'
-include { FIND_CONCATENATE as CAT_FASTA } from '../../../modules/nf-core/find/concatenate/main'
-include { MMSEQS_FASTA_CLUSTER          } from '../../../subworkflows/nf-core/mmseqs_fasta_cluster'
-include { REMOVE_REDUNDANT_SEQS         } from '../../../modules/local/remove_redundant_seqs/main'
-include { ALIGN_SEQUENCES               } from '../../../subworkflows/local/align_sequences'
-include { CLIPKIT                       } from '../../../modules/nf-core/clipkit/main'
-include { HMMER_HMMBUILD                } from '../../../modules/nf-core/hmmer/hmmbuild/main'
-include { EXTRACT_FAMILY_MEMBERS        } from '../../../modules/local/extract_family_members/main'
-include { EXTRACT_FAMILY_REPS           } from '../../../modules/local/extract_family_reps/main'
+include { FIND_CONCATENATE as CAT_FASTA                 } from '../../../modules/nf-core/find/concatenate/main'
+include { MMSEQS_FASTA_CLUSTER                          } from '../../../subworkflows/nf-core/mmseqs_fasta_cluster'
+include { REMOVE_REDUNDANT_SEQS                         } from '../../../modules/local/remove_redundant_seqs/main'
+include { ALIGN_SEQUENCES                               } from '../../../subworkflows/local/align_sequences'
+include { CLIPKIT                                       } from '../../../modules/nf-core/clipkit/main'
+include { HMMER_HMMBUILD                                } from '../../../modules/nf-core/hmmer/hmmbuild/main'
+include { EXTRACT_FAMILY_MEMBERS                        } from '../../../modules/local/extract_family_members/main'
+include { EXTRACT_FAMILY_REPS                           } from '../../../modules/local/extract_family_reps/main'
 
 workflow UPDATE_FAMILIES {
     take:
