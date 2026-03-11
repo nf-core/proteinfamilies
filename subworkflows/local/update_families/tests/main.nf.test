@@ -22,6 +22,8 @@ nextflow_workflow {
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_msa_trimming
                 input[6] = "clipkit"  // clipkit_out_format
+                input[7] = true      // save_update_families_fasta
+                input[8] = true       // save_update_families_clipped_fasta
                 """
             }
         }
