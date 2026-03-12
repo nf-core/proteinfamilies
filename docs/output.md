@@ -469,15 +469,16 @@ in the `update_families/hmmer/hmmbuild` folder, from the respective new MSAs.
 <summary>Output files</summary>
 
 - `seqkit/`
-  - `<samplename>_<family_id>.fastq`: (optional) fasta formatted family sequences from full MSA with gaps removed
+  - `<samplename>/`
+    - `<family_id>.fastq`: (optional) fasta formatted family sequences from full MSA with gaps removed
 - `update_families/`
   - `fasta/`
     - `from_msa/`
       - `<samplename>/`
-        - `<samplename>_<family_id>.faa`: (optional) FASTA files with gaps removed from aligned family MSAs. Can be turned on with `--save_update_families_fasta`
+        - `<family_id>.faa`: (optional) FASTA files with gaps removed from aligned family MSAs. Can be turned on with `--save_update_families_fasta`
     - `from_clipped_msa/`
       - `<samplename>/`
-        - `<samplename>_<family_id>.faa`: (optional) FASTA files with gaps removed from ClipKIT-trimmed family MSAs. Can be turned on with `--save_update_families_clipped_fasta` (default: `true`)
+        - `<family_id>.faa`: (optional) FASTA files with gaps removed from ClipKIT-trimmed family MSAs. Can be turned on with `--save_update_families_clipped_fasta` (default: `true`)
 
 </details>
 
@@ -499,14 +500,17 @@ and `from_clipped_msa` holds gap-removed sequences from ClipKIT-trimmed MSAs.
       - `<samplename>/`
         - `<family_id>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
     - `mmseqs_createdb/`
-      - `<family_id>/`
-        - `*`: (optional) mmseqs format db of fasta sequences
+      - `<samplename>/`
+        - `<family_id>/`
+          - `*`: (optional) mmseqs format db of fasta sequences
     - `mmseqs_linclust/`
-      - `<family_id>/`
-        - `*`: (optional) mmseqs format clustered db
+      - `<samplename>/`
+        - `<family_id>/`
+          - `*`: (optional) mmseqs format clustered db
     - `mmseqs_cluster/`
-      - `<family_id>/`
-        - `*`: (optional) mmseqs format clustered db
+      - `<samplename>/`
+        - `<family_id>/`
+          - `*`: (optional) mmseqs format clustered db
 - `update_families/`
   - `fasta/`
     - `non_redundant_sequences/`
