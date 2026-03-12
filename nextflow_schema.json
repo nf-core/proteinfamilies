@@ -238,6 +238,25 @@
                 }
             }
         },
+        "update_params": {
+            "title": "Update mechanism parameters",
+            "type": "object",
+            "description": "Use these parameters to optionally save FASTA outputs during the update families mechanism.",
+            "properties": {
+                "save_update_families_pre_clipped_fasta": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Save intermediate FASTA files before clipping gappy ends (non-redundant --if `skip_sequence_redundancy_removal` is false-- or all --if `skip_sequence_redundancy_removal` is true--) in the update_families subworkflow",
+                    "help_text": "Specify to save the FASTA files before clipping gappy ends in the update_families path."
+                },
+                "save_update_families_clipped_fasta": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Save FASTA files derived from updated family MSAs (after re-alignment and clipping)",
+                    "help_text": "Specify to save FASTA files (with gaps removed) from MSAs produced during the update_families subworkflow."
+                }
+            }
+        },
         "clustering_params": {
             "title": "Clustering parameters",
             "type": "object",
@@ -507,6 +526,9 @@
         },
         {
             "$ref": "#/$defs/quality_check_params"
+        },
+        {
+            "$ref": "#/$defs/update_params"
         },
         {
             "$ref": "#/$defs/clustering_params"

@@ -2,31 +2,35 @@
     UPDATE EXISTING FAMILIES HMM AND MSA
 */
 
-include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/main'
-include { UNTAR as UNTAR_MSA            } from '../../../modules/nf-core/untar/main'
-include { validateMatchingFolders       } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
-include { FIND_CONCATENATE as CAT_HMM   } from '../../../modules/nf-core/find/concatenate/main'
-include { HMMER_HMMSEARCH               } from '../../../modules/nf-core/hmmer/hmmsearch/main'
-include { BRANCH_HITS_FASTA             } from '../../../modules/local/branch_hits_fasta'
-include { SEQKIT_SEQ                    } from '../../../modules/nf-core/seqkit/seq/main'
-include { FIND_CONCATENATE as CAT_FASTA } from '../../../modules/nf-core/find/concatenate/main'
-include { MMSEQS_FASTA_CLUSTER          } from '../../../subworkflows/nf-core/mmseqs_fasta_cluster'
-include { REMOVE_REDUNDANT_SEQS         } from '../../../modules/local/remove_redundant_seqs/main'
-include { ALIGN_SEQUENCES               } from '../../../subworkflows/local/align_sequences'
-include { CLIPKIT                       } from '../../../modules/nf-core/clipkit/main'
-include { HMMER_HMMBUILD                } from '../../../modules/nf-core/hmmer/hmmbuild/main'
-include { EXTRACT_FAMILY_MEMBERS        } from '../../../modules/local/extract_family_members/main'
-include { EXTRACT_FAMILY_REPS           } from '../../../modules/local/extract_family_reps/main'
+include { UNTAR as UNTAR_HMM                            } from '../../../modules/nf-core/untar/main'
+include { UNTAR as UNTAR_MSA                            } from '../../../modules/nf-core/untar/main'
+include { validateMatchingFolders                       } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
+include { FIND_CONCATENATE as CAT_HMM                   } from '../../../modules/nf-core/find/concatenate/main'
+include { HMMER_HMMSEARCH                               } from '../../../modules/nf-core/hmmer/hmmsearch/main'
+include { BRANCH_HITS_FASTA                             } from '../../../modules/local/branch_hits_fasta'
+include { SEQKIT_SEQ                                    } from '../../../modules/nf-core/seqkit/seq/main'
+include { SEQKIT_SEQ as SEQKIT_SEQ_MSA_TO_FASTA         } from '../../../modules/nf-core/seqkit/seq/main'
+include { SEQKIT_SEQ as SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA } from '../../../modules/nf-core/seqkit/seq/main'
+include { FIND_CONCATENATE as CAT_FASTA                 } from '../../../modules/nf-core/find/concatenate/main'
+include { MMSEQS_FASTA_CLUSTER                          } from '../../../subworkflows/nf-core/mmseqs_fasta_cluster'
+include { REMOVE_REDUNDANT_SEQS                         } from '../../../modules/local/remove_redundant_seqs/main'
+include { ALIGN_SEQUENCES                               } from '../../../subworkflows/local/align_sequences'
+include { CLIPKIT                                       } from '../../../modules/nf-core/clipkit/main'
+include { HMMER_HMMBUILD                                } from '../../../modules/nf-core/hmmer/hmmbuild/main'
+include { EXTRACT_FAMILY_MEMBERS                        } from '../../../modules/local/extract_family_members/main'
+include { EXTRACT_FAMILY_REPS                           } from '../../../modules/local/extract_family_reps/main'
 
 workflow UPDATE_FAMILIES {
     take:
-    ch_samplesheet_for_update        // channel: [meta, sequences, existing_hmms_to_update, existing_msas_to_update]
-    hmmsearch_query_length_threshold // number [0.0, 1.0]
-    skip_sequence_redundancy_removal // boolean
-    clustering_tool                  // string ["linclust", "cluster"]
-    alignment_tool                   // string ["famsa", "mafft"]
-    skip_msa_trimming                // boolean
-    clipkit_out_format               // string (default: clipkit)
+    ch_samplesheet_for_update                   // channel: [meta, sequences, existing_hmms_to_update, existing_msas_to_update]
+    hmmsearch_query_length_threshold            // number [0.0, 1.0]
+    skip_sequence_redundancy_removal            // boolean
+    clustering_tool                             // string ["linclust", "cluster"]
+    alignment_tool                              // string ["famsa", "mafft"]
+    skip_msa_trimming                           // boolean
+    clipkit_out_format                          // string (default: clipkit)
+    save_update_families_pre_clipped_fasta      // boolean
+    save_update_families_clipped_fasta          // boolean
 
     main:
     ch_versions            = channel.empty()
@@ -119,12 +123,23 @@ workflow UPDATE_FAMILIES {
 
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
+
+    if (save_update_families_pre_clipped_fasta && skip_sequence_redundancy_removal) { // else already saved in REMOVE_REDUNDANT_SEQS
+        SEQKIT_SEQ_MSA_TO_FASTA( ALIGN_SEQUENCES.out.alignments )
+        ch_versions = ch_versions.mix( SEQKIT_SEQ_MSA_TO_FASTA.out.versions.first() )
+    }
+
     ch_msa = ALIGN_SEQUENCES.out.alignments
 
     if (!skip_msa_trimming) {
         CLIPKIT( ch_msa, clipkit_out_format )
         ch_versions = ch_versions.mix( CLIPKIT.out.versions.first() )
         ch_msa = CLIPKIT.out.clipkit
+
+        if (save_update_families_clipped_fasta) {
+            SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA( CLIPKIT.out.clipkit )
+            ch_versions = ch_versions.mix( SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA.out.versions.first() )
+        }
     }
 
     HMMER_HMMBUILD( ch_msa, [] )

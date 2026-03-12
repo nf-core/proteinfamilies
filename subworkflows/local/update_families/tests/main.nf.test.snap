@@ -37,6 +37,11 @@
                     }
                 },
                 {
+                    "UPDATE_FAMILIES:SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA": {
+                        "seqkit": "v2.9.0"
+                    }
+                },
+                {
                     "UPDATE_FAMILIES:EXTRACT_FAMILY_REPS": {
                         "python": "3.13.1"
                     }
@@ -77,8 +82,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-27T14:24:54.397463209"
+        "timestamp": "2026-03-12T09:25:09.689975864"
     }
 }
