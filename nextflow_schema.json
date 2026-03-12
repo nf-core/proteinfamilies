@@ -470,6 +470,11 @@
                     "default": 0,
                     "description": "mmseqs parameter for coverage mode: 0 for both, 1 for target and 2 for query sequence",
                     "help_text": "Defined by the number of aligned residue pairs divided by 0: the maximum of the length of query/centre and target/non-centre sequences, 1: the length of the target/non-centre sequence, 2: the length of the query/centre"
+                },
+                "save_non_redundant_seqs_fasta": {
+                    "type": "boolean",
+                    "description": "Save the final family fasta files with sequence redundancy removed",
+                    "help_text": "Specify to save the family fasta files with non-redundant sequence sets."
                 }
             }
         },
