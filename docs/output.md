@@ -473,19 +473,22 @@ in the `update_families/hmmer/hmmbuild` folder, from the respective new MSAs.
     - `<family_id>.fastq`: (optional) fasta formatted family sequences from full MSA with gaps removed
 - `update_families/`
   - `fasta/`
-    - `from_msa/`
+    - `pre_clipped_non_redundant_sequences/`
       - `<samplename>/`
-        - `<family_id>.faa`: (optional) FASTA files with gaps removed from aligned family MSAs. Can be turned on with `--save_update_families_fasta`
-    - `from_clipped_msa/`
+        - `<family_id>.faa`: (optional) FASTA files before gap removal from family MSAs. Can be turned on with `--save_update_families_pre_clipped_fasta`, when `skip_sequence_redundancy_removal` is false
+    - `pre_clipped/`
       - `<samplename>/`
-        - `<family_id>.faa`: (optional) FASTA files with gaps removed from ClipKIT-trimmed family MSAs. Can be turned on with `--save_update_families_clipped_fasta` (default: `true`)
+        - `<family_id>.faa`: (optional) FASTA files before gap removal from family MSAs. Can be turned on with `--save_update_families_pre_clipped_fasta`, but `skip_sequence_redundancy_removal` also needs to be true
+    - `post_clipped/`
+      - `<samplename>/`
+        - `<family_id>.faa`: (optional) FASTA files with gaps removed from family MSAs. Can be turned on with `--save_update_families_clipped_fasta` (default: `true`)
 
 </details>
 
 The `seqkit` module is mainly used during the `update_families` mode
 to extract sequences from family MSA, into intermediate fasta files (`seqkit` output folder).
-The `update_families/fasta` folder contains optional FASTA outputs: `from_msa` holds gap-removed sequences from aligned MSAs (before clipping),
-and `from_clipped_msa` holds gap-removed sequences from ClipKIT-trimmed MSAs.
+The `update_families/fasta` folder contains optional FASTA outputs: `pre_clipped_non_redundant_sequences`, if sequence redundancy within families was removed, `pre_clipped` holds gap-removed sequences from aligned MSAs (before clipping, if sequence redundancy was not removed),
+and `post_clipped` holds gappy-column-removed final sequences from clipped MSAs.
 
 [SeqKit](https://github.com/shenwei356/seqkit) is a cross-platform and ultrafast toolkit for FASTA/Q file manipulation.
 
@@ -511,18 +514,11 @@ and `from_clipped_msa` holds gap-removed sequences from ClipKIT-trimmed MSAs.
       - `<samplename>/`
         - `<family_id>/`
           - `*`: (optional) mmseqs format clustered db
-- `update_families/`
-  - `fasta/`
-    - `non_redundant_sequences/`
-      - `<samplename>/`
-        - `<family_id>.faa`: (optional) FASTA files with non-redundant sequence sets per family. Can be turned on with `--save_update_families_non_redundant_fasta`
 
 </details>
 
 Similarly to the in-family sequence redundancy removal mechanism, the mmseqs suite is used to strictly cluster
 existing family sequences along newly recruited ones, keeping a non redundant set.
-When `--save_update_families_non_redundant_fasta` is set to `true`, the non-redundant family FASTA files
-are saved to `update_families/fasta/non_redundant_sequences/`.
 
 [MMseqs2](https://github.com/soedinglab/MMseqs2) clusters amino acid fasta files via either the 'cluster' or the 'linclust' algorithms.
 

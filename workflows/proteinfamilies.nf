@@ -83,7 +83,7 @@ workflow PROTEINFAMILIES {
         params.alignment_tool,
         params.skip_msa_trimming,
         params.clipkit_out_format,
-        params.save_update_families_fasta,
+        params.save_update_families_pre_clipped_fasta,
         params.save_update_families_clipped_fasta
     )
     ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )

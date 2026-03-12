@@ -52,11 +52,6 @@
                     }
                 },
                 {
-                    "UPDATE_FAMILIES:SEQKIT_SEQ_MSA_TO_FASTA": {
-                        "seqkit": "v2.9.0"
-                    }
-                },
-                {
                     "UPDATE_FAMILIES:REMOVE_REDUNDANT_SEQS": {
                         "python": "3.13.1",
                         "biopython": 1.85
@@ -85,10 +80,10 @@
                 }
             ]
         ],
-        "timestamp": "2026-03-11T14:59:08.80916",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "25.10.0"
-        }
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-03-12T09:25:09.689975864"
     }
 }

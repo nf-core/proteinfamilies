@@ -29,7 +29,7 @@ workflow UPDATE_FAMILIES {
     alignment_tool                              // string ["famsa", "mafft"]
     skip_msa_trimming                           // boolean
     clipkit_out_format                          // string (default: clipkit)
-    save_update_families_fasta                  // boolean
+    save_update_families_pre_clipped_fasta      // boolean
     save_update_families_clipped_fasta          // boolean
 
     main:
@@ -124,7 +124,7 @@ workflow UPDATE_FAMILIES {
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
     ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
 
-    if (save_update_families_fasta) {
+    if (save_update_families_pre_clipped_fasta && skip_sequence_redundancy_removal) { // else already saved in REMOVE_REDUNDANT_SEQS
         SEQKIT_SEQ_MSA_TO_FASTA( ALIGN_SEQUENCES.out.alignments )
         ch_versions = ch_versions.mix( SEQKIT_SEQ_MSA_TO_FASTA.out.versions.first() )
     }
