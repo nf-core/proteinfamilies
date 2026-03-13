@@ -160,4 +160,5 @@ workflow UPDATE_FAMILIES {
     versions            = ch_versions
     no_hit_seqs         = ch_no_hit_seqs
     updated_family_reps = ch_updated_family_reps
+    hmm                 = HMMER_HMMBUILD.out.hmm
 }
