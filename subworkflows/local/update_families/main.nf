@@ -157,8 +157,8 @@ workflow UPDATE_FAMILIES {
     ch_updated_family_reps = ch_updated_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     emit:
-    versions            = ch_versions
     no_hit_seqs         = ch_no_hit_seqs
     updated_family_reps = ch_updated_family_reps
     hmm                 = HMMER_HMMBUILD.out.hmm
+    versions            = ch_versions
 }

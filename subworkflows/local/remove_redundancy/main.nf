@@ -215,6 +215,6 @@ workflow REMOVE_REDUNDANCY {
     emit:
     fasta    = fasta
     full_msa = full_msa
-    versions = ch_versions
     hmm      = ch_output_hmm
+    versions = ch_versions
 }

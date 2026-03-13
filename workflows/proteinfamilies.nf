@@ -9,19 +9,17 @@ include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pi
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 
-include { FAA_SEQFU_SEQKIT               } from '../subworkflows/nf-core/faa_seqfu_seqkit/main'
-include { UPDATE_FAMILIES                } from '../subworkflows/local/update_families'
-include { MMSEQS_FASTA_CLUSTER           } from '../subworkflows/nf-core/mmseqs_fasta_cluster'
-include { CALCULATE_CLUSTER_DISTRIBUTION } from '../modules/local/calculate_cluster_distribution/main'
-include { CHUNK_CLUSTERS                 } from '../modules/local/chunk_clusters/main'
-include { GENERATE_FAMILIES              } from '../subworkflows/local/generate_families'
-include { REMOVE_REDUNDANCY              } from '../subworkflows/local/remove_redundancy'
-include { CMAPLE                         } from '../modules/nf-core/cmaple/main'
-include { EXTRACT_FAMILY_MEMBERS         } from '../modules/local/extract_family_members/main'
-include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
-include {
-    FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY
-} from '../modules/nf-core/find/concatenate'
+include { FAA_SEQFU_SEQKIT                                 } from '../subworkflows/nf-core/faa_seqfu_seqkit/main'
+include { UPDATE_FAMILIES                                  } from '../subworkflows/local/update_families'
+include { MMSEQS_FASTA_CLUSTER                             } from '../subworkflows/nf-core/mmseqs_fasta_cluster'
+include { CALCULATE_CLUSTER_DISTRIBUTION                   } from '../modules/local/calculate_cluster_distribution/main'
+include { CHUNK_CLUSTERS                                   } from '../modules/local/chunk_clusters/main'
+include { GENERATE_FAMILIES                                } from '../subworkflows/local/generate_families'
+include { REMOVE_REDUNDANCY                                } from '../subworkflows/local/remove_redundancy'
+include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
+include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
+include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
+include { FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY } from '../modules/nf-core/find/concatenate'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -149,6 +147,7 @@ workflow PROTEINFAMILIES {
         params.hmmsearch_query_length_threshold
     )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
+
     // Collect all final HMMs per sample and concatenate into a .lib.gz library
     ch_hmm_for_library = UPDATE_FAMILIES.out.hmm
         .map { meta, model -> [ [id: meta.id], model ] }
