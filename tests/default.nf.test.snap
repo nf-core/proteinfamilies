@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            89,
+            90,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -39,6 +39,11 @@
                     "biopython": 1.85
                 },
                 "FIND_CONCATENATE_HMMS": {
+                    "find": "4.6.0",
+                    "pigz": 2.8,
+                    "coreutils": 9.4
+                },
+                "FIND_CONCATENATE_HMM_LIBRARY": {
                     "find": "4.6.0",
                     "pigz": 2.8,
                     "coreutils": 9.4
@@ -112,6 +117,8 @@
                 "hmm",
                 "hmm/filtered",
                 "hmm/filtered/mgnifams_test",
+                "hmm/library",
+                "hmm/library/mgnifams_test.lib.gz",
                 "hmm/raw",
                 "hmm/raw/mgnifams_test",
                 "mmseqs",
@@ -198,10 +205,10 @@
             "/full_msa/filtered/famsa_align/mgnifams_test: 5",
             "/fasta/non_redundant_sequences_filtered/mgnifams_test: 5"
         ],
+        "timestamp": "2026-03-13T15:06:24.102656",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-19T10:03:25.309570901"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }
