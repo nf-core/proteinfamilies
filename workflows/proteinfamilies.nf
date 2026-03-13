@@ -16,10 +16,10 @@ include { CALCULATE_CLUSTER_DISTRIBUTION                   } from '../modules/lo
 include { CHUNK_CLUSTERS                                   } from '../modules/local/chunk_clusters/main'
 include { GENERATE_FAMILIES                                } from '../subworkflows/local/generate_families'
 include { REMOVE_REDUNDANCY                                } from '../subworkflows/local/remove_redundancy'
+include { FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY } from '../modules/nf-core/find/concatenate'
 include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
-include { FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY } from '../modules/nf-core/find/concatenate'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
