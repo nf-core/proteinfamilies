@@ -232,6 +232,8 @@ Results are stored in the `seed_msa/raw` folder.
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.hmm.gz`: filtered non-redundant compressed hmm model for the family
+  - `library/`
+    - `<samplename>.lib.gz`: compressed compiled families HMM library model for the sample
   - `raw/`
     - `<samplename>/`
       - `<samplename>_*.hmm.gz`: compressed hmm model for the family
@@ -279,6 +281,7 @@ Results are stored in the `seed_msa/raw` folder.
 The `hmm/raw` folder contains all originally created family HMMs. These models will be used downstream to recruit additional sequences in families, to compute
 full MSAs if `--skip_additional_sequence_recruiting` is set to `false`, and/or to remove among-family redundancies if `--skip_family_redundancy_removal` is set to `false`.
 When `--skip_family_redundancy_removal` is set to `false`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
+The `hmm/library` will generate a compiled single HMM file library gzip file per each sample.
 The HMMs (raw or filtered) can also be used in the `update_families` execution mode of the pipeline,
 along with the families' respective full MSAs, to recruit sequences from a new input fasta file into the families, updating both family HMM and full MSA files.
 

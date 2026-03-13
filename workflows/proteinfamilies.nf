@@ -19,6 +19,9 @@ include { REMOVE_REDUNDANCY              } from '../subworkflows/local/remove_re
 include { CMAPLE                         } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS         } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
+include {
+    FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY
+} from '../modules/nf-core/find/concatenate'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,6 +149,17 @@ workflow PROTEINFAMILIES {
         params.hmmsearch_query_length_threshold
     )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
+    // Collect all final HMMs per sample and concatenate into a .lib.gz library
+    ch_hmm_for_library = UPDATE_FAMILIES.out.hmm
+        .map { meta, model -> [ [id: meta.id], model ] }
+        .mix(
+            REMOVE_REDUNDANCY.out.hmm
+                .map { meta, model -> [ [id: meta.id], model ] }
+        )
+        .groupTuple()
+
+    FIND_CONCATENATE_HMM_LIBRARY( ch_hmm_for_library )
+    ch_versions = ch_versions.mix( FIND_CONCATENATE_HMM_LIBRARY.out.versions.first() )
 
     // Infer Phylogenetic relations of full MSAs
     if (!params.skip_phylogenetic_inference) {
