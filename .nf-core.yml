@@ -2,11 +2,11 @@ lint:
   files_exist:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
-    - conf/igenomes.config
-    - conf/igenomes_ignored.config
   files_unchanged:
     - .github/PULL_REQUEST_TEMPLATE.md
-nf_core_version: 3.5.1
+    - docs/images/nf-core-proteinfamilies_logo_light.png
+    - docs/images/nf-core-proteinfamilies_logo_dark.png
+nf_core_version: 4.0.0
 repository_type: pipeline
 template:
   author: Evangelos Karatzas
@@ -21,4 +21,4 @@ template:
   skip_features:
     - igenomes
     - fastqc
-  version: 2.1.0dev
+  version: 2.3.0dev
