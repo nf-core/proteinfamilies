@@ -1,0 +1,50 @@
+{
+    "proteinfamilies - aln": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_similarities"
+                    },
+                    "null.fas:md5,19ae8f20eee8455d7f0f8e0a0dcfba93"
+                ]
+            ],
+            [
+                {
+                    "MERGE_SEEDS": {
+                        "python": "3.13.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
+        },
+        "timestamp": "2025-10-09T10:44:51.541243546"
+    },
+    "proteinfamilies - aln - stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_similarities"
+                    },
+                    "null.fas:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                {
+                    "MERGE_SEEDS": {
+                        "python": "3.13.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
+        },
+        "timestamp": "2025-10-09T10:44:58.843814558"
+    }
+}

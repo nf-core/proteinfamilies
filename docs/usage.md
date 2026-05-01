@@ -6,51 +6,47 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+**nf-core/proteinfamilies** is a bioinformatics pipeline that generates protein families from amino acid sequences and/or updates existing families with new sequences.
+It takes a protein fasta file as input, clusters the sequences and then generates protein family Hidden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
+Optionally, paths to existing family HMMs and MSAs can be given (must have matching base filenames one-to-one) in order to update with new sequences in case of matching hits.
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 2 mandatory and 2 optional columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
-
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+```csv
+sample,fasta,existing_hmms_to_update,existing_msas_to_update
+CONTROL_REP1,amino_acid_sequences_input.faa,,
+CONTROL_REP2,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,existing_msas.tar.gz
 ```
 
-### Full samplesheet
+| Column                    | Description                                                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`                  | Custom sample name. Spaces in sample names are automatically converted to underscores (`_`).                                                |
+| `fasta`                   | Full path to amino acid fasta file. Allowed extensions are ".faa", ".fasta" and ".fa", with or without a following ".gz" for gzipped files. |
+| `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. The filename needs to end with ".tar.gz".                                        |
+| `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. The filename needs to end with ".tar.gz".                                        |
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+## Parameter specifications
 
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+Here we provide guidance regarding some parameter choices.
 
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
-```
-
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+- `clustering_tool` ["cluster", "linclust"]: The mmseqs algorithm used for clustering.
+  The `cluster` option is slower but more sensitive, and is recommended where there are sufficient compute resources available and a more sensitive search is called for.
+  It tends to produce fewer and larger clusters than `linclust`.
+  The `linclust` option is less sensitive, but extremely fast for clustering larger datasets.
+- `cluster_cov_mode` [0, 1, 2]: The default bidirectional value for coverage mode (`cluster_cov_mode` = 0) automatically sets the MMseqs2 clustering mode to greedy cluster set.
+  However, users can opt to override this parameter either indirectly, by changing the coverage mode, or directly, by setting the `--cluster-mode` argument in the modules configuration file.
+- `alignment_tool` ["famsa", "mafft"]: Multiple Sequence Alignment (MSA) options.
+  The `famsa` option is generally recommended as the best time-memory-accuracy combination.
+  The `mafft` option offers various alignment strategies, but in general is slower and less sensitive than `famsa`.
+- `trim_ends_only`: Flag to either clip MSA gaps throughout the alignment, or only at the ends.
+  Only used if `skip_msa_trimming` is off.
+  The authors suggest keeping the `trim_ends_only` on, since the gaps inside the sequences may still carry evolutionary significance.
 
 ## Running the pipeline
 

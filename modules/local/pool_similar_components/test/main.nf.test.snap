@@ -1,0 +1,54 @@
+{
+    "proteinfamilies - csv": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "pooled_components.txt:md5,784c1d263424fbd0d225308f9a719feb"
+                ]
+            ],
+            [
+                {
+                    "POOL_SIMILAR_COMPONENTS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.3",
+                        "networkx": 3.5
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
+        },
+        "timestamp": "2025-10-09T11:12:44.309501549"
+    },
+    "proteinfamilies - csv - stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "pooled_components.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                {
+                    "POOL_SIMILAR_COMPONENTS": {
+                        "python": "3.13.1",
+                        "pandas": "2.3.3",
+                        "networkx": 3.5
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.04.8"
+        },
+        "timestamp": "2025-10-09T11:12:49.694151275"
+    }
+}

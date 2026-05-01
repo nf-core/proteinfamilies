@@ -1,0 +1,61 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "chunk_clusters"
+description: Chunk an input amino acid sequence file, according to a given clustering TSV and a minimum members' threshold.
+keywords:
+  - chunking
+  - clusters
+  - fasta
+tools:
+  - "chunk_clusters":
+      description: "Chunk an input amino acid sequence file, according to a given clustering TSV and a minimum members' threshold"
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/chunk_clusters/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/chunk_clusters/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/chunk_clusters/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - clustering:
+        type: file
+        description: 2-column TSV clustering file (e.g., cluster_rep\tcluster_member).
+        pattern: "*.tsv"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - sequences:
+        type: file
+        description: FASTA file containing amino acid sequences.
+        pattern: "*.{faa,faa.gz,fa,fa.gz,fasta,fasta.gz}"
+  - - size_threshold:
+        type: integer
+        description: Integer value representing the minimum allowed cluster size to chunk.
+output:
+  fasta_chunks:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+    - chunked_fasta/*:
+        type: file
+        description: List of files containing chunked FASTA files produced from the clustering process.
+        pattern: "*.faa"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+  - "@GiatrasKon"
+  - "@marchasapi"
+maintainers:
+  - "@vagkaratzas"

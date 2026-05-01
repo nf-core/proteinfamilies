@@ -1,0 +1,82 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "identify_redundant_fams"
+description: Map families to representative sequences from a CSV, and identify redundancies from hmmsearch domtbl results.
+keywords:
+  - family redundancy
+  - hmmsearch domtbl
+  - rep to fam mapping
+tools:
+  - "identify_redundant_fams":
+      description: "Map families to representative sequences from a CSV, and identify redundancies from hmmsearch domtbl results."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/identify_redundant_fams/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/identify_redundant_fams/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/identify_redundant_fams/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - mapping:
+        type: file
+        description: A CSV file used to map sequences to family IDs.
+        pattern: "*.csv"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - domtbl:
+        type: file
+        description: The result of hmmsearch with family rep to family HMM hits.
+        pattern: "*.domtbl.gz"
+  - - redundancy_length_threshold:
+        type: float
+        description: The minimum HMM query hit length percentage to consider for redundancy.
+  - - similarity_length_threshold:
+        type: float
+        description: The minimum HMM query hit length percentage to consider for similarity reporting.
+output:
+  redundant_ids:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - redundant_fam_ids.txt:
+          type: file
+          description: A text file with redundant family IDs
+          pattern: "redundant_fam_ids.txt"
+  similar_ids:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - similar_fam_ids.txt:
+          type: file
+          description: A text file with similar family IDs
+          pattern: "similar_fam_ids.txt"
+  similarities:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - similarities.csv:
+          type: file
+          description: A CSV file with pairwise family similarities based on hmmsearch length threshold scores
+          pattern: "similarities.csv"
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

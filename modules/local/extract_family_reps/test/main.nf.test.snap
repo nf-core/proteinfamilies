@@ -1,0 +1,83 @@
+{
+    "proteinfamilies - faa - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "extract_family_reps"
+                        },
+                        "extract_family_reps_reps.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "extract_family_reps"
+                        },
+                        "extract_family_reps_meta_mqc.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,3f12f02c71ad2d3d5aff7885537cbd9f"
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "extract_family_reps"
+                        },
+                        "extract_family_reps_reps.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "map": [
+                    [
+                        {
+                            "id": "extract_family_reps"
+                        },
+                        "extract_family_reps_meta_mqc.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,3f12f02c71ad2d3d5aff7885537cbd9f"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-07-29T11:25:31.692612332"
+    },
+    "proteinfamilies - faa": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "extract_family_reps"
+                    },
+                    "extract_family_reps_reps.faa:md5,5030c8c880e49f3abcdd90e5d8ffa1bf"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "extract_family_reps"
+                    },
+                    "extract_family_reps_meta_mqc.csv:md5,6b35848701c69871a9b9030f42f32a5b"
+                ]
+            ],
+            [
+                {
+                    "EXTRACT_FAMILY_REPS": {
+                        "python": "3.13.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
+        },
+        "timestamp": "2025-09-22T14:33:35.369690879"
+    }
+}

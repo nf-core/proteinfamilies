@@ -1,0 +1,59 @@
+{
+    "proteinfamilies - faa - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "extract_family_members"
+                        },
+                        "extract_family_members.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,a65f813f91dfee556b11f53c62863d86"
+                ],
+                "tsv": [
+                    [
+                        {
+                            "id": "extract_family_members"
+                        },
+                        "extract_family_members.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,a65f813f91dfee556b11f53c62863d86"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2025-09-29T09:36:10.229298159"
+    },
+    "proteinfamilies - faa": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "extract_family_members"
+                    },
+                    "extract_family_members.tsv:md5,520d0a3dec8439ac4544b34d52bd15b3"
+                ]
+            ],
+            [
+                {
+                    "EXTRACT_FAMILY_MEMBERS": {
+                        "python": "3.13.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2025-09-29T09:36:01.267716479"
+    }
+}

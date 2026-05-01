@@ -1,0 +1,71 @@
+nextflow_process {
+
+    name "Test Process MERGE_SEEDS"
+    script "../main.nf"
+    process "MERGE_SEEDS"
+
+    test("proteinfamilies - aln") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test_similarities' ],
+                    "mgnifams_test_1,mgnifams_test_2",
+                ])
+                input[1] = Channel.of([
+                    [ id: 'test_aln' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.merged_seed_msa,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - aln - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = Channel.of([
+                    [ id: 'test_similarities' ],
+                    "mgnifams_test_1,mgnifams_test_2",
+                ])
+                input[1] = Channel.of([
+                    [ id: 'test_aln' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.merged_seed_msa,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()}
+            )
+        }
+
+    }
+}
