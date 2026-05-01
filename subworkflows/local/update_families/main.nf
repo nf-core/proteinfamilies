@@ -59,7 +59,6 @@ workflow UPDATE_FAMILIES {
 
     // Squeeze the HMMs into a single file
     CAT_HMM( UNTAR_HMM.out.untar.map { meta, folder -> [meta, file("${folder.toUriString()}/*", checkIfExists: true)] } )
-    ch_versions = ch_versions.mix( CAT_HMM.out.versions.first() )
 
     // Prep the sequences to search against the HMM concatenated model of families
     ch_input_for_hmmsearch = CAT_HMM.out.file_out
@@ -98,7 +97,6 @@ workflow UPDATE_FAMILIES {
 
     // Keep fasta with family sequences by removing gaps
     SEQKIT_SEQ( ch_family_msas )
-    ch_versions = ch_versions.mix( SEQKIT_SEQ.out.versions.first() )
 
     // Match newly recruited sequences with existing ones for each family
     ch_input_for_cat = SEQKIT_SEQ.out.fastx
@@ -109,7 +107,6 @@ workflow UPDATE_FAMILIES {
 
     // Aggregate each family's MSA sequences with the newly recruited ones
     CAT_FASTA( ch_input_for_cat )
-    ch_versions = ch_versions.mix( CAT_FASTA.out.versions.first() )
     ch_fasta = CAT_FASTA.out.file_out
 
     if (!skip_sequence_redundancy_removal) {
@@ -122,23 +119,19 @@ workflow UPDATE_FAMILIES {
     }
 
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
-    ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
 
     if (save_update_families_pre_clipped_fasta && skip_sequence_redundancy_removal) { // else already saved in REMOVE_REDUNDANT_SEQS
         SEQKIT_SEQ_MSA_TO_FASTA( ALIGN_SEQUENCES.out.alignments )
-        ch_versions = ch_versions.mix( SEQKIT_SEQ_MSA_TO_FASTA.out.versions.first() )
     }
 
     ch_msa = ALIGN_SEQUENCES.out.alignments
 
     if (!skip_msa_trimming) {
-        CLIPKIT( ch_msa, clipkit_out_format )
-        ch_versions = ch_versions.mix( CLIPKIT.out.versions.first() )
+        CLIPKIT( ch_msa, clipkit_out_format, [] )
         ch_msa = CLIPKIT.out.clipkit
 
         if (save_update_families_clipped_fasta) {
             SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA( CLIPKIT.out.clipkit )
-            ch_versions = ch_versions.mix( SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA.out.versions.first() )
         }
     }
 

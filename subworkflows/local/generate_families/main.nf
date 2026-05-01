@@ -28,12 +28,10 @@ workflow GENERATE_FAMILIES {
     ch_hmm      = channel.empty()
 
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
-    ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_seed_msa = ALIGN_SEQUENCES.out.alignments
 
     if (!skip_msa_trimming) {
-        CLIPKIT( ch_seed_msa, clipkit_out_format )
-        ch_versions = ch_versions.mix( CLIPKIT.out.versions.first() )
+        CLIPKIT( ch_seed_msa, clipkit_out_format, [] )
         ch_seed_msa = CLIPKIT.out.clipkit
     }
 

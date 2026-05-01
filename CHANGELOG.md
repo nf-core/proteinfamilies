@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#149](https://github.com/nf-core/proteinfamilies/pull/149) - Updated the nf-core/proteinfamilies article citation to the GigaScience publication. (by @vagkaratzas)
 - [#147](https://github.com/nf-core/proteinfamilies/pull/147) - Modules, subworkflows and pipeline code updates to fix linting warnings and errors. (by @vagkaratzas)
 
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| clipkit | 2.4.1            | 2.11.4      |
+| multiqc | 1.33             | 1.34        |
+
 ## v2.2.0 - [2025/12/18]
 
 ### `Added`

@@ -49,7 +49,6 @@ workflow PROTEINFAMILIES {
         }
 
     FAA_SEQFU_SEQKIT( ch_input_for_qc, params.skip_preprocessing )
-    ch_versions = ch_versions.mix( FAA_SEQFU_SEQKIT.out.versions )
 
     // Replace input fasta and join back in samplesheet to ensure in sync in case of multiple sequence files
     ch_samplesheet_updated = ch_samplesheet
@@ -162,7 +161,6 @@ workflow PROTEINFAMILIES {
         .groupTuple()
 
     FIND_CONCATENATE_HMM_LIBRARY( ch_hmm_for_library )
-    ch_versions = ch_versions.mix( FIND_CONCATENATE_HMM_LIBRARY.out.versions.first() )
 
     // Infer Phylogenetic relations of full MSAs
     if (!params.skip_phylogenetic_inference) {
