@@ -61,7 +61,6 @@ workflow REMOVE_REDUNDANCY {
             .groupTuple(by: 0)
 
         FIND_CONCATENATE_HMMS( ch_hmm )
-        ch_versions = ch_versions.mix( FIND_CONCATENATE_HMMS.out.versions.first() )
 
         ch_input_for_hmmsearch = FIND_CONCATENATE_HMMS.out.file_out
             .combine(EXTRACT_FAMILY_REPS.out.fasta, by: 0)
@@ -140,7 +139,6 @@ workflow REMOVE_REDUNDANCY {
         ch_skip_ids = ch_skip_ids.groupTuple(by: 0)
 
         FIND_CONCATENATE_SKIP_IDS( ch_skip_ids )
-        ch_versions = ch_versions.mix( FIND_CONCATENATE_SKIP_IDS.out.versions.first() )
 
         // Join to ensure in sync
         ch_input_for_fam_removal = FIND_CONCATENATE_SKIP_IDS.out.file_out
@@ -199,7 +197,6 @@ workflow REMOVE_REDUNDANCY {
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
         full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool ).alignments
-        ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
         // END SEQUENCE REDUNDANCY REMOVAL MECHANISM
     } else if (!skip_additional_sequence_recruiting) { // full MSAs in Stockholm format
         // REFORMATTING FULL MSA

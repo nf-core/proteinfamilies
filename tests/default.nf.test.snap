@@ -11,7 +11,7 @@
                     "biopython": 1.85
                 },
                 "CLIPKIT": {
-                    "clipkit": "2.4.1"
+                    "clipkit": "2.11.4"
                 },
                 "EXTRACT_FAMILY_MEMBERS": {
                     "python": "3.13.1"
@@ -20,7 +20,7 @@
                     "python": "3.13.1"
                 },
                 "FAMSA_ALIGN": {
-                    "famsa": "2.4.1-45c9b2b (2025-05-09)"
+                    "famsa": "2.4.1-45c9b2b"
                 },
                 "FILTER_NON_REDUNDANT_FASTA": {
                     "python": "3.13.1"
@@ -39,19 +39,19 @@
                     "biopython": 1.85
                 },
                 "FIND_CONCATENATE_HMMS": {
+                    "coreutils": 9.4,
                     "find": "4.6.0",
-                    "pigz": 2.8,
-                    "coreutils": 9.4
+                    "pigz": 2.8
                 },
                 "FIND_CONCATENATE_HMM_LIBRARY": {
+                    "coreutils": 9.4,
                     "find": "4.6.0",
-                    "pigz": 2.8,
-                    "coreutils": 9.4
+                    "pigz": 2.8
                 },
                 "FIND_CONCATENATE_SKIP_IDS": {
+                    "coreutils": 9.4,
                     "find": "4.6.0",
-                    "pigz": 2.8,
-                    "coreutils": 9.4
+                    "pigz": 2.8
                 },
                 "HMMER_HMMALIGN": {
                     "hmmer": 3.4
@@ -89,10 +89,10 @@
                     "seqkit": "2.9.0"
                 },
                 "SEQKIT_RMDUP": {
-                    "seqkit": "v2.9.0"
+                    "seqkit": "2.9.0"
                 },
                 "SEQKIT_SEQ": {
-                    "seqkit": "v2.9.0"
+                    "seqkit": "2.9.0"
                 },
                 "Workflow": {
                     "nf-core/proteinfamilies": "v2.3.0dev"
@@ -182,7 +182,7 @@
             "/full_msa/filtered/famsa_align/mgnifams_test: 5",
             "/fasta/non_redundant_sequences_filtered/mgnifams_test: 5"
         ],
-        "timestamp": "2026-05-01T08:28:19.066379126",
+        "timestamp": "2026-05-01T09:17:41.220542697",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"

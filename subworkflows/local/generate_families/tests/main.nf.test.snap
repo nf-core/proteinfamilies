@@ -57,11 +57,6 @@
                     }
                 },
                 {
-                    "GENERATE_FAMILIES:ALIGN_SEQUENCES:FAMSA_ALIGN": {
-                        "famsa": "2.4.1-45c9b2b (2025-05-09)"
-                    }
-                },
-                {
                     "GENERATE_FAMILIES:FILTER_RECRUITED": {
                         "python": "3.13.1",
                         "biopython": 1.85
@@ -73,21 +68,16 @@
                     }
                 },
                 {
-                    "GENERATE_FAMILIES:CLIPKIT": {
-                        "clipkit": "2.4.1"
-                    }
-                },
-                {
                     "GENERATE_FAMILIES:HMMER_HMMBUILD": {
                         "hmmer": 3.4
                     }
                 }
             ]
         ],
+        "timestamp": "2026-05-01T09:38:19.990741069",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
-        },
-        "timestamp": "2025-10-09T12:43:11.050611844"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     }
 }
