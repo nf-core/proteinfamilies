@@ -45,7 +45,7 @@ nextflow_pipeline {
                     // All stable path name, with a relative path
                     stable_path,
                     // All files with stable contents
-                    stable_content
+                    stable_content,
 
                     // Rest of the folders, counting result files because names can be mixed
                     hmm_path      + ": " + stable_hmm_size.size(),
