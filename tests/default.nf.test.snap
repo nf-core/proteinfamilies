@@ -95,7 +95,7 @@
                     "seqkit": "2.9.0"
                 },
                 "Workflow": {
-                    "nf-core/proteinfamilies": "v2.3.0dev"
+                    "nf-core/proteinfamilies": "v2.3.0"
                 }
             },
             [
