@@ -62,23 +62,13 @@
                     "MERGE_FAMILIES:MERGE_SEEDS": {
                         "python": "3.13.1"
                     }
-                },
-                {
-                    "MERGE_FAMILIES:GENERATE_FAMILIES:CLIPKIT": {
-                        "clipkit": "2.4.1"
-                    }
-                },
-                {
-                    "MERGE_FAMILIES:GENERATE_FAMILIES:ALIGN_SEQUENCES:FAMSA_ALIGN": {
-                        "famsa": "2.4.1-45c9b2b (2025-05-09)"
-                    }
                 }
             ]
         ],
+        "timestamp": "2026-05-01T09:38:50.56104773",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
-        },
-        "timestamp": "2025-10-09T11:59:22.313724388"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     }
 }

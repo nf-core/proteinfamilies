@@ -13,42 +13,8 @@
             11,
             [
                 {
-                    "UPDATE_FAMILIES:CAT_FASTA": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
-                    "UPDATE_FAMILIES:SEQKIT_SEQ": {
-                        "seqkit": "v2.9.0"
-                    }
-                },
-                {
-                    "UPDATE_FAMILIES:ALIGN_SEQUENCES:FAMSA_ALIGN": {
-                        "famsa": "2.4.1-45c9b2b (2025-05-09)"
-                    }
-                },
-                {
-                    "UPDATE_FAMILIES:CAT_HMM": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
-                    "UPDATE_FAMILIES:SEQKIT_SEQ_CLIPPED_MSA_TO_FASTA": {
-                        "seqkit": "v2.9.0"
-                    }
-                },
-                {
                     "UPDATE_FAMILIES:EXTRACT_FAMILY_REPS": {
                         "python": "3.13.1"
-                    }
-                },
-                {
-                    "UPDATE_FAMILIES:CLIPKIT": {
-                        "clipkit": "2.4.1"
                     }
                 },
                 {
@@ -80,10 +46,10 @@
                 }
             ]
         ],
+        "timestamp": "2026-05-01T09:42:49.27242238",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-03-12T09:25:09.689975864"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     }
 }
