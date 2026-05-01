@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#162](https://github.com/nf-core/proteinfamilies/pull/162) - nf-core tools template update to 4.0.2. (by @vagkaratzas)
 - [#154](https://github.com/nf-core/proteinfamilies/pull/154) - Moved `update_families` non-redundant sequence FASTA output from `mmseqs/update_families/non_redundant_sequences/` to `update_families/fasta/pre_clipped_non_redundant_sequences/${meta.id}/` (now controlled by `--save_update_families_pre_clipped_fasta`). (by @eparisis) (Hackathon 2026)
 - [#153](https://github.com/nf-core/proteinfamilies/pull/153) - Typo fixes and unused boilerplate removal. (by @vagkaratzas)
 - [#152](https://github.com/nf-core/proteinfamilies/pull/152)
