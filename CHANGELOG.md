@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#159](https://github.com/nf-core/proteinfamilies/pull/159) - Added functionality to generate a HMM library file (compressed) with its respective final protein families HMMs, per each input sample row. Family library files can be found at `hmm/library` (by @juanfmx2) (Hackathon 2026)
+- [#159](https://github.com/nf-core/proteinfamilies/pull/159) - Added functionality to generate a HMM library file (compressed) with its respective final protein families HMMs, per input sample. Family library files can be found at `hmm/library` (by @juanfmx2) (Hackathon 2026)
 - [#154](https://github.com/nf-core/proteinfamilies/pull/154) - Added optional save parameters for `update_families` mode: `--save_update_families_pre_clipped_fasta`, and `--save_update_families_clipped_fasta` (with gaps removed) to save FASTA files from updated family MSAs at various stages of the subworkflow (`update_families/fasta/pre_clipped/`, `update_families/fasta/pre_clipped_non_redundant_sequences/`, and `update_families/fasta/post_clipped/`). (by @eparisis) (Hackathon 2026)
 
 ### `Changed`
