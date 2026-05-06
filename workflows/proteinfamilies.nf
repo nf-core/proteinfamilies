@@ -9,16 +9,17 @@ include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pi
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 
-include { FAA_SEQFU_SEQKIT               } from '../subworkflows/nf-core/faa_seqfu_seqkit/main'
-include { UPDATE_FAMILIES                } from '../subworkflows/local/update_families'
-include { MMSEQS_FASTA_CLUSTER           } from '../subworkflows/nf-core/mmseqs_fasta_cluster'
-include { CALCULATE_CLUSTER_DISTRIBUTION } from '../modules/local/calculate_cluster_distribution/main'
-include { CHUNK_CLUSTERS                 } from '../modules/local/chunk_clusters/main'
-include { GENERATE_FAMILIES              } from '../subworkflows/local/generate_families'
-include { REMOVE_REDUNDANCY              } from '../subworkflows/local/remove_redundancy'
-include { CMAPLE                         } from '../modules/nf-core/cmaple/main'
-include { EXTRACT_FAMILY_MEMBERS         } from '../modules/local/extract_family_members/main'
-include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family_reps/main'
+include { FAA_SEQFU_SEQKIT                                 } from '../subworkflows/nf-core/faa_seqfu_seqkit/main'
+include { UPDATE_FAMILIES                                  } from '../subworkflows/local/update_families'
+include { MMSEQS_FASTA_CLUSTER                             } from '../subworkflows/nf-core/mmseqs_fasta_cluster'
+include { CALCULATE_CLUSTER_DISTRIBUTION                   } from '../modules/local/calculate_cluster_distribution/main'
+include { CHUNK_CLUSTERS                                   } from '../modules/local/chunk_clusters/main'
+include { GENERATE_FAMILIES                                } from '../subworkflows/local/generate_families'
+include { REMOVE_REDUNDANCY                                } from '../subworkflows/local/remove_redundancy'
+include { FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY } from '../modules/nf-core/find/concatenate'
+include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
+include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
+include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -29,11 +30,15 @@ include { EXTRACT_FAMILY_REPS            } from '../modules/local/extract_family
 workflow PROTEINFAMILIES {
     take:
     ch_samplesheet // channel: samplesheet read in from --input
+    multiqc_config
+    multiqc_logo
+    multiqc_methods_description
+    outdir
 
     main:
 
-    ch_versions      = channel.empty()
-    ch_multiqc_files = channel.empty()
+    def ch_versions = channel.empty()
+    def ch_multiqc_files = channel.empty()
     ch_samplesheet_for_create = channel.empty()
     ch_samplesheet_for_update = channel.empty()
     ch_family_reps            = channel.empty()
@@ -44,7 +49,6 @@ workflow PROTEINFAMILIES {
         }
 
     FAA_SEQFU_SEQKIT( ch_input_for_qc, params.skip_preprocessing )
-    ch_versions = ch_versions.mix( FAA_SEQFU_SEQKIT.out.versions )
 
     // Replace input fasta and join back in samplesheet to ensure in sync in case of multiple sequence files
     ch_samplesheet_updated = ch_samplesheet
@@ -75,21 +79,21 @@ workflow PROTEINFAMILIES {
     ch_samplesheet_for_update = ch_branch_result.to_update
 
     // Updating existing families
-    if (ch_branch_result.to_update) {
-        UPDATE_FAMILIES (
-            ch_samplesheet_for_update,
-            params.hmmsearch_query_length_threshold,
-            params.skip_sequence_redundancy_removal,
-            params.clustering_tool,
-            params.alignment_tool,
-            params.skip_msa_trimming,
-            params.clipkit_out_format
-        )
-        ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
+    UPDATE_FAMILIES (
+        ch_samplesheet_for_update,
+        params.hmmsearch_query_length_threshold,
+        params.skip_sequence_redundancy_removal,
+        params.clustering_tool,
+        params.alignment_tool,
+        params.skip_msa_trimming,
+        params.clipkit_out_format,
+        params.save_update_families_pre_clipped_fasta,
+        params.save_update_families_clipped_fasta
+    )
+    ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
 
-        ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
-        ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
-    }
+    ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
+    ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
 
     // Creating new families
     // Clustering
@@ -97,7 +101,6 @@ workflow PROTEINFAMILIES {
         ch_samplesheet_for_create,
         params.clustering_tool
     )
-    ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
     CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
     ch_versions = ch_versions.mix( CALCULATE_CLUSTER_DISTRIBUTION.out.versions.first() )
@@ -148,6 +151,17 @@ workflow PROTEINFAMILIES {
     )
     ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
+    // Collect all final HMMs per sample and concatenate into a .lib.gz library
+    ch_hmm_for_library = UPDATE_FAMILIES.out.hmm
+        .map { meta, model -> [ [id: meta.id], model ] }
+        .mix(
+            REMOVE_REDUNDANCY.out.hmm
+                .map { meta, model -> [ [id: meta.id], model ] }
+        )
+        .groupTuple()
+
+    FIND_CONCATENATE_HMM_LIBRARY( ch_hmm_for_library )
+
     // Infer Phylogenetic relations of full MSAs
     if (!params.skip_phylogenetic_inference) {
         CMAPLE (
@@ -165,8 +179,8 @@ workflow PROTEINFAMILIES {
     ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions.first() )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions )
-    ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map.first() )
+    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
+    ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     //
     // Collate and save software versions
@@ -188,62 +202,48 @@ workflow PROTEINFAMILIES {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
         .mix(topic_versions_string)
         .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
+            storeDir: "${outdir}/pipeline_info",
             name: 'nf_core_'  +  'proteinfamilies_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
-        ).set { ch_collated_versions }
+        )
 
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_config        = channel.fromPath(
-        "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-    ch_multiqc_custom_config = params.multiqc_config ?
-        channel.fromPath(params.multiqc_config, checkIfExists: true) :
-        channel.empty()
-    ch_multiqc_logo          = params.multiqc_logo ?
-        channel.fromPath(params.multiqc_logo, checkIfExists: true) :
-        channel.empty()
-
-    summary_params      = paramsSummaryMap(
-        workflow, parameters_schema: "nextflow_schema.json")
-    ch_workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
-    ch_multiqc_files = ch_multiqc_files.mix(
-        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
-        file(params.multiqc_methods_description, checkIfExists: true) :
-        file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-    ch_methods_description                = channel.value(
-        methodsDescriptionText(ch_multiqc_custom_methods_description))
-
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
-    ch_multiqc_files = ch_multiqc_files.mix(
-        ch_methods_description.collectFile(
-            name: 'methods_description_mqc.yaml',
-            sort: true
-        )
-    )
-
+    def ch_summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    def ch_workflow_summary = channel.value(paramsSummaryMultiqc(ch_summary_params))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    def ch_multiqc_custom_methods_description = multiqc_methods_description
+        ? file(multiqc_methods_description, checkIfExists: true)
+        : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
+    def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
     ch_multiqc_files = ch_multiqc_files.mix(FAA_SEQFU_SEQKIT.out.multiqc_files.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { it[1] }.ifEmpty([]))
-
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList(),
-        [],
-        []
+    MULTIQC(
+        ch_multiqc_files.flatten().collect().map { files ->
+            [
+                [id: 'proteinfamilies'],
+                files,
+                multiqc_config
+                    ? file(multiqc_config, checkIfExists: true)
+                    : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
+                multiqc_logo ? file(multiqc_logo, checkIfExists: true) : [],
+                [],
+                [],
+            ]
+        }
     )
 
     emit:
     family_reps    = EXTRACT_FAMILY_REPS.out.fasta
-    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    multiqc_report = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
     versions       = ch_versions // channel: [ path(versions.yml) ]
 }
 

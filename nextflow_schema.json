@@ -147,13 +147,6 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
-                "hook_url": {
-                    "type": "string",
-                    "description": "Incoming hook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
-                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
-                    "hidden": true
-                },
                 "multiqc_config": {
                     "type": "string",
                     "format": "file-path",
@@ -235,6 +228,25 @@
                     "type": "boolean",
                     "description": "Remove duplicate input amino acid sequences, based on the sequence.",
                     "help": "Instead of just removing by similar identifier, the tool also removes duplicate sequences."
+                }
+            }
+        },
+        "update_params": {
+            "title": "Update mechanism parameters",
+            "type": "object",
+            "description": "Use these parameters to optionally save FASTA outputs during the update families mechanism.",
+            "properties": {
+                "save_update_families_pre_clipped_fasta": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Save intermediate FASTA files before clipping gappy ends (non-redundant --if `skip_sequence_redundancy_removal` is false-- or all --if `skip_sequence_redundancy_removal` is true--) in the update_families subworkflow",
+                    "help_text": "Specify to save the FASTA files before clipping gappy ends in the update_families path."
+                },
+                "save_update_families_clipped_fasta": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Save FASTA files derived from updated family MSAs (after re-alignment and clipping)",
+                    "help_text": "Specify to save FASTA files (with gaps removed) from MSAs produced during the update_families subworkflow."
                 }
             }
         },
@@ -507,6 +519,9 @@
         },
         {
             "$ref": "#/$defs/quality_check_params"
+        },
+        {
+            "$ref": "#/$defs/update_params"
         },
         {
             "$ref": "#/$defs/clustering_params"

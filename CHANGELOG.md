@@ -3,6 +3,32 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.3.0 - [2026/05/01]
+
+### `Added`
+
+- [#159](https://github.com/nf-core/proteinfamilies/pull/159) - Added functionality to generate a HMM library file (compressed) with its respective final protein families HMMs, per input sample. Family library files can be found at `hmm/library` (by @juanfmx2) (Hackathon 2026)
+- [#154](https://github.com/nf-core/proteinfamilies/pull/154) - Added optional save parameters for `update_families` mode: `--save_update_families_pre_clipped_fasta`, and `--save_update_families_clipped_fasta` (with gaps removed) to save FASTA files from updated family MSAs at various stages of the subworkflow (`update_families/fasta/pre_clipped/`, `update_families/fasta/pre_clipped_non_redundant_sequences/`, and `update_families/fasta/post_clipped/`). (by @eparisis) (Hackathon 2026)
+
+### `Changed`
+
+- [#162](https://github.com/nf-core/proteinfamilies/pull/162) - nf-core tools template update to 4.0.2. (by @vagkaratzas)
+- [#154](https://github.com/nf-core/proteinfamilies/pull/154) - Moved `update_families` non-redundant sequence FASTA output from `mmseqs/update_families/non_redundant_sequences/` to `update_families/fasta/pre_clipped_non_redundant_sequences/${meta.id}/` (now controlled by `--save_update_families_pre_clipped_fasta`). (by @eparisis) (Hackathon 2026)
+- [#153](https://github.com/nf-core/proteinfamilies/pull/153) - Typo fixes and unused boilerplate removal. (by @vagkaratzas)
+- [#152](https://github.com/nf-core/proteinfamilies/pull/152)
+  - Removed an always-truthy if condition. (by @vagkaratzas)
+  - Moved a wrongly placed `.first()` to now properly report all sample representative sequences on the MultiQC report. (by @vagkaratzas)
+- [#150](https://github.com/nf-core/proteinfamilies/pull/150) - Pipeline logos and workflow maps updated. (by @vagkaratzas)
+- [#149](https://github.com/nf-core/proteinfamilies/pull/149) - Updated the nf-core/proteinfamilies article citation to the GigaScience publication. (by @vagkaratzas)
+- [#147](https://github.com/nf-core/proteinfamilies/pull/147) - Modules, subworkflows and pipeline code updates to fix linting warnings and errors. (by @vagkaratzas)
+
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| clipkit | 2.4.1            | 2.11.4      |
+| multiqc | 1.33             | 1.34        |
+
 ## v2.2.0 - [2025/12/18]
 
 ### `Added`

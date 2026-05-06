@@ -45,6 +45,7 @@ workflow REMOVE_REDUNDANCY {
     ch_merged_fasta    = channel.empty()
     ch_merged_hmm      = channel.empty()
     ch_versions        = channel.empty()
+    ch_output_hmm      = channel.empty()
 
     // FAMILY REDUNDANCY REMOVAL MECHANISM
     if (!skip_family_redundancy_removal || !skip_family_merging) {
@@ -60,7 +61,6 @@ workflow REMOVE_REDUNDANCY {
             .groupTuple(by: 0)
 
         FIND_CONCATENATE_HMMS( ch_hmm )
-        ch_versions = ch_versions.mix( FIND_CONCATENATE_HMMS.out.versions.first() )
 
         ch_input_for_hmmsearch = FIND_CONCATENATE_HMMS.out.file_out
             .combine(EXTRACT_FAMILY_REPS.out.fasta, by: 0)
@@ -139,7 +139,6 @@ workflow REMOVE_REDUNDANCY {
         ch_skip_ids = ch_skip_ids.groupTuple(by: 0)
 
         FIND_CONCATENATE_SKIP_IDS( ch_skip_ids )
-        ch_versions = ch_versions.mix( FIND_CONCATENATE_SKIP_IDS.out.versions.first() )
 
         // Join to ensure in sync
         ch_input_for_fam_removal = FIND_CONCATENATE_SKIP_IDS.out.file_out
@@ -157,6 +156,8 @@ workflow REMOVE_REDUNDANCY {
 
         FILTER_NON_REDUNDANT_HMM( ch_input_for_fam_removal.model, ch_input_for_fam_removal.ids )
         ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_HMM.out.versions.first() )
+        ch_output_hmm = FILTER_NON_REDUNDANT_HMM.out.filtered
+            .transpose()   // unpack [meta, [f1,f2,...]] → individual [meta, file] tuples
 
         FILTER_NON_REDUNDANT_SEED_MSA( ch_input_for_fam_removal.seed, ch_input_for_fam_removal.ids )
         ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_SEED_MSA.out.versions.first() )
@@ -182,30 +183,28 @@ workflow REMOVE_REDUNDANCY {
                 def chunk = filename.split("${meta.id}_", 2)[1]  // Split by meta.id_ and take remainder, to also match merged ids
                 [[id: meta.id, chunk: chunk], file]
             }
+    } else {
+        ch_output_hmm = hmm  // raw individual [meta(id,chunk), file] tuples
     }
     // END FAMILY REDUNDANCY REMOVAL MECHANISM
 
     if (!skip_sequence_redundancy_removal) {
         // SEQUENCE REDUNDANCY REMOVAL MECHANISM
         MMSEQS_FASTA_CLUSTER( fasta, clustering_tool ) // fasta channel contains all sequences of full MSA
-        ch_versions = ch_versions.mix( MMSEQS_FASTA_CLUSTER.out.versions )
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
         ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
         full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool ).alignments
-        ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
         // END SEQUENCE REDUNDANCY REMOVAL MECHANISM
     } else if (!skip_additional_sequence_recruiting) { // full MSAs in Stockholm format
         // REFORMATTING FULL MSA
         // either filtered out redundant, or families that were merged into a new super-family
         if (!skip_family_redundancy_removal || !skip_family_merging) {
             full_msa = HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" ).msa
-            ch_versions = ch_versions.mix( HHSUITE_REFORMAT_FILTERED.out.versions.first() )
         } else { // did not go through filtering processes
             full_msa = HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" ).msa
-            ch_versions = ch_versions.mix( HHSUITE_REFORMAT_RAW.out.versions.first() )
         }
         // END REFORMATTING FULL MSA
     }
@@ -213,5 +212,6 @@ workflow REMOVE_REDUNDANCY {
     emit:
     fasta    = fasta
     full_msa = full_msa
+    hmm      = ch_output_hmm
     versions = ch_versions
 }

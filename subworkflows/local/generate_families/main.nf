@@ -28,12 +28,10 @@ workflow GENERATE_FAMILIES {
     ch_hmm      = channel.empty()
 
     ALIGN_SEQUENCES( ch_fasta, alignment_tool )
-    ch_versions = ch_versions.mix( ALIGN_SEQUENCES.out.versions )
     ch_seed_msa = ALIGN_SEQUENCES.out.alignments
 
     if (!skip_msa_trimming) {
-        CLIPKIT( ch_seed_msa, clipkit_out_format )
-        ch_versions = ch_versions.mix( CLIPKIT.out.versions.first() )
+        CLIPKIT( ch_seed_msa, clipkit_out_format, [] )
         ch_seed_msa = CLIPKIT.out.clipkit
     }
 
@@ -45,7 +43,7 @@ workflow GENERATE_FAMILIES {
     ch_input_for_hmmsearch = ch_hmm
         .map { meta, hmm -> [ [id: meta.id], meta, hmm ] }
         .combine(sequences, by: 0)
-        .map { id, meta, hmm, seqs -> [ meta, hmm, seqs, false, hmmsearch_write_target, hmmsearch_write_domain ] }
+        .map { _id, meta, hmm, seqs -> [ meta, hmm, seqs, false, hmmsearch_write_target, hmmsearch_write_domain ] }
 
     if (!skip_additional_sequence_recruiting) {
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
@@ -55,7 +53,7 @@ workflow GENERATE_FAMILIES {
         ch_input_for_filter_recruited = HMMER_HMMSEARCH.out.domain_summary
             .map { meta, domtbl -> [ [id: meta.id], meta, domtbl ] }
             .combine(sequences, by: 0)
-            .map { id, meta, domtbl, seqs -> [ meta, domtbl, seqs ] }
+            .map { _id, meta, domtbl, seqs -> [ meta, domtbl, seqs ] }
 
         FILTER_RECRUITED( ch_input_for_filter_recruited, hmmsearch_query_length_threshold )
         ch_versions = ch_versions.mix( FILTER_RECRUITED.out.versions.first() )

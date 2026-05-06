@@ -48,18 +48,14 @@
                 ]
             ],
             [
-                {
-                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_RAW": {
-                        "hhsuite": "3.3.0"
-                    }
-                }
+                
             ]
         ],
+        "timestamp": "2026-01-20T10:17:30.649646081",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T12:21:52.689110939"
+        }
     },
     "faa - skip all but msa trimming": {
         "content": [
@@ -113,11 +109,11 @@
                 
             ]
         ],
+        "timestamp": "2025-12-18T11:55:44.217773585",
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T11:55:44.217773585"
+        }
     },
     "faa - skip none - stub": {
         "content": [
@@ -185,51 +181,17 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
-                        "famsa": "2.4.1-45c9b2b (2025-05-09)"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
                         "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
                     }
                 }
             ]
         ],
+        "timestamp": "2026-05-01T09:41:51.31517347",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T12:10:55.15528594"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     },
     "faa - skip_sequence_redundancy_removal - skip_family_merging": {
         "content": [
@@ -298,36 +260,17 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
                         "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_FILTERED": {
-                        "hhsuite": "3.3.0"
                     }
                 }
             ]
         ],
+        "timestamp": "2026-05-01T09:40:58.485149589",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T12:25:53.822584231"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     },
     "faa - skip_sequence_redundancy_removal": {
         "content": [
@@ -396,36 +339,17 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
                         "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_FILTERED": {
-                        "hhsuite": "3.3.0"
                     }
                 }
             ]
         ],
+        "timestamp": "2026-05-01T09:40:16.026335806",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T12:19:07.10873062"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     },
     "faa - skip none": {
         "content": [
@@ -500,51 +424,17 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
-                        "famsa": "2.4.1-45c9b2b (2025-05-09)"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
                         "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
                     }
                 }
             ]
         ],
+        "timestamp": "2026-05-01T09:39:33.791078092",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T11:43:26.340078207"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     },
     "faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal": {
         "content": [
@@ -613,36 +503,17 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
                         "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:HHSUITE_REFORMAT_FILTERED": {
-                        "hhsuite": "3.3.0"
                     }
                 }
             ]
         ],
+        "timestamp": "2026-05-01T09:40:35.256365088",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T12:24:03.342259494"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     },
     "faa - skip_family_merging": {
         "content": [
@@ -717,50 +588,16 @@
                     }
                 },
                 {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_SKIP_IDS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATEDB": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_LINCLUST": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MMSEQS_FASTA_CLUSTER:MMSEQS_CREATETSV": {
-                        "mmseqs": "18.8cc5c"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:ALIGN_SEQUENCES:FAMSA_ALIGN": {
-                        "famsa": "2.4.1-45c9b2b (2025-05-09)"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
                         "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FIND_CONCATENATE_HMMS": {
-                        "find": "4.6.0",
-                        "pigz": 2.8,
-                        "coreutils": 9.4
                     }
                 }
             ]
         ],
+        "timestamp": "2026-05-01T09:39:55.983169652",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T12:29:57.155183942"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
     }
 }

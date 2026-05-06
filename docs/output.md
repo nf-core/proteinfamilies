@@ -232,6 +232,8 @@ Results are stored in the `seed_msa/raw` folder.
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.hmm.gz`: filtered non-redundant compressed hmm model for the family
+  - `library/`
+    - `<samplename>.lib.gz`: compressed compiled families HMM library model for the sample
   - `raw/`
     - `<samplename>/`
       - `<samplename>_*.hmm.gz`: compressed hmm model for the family
@@ -279,6 +281,7 @@ Results are stored in the `seed_msa/raw` folder.
 The `hmm/raw` folder contains all originally created family HMMs. These models will be used downstream to recruit additional sequences in families, to compute
 full MSAs if `--skip_additional_sequence_recruiting` is set to `false`, and/or to remove among-family redundancies if `--skip_family_redundancy_removal` is set to `false`.
 When `--skip_family_redundancy_removal` is set to `false`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
+The `hmm/library` will contain a compiled and gzipped single HMM library file per sample.
 The HMMs (raw or filtered) can also be used in the `update_families` execution mode of the pipeline,
 along with the families' respective full MSAs, to recruit sequences from a new input fasta file into the families, updating both family HMM and full MSA files.
 
@@ -469,17 +472,26 @@ in the `update_families/hmmer/hmmbuild` folder, from the respective new MSAs.
 <summary>Output files</summary>
 
 - `seqkit/`
-  - `<samplename>_<family_id>.fastq`: (optional) fasta formatted family sequences from full MSA with gaps removed
+  - `<samplename>/`
+    - `<family_id>.fastq`: (optional) fasta formatted family sequences from full MSA with gaps removed
 - `update_families/`
   - `fasta/`
-    - `<samplename>_<family_id>.fastq`: (optional) concatenated family fasta with newly recruited sequences
+    - `pre_clipped_non_redundant_sequences/`
+      - `<samplename>/`
+        - `<family_id>.faa`: (optional) FASTA files before gap removal from family MSAs. Can be turned on with `--save_update_families_pre_clipped_fasta`, when `skip_sequence_redundancy_removal` is false
+    - `pre_clipped/`
+      - `<samplename>/`
+        - `<family_id>.faa`: (optional) FASTA files before gap removal from family MSAs. Can be turned on with `--save_update_families_pre_clipped_fasta`, but `skip_sequence_redundancy_removal` also needs to be true
+    - `post_clipped/`
+      - `<samplename>/`
+        - `<family_id>.faa`: (optional) FASTA files with gaps removed from family MSAs. Can be turned on with `--save_update_families_clipped_fasta` (default: `true`)
 
 </details>
 
 The `seqkit` module is mainly used during the `update_families` mode
 to extract sequences from family MSA, into intermediate fasta files (`seqkit` output folder).
-The intermediate `update_families/fasta` folder contains the aggregation of existing family sequences along with their newly matching ones,
-that will together produce the updated family MSA.
+The `update_families/fasta` folder contains optional FASTA outputs: `pre_clipped_non_redundant_sequences`, if sequence redundancy within families was removed, `pre_clipped` holds gap-removed sequences from aligned MSAs (before clipping, if sequence redundancy was not removed),
+and `post_clipped` holds gappy-column-removed final sequences from clipped MSAs.
 
 [SeqKit](https://github.com/shenwei356/seqkit) is a cross-platform and ultrafast toolkit for FASTA/Q file manipulation.
 
@@ -494,23 +506,22 @@ that will together produce the updated family MSA.
       - `<samplename>/`
         - `<family_id>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
     - `mmseqs_createdb/`
-      - `<family_id>/`
-        - `*`: (optional) mmseqs format db of fasta sequences
-    - `mmseqs_linclust/`
-      - `<family_id>/`
-        - `*`: (optional) mmseqs format clustered db
-    - `mmseqs_cluster/`
-      - `<family_id>/`
-        - `*`: (optional) mmseqs format clustered db
-    - `non_redundant_sequences/`
       - `<samplename>/`
-        - `<samplename>_reps.faa`: (optional) fasta file of all family representative sequences (one sequence per family)
+        - `<family_id>/`
+          - `*`: (optional) mmseqs format db of fasta sequences
+    - `mmseqs_linclust/`
+      - `<samplename>/`
+        - `<family_id>/`
+          - `*`: (optional) mmseqs format clustered db
+    - `mmseqs_cluster/`
+      - `<samplename>/`
+        - `<family_id>/`
+          - `*`: (optional) mmseqs format clustered db
 
 </details>
 
 Similarly to the in-family sequence redundancy removal mechanism, the mmseqs suite is used to strictly cluster
 existing family sequences along newly recruited ones, keeping a non redundant set.
-The new family representative sequences can now be found in the intermediate `mmseqs/non_redundant_sequences` folder.
 
 [MMseqs2](https://github.com/soedinglab/MMseqs2) clusters amino acid fasta files via either the 'cluster' or the 'linclust' algorithms.
 
