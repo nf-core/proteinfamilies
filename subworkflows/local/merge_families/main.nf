@@ -28,7 +28,6 @@ workflow MERGE_FAMILIES {
     ch_versions = channel.empty()
 
     POOL_SIMILAR_COMPONENTS( similarities )
-    ch_versions = ch_versions.mix( POOL_SIMILAR_COMPONENTS.out.versions.first() )
 
     ch_pooled_components = POOL_SIMILAR_COMPONENTS.out.pooled_components
         .splitCsv( by:1 )
@@ -48,7 +47,6 @@ workflow MERGE_FAMILIES {
     // with the full seed MSA collection; without it, a queue channel would be consumed after
     // the first pairing.
     MERGE_SEEDS( ch_pooled_components, seed_msa.first() )
-    ch_versions = ch_versions.mix( MERGE_SEEDS.out.versions.first() )
 
     GENERATE_FAMILIES (
         sequences,

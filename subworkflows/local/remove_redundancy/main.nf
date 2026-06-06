@@ -62,7 +62,6 @@ workflow REMOVE_REDUNDANCY {
             .groupTuple(by: 0)
 
         EXTRACT_FAMILY_REPS( ch_fasta )
-        ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
 
         ch_hmm = hmm
             .map { meta, model -> [[id: meta.id], model] }
@@ -91,7 +90,6 @@ workflow REMOVE_REDUNDANCY {
             hmmsearch_family_redundancy_length_threshold,
             hmmsearch_family_similarity_length_threshold
         )
-        ch_versions = ch_versions.mix( IDENTIFY_REDUNDANT_FAMS.out.versions.first() )
 
         ch_seed_msa = seed_msa
             .map { meta, fas -> [[id: meta.id], fas] }
@@ -163,15 +161,12 @@ workflow REMOVE_REDUNDANCY {
             }
 
         FILTER_NON_REDUNDANT_HMM( ch_input_for_fam_removal.model, ch_input_for_fam_removal.ids )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_HMM.out.versions.first() )
         ch_output_hmm = FILTER_NON_REDUNDANT_HMM.out.filtered
             .transpose()   // unpack [meta, [f1,f2,...]] → individual [meta, file] tuples
 
         FILTER_NON_REDUNDANT_SEED_MSA( ch_input_for_fam_removal.seed, ch_input_for_fam_removal.ids )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_SEED_MSA.out.versions.first() )
 
         FILTER_NON_REDUNDANT_FULL_MSA( ch_input_for_fam_removal.full, ch_input_for_fam_removal.ids )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_FULL_MSA.out.versions.first() )
 
         full_msa = FILTER_NON_REDUNDANT_FULL_MSA.out.filtered
             .transpose()
@@ -182,7 +177,6 @@ workflow REMOVE_REDUNDANCY {
             }
 
         FILTER_NON_REDUNDANT_FASTA( ch_input_for_fam_removal.seq, ch_input_for_fam_removal.ids  )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_FASTA.out.versions.first() )
 
         fasta = FILTER_NON_REDUNDANT_FASTA.out.filtered
             .transpose()
@@ -201,7 +195,6 @@ workflow REMOVE_REDUNDANCY {
         MMSEQS_FASTA_CLUSTER( fasta, clustering_tool ) // fasta channel contains all sequences of full MSA
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
-        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
         full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool ).alignments

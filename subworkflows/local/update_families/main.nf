@@ -83,7 +83,6 @@ workflow UPDATE_FAMILIES {
 
     // Branch hit families/fasta proteins from non hit fasta proteins
     BRANCH_HITS_FASTA ( ch_input_for_branch_hits.fasta, ch_input_for_branch_hits.domtbl, hmmsearch_query_length_threshold )
-    ch_versions = ch_versions.mix( BRANCH_HITS_FASTA.out.versions.first() )
     ch_no_hit_seqs = BRANCH_HITS_FASTA.out.non_hit_fasta
 
     // Both channels use [id, family] meta so they can be combined by key to pair each
@@ -122,7 +121,6 @@ workflow UPDATE_FAMILIES {
         MMSEQS_FASTA_CLUSTER( ch_fasta, clustering_tool )
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
-        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         ch_fasta = REMOVE_REDUNDANT_SEQS.out.fasta
     }
 
@@ -153,10 +151,8 @@ workflow UPDATE_FAMILIES {
         .groupTuple(by: 0)
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions.first() )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
     ch_updated_family_reps = ch_updated_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     emit:

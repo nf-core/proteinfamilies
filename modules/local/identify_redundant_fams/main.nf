@@ -17,8 +17,8 @@ process IDENTIFY_REDUNDANT_FAMS {
     tuple val(meta), path("redundant_fam_ids.txt"), emit: redundant_ids
     tuple val(meta), path("similar_fam_ids.txt")  , emit: similar_ids
     tuple val(meta), path("similarities.csv")     , emit: similarities, optional: true
-    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"),                                                              emit: versions_python, topic: versions
-    tuple val("${task.process}"), val('pandas'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('pandas'))\""),                   emit: versions_pandas, topic: versions
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
+    tuple val("${task.process}"), val('pandas'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('pandas'))\""), emit: versions_pandas, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

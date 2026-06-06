@@ -13,8 +13,8 @@ process FILTER_RECRUITED {
 
     output:
     tuple val(meta), path("${prefix}.fasta.gz"), emit: fasta, optional: true
-    tuple val("${task.process}"), val('python'),    eval("python --version 2>&1 | sed 's/Python //'"),                                                              emit: versions_python,    topic: versions
-    tuple val("${task.process}"), val('biopython'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('biopython'))\""),                 emit: versions_biopython, topic: versions
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
+    tuple val("${task.process}"), val('biopython'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('biopython'))\""), emit: versions_biopython, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
