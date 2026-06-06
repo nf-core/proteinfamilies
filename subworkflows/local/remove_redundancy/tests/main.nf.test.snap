@@ -137,60 +137,16 @@
             ],
             [
                 {
-                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
-                        "python": "3.13.1",
-                        "pandas": "2.3.0"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:MERGE_FAMILIES:POOL_SIMILAR_COMPONENTS": {
-                        "python": "3.13.1",
-                        "pandas": "2.3.3",
-                        "networkx": 3.5
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:REMOVE_REDUNDANT_SEQS": {
-                        "python": "3.13.1",
-                        "biopython": 1.85
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
                         "hmmer": 3.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
-                        "python": "3.13.1"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-05-01T09:41:51.31517347",
+        "timestamp": "2026-06-06T17:52:36.244179877",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     },
     "faa - skip_sequence_redundancy_removal - skip_family_merging": {
@@ -229,47 +185,16 @@
             ],
             [
                 {
-                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
-                        "python": "3.13.1",
-                        "pandas": "2.3.0"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
                         "hmmer": 3.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
-                        "python": "3.13.1"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-05-01T09:40:58.485149589",
+        "timestamp": "2026-06-06T17:52:05.044733374",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     },
     "faa - skip_sequence_redundancy_removal": {
@@ -308,47 +233,16 @@
             ],
             [
                 {
-                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
-                        "python": "3.13.1",
-                        "pandas": "2.3.0"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
                         "hmmer": 3.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
-                        "python": "3.13.1"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-05-01T09:40:16.026335806",
+        "timestamp": "2026-06-06T17:51:34.929165589",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     },
     "faa - skip none": {
@@ -387,53 +281,16 @@
             ],
             [
                 {
-                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
-                        "python": "3.13.1",
-                        "pandas": "2.3.0"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:REMOVE_REDUNDANT_SEQS": {
-                        "python": "3.13.1",
-                        "biopython": 1.85
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
                         "hmmer": 3.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
-                        "python": "3.13.1"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-05-01T09:39:33.791078092",
+        "timestamp": "2026-06-06T17:51:00.097048703",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     },
     "faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal": {
@@ -472,47 +329,16 @@
             ],
             [
                 {
-                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
-                        "python": "3.13.1",
-                        "pandas": "2.3.0"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
                         "hmmer": 3.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
-                        "python": "3.13.1"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-05-01T09:40:35.256365088",
+        "timestamp": "2026-06-06T17:51:50.761510544",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     },
     "faa - skip_family_merging": {
@@ -551,53 +377,16 @@
             ],
             [
                 {
-                    "REMOVE_REDUNDANCY:IDENTIFY_REDUNDANT_FAMS": {
-                        "python": "3.13.1",
-                        "pandas": "2.3.0"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:EXTRACT_FAMILY_REPS": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FASTA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:REMOVE_REDUNDANT_SEQS": {
-                        "python": "3.13.1",
-                        "biopython": 1.85
-                    }
-                },
-                {
                     "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
                         "hmmer": 3.4
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_SEED_MSA": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_HMM": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "REMOVE_REDUNDANCY:FILTER_NON_REDUNDANT_FULL_MSA": {
-                        "python": "3.13.1"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-05-01T09:39:55.983169652",
+        "timestamp": "2026-06-06T17:51:18.942355687",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     }
 }

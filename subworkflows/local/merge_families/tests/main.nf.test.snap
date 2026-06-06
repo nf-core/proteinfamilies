@@ -41,34 +41,16 @@
                     }
                 },
                 {
-                    "MERGE_FAMILIES:GENERATE_FAMILIES:FILTER_RECRUITED": {
-                        "python": "3.13.1",
-                        "biopython": 1.85
-                    }
-                },
-                {
                     "MERGE_FAMILIES:GENERATE_FAMILIES:HMMER_HMMSEARCH": {
                         "hmmer": 3.4
-                    }
-                },
-                {
-                    "MERGE_FAMILIES:POOL_SIMILAR_COMPONENTS": {
-                        "python": "3.13.1",
-                        "pandas": "2.3.3",
-                        "networkx": 3.5
-                    }
-                },
-                {
-                    "MERGE_FAMILIES:MERGE_SEEDS": {
-                        "python": "3.13.1"
                     }
                 }
             ]
         ],
-        "timestamp": "2026-05-01T09:38:50.56104773",
+        "timestamp": "2026-06-06T17:50:33.114331127",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     }
 }
