@@ -1,5 +1,12 @@
 /*
     FAMILY MODEL GENERATION
+
+    Builds per-cluster HMMs from seed alignments. Two FASTA channels serve distinct roles:
+      ch_fasta   — individual cluster chunks, each aligned into a seed MSA
+      sequences  — the full per-sample sequence pool, searched with each cluster HMM to
+                   recruit additional members beyond the initial cluster (unless
+                   skip_additional_sequence_recruiting is true, in which case the seed
+                   MSA doubles as the final full MSA).
 */
 
 include { ALIGN_SEQUENCES  } from '../../../subworkflows/local/align_sequences'
@@ -39,7 +46,8 @@ workflow GENERATE_FAMILIES {
     ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions.first() )
     ch_hmm = HMMER_HMMBUILD.out.hmm
 
-    // Combine with same id to ensure in sync
+    // Strip chunk from meta so each cluster's HMM can be matched to the full sample sequence
+    // pool by sample ID alone; the original chunk meta is restored via _id after the combine.
     ch_input_for_hmmsearch = ch_hmm
         .map { meta, hmm -> [ [id: meta.id], meta, hmm ] }
         .combine(sequences, by: 0)
@@ -71,6 +79,7 @@ workflow GENERATE_FAMILIES {
         ch_versions = ch_versions.mix( HMMER_HMMALIGN.out.versions.first() )
         ch_full_msa = HMMER_HMMALIGN.out.sto
     } else {
+        // Seed MSA serves as the final full MSA when additional sequence recruiting is skipped.
         ch_full_msa = ch_seed_msa
     }
 

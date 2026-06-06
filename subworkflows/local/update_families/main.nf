@@ -1,5 +1,10 @@
 /*
     UPDATE EXISTING FAMILIES HMM AND MSA
+
+    Assigns new sequences to existing families by searching against a concatenated HMM
+    library. Hit sequences are merged with each family's existing members, re-aligned,
+    and used to rebuild the family HMM. Sequences matching no family are emitted as
+    no_hit_seqs for downstream de-novo family creation.
 */
 
 include { UNTAR as UNTAR_HMM                            } from '../../../modules/nf-core/untar/main'
@@ -47,8 +52,9 @@ workflow UPDATE_FAMILIES {
 
     UNTAR_MSA( ch_input_for_untar.msa )
 
-    // check that the HMMs and the MSAs match
-    // join to ensure in sync
+    // Validate that each HMM archive and MSA archive contain matching files. A mismatch
+    // would cause silent per-family key-join failures in the combine steps below.
+    // join ensures HMM/MSA tarballs are processed in sync per sample.
     ch_folders_to_validate = UNTAR_HMM.out.untar
         .join(UNTAR_MSA.out.untar)
         .multiMap { meta, folder1, folder2 ->
@@ -80,6 +86,8 @@ workflow UPDATE_FAMILIES {
     ch_versions = ch_versions.mix( BRANCH_HITS_FASTA.out.versions.first() )
     ch_no_hit_seqs = BRANCH_HITS_FASTA.out.non_hit_fasta
 
+    // Both channels use [id, family] meta so they can be combined by key to pair each
+    // newly recruited sequence file with its corresponding family's MSA.
     ch_hits_fasta = BRANCH_HITS_FASTA.out.hits
         .transpose()
         .map { meta, file ->
@@ -138,6 +146,8 @@ workflow UPDATE_FAMILIES {
     HMMER_HMMBUILD( ch_msa, [] )
     ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions.first() )
 
+    // Strip family from meta and group by sample ID so EXTRACT_FAMILY_MEMBERS/REPS
+    // receive all families for a sample together.
     ch_fasta = ch_fasta
         .map { meta, faa -> [ [id: meta.id], faa ] }
         .groupTuple(by: 0)

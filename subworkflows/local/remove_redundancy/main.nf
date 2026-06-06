@@ -1,5 +1,12 @@
 /*
     REMOVAL OF REDUNDANT SEQUENCES AND FAMILIES
+
+    Two independent redundancy stages applied in order:
+    1. Family-level: concatenates all HMMs, searches family representatives against them,
+       merges similar families (if enabled), and removes fully redundant ones.
+    2. Sequence-level: clusters all sequences within each family and removes duplicates,
+       then re-aligns the remaining members.
+    Either or both stages can be skipped via parameters.
 */
 
 include { EXTRACT_FAMILY_REPS                                        } from '../../../modules/local/extract_family_reps/main'
@@ -48,6 +55,7 @@ workflow REMOVE_REDUNDANCY {
     ch_output_hmm      = channel.empty()
 
     // FAMILY REDUNDANCY REMOVAL MECHANISM
+    // Block runs if either feature is enabled — both share the same HMM-search infrastructure.
     if (!skip_family_redundancy_removal || !skip_family_merging) {
         ch_fasta = fasta
             .map { meta, faa -> [[id: meta.id], faa] }
@@ -200,7 +208,10 @@ workflow REMOVE_REDUNDANCY {
         // END SEQUENCE REDUNDANCY REMOVAL MECHANISM
     } else if (!skip_additional_sequence_recruiting) { // full MSAs in Stockholm format
         // REFORMATTING FULL MSA
-        // either filtered out redundant, or families that were merged into a new super-family
+        // Two module aliases are required because Nextflow prevents calling the same import
+        // more than once in a workflow. HHSUITE_REFORMAT_FILTERED operates on the re-assigned
+        // full_msa channel (post-filtering/merging); HHSUITE_REFORMAT_RAW operates on the
+        // original full_msa from the take block (neither filtering nor merging ran).
         if (!skip_family_redundancy_removal || !skip_family_merging) {
             full_msa = HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" ).msa
         } else { // did not go through filtering processes

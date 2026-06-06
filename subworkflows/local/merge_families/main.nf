@@ -1,5 +1,10 @@
 /*
     FAMILY MERGING
+
+    Groups similar families into pools, merges their seed MSAs into a single combined
+    seed, then rebuilds final family models via GENERATE_FAMILIES. The merged_id
+    encodes which original families were combined (e.g., 'sample_1_7' from 'sample_1'
+    and 'sample_7').
 */
 
 include { POOL_SIMILAR_COMPONENTS } from '../../../modules/local/pool_similar_components/main'
@@ -39,6 +44,9 @@ workflow MERGE_FAMILIES {
             return [newMeta, components]
         }
 
+    // .first() converts seed_msa to a value channel so each pooled-component group can combine
+    // with the full seed MSA collection; without it, a queue channel would be consumed after
+    // the first pairing.
     MERGE_SEEDS( ch_pooled_components, seed_msa.first() )
     ch_versions = ch_versions.mix( MERGE_SEEDS.out.versions.first() )
 
