@@ -9,11 +9,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
-                input[1] = Channel.of([
+                input[1] = channel.of([
                         [ id: 'test', chunk: "chunk_1" ],
                         [
                             file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)

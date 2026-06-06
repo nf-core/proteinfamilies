@@ -13,7 +13,8 @@ process REMOVE_REDUNDANT_SEQS {
 
     output:
     tuple val(meta), path("${prefix}.faa"), emit: fasta
-    path "versions.yml"                   , emit: versions
+    tuple val("${task.process}"), val('python'),    eval("python --version 2>&1 | sed 's/Python //'"),                                                              emit: versions_python,    topic: versions
+    tuple val("${task.process}"), val('biopython'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('biopython'))\""),                 emit: versions_biopython, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -31,23 +32,11 @@ process REMOVE_REDUNDANT_SEQS {
         --clustering ${clustering} \\
         --sequences ${fasta_name} \\
         --out_fasta ${prefix}.faa
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
-    END_VERSIONS
     """
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.faa
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
-    END_VERSIONS
     """
 }

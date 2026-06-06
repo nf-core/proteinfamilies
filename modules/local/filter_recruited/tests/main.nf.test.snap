@@ -1,58 +1,58 @@
 {
-    "proteinfamilies - tsv": {
+    "proteinfamilies - hmmsearch - fasta": {
         "content": [
             [
                 [
                     {
-                        "id": "test_tsv"
+                        "id": "filtering"
                     },
-                    "test_tsv_null.faa:md5,e06dfa1241372e7fe8aa9f8c20c8f8a9"
+                    "filtering_null.fasta.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
                 ]
             ],
             {
                 "versions_biopython": [
                     [
-                        "REMOVE_REDUNDANT_SEQS",
+                        "FILTER_RECRUITED",
                         "biopython",
                         "1.85"
                     ]
                 ],
                 "versions_python": [
                     [
-                        "REMOVE_REDUNDANT_SEQS",
+                        "FILTER_RECRUITED",
                         "python",
                         "3.13.1"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:52:05.000438913",
+        "timestamp": "2026-06-06T16:50:27.190715265",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
         }
     },
-    "proteinfamilies - tsv - stub": {
+    "proteinfamilies - hmmsearch - fasta - stub": {
         "content": [
             {
                 "0": [
                     [
                         {
-                            "id": "test_tsv"
+                            "id": "filtering"
                         },
-                        "test_tsv_null.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "filtering_null.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
                     ]
                 ],
                 "1": [
                     [
-                        "REMOVE_REDUNDANT_SEQS",
+                        "FILTER_RECRUITED",
                         "python",
                         "3.13.1"
                     ]
                 ],
                 "2": [
                     [
-                        "REMOVE_REDUNDANT_SEQS",
+                        "FILTER_RECRUITED",
                         "biopython",
                         "1.85"
                     ]
@@ -60,28 +60,28 @@
                 "fasta": [
                     [
                         {
-                            "id": "test_tsv"
+                            "id": "filtering"
                         },
-                        "test_tsv_null.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "filtering_null.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
                     ]
                 ],
                 "versions_biopython": [
                     [
-                        "REMOVE_REDUNDANT_SEQS",
+                        "FILTER_RECRUITED",
                         "biopython",
                         "1.85"
                     ]
                 ],
                 "versions_python": [
                     [
-                        "REMOVE_REDUNDANT_SEQS",
+                        "FILTER_RECRUITED",
                         "python",
                         "3.13.1"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:52:18.779606376",
+        "timestamp": "2026-06-06T16:50:41.27446677",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"

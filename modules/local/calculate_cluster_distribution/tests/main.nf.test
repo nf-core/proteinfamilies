@@ -9,7 +9,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
@@ -22,7 +22,7 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.mqc,
-                    process.out.versions.collect { path(it).yaml }
+                    process.out.findAll { key, val -> key.startsWith("versions") }
                     ).match()}
             )
         }
@@ -35,7 +35,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])

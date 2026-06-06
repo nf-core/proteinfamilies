@@ -12,7 +12,7 @@ process CALCULATE_CLUSTER_DISTRIBUTION {
 
     output:
     tuple val(meta), path("${prefix}_clustering_distribution_mqc.csv"), emit: mqc
-    path "versions.yml"                                               , emit: versions
+    tuple val("${task.process}"), val('sed'), eval("sed --version 2>&1 | sed -n '1p' | sed 's/sed (GNU sed) //'"), emit: versions_sed, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -32,21 +32,11 @@ process CALCULATE_CLUSTER_DISTRIBUTION {
     EOF
 
     awk '{count[\$1]++} END {for (c in count) size[count[c]]++} END {for (s in size) print s "," s "," size[s]}' ${clusters} | sort -t, -k3,3nr --parallel=${task.cpus} >> ${prefix}_clustering_distribution_mqc.csv
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
-    END_VERSIONS
     """
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_clustering_distribution_mqc.csv
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
-    END_VERSIONS
     """
 }

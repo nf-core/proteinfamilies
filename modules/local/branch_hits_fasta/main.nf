@@ -15,7 +15,8 @@ process BRANCH_HITS_FASTA {
     output:
     tuple val(meta), path("hits/*")    , emit: hits
     tuple val(meta), path("*.fasta.gz"), emit: non_hit_fasta
-    path "versions.yml"                , emit: versions
+    tuple val("${task.process}"), val('python'),    eval("python --version 2>&1 | sed 's/Python //'"),                                                                  emit: versions_python,    topic: versions
+    tuple val("${task.process}"), val('biopython'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('biopython'))\""),                     emit: versions_biopython, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -29,12 +30,6 @@ process BRANCH_HITS_FASTA {
         --length_threshold ${length_threshold} \\
         --hits hits \\
         --non_hits ${prefix}.fasta.gz
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
-    END_VERSIONS
     """
 
     stub:
@@ -42,11 +37,5 @@ process BRANCH_HITS_FASTA {
     mkdir -p hits
     touch hits/test.fasta
     echo "" | gzip > test.fasta.gz
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
-    END_VERSIONS
     """
 }

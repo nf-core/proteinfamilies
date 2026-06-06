@@ -36,11 +36,27 @@ output:
         type: file
         description: a TSV file with family id and sequence member id columns
         pattern: "*.tsv"
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+topics:
   versions:
-    - versions.yml:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
 authors:
   - "@vagkaratzas"
 maintainers:

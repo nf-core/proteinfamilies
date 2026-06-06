@@ -9,7 +9,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'filtering' ],  // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/modules/chunk.domtbl.gz', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
@@ -24,7 +24,7 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.fasta,
-                    process.out.versions.collect { path(it).yaml }
+                    process.out.findAll { key, val -> key.startsWith("versions") }
                     ).match()}
             )
         }
@@ -37,7 +37,7 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'filtering' ],  // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/modules/chunk.domtbl.gz', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)

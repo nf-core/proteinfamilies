@@ -1,16 +1,16 @@
 nextflow_process {
 
-    name "Test Process EXTRACT_FAMILY_REPS"
+    name "Test Process EXTRACT_FAMILY_MEMBERS"
     script "../main.nf"
-    process "EXTRACT_FAMILY_REPS"
+    process "EXTRACT_FAMILY_MEMBERS"
 
     test("proteinfamilies - faa") {
 
         when {
             process {
                 """
-                input[0] = Channel.of([
-                    [ id: 'extract_family_reps' ],
+                input[0] = channel.of([
+                    [ id: 'extract_family_members' ],
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.faa', checkIfExists: true)
@@ -24,9 +24,8 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
-                    process.out.fasta,
-                    process.out.map,
-                    process.out.versions.collect { path(it).yaml }
+                    process.out.tsv,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
                     ).match()}
             )
         }
@@ -39,8 +38,8 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = Channel.of([
-                    [ id: 'extract_family_reps' ],
+                input[0] = channel.of([
+                    [ id: 'extract_family_members' ],
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.faa', checkIfExists: true)

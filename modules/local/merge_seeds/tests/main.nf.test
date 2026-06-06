@@ -1,24 +1,24 @@
 nextflow_process {
 
-    name "Test Process FILTER_NON_REDUNDANT_FAMS"
+    name "Test Process MERGE_SEEDS"
     script "../main.nf"
-    process "FILTER_NON_REDUNDANT_FAMS"
+    process "MERGE_SEEDS"
 
-    test("proteinfamilies - nonredundant") {
+    test("proteinfamilies - aln") {
 
         when {
             process {
                 """
-                input[0] = Channel.of([
-                    [ id: 'aln' ],
+                input[0] = channel.of([
+                    [ id: 'test_similarities' ],
+                    "mgnifams_test_1,mgnifams_test_2",
+                ])
+                input[1] = channel.of([
+                    [ id: 'test_aln' ],
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
                     ]
-                ])
-                input[1] = Channel.of([
-                    [ id: 'redundant_ids' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/modules/redundant_fam_ids.txt', checkIfExists: true),
                 ])
                 """
             }
@@ -28,30 +28,30 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
-                    process.out.filtered,
-                    process.out.versions.collect { path(it).yaml }
-                    ).match() }
+                    process.out.merged_seed_msa,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match()}
             )
         }
     }
 
-    test("proteinfamilies - nonredundant - stub") {
+    test("proteinfamilies - aln - stub") {
 
         options "-stub"
 
         when {
             process {
                 """
-                input[0] = Channel.of([
-                    [ id: 'aln' ],
+                input[0] = channel.of([
+                    [ id: 'test_similarities' ],
+                    "mgnifams_test_1,mgnifams_test_2",
+                ])
+                input[1] = channel.of([
+                    [ id: 'test_aln' ],
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
                     ]
-                ])
-                input[1] = Channel.of([
-                    [ id: 'redundant_ids' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/modules/redundant_fam_ids.txt', checkIfExists: true),
                 ])
                 """
             }

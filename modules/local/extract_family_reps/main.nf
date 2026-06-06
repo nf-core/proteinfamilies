@@ -13,7 +13,7 @@ process EXTRACT_FAMILY_REPS {
     output:
     tuple val(meta), path("${prefix}_reps.faa")    , emit: fasta
     tuple val(meta), path("${prefix}_meta_mqc.csv"), emit: map
-    path "versions.yml"                            , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -26,11 +26,6 @@ process EXTRACT_FAMILY_REPS {
         --num_threads ${task.cpus} \\
         --metadata ${prefix}_meta_mqc.csv \\
         --out_fasta ${prefix}_reps.faa
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-    END_VERSIONS
     """
 
     stub:
@@ -38,10 +33,5 @@ process EXTRACT_FAMILY_REPS {
     """
     touch ${prefix}_reps.faa
     touch ${prefix}_meta_mqc.csv
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-    END_VERSIONS
     """
 }

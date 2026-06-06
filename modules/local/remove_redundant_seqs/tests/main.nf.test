@@ -9,11 +9,11 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'test_tsv' ], // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
-                input[1] = Channel.of([
+                input[1] = channel.of([
                     [ id: 'test_fasta' ], // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
@@ -26,7 +26,7 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.fasta,
-                    process.out.versions.collect { path(it).yaml }
+                    process.out.findAll { key, val -> key.startsWith("versions") }
                     ).match()}
             )
         }
@@ -39,11 +39,11 @@ nextflow_process {
         when {
             process {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'test_tsv' ], // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
-                input[1] = Channel.of([
+                input[1] = channel.of([
                     [ id: 'test_fasta' ], // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
