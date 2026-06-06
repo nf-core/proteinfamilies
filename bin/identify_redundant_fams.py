@@ -2,6 +2,11 @@
 
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Identifies redundant and similar protein families from an all-vs-all hmmsearch of family
+representatives. Redundant families (fully contained by another) are flagged for removal;
+similar families (partial overlap) are paired for potential merging.
+"""
 
 import sys
 import pandas as pd
@@ -73,6 +78,10 @@ def parse_args(args=None):
 
 
 def remove_self_hits(domtbl_df, representative_to_family):
+    """
+    Map target sequence IDs to their family IDs, then drop rows where a family's HMM
+    found its own representative — these self-hits would otherwise be flagged as redundant.
+    """
     domtbl_df["target name"] = domtbl_df["target name"].map(representative_to_family)
     domtbl_df = domtbl_df[domtbl_df["target name"] != domtbl_df["query name"]]
 
@@ -107,6 +116,12 @@ def filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_
 
 
 def process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_family_redundancy_removal):
+    """
+    Determine which family to discard for each redundant pair: the smaller one is marked
+    redundant. For equal-sized pairs, the alphabetically later name is chosen — this
+    ensures deterministic, collision-free deduplication without marking both directions.
+    Returns the set of redundant family names.
+    """
     redundant_fam_names = set()
 
     if skip_family_redundancy_removal:
@@ -137,6 +152,11 @@ def process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_fam
 
 
 def process_similar(similar_df, redundant_fam_names, pairwise_similarities_file, similar_ids_file):
+    """
+    Write pairwise similarity pairs (excluding already-redundant families) to CSV, and
+    the set of all family IDs that appear in at least one similarity pair to a text file.
+    Returns early without writing if no similar pairs remain.
+    """
     if similar_df.empty:
         return
 
@@ -195,6 +215,8 @@ def process_family_similarity(mapping, domtbl, redundancy_length_threshold, simi
 def main(args=None):
     args = parse_args(args)
 
+    # Pre-create both output files as empty so Nextflow sees them even if neither
+    # redundant nor similar families are found and the functions return early.
     open(args.redundant_ids_file, "w").close()
     open(args.similar_ids_file, "w").close()
 

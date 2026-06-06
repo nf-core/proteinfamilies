@@ -2,6 +2,11 @@
 
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Filters sequences recruited by a single-cluster hmmsearch to those whose domain envelope
+covers at least --length_threshold of the query HMM length. Outputs a gzipped FASTA with
+subsequences cropped to the hit envelope coordinates.
+"""
 
 import sys
 import argparse
@@ -48,6 +53,12 @@ def parse_args(args=None):
 
 
 def filter_sequences(domtbl, length_threshold):
+    """
+    Parse a gzipped hmmsearch domain table and return hits passing the length threshold.
+
+    The envelope region (cols 19–20) must cover at least length_threshold × qlen (col 5).
+    Returns a list of "seqname/env_from-env_to" strings.
+    """
     filtered_sequences = []
 
     with gzip.open(domtbl, "rt", encoding="utf-8") as file:
@@ -103,6 +114,13 @@ def validate_and_parse_hit_name(hit):
 
 
 def extract_fasta_subset(filtered_sequences, fasta, out_fasta):
+    """
+    Write a gzipped FASTA of sequences cropped to their hit envelope coordinates.
+
+    Coordinates are 1-based (HMMER convention), converted to 0-based for slicing.
+    If the extracted range spans the full sequence, the ID omits the /from-to suffix.
+    If no sequences passed the threshold, the output file is not created.
+    """
     if filtered_sequences:
         open_func = gzip.open if fasta.endswith(".gz") else open
         with open_func(fasta, "rt") as in_fasta:

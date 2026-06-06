@@ -2,6 +2,11 @@
 
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Assigns new sequences to existing families using hmmsearch domain hits. Sequences whose
+domain envelope covers at least --length_threshold of the query HMM are written into
+per-family FASTA files; the remainder are written to a single non-hit output file.
+"""
 
 import sys
 import argparse
@@ -59,6 +64,12 @@ def parse_args(args=None):
 
 
 def filter_sequences(domtbl, length_threshold):
+    """
+    Parse an hmmsearch domain table and return hits passing the length threshold.
+
+    The envelope region (cols 19–20) must cover at least length_threshold × qlen (col 5).
+    Returns a dict of query_name (family ID) → set of "seqname/env_from-env_to" strings.
+    """
     results = {}
 
     # Open the domtbl file (supporting gzip)
@@ -102,6 +113,12 @@ def parse_fasta(file_path):
 
 
 def write_non_hit_sequences(filtered_sequences, sequences, non_hits):
+    """
+    Write sequences with no hit to any family to a gzipped FASTA.
+
+    A sequence is a non-hit if its bare ID (without /from-to suffix) does not appear
+    in any family's hit set.
+    """
     # Determine the non-hit sequences
     hit_sequence_names = {hit.split("/")[0] for hits in filtered_sequences.values() for hit in hits}
     non_hit_records = [
@@ -146,6 +163,13 @@ def validate_and_parse_hit_name(hit):
 
 
 def write_family_fastas(results, sequences, output_dir):
+    """
+    Write per-family FASTA files with sequences cropped to their hit envelope.
+
+    Coordinates are 1-based (HMMER convention), converted to 0-based for slicing.
+    If the extracted range spans the full sequence, the ID omits the /from-to suffix.
+    One file is written per family, named <family_id>.fasta.
+    """
     # Create the output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
 

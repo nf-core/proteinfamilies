@@ -2,6 +2,11 @@
 
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Splits MMSeqs2 cluster output into per-cluster FASTA files. Clusters smaller than
+--threshold are discarded; surviving clusters are written as numbered FASTA chunks
+used as inputs to per-family alignment.
+"""
 
 import sys
 import os
@@ -33,6 +38,11 @@ def parse_args(args=None):
 
 
 def collect_clusters(clustering_file, threshold):
+    """
+    Read an MMSeqs2 TSV (col 0 = representative, col 1 = member) and return clusters at or
+    above the size threshold. The representative is counted as a member of its own cluster,
+    so a singleton cluster has size 1.
+    """
     clusters = defaultdict(list)
     with open(clustering_file) as f:
         reader = csv.reader(f, delimiter="\t")
@@ -45,6 +55,10 @@ def collect_clusters(clustering_file, threshold):
 
 
 def load_sequences(fasta_file, needed_ids):
+    """
+    Load only the sequences that belong to surviving clusters, avoiding a full FASTA scan
+    of sequences that will be discarded anyway.
+    """
     sequences = {}
     with open(fasta_file) as handle:
         for record in SeqIO.parse(handle, "fasta"):
@@ -54,6 +68,11 @@ def load_sequences(fasta_file, needed_ids):
 
 
 def write_cluster(prefix, chunk_num, members, sequences, out_folder):
+    """
+    Write cluster members to '{prefix}_{chunk_num}.faa'. The sequential chunk_num (not
+    the representative ID) names the file; downstream Nextflow tokenizes on '_' to
+    extract this number as the chunk identifier.
+    """
     output_file = os.path.join(out_folder, f"{prefix}_{chunk_num}.faa")
     with open(output_file, "w") as out_handle:
         for member in members:
@@ -66,7 +85,8 @@ def main(args=None):
     args = parse_args(args)
     os.makedirs(args.out_folder, exist_ok=True)
 
-    # Extract base name (without extension) of clustering file
+    # Prefix comes from the clustering filename stem (e.g., 'sample_1' from 'sample_1.tsv'),
+    # which becomes the sample name embedded in each output chunk filename.
     prefix = os.path.splitext(os.path.basename(args.clustering))[0]
 
     # Step 1: Parse clusters

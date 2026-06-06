@@ -2,6 +2,11 @@
 
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Reduces sequence redundancy within a family by retaining only the cluster representative
+(col 0) from each MMSeqs2 clustering TSV row, keeping one canonical sequence per
+similarity group. All clusters are kept regardless of size.
+"""
 
 import sys
 import gzip
@@ -40,7 +45,12 @@ def parse_args(args=None):
 
 
 def extract_rep_sequences(clustering, sequences, out_fasta):
-    # Read the clustering file and extract unique values from column 1
+    """
+    Filter a FASTA to keep only the cluster representative (col 0) from each row of an
+    MMSeqs2 clustering TSV, retaining one canonical sequence per similarity group. Unlike
+    chunk_clusters.py, no minimum cluster size is applied — singletons are also retained.
+    """
+    # Read the clustering file and extract unique values from column 0 (representatives)
     unique_representatives = set()
     with open(clustering, "r") as tsv_file:
         reader = csv.reader(tsv_file, delimiter="\t")

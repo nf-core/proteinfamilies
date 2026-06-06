@@ -3,6 +3,10 @@
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## Modified version for extracting family members.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Scans a folder of per-family FASTA files and writes a TSV mapping each family to all
+of its member sequence IDs (columns: family_id, member_id).
+"""
 
 import sys
 import os
@@ -74,6 +78,7 @@ def process_fasta_file(filename, fasta_folder, tmp_dir):
         str: Path to the temporary TSV file for this family.
     """
     filepath = os.path.join(fasta_folder, filename)
+    # Applied twice to strip both extensions from compound names like 'sample_1.faa.gz'.
     family_id = os.path.splitext(os.path.splitext(filename)[0])[0]
     member_ids = extract_ids(filepath)
 
@@ -88,6 +93,9 @@ def process_fasta_file(filename, fasta_folder, tmp_dir):
 def extract_family_members(fasta_folder, num_threads, out_tsv):
     """
     Process all FASTA files in a folder in parallel and write family/member IDs to a TSV.
+
+    Each worker writes to a private temp file to avoid output contention; temp files are
+    concatenated in sorted filename order so the output is deterministic across runs.
     """
     all_files = sorted(os.listdir(fasta_folder))
     tmp_dir = tempfile.mkdtemp(prefix="fam_members_")

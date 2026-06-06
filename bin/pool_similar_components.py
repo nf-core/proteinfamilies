@@ -2,6 +2,11 @@
 
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Groups similar protein families into pools using graph connected-component analysis.
+Each pool is a maximal set of transitively similar families that will be merged into
+a single super-family.
+"""
 
 import sys
 import argparse
@@ -41,6 +46,13 @@ def parse_args(args=None):
 
 
 def build_pools(similarities_csv, threshold):
+    """
+    Build a graph of pairwise family similarities and extract connected components as pools.
+
+    Uses transitive closure: if A is similar to B and B is similar to C, all three are
+    pooled even if A and C have no direct similarity relationship. The undirected graph
+    treats similarity as symmetric regardless of which direction the hmmsearch hit landed.
+    """
     # Load CSV
     df = pd.read_csv(similarities_csv)
 

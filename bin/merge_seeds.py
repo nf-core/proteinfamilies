@@ -2,6 +2,10 @@
 
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Concatenates seed MSA files for a given list of family IDs into a single merged alignment
+file, used as the starting point for rebuilding a merged family HMM.
+"""
 
 import sys
 import os
@@ -56,6 +60,7 @@ def merge_selected_alignments(family_ids, folder, out_file):
 
     if merged_contents:
         with open(out_file, "w") as out:
+            # Literal concatenation of FASTA blocks — valid for any FASTA-format alignment.
             out.write("\n".join(merged_contents) + "\n")
         print(f"[INFO] Merged {len(merged_contents)} files into {out_file}")
     else:
@@ -65,7 +70,7 @@ def merge_selected_alignments(family_ids, folder, out_file):
 def main(args=None):
     args = parse_args(args)
 
-    # parse list input
+    # Nextflow may pass a Groovy list as a string like "[id_1,id_2]" — strip the brackets.
     if args.list.startswith("[") and args.list.endswith("]"):
         args.list = args.list[1:-1]
     family_ids = [x.strip() for x in args.list.split(",") if x.strip()]
