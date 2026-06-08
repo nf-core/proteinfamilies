@@ -18,14 +18,14 @@ nextflow_workflow {
                     [ id: 'test' ],
                     similarities_file
                 ]
-                input[1] = Channel.of([
+                input[1] = channel.of([
                     [ id: 'test' ],
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
                     ]
                 ])
-                input[2] = Channel.of([
+                input[2] = channel.of([
                     [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])

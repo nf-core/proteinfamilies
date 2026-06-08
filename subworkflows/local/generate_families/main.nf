@@ -64,7 +64,6 @@ workflow GENERATE_FAMILIES {
             .map { _id, meta, domtbl, seqs -> [ meta, domtbl, seqs ] }
 
         FILTER_RECRUITED( ch_input_for_filter_recruited, hmmsearch_query_length_threshold )
-        ch_versions = ch_versions.mix( FILTER_RECRUITED.out.versions.first() )
         ch_fasta = FILTER_RECRUITED.out.fasta
 
         // Join to ensure in sync

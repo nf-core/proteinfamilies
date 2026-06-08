@@ -103,10 +103,8 @@ workflow PROTEINFAMILIES {
     )
 
     CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
-    ch_versions = ch_versions.mix( CALCULATE_CLUSTER_DISTRIBUTION.out.versions.first() )
 
     CHUNK_CLUSTERS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs, params.cluster_size_threshold )
-    ch_versions = ch_versions.mix( CHUNK_CLUSTERS.out.versions.first() )
 
     // tokenize('_').last() extracts the numeric suffix from filenames like 'sample_1.faa.gz' as the chunk ID.
     ch_fasta_chunks = CHUNK_CLUSTERS.out.fasta_chunks
@@ -178,10 +176,8 @@ workflow PROTEINFAMILIES {
         .groupTuple(by: 0)
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions.first() )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
     ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     //

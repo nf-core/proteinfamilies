@@ -48,11 +48,46 @@ output:
         type: file
         description: List of files containing chunked FASTA files produced from the clustering process.
         pattern: "*.faa"
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+  versions_biopython:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - biopython:
+          type: string
+          description: The tool name
+      - 'python -c "import importlib.metadata; print(importlib.metadata.version(''biopython''))"':
+          type: eval
+          description: The expression to obtain the version of biopython
+topics:
   versions:
-    - versions.yml:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - biopython:
+          type: string
+          description: The name of the tool
+      - 'python -c "import importlib.metadata; print(importlib.metadata.version(''biopython''))"':
+          type: eval
+          description: The expression to obtain the version of biopython
 authors:
   - "@vagkaratzas"
   - "@GiatrasKon"

@@ -14,7 +14,8 @@ process CHUNK_CLUSTERS {
 
     output:
     tuple val(meta), path("chunked_fasta/*"), emit: fasta_chunks, optional: true
-    path "versions.yml"                     , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
+    tuple val("${task.process}"), val('biopython'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('biopython'))\""), emit: versions_biopython, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -33,23 +34,11 @@ process CHUNK_CLUSTERS {
         --threshold ${size_threshold} \\
         --threads $task.cpus \\
         --out_folder chunked_fasta
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
-    END_VERSIONS
     """
 
     stub:
     """
     mkdir -p chunked_fasta
     touch chunked_fasta/1.fasta
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        biopython: \$(python -c "import importlib.metadata; print(importlib.metadata.version('biopython'))")
-    END_VERSIONS
     """
 }

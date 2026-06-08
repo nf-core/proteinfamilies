@@ -13,22 +13,6 @@
             11,
             [
                 {
-                    "UPDATE_FAMILIES:EXTRACT_FAMILY_REPS": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
-                    "UPDATE_FAMILIES:REMOVE_REDUNDANT_SEQS": {
-                        "python": "3.13.1",
-                        "biopython": 1.85
-                    }
-                },
-                {
-                    "UPDATE_FAMILIES:EXTRACT_FAMILY_MEMBERS": {
-                        "python": "3.13.1"
-                    }
-                },
-                {
                     "UPDATE_FAMILIES:HMMER_HMMBUILD": {
                         "hmmer": 3.4
                     }
@@ -37,19 +21,13 @@
                     "UPDATE_FAMILIES:HMMER_HMMSEARCH": {
                         "hmmer": 3.4
                     }
-                },
-                {
-                    "UPDATE_FAMILIES:BRANCH_HITS_FASTA": {
-                        "python": "3.13.1",
-                        "biopython": 1.85
-                    }
                 }
             ]
         ],
-        "timestamp": "2026-05-01T09:42:49.27242238",
+        "timestamp": "2026-06-06T17:53:18.466426805",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     }
 }

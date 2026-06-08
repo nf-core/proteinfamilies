@@ -12,7 +12,7 @@ process EXTRACT_FAMILY_MEMBERS {
 
     output:
     tuple val(meta), path("${prefix}.tsv"), emit: tsv
-    path "versions.yml"                   , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,21 +24,11 @@ process EXTRACT_FAMILY_MEMBERS {
         --fasta_folder faa \\
         --num_threads ${task.cpus} \\
         --out_tsv ${prefix}.tsv
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-    END_VERSIONS
     """
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.tsv
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-    END_VERSIONS
     """
 }
