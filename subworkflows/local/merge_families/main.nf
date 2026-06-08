@@ -25,7 +25,6 @@ workflow MERGE_FAMILIES {
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
     main:
-    ch_versions = channel.empty()
 
     POOL_SIMILAR_COMPONENTS( similarities )
 
@@ -59,10 +58,8 @@ workflow MERGE_FAMILIES {
         skip_additional_sequence_recruiting,
         hmmsearch_query_length_threshold
     )
-    ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     emit:
-    versions = ch_versions
     seed_msa = GENERATE_FAMILIES.out.seed_msa
     full_msa = GENERATE_FAMILIES.out.full_msa
     fasta    = GENERATE_FAMILIES.out.fasta

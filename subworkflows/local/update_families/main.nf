@@ -38,7 +38,6 @@ workflow UPDATE_FAMILIES {
     save_update_families_clipped_fasta          // boolean
 
     main:
-    ch_versions            = channel.empty()
     ch_updated_family_reps = channel.empty()
     ch_no_hit_seqs         = channel.empty()
 
@@ -72,7 +71,6 @@ workflow UPDATE_FAMILIES {
         .map { meta, concatenated_hmm, fasta, _existing_hmms_to_update, _existing_msas_to_update -> [meta, concatenated_hmm, fasta, false, false, true] }
 
     HMMER_HMMSEARCH( ch_input_for_hmmsearch )
-    ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions.first() )
 
     ch_input_for_branch_hits = HMMER_HMMSEARCH.out.domain_summary
         .join(ch_samplesheet_for_update)
@@ -142,7 +140,6 @@ workflow UPDATE_FAMILIES {
     }
 
     HMMER_HMMBUILD( ch_msa, [] )
-    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions.first() )
 
     // Strip family from meta and group by sample ID so EXTRACT_FAMILY_MEMBERS/REPS
     // receive all families for a sample together.
@@ -159,5 +156,4 @@ workflow UPDATE_FAMILIES {
     no_hit_seqs         = ch_no_hit_seqs
     updated_family_reps = ch_updated_family_reps
     hmm                 = HMMER_HMMBUILD.out.hmm
-    versions            = ch_versions
 }

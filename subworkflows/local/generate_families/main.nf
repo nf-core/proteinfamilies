@@ -29,7 +29,6 @@ workflow GENERATE_FAMILIES {
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
     main:
-    ch_versions = channel.empty()
     ch_seed_msa = channel.empty()
     ch_full_msa = channel.empty()
     ch_hmm      = channel.empty()
@@ -43,7 +42,6 @@ workflow GENERATE_FAMILIES {
     }
 
     HMMER_HMMBUILD( ch_seed_msa, [] )
-    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions.first() )
     ch_hmm = HMMER_HMMBUILD.out.hmm
 
     // Strip chunk from meta so each cluster's HMM can be matched to the full sample sequence
@@ -55,7 +53,6 @@ workflow GENERATE_FAMILIES {
 
     if (!skip_additional_sequence_recruiting) {
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
-        ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions.first() )
 
         // Combine with same id to ensure in sync
         ch_input_for_filter_recruited = HMMER_HMMSEARCH.out.domain_summary
@@ -75,7 +72,6 @@ workflow GENERATE_FAMILIES {
             }
 
         HMMER_HMMALIGN( ch_input_for_hmmalign.seq, ch_input_for_hmmalign.hmm )
-        ch_versions = ch_versions.mix( HMMER_HMMALIGN.out.versions.first() )
         ch_full_msa = HMMER_HMMALIGN.out.sto
     } else {
         // Seed MSA serves as the final full MSA when additional sequence recruiting is skipped.
@@ -83,7 +79,6 @@ workflow GENERATE_FAMILIES {
     }
 
     emit:
-    versions = ch_versions
     seed_msa = ch_seed_msa
     full_msa = ch_full_msa
     fasta    = ch_fasta
