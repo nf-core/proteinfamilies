@@ -46,15 +46,12 @@
                     },
                     "chunk_3.fas.gz:md5,20a3bf82ff5f93f8faf88170e75e9e59"
                 ]
-            ],
-            [
-                
             ]
         ],
-        "timestamp": "2026-01-20T10:17:30.649646081",
+        "timestamp": "2026-06-08T16:40:14.566185845",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
         }
     },
     "faa - skip all but msa trimming": {
@@ -104,15 +101,12 @@
                     },
                     "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_3.clipkit"
                 ]
-            ],
-            [
-                
             ]
         ],
-        "timestamp": "2025-12-18T11:55:44.217773585",
+        "timestamp": "2026-06-08T16:40:27.190062128",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
         }
     },
     "faa - skip none - stub": {
@@ -134,16 +128,9 @@
                     },
                     "chunk_1.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ]
-            ],
-            [
-                {
-                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
-                        "hmmer": 3.4
-                    }
-                }
             ]
         ],
-        "timestamp": "2026-06-06T17:52:36.244179877",
+        "timestamp": "2026-06-08T16:40:49.095822433",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -182,16 +169,9 @@
                     },
                     "chunk_2.fas.gz:md5,eaf8104240fcfb46752ceabaf989b661"
                 ]
-            ],
-            [
-                {
-                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
-                        "hmmer": 3.4
-                    }
-                }
             ]
         ],
-        "timestamp": "2026-06-06T17:52:05.044733374",
+        "timestamp": "2026-06-08T16:40:00.978024774",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -230,16 +210,9 @@
                     },
                     "chunk_2.fas.gz:md5,eaf8104240fcfb46752ceabaf989b661"
                 ]
-            ],
-            [
-                {
-                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
-                        "hmmer": 3.4
-                    }
-                }
             ]
         ],
-        "timestamp": "2026-06-06T17:51:34.929165589",
+        "timestamp": "2026-06-08T16:39:21.662998826",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -278,16 +251,9 @@
                     },
                     "chunk_2.aln:md5,ed2a2cbbb5f207f44ddef4781cd75ff7"
                 ]
-            ],
-            [
-                {
-                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
-                        "hmmer": 3.4
-                    }
-                }
             ]
         ],
-        "timestamp": "2026-06-06T17:51:00.097048703",
+        "timestamp": "2026-06-08T16:38:33.27249663",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -326,16 +292,9 @@
                     },
                     "chunk_2.fas.gz:md5,eaf8104240fcfb46752ceabaf989b661"
                 ]
-            ],
-            [
-                {
-                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
-                        "hmmer": 3.4
-                    }
-                }
             ]
         ],
-        "timestamp": "2026-06-06T17:51:50.761510544",
+        "timestamp": "2026-06-08T16:39:42.409106568",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -374,16 +333,9 @@
                     },
                     "chunk_2.aln:md5,ed2a2cbbb5f207f44ddef4781cd75ff7"
                 ]
-            ],
-            [
-                {
-                    "REMOVE_REDUNDANCY:HMMER_HMMSEARCH": {
-                        "hmmer": 3.4
-                    }
-                }
             ]
         ],
-        "timestamp": "2026-06-06T17:51:18.942355687",
+        "timestamp": "2026-06-08T16:38:58.926350332",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"

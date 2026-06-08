@@ -28,26 +28,9 @@
                     },
                     "test_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
                 ]
-            ],
-            [
-                {
-                    "MERGE_FAMILIES:GENERATE_FAMILIES:HMMER_HMMALIGN": {
-                        "hmmer": 3.4
-                    }
-                },
-                {
-                    "MERGE_FAMILIES:GENERATE_FAMILIES:HMMER_HMMBUILD": {
-                        "hmmer": 3.4
-                    }
-                },
-                {
-                    "MERGE_FAMILIES:GENERATE_FAMILIES:HMMER_HMMSEARCH": {
-                        "hmmer": 3.4
-                    }
-                }
             ]
         ],
-        "timestamp": "2026-06-08T11:29:29.618066648",
+        "timestamp": "2026-06-08T16:37:02.31375634",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
