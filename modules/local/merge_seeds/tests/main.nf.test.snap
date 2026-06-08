@@ -4,9 +4,10 @@
             [
                 [
                     {
-                        "id": "test_similarities"
+                        "id": "test_similarities",
+                        "merged_id": "1_2"
                     },
-                    "null.fas:md5,19ae8f20eee8455d7f0f8e0a0dcfba93"
+                    "1_2.fas:md5,19ae8f20eee8455d7f0f8e0a0dcfba93"
                 ]
             ],
             {
@@ -19,7 +20,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:51:16.728666205",
+        "timestamp": "2026-06-08T10:58:38.9924806",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -31,9 +32,10 @@
                 "0": [
                     [
                         {
-                            "id": "test_similarities"
+                            "id": "test_similarities",
+                            "merged_id": "1_2"
                         },
-                        "null.fas:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "1_2.fas:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -46,9 +48,10 @@
                 "merged_seed_msa": [
                     [
                         {
-                            "id": "test_similarities"
+                            "id": "test_similarities",
+                            "merged_id": "1_2"
                         },
-                        "null.fas:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "1_2.fas:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions_python": [
@@ -60,7 +63,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:51:28.415559448",
+        "timestamp": "2026-06-08T10:58:51.036021859",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"

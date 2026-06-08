@@ -4,9 +4,10 @@
             [
                 [
                     {
-                        "id": "filtering"
+                        "id": "filtering",
+                        "chunk": 1
                     },
-                    "filtering_null.fasta.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
+                    "filtering_1.fasta.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
                 ]
             ],
             {
@@ -26,7 +27,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:50:27.190715265",
+        "timestamp": "2026-06-08T11:07:55.888057511",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
@@ -38,9 +39,10 @@
                 "0": [
                     [
                         {
-                            "id": "filtering"
+                            "id": "filtering",
+                            "chunk": 1
                         },
-                        "filtering_null.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        "filtering_1.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
                     ]
                 ],
                 "1": [
@@ -60,9 +62,10 @@
                 "fasta": [
                     [
                         {
-                            "id": "filtering"
+                            "id": "filtering",
+                            "chunk": 1
                         },
-                        "filtering_null.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        "filtering_1.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
                     ]
                 ],
                 "versions_biopython": [
@@ -81,7 +84,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:50:41.27446677",
+        "timestamp": "2026-06-08T11:08:08.425113729",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"

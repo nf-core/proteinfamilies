@@ -12,7 +12,7 @@ nextflow_workflow {
                 alignment_tool = 'famsa'
 
                 input[0] = channel.of([
-                    [ id: 'test_famsa' ],
+                    [ id: 'test_famsa', chunk: 1 ],
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
@@ -39,7 +39,7 @@ nextflow_workflow {
                 alignment_tool = 'mafft'
 
                 input[0] = channel.of([
-                    [ id: 'test_mafft' ],
+                    [ id: 'test_mafft', chunk: 1 ],
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
@@ -68,7 +68,7 @@ nextflow_workflow {
                 alignment_tool = 'famsa'
 
                 input[0] = channel.of([
-                    [ id: 'test_famsa_stub' ],
+                    [ id: 'test_famsa_stub', chunk: 1 ],
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
@@ -94,7 +94,7 @@ nextflow_workflow {
                 alignment_tool = 'mafft'
 
                 input[0] = channel.of([
-                    [ id: 'test_mafft_stub' ],
+                    [ id: 'test_mafft_stub', chunk: 1 ],
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
                 ])
                 input[1] = alignment_tool

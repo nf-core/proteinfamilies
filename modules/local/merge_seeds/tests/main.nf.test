@@ -10,7 +10,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                    [ id: 'test_similarities' ],
+                    [ id: 'test_similarities', merged_id: '1_2' ],
                     "mgnifams_test_1,mgnifams_test_2",
                 ])
                 input[1] = channel.of([
@@ -43,7 +43,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                    [ id: 'test_similarities' ],
+                    [ id: 'test_similarities', merged_id: '1_2' ],
                     "mgnifams_test_1,mgnifams_test_2",
                 ])
                 input[1] = channel.of([

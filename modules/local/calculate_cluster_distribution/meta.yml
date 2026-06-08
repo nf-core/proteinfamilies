@@ -43,7 +43,7 @@ output:
       - sed:
           type: string
           description: The tool name
-      - "sed --version 2>&1 | sed -n '1p' | sed 's/sed (GNU sed) //'":
+      - "sed --version 2>&1 | sed -n '1s/sed (GNU sed) //p'":
           type: eval
           description: The expression to obtain the version of sed
 topics:
@@ -54,7 +54,7 @@ topics:
       - sed:
           type: string
           description: The name of the tool
-      - "sed --version 2>&1 | sed -n '1p' | sed 's/sed (GNU sed) //'":
+      - "sed --version 2>&1 | sed -n '1s/sed (GNU sed) //p'":
           type: eval
           description: The expression to obtain the version of sed
 authors:

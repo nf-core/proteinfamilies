@@ -12,7 +12,7 @@ process CALCULATE_CLUSTER_DISTRIBUTION {
 
     output:
     tuple val(meta), path("${prefix}_clustering_distribution_mqc.csv"), emit: mqc
-    tuple val("${task.process}"), val('sed'), eval("sed --version 2>&1 | sed -n '1p' | sed 's/sed (GNU sed) //'"), emit: versions_sed, topic: versions
+    tuple val("${task.process}"), val('sed'), eval("sed --version 2>&1 | sed -n '1s/sed (GNU sed) //p'"), emit: versions_sed, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

@@ -10,7 +10,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                    [ id: 'test_tsv' ], // meta map
+                    [ id: 'test_tsv', chunk: 1 ], // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
                 input[1] = channel.of([
@@ -40,7 +40,7 @@ nextflow_process {
             process {
                 """
                 input[0] = channel.of([
-                    [ id: 'test_tsv' ], // meta map
+                    [ id: 'test_tsv', chunk: 1 ], // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
                 input[1] = channel.of([
