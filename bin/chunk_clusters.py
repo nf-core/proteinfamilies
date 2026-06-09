@@ -15,9 +15,11 @@ from collections import defaultdict
 import csv
 from Bio import SeqIO
 from concurrent.futures import ThreadPoolExecutor
+from Bio.SeqRecord import SeqRecord
+from typing import Sequence
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c", "--clustering", required=True, metavar="FILE", help="TSV clustering file input."
@@ -37,11 +39,18 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def collect_clusters(clustering_file, threshold):
+def collect_clusters(clustering_file: str, threshold: int) -> dict[str, list[str]]:
     """
     Read an MMSeqs2 TSV (col 0 = representative, col 1 = member) and return clusters at or
     above the size threshold. The representative is counted as a member of its own cluster,
     so a singleton cluster has size 1.
+
+    Args:
+        clustering_file (str): MMSeqs2 clustering TSV file.
+        threshold (int): Minimum cluster size to retain.
+
+    Returns:
+        dict[str, list[str]]: Surviving clusters keyed by representative ID.
     """
     clusters = defaultdict(list)
     with open(clustering_file) as f:
@@ -54,10 +63,17 @@ def collect_clusters(clustering_file, threshold):
     }
 
 
-def load_sequences(fasta_file, needed_ids):
+def load_sequences(fasta_file: str, needed_ids: set[str]) -> dict[str, SeqRecord]:
     """
     Load only the sequences that belong to surviving clusters, avoiding a full FASTA scan
     of sequences that will be discarded anyway.
+
+    Args:
+        fasta_file (str): Input FASTA containing all clustered sequences.
+        needed_ids (set[str]): Sequence IDs that belong to retained clusters.
+
+    Returns:
+        dict[str, Bio.SeqRecord.SeqRecord]: Loaded sequences keyed by record ID.
     """
     sequences = {}
     with open(fasta_file) as handle:
@@ -67,11 +83,27 @@ def load_sequences(fasta_file, needed_ids):
     return sequences
 
 
-def write_cluster(prefix, chunk_num, members, sequences, out_folder):
+def write_cluster(
+    prefix: str,
+    chunk_num: int,
+    members: list[str],
+    sequences: dict[str, SeqRecord],
+    out_folder: str,
+) -> str:
     """
     Write cluster members to '{prefix}_{chunk_num}.faa'. The sequential chunk_num (not
     the representative ID) names the file; downstream Nextflow tokenizes on '_' to
     extract this number as the chunk identifier.
+
+    Args:
+        prefix (str): Sample prefix derived from the clustering filename.
+        chunk_num (int): Sequential cluster number used in the output filename.
+        members (list[str]): Sequence IDs to include in the cluster FASTA.
+        sequences (dict[str, Bio.SeqRecord.SeqRecord]): Loaded sequences keyed by ID.
+        out_folder (str): Destination directory for per-cluster FASTA files.
+
+    Returns:
+        str: Path to the written cluster FASTA file.
     """
     output_file = os.path.join(out_folder, f"{prefix}_{chunk_num}.faa")
     with open(output_file, "w") as out_handle:
@@ -81,7 +113,7 @@ def write_cluster(prefix, chunk_num, members, sequences, out_folder):
     return output_file
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     os.makedirs(args.out_folder, exist_ok=True)
 

@@ -11,9 +11,10 @@ similar families (partial overlap) are paired for potential merging.
 import sys
 import pandas as pd
 import argparse
+from typing import Sequence
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-m",
@@ -77,10 +78,20 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def remove_self_hits(domtbl_df, representative_to_family):
+def remove_self_hits(
+    domtbl_df: pd.DataFrame, representative_to_family: dict[str, str]
+) -> pd.DataFrame:
     """
     Map target sequence IDs to their family IDs, then drop rows where a family's HMM
     found its own representative — these self-hits would otherwise be flagged as redundant.
+
+    Args:
+        domtbl_df (pandas.DataFrame): Parsed hmmsearch domain hits.
+        representative_to_family (dict[str, str]): Mapping from representative ID to
+            family ID.
+
+    Returns:
+        pandas.DataFrame: Filtered hit table with self-hits removed.
     """
     domtbl_df["target name"] = domtbl_df["target name"].map(representative_to_family)
     domtbl_df = domtbl_df[domtbl_df["target name"] != domtbl_df["query name"]]
@@ -88,11 +99,26 @@ def remove_self_hits(domtbl_df, representative_to_family):
     return domtbl_df
 
 
-def filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_length_threshold, skip_family_redundancy_removal):
+def filter_and_label_similar(
+    domtbl_df: pd.DataFrame,
+    redundancy_length_threshold: float,
+    similarity_length_threshold: float,
+    skip_family_redundancy_removal: bool,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Return two DataFrames:
     - redundant candidates (>= redundancy_length_threshold)
     - similar but non-redundant (>= similarity_length_threshold and < redundancy_length_threshold)
+
+    Args:
+        domtbl_df (pandas.DataFrame): Parsed hmmsearch domain hits.
+        redundancy_length_threshold (float): Coverage threshold for declaring redundancy.
+        similarity_length_threshold (float): Coverage threshold for declaring similarity.
+        skip_family_redundancy_removal (bool): Whether to suppress redundant-family output.
+
+    Returns:
+        tuple[pandas.DataFrame, pandas.DataFrame]: Redundant candidates and similar
+            non-redundant hits.
     """
     domtbl_df["similarity_score"] = (
         (domtbl_df["env to"] - domtbl_df["env from"] + 1) / domtbl_df["qlen"]
@@ -115,12 +141,26 @@ def filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_
     return redundant_df, similar_df
 
 
-def process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_family_redundancy_removal):
+def process_redundant(
+    redundant_df: pd.DataFrame,
+    family_to_size: dict[str, int],
+    redundant_ids_file: str,
+    skip_family_redundancy_removal: bool,
+) -> set[str]:
     """
     Determine which family to discard for each redundant pair: the smaller one is marked
     redundant. For equal-sized pairs, the alphabetically later name is chosen — this
     ensures deterministic, collision-free deduplication without marking both directions.
     Returns the set of redundant family names.
+
+    Args:
+        redundant_df (pandas.DataFrame): Redundant candidate hits.
+        family_to_size (dict[str, int]): Mapping from family ID to family size.
+        redundant_ids_file (str): Output path for redundant family IDs.
+        skip_family_redundancy_removal (bool): Whether to suppress redundant-family output.
+
+    Returns:
+        set[str]: Family IDs selected for removal.
     """
     redundant_fam_names = set()
 
@@ -151,11 +191,25 @@ def process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_fam
     return redundant_fam_names
 
 
-def process_similar(similar_df, redundant_fam_names, pairwise_similarities_file, similar_ids_file):
+def process_similar(
+    similar_df: pd.DataFrame,
+    redundant_fam_names: set[str],
+    pairwise_similarities_file: str,
+    similar_ids_file: str,
+) -> None:
     """
     Write pairwise similarity pairs (excluding already-redundant families) to CSV, and
     the set of all family IDs that appear in at least one similarity pair to a text file.
     Returns early without writing if no similar pairs remain.
+
+    Args:
+        similar_df (pandas.DataFrame): Similar but non-redundant hit pairs.
+        redundant_fam_names (set[str]): Families already marked redundant.
+        pairwise_similarities_file (str): Output CSV for surviving pairwise similarities.
+        similar_ids_file (str): Output path for family IDs that appear in similarities.
+
+    Returns:
+        None: Outputs are written for their side effects only.
     """
     if similar_df.empty:
         return
@@ -182,7 +236,29 @@ def process_similar(similar_df, redundant_fam_names, pairwise_similarities_file,
             f.write(f"{fam}\n")
 
 
-def process_family_similarity(mapping, domtbl, redundancy_length_threshold, similarity_length_threshold, redundant_ids_file, similar_ids_file, pairwise_similarities_file, skip_family_redundancy_removal):
+def process_family_similarity(
+    mapping: str,
+    domtbl: str,
+    redundancy_length_threshold: float,
+    similarity_length_threshold: float,
+    redundant_ids_file: str,
+    similar_ids_file: str,
+    pairwise_similarities_file: str,
+    skip_family_redundancy_removal: bool,
+) -> None:
+    """
+    Classify family relationships as redundant or similar from hmmsearch hits.
+
+    Args:
+        mapping (str): Metadata CSV containing family IDs, sizes, and representatives.
+        domtbl (str): Whitespace-delimited hmmsearch domain table.
+        redundancy_length_threshold (float): Coverage threshold for declaring redundancy.
+        similarity_length_threshold (float): Coverage threshold for declaring similarity.
+        redundant_ids_file (str): Output path for redundant family IDs.
+        similar_ids_file (str): Output path for family IDs in similarity relationships.
+        pairwise_similarities_file (str): Output CSV for similar non-redundant pairs.
+        skip_family_redundancy_removal (bool): Whether to suppress redundant-family output.
+    """
     mapping_df = pd.read_csv(
         mapping, comment="#", usecols=["Family Id", "Size", "Representative Id"]
     )
@@ -212,7 +288,7 @@ def process_family_similarity(mapping, domtbl, redundancy_length_threshold, simi
     process_similar(similar_df, redundant_fam_names, pairwise_similarities_file, similar_ids_file)
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
 
     # Pre-create both output files as empty so Nextflow sees them even if neither

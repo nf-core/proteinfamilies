@@ -10,9 +10,10 @@ file, used as the starting point for rebuilding a merged family HMM.
 import sys
 import os
 import argparse
+from typing import Sequence
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Merge selected seed MSA files based on a provided list of family IDs."
     )
@@ -43,9 +44,15 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def merge_selected_alignments(family_ids, folder, out_file):
-    """Merge all alignment files in 'folder' whose basenames (without extension)
-    match one of the family IDs in 'family_ids'."""
+def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str) -> None:
+    """
+    Merge seed alignments whose basename matches one of the requested family IDs.
+
+    Args:
+        family_ids (list[str]): Family IDs whose alignments should be concatenated.
+        folder (str): Directory containing per-family seed alignments.
+        out_file (str): Output path for the merged alignment file.
+    """
     merged_contents = []
 
     for fam in family_ids:
@@ -67,12 +74,9 @@ def merge_selected_alignments(family_ids, folder, out_file):
         print("[WARNING] No files merged (none matched the provided list).", file=sys.stderr)
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
 
-    # Nextflow may pass a Groovy list as a string like "[id_1,id_2]" — strip the brackets.
-    if args.list.startswith("[") and args.list.endswith("]"):
-        args.list = args.list[1:-1]
     family_ids = [x.strip() for x in args.list.split(",") if x.strip()]
 
     merge_selected_alignments(family_ids, args.folder, args.out_file)
