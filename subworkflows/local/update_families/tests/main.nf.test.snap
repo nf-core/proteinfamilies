@@ -10,21 +10,9 @@
                 ]
             ],
             "test_update_meta_mqc.csv",
-            11,
-            [
-                {
-                    "UPDATE_FAMILIES:HMMER_HMMBUILD": {
-                        "hmmer": 3.4
-                    }
-                },
-                {
-                    "UPDATE_FAMILIES:HMMER_HMMSEARCH": {
-                        "hmmer": 3.4
-                    }
-                }
-            ]
+            11
         ],
-        "timestamp": "2026-06-06T17:53:18.466426805",
+        "timestamp": "2026-06-08T16:37:58.09809568",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"

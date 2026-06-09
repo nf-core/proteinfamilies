@@ -41,7 +41,6 @@ workflow PROTEINFAMILIES {
 
     main:
 
-    def ch_versions = channel.empty()
     def ch_multiqc_files = channel.empty()
     ch_samplesheet_for_create = channel.empty()
     ch_samplesheet_for_update = channel.empty()
@@ -89,7 +88,6 @@ workflow PROTEINFAMILIES {
         params.save_update_families_pre_clipped_fasta,
         params.save_update_families_clipped_fasta
     )
-    ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
 
     ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
     // Sequences not assigned to any existing family during update feed the de-novo creation path.
@@ -125,7 +123,6 @@ workflow PROTEINFAMILIES {
         params.skip_additional_sequence_recruiting,
         params.hmmsearch_query_length_threshold
     )
-    ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     // Remove redundant sequences and families
     REMOVE_REDUNDANCY (
@@ -148,7 +145,6 @@ workflow PROTEINFAMILIES {
         params.skip_additional_sequence_recruiting,
         params.hmmsearch_query_length_threshold
     )
-    ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
     // Collect all final HMMs per sample and concatenate into a .lib.gz library.
     // Strip chunk from meta (keep only id) so all family HMMs within a sample are grouped together.
@@ -183,7 +179,7 @@ workflow PROTEINFAMILIES {
     //
     // Collate and save software versions
     //
-    // channel.topic("versions") supplements ch_versions by catching version emissions from any
+    // channel.topic("versions") replaced legacy ch_versions by catching version emissions from any
     // process that publishes to the 'versions' topic. distinct() prevents duplicates when many
     // parallel tasks emit the same tool version. Branched into Path instances (versions.yml
     // files from legacy modules) and [process, tool, version] tuples (from topic-aware modules).
@@ -204,7 +200,7 @@ workflow PROTEINFAMILIES {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    def ch_collated_versions = softwareVersionsToYAML(topic_versions.versions_file)
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
@@ -246,7 +242,6 @@ workflow PROTEINFAMILIES {
     emit:
     family_reps    = EXTRACT_FAMILY_REPS.out.fasta
     multiqc_report = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
-    versions       = ch_versions // channel: [ path(versions.yml) ]
 }
 
 /*

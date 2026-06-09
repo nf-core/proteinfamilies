@@ -51,7 +51,6 @@ workflow REMOVE_REDUNDANCY {
     ch_merged_full_msa = channel.empty()
     ch_merged_fasta    = channel.empty()
     ch_merged_hmm      = channel.empty()
-    ch_versions        = channel.empty()
     ch_output_hmm      = channel.empty()
 
     // FAMILY REDUNDANCY REMOVAL MECHANISM
@@ -74,7 +73,6 @@ workflow REMOVE_REDUNDANCY {
             .map { meta, model, seqs -> [meta, model, seqs, false, false, true] }
 
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
-        ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions.first() )
 
         // Join to ensure in sync
         ch_input_for_redundant_fam_identification = EXTRACT_FAMILY_REPS.out.map
@@ -108,7 +106,6 @@ workflow REMOVE_REDUNDANCY {
                 skip_additional_sequence_recruiting,
                 hmmsearch_query_length_threshold
             )
-            ch_versions = ch_versions.mix( MERGE_FAMILIES.out.versions )
 
             ch_merged_seed_msa = MERGE_FAMILIES.out.seed_msa
             ch_merged_full_msa = MERGE_FAMILIES.out.full_msa
@@ -217,5 +214,4 @@ workflow REMOVE_REDUNDANCY {
     fasta    = fasta
     full_msa = full_msa
     hmm      = ch_output_hmm
-    versions = ch_versions
 }
