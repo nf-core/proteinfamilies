@@ -15,9 +15,11 @@ from collections import defaultdict
 import csv
 from Bio import SeqIO
 from concurrent.futures import ThreadPoolExecutor
+from Bio.SeqRecord import SeqRecord
+from typing import Sequence
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c", "--clustering", required=True, metavar="FILE", help="TSV clustering file input."
@@ -37,7 +39,7 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def collect_clusters(clustering_file, threshold):
+def collect_clusters(clustering_file: str, threshold: int) -> dict[str, list[str]]:
     """
     Read an MMSeqs2 TSV (col 0 = representative, col 1 = member) and return clusters at or
     above the size threshold. The representative is counted as a member of its own cluster,
@@ -61,7 +63,7 @@ def collect_clusters(clustering_file, threshold):
     }
 
 
-def load_sequences(fasta_file, needed_ids):
+def load_sequences(fasta_file: str, needed_ids: set[str]) -> dict[str, SeqRecord]:
     """
     Load only the sequences that belong to surviving clusters, avoiding a full FASTA scan
     of sequences that will be discarded anyway.
@@ -81,7 +83,13 @@ def load_sequences(fasta_file, needed_ids):
     return sequences
 
 
-def write_cluster(prefix, chunk_num, members, sequences, out_folder):
+def write_cluster(
+    prefix: str,
+    chunk_num: int,
+    members: list[str],
+    sequences: dict[str, SeqRecord],
+    out_folder: str,
+) -> str:
     """
     Write cluster members to '{prefix}_{chunk_num}.faa'. The sequential chunk_num (not
     the representative ID) names the file; downstream Nextflow tokenizes on '_' to
@@ -105,7 +113,7 @@ def write_cluster(prefix, chunk_num, members, sequences, out_folder):
     return output_file
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     os.makedirs(args.out_folder, exist_ok=True)
 

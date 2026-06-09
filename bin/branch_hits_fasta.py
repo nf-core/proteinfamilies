@@ -13,12 +13,14 @@ import argparse
 import os
 import gzip
 import re
+from io import TextIOWrapper
+from typing import Sequence
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-f",
@@ -63,7 +65,7 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def filter_sequences(domtbl, length_threshold):
+def filter_sequences(domtbl: str, length_threshold: float) -> dict[str, set[str]]:
     """
     Parse an hmmsearch domain table and return hits passing the length threshold.
 
@@ -107,13 +109,13 @@ def filter_sequences(domtbl, length_threshold):
 
 
 # Open the file with gzip if it's gzipped, otherwise open normally
-def open_fasta(file_path):
+def open_fasta(file_path: str) -> TextIOWrapper:
     if file_path.endswith(".gz"):
         return gzip.open(file_path, "rt")
     return open(file_path, "rt")
 
 
-def parse_fasta(file_path):
+def parse_fasta(file_path: str) -> dict[str, SeqRecord]:
     """
     Parse a FASTA file into a record dictionary keyed by sequence ID.
 
@@ -127,7 +129,11 @@ def parse_fasta(file_path):
         return {record.id: record for record in SeqIO.parse(file, "fasta")}
 
 
-def write_non_hit_sequences(filtered_sequences, sequences, non_hits):
+def write_non_hit_sequences(
+    filtered_sequences: dict[str, set[str]],
+    sequences: dict[str, SeqRecord],
+    non_hits: str,
+) -> None:
     """
     Write sequences with no hit to any family to a gzipped FASTA.
 
@@ -152,7 +158,7 @@ def write_non_hit_sequences(filtered_sequences, sequences, non_hits):
     print(f"Written {len(non_hit_records)} non-hit sequences to {non_hits}")
 
 
-def validate_and_parse_hit_name(hit):
+def validate_and_parse_hit_name(hit: str) -> tuple[str, int, int]:
     """
     Validates and parses a hit string.
     The hit must contain a string, at least one '/', and a valid range (integer-integer) after the last '/'.
@@ -182,7 +188,11 @@ def validate_and_parse_hit_name(hit):
     return sequence_name, env_from, env_to
 
 
-def write_family_fastas(results, sequences, output_dir):
+def write_family_fastas(
+    results: dict[str, set[str]],
+    sequences: dict[str, SeqRecord],
+    output_dir: str,
+) -> None:
     """
     Write per-family FASTA files with sequences cropped to their hit envelope.
 
@@ -235,7 +245,13 @@ def write_family_fastas(results, sequences, output_dir):
             print(f"Written {len(family_records)} sequences to {family_fasta_path}")
 
 
-def filter_recruited(fasta, domtbl, length_threshold, hits, non_hits):
+def filter_recruited(
+    fasta: str,
+    domtbl: str,
+    length_threshold: float,
+    hits: str,
+    non_hits: str,
+) -> None:
     """
     Split recruited sequences into per-family hit FASTAs and a non-hit FASTA.
 
@@ -252,7 +268,7 @@ def filter_recruited(fasta, domtbl, length_threshold, hits, non_hits):
     write_family_fastas(filtered_sequences, sequences, hits)
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     filter_recruited(
         args.fasta, args.domtbl, args.length_threshold, args.hits, args.non_hits

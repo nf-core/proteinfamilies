@@ -10,9 +10,10 @@ file, used as the starting point for rebuilding a merged family HMM.
 import sys
 import os
 import argparse
+from typing import Sequence
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Merge selected seed MSA files based on a provided list of family IDs."
     )
@@ -43,7 +44,7 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def merge_selected_alignments(family_ids, folder, out_file):
+def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str) -> None:
     """
     Merge seed alignments whose basename matches one of the requested family IDs.
 
@@ -73,7 +74,7 @@ def merge_selected_alignments(family_ids, folder, out_file):
         print("[WARNING] No files merged (none matched the provided list).", file=sys.stderr)
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
 
     # Nextflow may pass a Groovy list as a string like "[id_1,id_2]" — strip the brackets.

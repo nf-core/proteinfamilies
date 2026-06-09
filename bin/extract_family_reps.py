@@ -14,9 +14,10 @@ import argparse
 import csv
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
+from typing import Sequence
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-f",
@@ -52,7 +53,7 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def extract_data(filepath):
+def extract_data(filepath: str) -> tuple[str | None, str | None, int]:
     """
     Extract the first sequence and total number of entries from a FASTA file.
 
@@ -93,7 +94,9 @@ def extract_data(filepath):
     return header, sequence, size
 
 
-def process_fasta_file(filename, fasta_folder):
+def process_fasta_file(
+    filename: str, fasta_folder: str
+) -> tuple[str, str, int, int, str, str] | None:
     """
     Process a single FASTA file to extract family and representative sequence info.
 
@@ -127,7 +130,9 @@ def process_fasta_file(filename, fasta_folder):
     return None
 
 
-def parse_family_metadata(fasta_folder, num_threads, metadata_file, out_fasta):
+def parse_family_metadata(
+    fasta_folder: str, num_threads: int, metadata_file: str, out_fasta: str
+) -> None:
     """
     Process all FASTA files in a folder, in parallel, and write metadata and representative sequences.
 
@@ -168,7 +173,7 @@ def parse_family_metadata(fasta_folder, num_threads, metadata_file, out_fasta):
                 fasta_out.write(f">{rep_id}\n{seq}\n")
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     parse_family_metadata(args.fasta_folder, args.num_threads, args.metadata, args.out_fasta)
 

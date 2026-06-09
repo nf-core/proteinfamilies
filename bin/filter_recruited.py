@@ -12,10 +12,11 @@ import sys
 import argparse
 import gzip
 import re
+from typing import Sequence
 from Bio import SeqIO
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-d",
@@ -52,7 +53,7 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def filter_sequences(domtbl, length_threshold):
+def filter_sequences(domtbl: str, length_threshold: float) -> list[str]:
     """
     Parse a gzipped hmmsearch domain table and return hits passing the length threshold.
 
@@ -90,7 +91,7 @@ def filter_sequences(domtbl, length_threshold):
     return filtered_sequences
 
 
-def validate_and_parse_hit_name(hit):
+def validate_and_parse_hit_name(hit: str) -> tuple[str, int, int]:
     """
     Validates and parses a hit string.
     The hit must contain a string, at least one '/', and a valid range (integer-integer) after the last '/'.
@@ -120,7 +121,7 @@ def validate_and_parse_hit_name(hit):
     return sequence_name, env_from, env_to
 
 
-def extract_fasta_subset(filtered_sequences, fasta, out_fasta):
+def extract_fasta_subset(filtered_sequences: list[str], fasta: str, out_fasta: str) -> None:
     """
     Write a gzipped FASTA of sequences cropped to their hit envelope coordinates.
 
@@ -165,7 +166,7 @@ def extract_fasta_subset(filtered_sequences, fasta, out_fasta):
         print("No filtered sequences remained to write out. Skipping out_fasta file creation.")
 
 
-def filter_recruited(domtbl, fasta, length_threshold, out_fasta):
+def filter_recruited(domtbl: str, fasta: str, length_threshold: float, out_fasta: str) -> None:
     """
     Filter recruited sequences and write the cropped FASTA subset.
 
@@ -179,7 +180,7 @@ def filter_recruited(domtbl, fasta, length_threshold, out_fasta):
     extract_fasta_subset(filtered_sequences, fasta, out_fasta)
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     filter_recruited(args.domtbl, args.fasta, args.length_threshold, args.out_fasta)
 

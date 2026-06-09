@@ -16,9 +16,10 @@ from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 import tempfile
 import shutil
+from typing import Sequence
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-f",
@@ -46,7 +47,7 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def extract_ids(filepath):
+def extract_ids(filepath: str) -> list[str]:
     """
     Extract all sequence IDs from a FASTA file.
 
@@ -65,7 +66,7 @@ def extract_ids(filepath):
     return ids
 
 
-def process_fasta_file(filename, fasta_folder, tmp_dir):
+def process_fasta_file(filename: str, fasta_folder: str, tmp_dir: str) -> str:
     """
     Process a single FASTA file and write family_id, member_id pairs to a temp TSV.
 
@@ -90,7 +91,7 @@ def process_fasta_file(filename, fasta_folder, tmp_dir):
     return tmp_path
 
 
-def extract_family_members(fasta_folder, num_threads, out_tsv):
+def extract_family_members(fasta_folder: str, num_threads: int, out_tsv: str) -> None:
     """
     Process all FASTA files in a folder in parallel and write family/member IDs to a TSV.
 
@@ -126,7 +127,7 @@ def extract_family_members(fasta_folder, num_threads, out_tsv):
         shutil.rmtree(tmp_dir)
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     extract_family_members(args.fasta_folder, args.num_threads, args.out_tsv)
 

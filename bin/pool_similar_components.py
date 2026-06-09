@@ -12,9 +12,10 @@ import sys
 import argparse
 import pandas as pd
 import networkx as nx
+from typing import Sequence
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Group connected families based on similarity relationships using NetworkX."
     )
@@ -45,7 +46,7 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def build_pools(similarities_csv, threshold):
+def build_pools(similarities_csv: str, threshold: float) -> list[list[str]]:
     """
     Build a graph of pairwise family similarities and extract connected components as pools.
 
@@ -79,7 +80,7 @@ def build_pools(similarities_csv, threshold):
     return pools
 
 
-def write_pools(pools, out_file):
+def write_pools(pools: list[list[str]], out_file: str) -> None:
     """
     Write connected family pools to a newline-delimited text file.
 
@@ -92,7 +93,7 @@ def write_pools(pools, out_file):
             f.write(",".join(pool) + "\n")
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
 
     pools = build_pools(args.input_csv, args.threshold)

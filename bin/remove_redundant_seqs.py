@@ -12,10 +12,11 @@ import sys
 import gzip
 import argparse
 import csv
+from typing import Sequence
 from Bio import SeqIO
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c",
@@ -44,7 +45,7 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def extract_rep_sequences(clustering, sequences, out_fasta):
+def extract_rep_sequences(clustering: str, sequences: str, out_fasta: str) -> None:
     """
     Filter a FASTA to keep only the cluster representative (col 0) from each row of an
     MMSeqs2 clustering TSV, retaining one canonical sequence per similarity group. Unlike
@@ -79,7 +80,7 @@ def extract_rep_sequences(clustering, sequences, out_fasta):
         SeqIO.write(matching_records, output_file, "fasta")
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     extract_rep_sequences(args.clustering, args.sequences, args.out_fasta)
 
