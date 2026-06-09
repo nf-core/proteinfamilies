@@ -44,8 +44,14 @@ def parse_args(args=None):
 
 
 def merge_selected_alignments(family_ids, folder, out_file):
-    """Merge all alignment files in 'folder' whose basenames (without extension)
-    match one of the family IDs in 'family_ids'."""
+    """
+    Merge seed alignments whose basename matches one of the requested family IDs.
+
+    Args:
+        family_ids (list[str]): Family IDs whose alignments should be concatenated.
+        folder (str): Directory containing per-family seed alignments.
+        out_file (str): Output path for the merged alignment file.
+    """
     merged_contents = []
 
     for fam in family_ids:

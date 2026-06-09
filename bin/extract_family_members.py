@@ -96,6 +96,11 @@ def extract_family_members(fasta_folder, num_threads, out_tsv):
 
     Each worker writes to a private temp file to avoid output contention; temp files are
     concatenated in sorted filename order so the output is deterministic across runs.
+
+    Args:
+        fasta_folder (str): Directory containing per-family FASTA files.
+        num_threads (int): Number of worker processes to use.
+        out_tsv (str): Destination path for the family/member TSV.
     """
     all_files = sorted(os.listdir(fasta_folder))
     tmp_dir = tempfile.mkdtemp(prefix="fam_members_")

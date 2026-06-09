@@ -52,6 +52,14 @@ def build_pools(similarities_csv, threshold):
     Uses transitive closure: if A is similar to B and B is similar to C, all three are
     pooled even if A and C have no direct similarity relationship. The undirected graph
     treats similarity as symmetric regardless of which direction the hmmsearch hit landed.
+
+    Args:
+        similarities_csv (str): CSV file containing ``family_1``, ``family_2``, and
+            ``similarity_score`` columns.
+        threshold (float): Minimum similarity score required to keep an edge.
+
+    Returns:
+        list[list[str]]: Connected components sorted internally and by first family ID.
     """
     # Load CSV
     df = pd.read_csv(similarities_csv)
@@ -72,6 +80,13 @@ def build_pools(similarities_csv, threshold):
 
 
 def write_pools(pools, out_file):
+    """
+    Write connected family pools to a newline-delimited text file.
+
+    Args:
+        pools (list[list[str]]): Connected components to write.
+        out_file (str): Destination path for the pool listing.
+    """
     with open(out_file, "w") as f:
         for pool in pools:
             f.write(",".join(pool) + "\n")

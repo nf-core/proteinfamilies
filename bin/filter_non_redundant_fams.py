@@ -35,6 +35,13 @@ def parse_args(args=None):
 
 
 def read_redundant_ids(filepath):
+    """
+    Args:
+        filepath (str): Path to the file listing redundant family IDs.
+
+    Returns:
+        set[str]: Unique non-empty family IDs to exclude.
+    """
     with open(filepath) as f:
         return set(line.strip() for line in f if line.strip())
 
@@ -43,6 +50,10 @@ def filter_files(input_dir, redundant_ids):
     """
     Copy non-redundant files to './' (Nextflow work dir). Family ID is the filename
     prefix before the first dot, so 'sample_1.hmm.gz' → 'sample_1'.
+
+    Args:
+        input_dir (str): Directory containing family files to copy.
+        redundant_ids (set[str]): Family IDs that should be skipped.
     """
     for file in os.listdir(input_dir):
         fam_id = file.split(".")[0]

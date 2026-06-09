@@ -58,6 +58,13 @@ def filter_sequences(domtbl, length_threshold):
 
     The envelope region (cols 19–20) must cover at least length_threshold × qlen (col 5).
     Returns a list of "seqname/env_from-env_to" strings.
+
+    Args:
+        domtbl (str): Path to the gzipped hmmsearch domain table.
+        length_threshold (float): Minimum envelope coverage ratio relative to query length.
+
+    Returns:
+        list[str]: Passing hits encoded as ``seqname/env_from-env_to``.
     """
     filtered_sequences = []
 
@@ -92,7 +99,7 @@ def validate_and_parse_hit_name(hit):
         hit (str): The hit string to validate and parse.
 
     Returns:
-        tuple: (sequence_name, env_from, env_to) if the hit is valid.
+        tuple[str, int, int]: Parsed sequence name and envelope coordinates.
 
     Raises:
         ValueError: If the hit is invalid.
@@ -120,6 +127,12 @@ def extract_fasta_subset(filtered_sequences, fasta, out_fasta):
     Coordinates are 1-based (HMMER convention), converted to 0-based for slicing.
     If the extracted range spans the full sequence, the ID omits the /from-to suffix.
     If no sequences passed the threshold, the output file is not created.
+
+    Args:
+        filtered_sequences (list[str]): Passing hits encoded as
+            ``seqname/env_from-env_to``.
+        fasta (str): Input FASTA containing all candidate sequences.
+        out_fasta (str): Output path for the gzipped FASTA subset.
     """
     if filtered_sequences:
         open_func = gzip.open if fasta.endswith(".gz") else open
@@ -153,6 +166,15 @@ def extract_fasta_subset(filtered_sequences, fasta, out_fasta):
 
 
 def filter_recruited(domtbl, fasta, length_threshold, out_fasta):
+    """
+    Filter recruited sequences and write the cropped FASTA subset.
+
+    Args:
+        domtbl (str): Path to the gzipped hmmsearch domain table.
+        fasta (str): Input FASTA containing all candidate sequences.
+        length_threshold (float): Minimum envelope coverage ratio relative to query length.
+        out_fasta (str): Output path for the gzipped FASTA subset.
+    """
     filtered_sequences = filter_sequences(domtbl, length_threshold)
     extract_fasta_subset(filtered_sequences, fasta, out_fasta)
 
