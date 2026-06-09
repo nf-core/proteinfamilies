@@ -39,7 +39,7 @@ workflow MERGE_FAMILIES {
             def combinedSuffix = suffixes.join('_')
             // Keep original id, add new field merged_id
             def newMeta = meta + [merged_id: "${meta.id}_${combinedSuffix}"]
-            return [newMeta, components]
+            return [newMeta, components.join(',')]
         }
 
     // .first() converts seed_msa to a value channel so each pooled-component group can combine

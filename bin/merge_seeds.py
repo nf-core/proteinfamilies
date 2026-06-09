@@ -77,9 +77,6 @@ def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str)
 def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
 
-    # Nextflow may pass a Groovy list as a string like "[id_1,id_2]" — strip the brackets.
-    if args.list.startswith("[") and args.list.endswith("]"):
-        args.list = args.list[1:-1]
     family_ids = [x.strip() for x in args.list.split(",") if x.strip()]
 
     merge_selected_alignments(family_ids, args.folder, args.out_file)
