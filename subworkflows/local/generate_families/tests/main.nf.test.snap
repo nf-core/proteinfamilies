@@ -49,35 +49,12 @@
                     },
                     "test_chunk_2.fasta.gz:md5,7ae62909eb81f92c331b2048a8ac34d3"
                 ]
-            ],
-            [
-                {
-                    "GENERATE_FAMILIES:HMMER_HMMALIGN": {
-                        "hmmer": 3.4
-                    }
-                },
-                {
-                    "GENERATE_FAMILIES:FILTER_RECRUITED": {
-                        "python": "3.13.1",
-                        "biopython": 1.85
-                    }
-                },
-                {
-                    "GENERATE_FAMILIES:HMMER_HMMSEARCH": {
-                        "hmmer": 3.4
-                    }
-                },
-                {
-                    "GENERATE_FAMILIES:HMMER_HMMBUILD": {
-                        "hmmer": 3.4
-                    }
-                }
             ]
         ],
-        "timestamp": "2026-05-01T09:38:19.990741069",
+        "timestamp": "2026-06-08T16:36:07.799636446",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     }
 }

@@ -1,24 +1,24 @@
 nextflow_process {
 
-    name "Test Process MERGE_SEEDS"
+    name "Test Process FILTER_NON_REDUNDANT_FAMS"
     script "../main.nf"
-    process "MERGE_SEEDS"
+    process "FILTER_NON_REDUNDANT_FAMS"
 
-    test("proteinfamilies - aln") {
+    test("proteinfamilies - nonredundant") {
 
         when {
             process {
                 """
-                input[0] = Channel.of([
-                    [ id: 'test_similarities' ],
-                    "mgnifams_test_1,mgnifams_test_2",
-                ])
-                input[1] = Channel.of([
-                    [ id: 'test_aln' ],
+                input[0] = channel.of([
+                    [ id: 'aln' ],
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
                     ]
+                ])
+                input[1] = channel.of([
+                    [ id: 'redundant_ids' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/redundant_fam_ids.txt', checkIfExists: true),
                 ])
                 """
             }
@@ -28,30 +28,30 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(
-                    process.out.merged_seed_msa,
-                    process.out.versions.collect { path(it).yaml }
-                    ).match()}
+                    process.out.filtered,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match() }
             )
         }
     }
 
-    test("proteinfamilies - aln - stub") {
+    test("proteinfamilies - nonredundant - stub") {
 
         options "-stub"
 
         when {
             process {
                 """
-                input[0] = Channel.of([
-                    [ id: 'test_similarities' ],
-                    "mgnifams_test_1,mgnifams_test_2",
-                ])
-                input[1] = Channel.of([
-                    [ id: 'test_aln' ],
+                input[0] = channel.of([
+                    [ id: 'aln' ],
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
                     ]
+                ])
+                input[1] = channel.of([
+                    [ id: 'redundant_ids' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/redundant_fam_ids.txt', checkIfExists: true),
                 ])
                 """
             }
@@ -60,10 +60,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(
-                    process.out.merged_seed_msa,
-                    process.out.versions.collect { path(it).yaml }
-                    ).match()}
+                { assert snapshot(process.out).match() }
             )
         }
 

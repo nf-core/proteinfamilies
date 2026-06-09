@@ -1,5 +1,10 @@
 /*
     UPDATE EXISTING FAMILIES HMM AND MSA
+
+    Assigns new sequences to existing families by searching against a concatenated HMM
+    library. Hit sequences are merged with each family's existing members, re-aligned,
+    and used to rebuild the family HMM. Sequences matching no family are emitted as
+    no_hit_seqs for downstream de-novo family creation.
 */
 
 include { UNTAR as UNTAR_HMM                            } from '../../../modules/nf-core/untar/main'
@@ -33,7 +38,6 @@ workflow UPDATE_FAMILIES {
     save_update_families_clipped_fasta          // boolean
 
     main:
-    ch_versions            = channel.empty()
     ch_updated_family_reps = channel.empty()
     ch_no_hit_seqs         = channel.empty()
 
@@ -47,8 +51,9 @@ workflow UPDATE_FAMILIES {
 
     UNTAR_MSA( ch_input_for_untar.msa )
 
-    // check that the HMMs and the MSAs match
-    // join to ensure in sync
+    // Validate that each HMM archive and MSA archive contain matching files. A mismatch
+    // would cause silent per-family key-join failures in the combine steps below.
+    // join ensures HMM/MSA tarballs are processed in sync per sample.
     ch_folders_to_validate = UNTAR_HMM.out.untar
         .join(UNTAR_MSA.out.untar)
         .multiMap { meta, folder1, folder2 ->
@@ -66,7 +71,6 @@ workflow UPDATE_FAMILIES {
         .map { meta, concatenated_hmm, fasta, _existing_hmms_to_update, _existing_msas_to_update -> [meta, concatenated_hmm, fasta, false, false, true] }
 
     HMMER_HMMSEARCH( ch_input_for_hmmsearch )
-    ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions.first() )
 
     ch_input_for_branch_hits = HMMER_HMMSEARCH.out.domain_summary
         .join(ch_samplesheet_for_update)
@@ -77,9 +81,10 @@ workflow UPDATE_FAMILIES {
 
     // Branch hit families/fasta proteins from non hit fasta proteins
     BRANCH_HITS_FASTA ( ch_input_for_branch_hits.fasta, ch_input_for_branch_hits.domtbl, hmmsearch_query_length_threshold )
-    ch_versions = ch_versions.mix( BRANCH_HITS_FASTA.out.versions.first() )
     ch_no_hit_seqs = BRANCH_HITS_FASTA.out.non_hit_fasta
 
+    // Both channels use [id, family] meta so they can be combined by key to pair each
+    // newly recruited sequence file with its corresponding family's MSA.
     ch_hits_fasta = BRANCH_HITS_FASTA.out.hits
         .transpose()
         .map { meta, file ->
@@ -114,7 +119,6 @@ workflow UPDATE_FAMILIES {
         MMSEQS_FASTA_CLUSTER( ch_fasta, clustering_tool )
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
-        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         ch_fasta = REMOVE_REDUNDANT_SEQS.out.fasta
     }
 
@@ -136,22 +140,20 @@ workflow UPDATE_FAMILIES {
     }
 
     HMMER_HMMBUILD( ch_msa, [] )
-    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions.first() )
 
+    // Strip family from meta and group by sample ID so EXTRACT_FAMILY_MEMBERS/REPS
+    // receive all families for a sample together.
     ch_fasta = ch_fasta
         .map { meta, faa -> [ [id: meta.id], faa ] }
         .groupTuple(by: 0)
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions.first() )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
     ch_updated_family_reps = ch_updated_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     emit:
     no_hit_seqs         = ch_no_hit_seqs
     updated_family_reps = ch_updated_family_reps
     hmm                 = HMMER_HMMBUILD.out.hmm
-    versions            = ch_versions
 }

@@ -17,7 +17,8 @@ process IDENTIFY_REDUNDANT_FAMS {
     tuple val(meta), path("redundant_fam_ids.txt"), emit: redundant_ids
     tuple val(meta), path("similar_fam_ids.txt")  , emit: similar_ids
     tuple val(meta), path("similarities.csv")     , emit: similarities, optional: true
-    path "versions.yml"                           , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
+    tuple val("${task.process}"), val('pandas'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('pandas'))\""), emit: versions_pandas, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -34,12 +35,6 @@ process IDENTIFY_REDUNDANT_FAMS {
         --similar_ids_file similar_fam_ids.txt \\
         --pairwise_similarities_file similarities.csv \\
         ${args}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        pandas: \$(python -c "import importlib.metadata; print(importlib.metadata.version('pandas'))")
-    END_VERSIONS
     """
 
     stub:
@@ -47,11 +42,5 @@ process IDENTIFY_REDUNDANT_FAMS {
     touch redundant_fam_ids.txt
     touch similar_fam_ids.txt
     touch similarities.csv
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        pandas: \$(python -c "import importlib.metadata; print(importlib.metadata.version('pandas'))")
-    END_VERSIONS
     """
 }

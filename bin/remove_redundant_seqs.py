@@ -2,15 +2,21 @@
 
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Reduces sequence redundancy within a family by retaining only the cluster representative
+(col 0) from each MMSeqs2 clustering TSV row, keeping one canonical sequence per
+similarity group. All clusters are kept regardless of size.
+"""
 
 import sys
 import gzip
 import argparse
 import csv
+from typing import Sequence
 from Bio import SeqIO
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c",
@@ -39,8 +45,18 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def extract_rep_sequences(clustering, sequences, out_fasta):
-    # Read the clustering file and extract unique values from column 1
+def extract_rep_sequences(clustering: str, sequences: str, out_fasta: str) -> None:
+    """
+    Filter a FASTA to keep only the cluster representative (col 0) from each row of an
+    MMSeqs2 clustering TSV, retaining one canonical sequence per similarity group. Unlike
+    chunk_clusters.py, no minimum cluster size is applied — singletons are also retained.
+
+    Args:
+        clustering (str): MMSeqs2 clustering TSV file.
+        sequences (str): Input FASTA containing all original sequences.
+        out_fasta (str): Output FASTA path for retained representatives.
+    """
+    # Read the clustering file and extract unique values from column 0 (representatives)
     unique_representatives = set()
     with open(clustering, "r") as tsv_file:
         reader = csv.reader(tsv_file, delimiter="\t")
@@ -64,7 +80,7 @@ def extract_rep_sequences(clustering, sequences, out_fasta):
         SeqIO.write(matching_records, output_file, "fasta")
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     extract_rep_sequences(args.clustering, args.sequences, args.out_fasta)
 

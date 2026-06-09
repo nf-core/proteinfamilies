@@ -12,7 +12,9 @@ process POOL_SIMILAR_COMPONENTS {
 
     output:
     tuple val(meta), path("pooled_components.txt"), emit: pooled_components
-    path "versions.yml"                           , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
+    tuple val("${task.process}"), val('pandas'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('pandas'))\""), emit: versions_pandas, topic: versions
+    tuple val("${task.process}"), val('networkx'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('networkx'))\""), emit: versions_networkx, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,24 +24,10 @@ process POOL_SIMILAR_COMPONENTS {
     pool_similar_components.py \\
         --input_csv ${similarities} \\
         --out_file pooled_components.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        pandas: \$(python -c "import importlib.metadata; print(importlib.metadata.version('pandas'))")
-        networkx: \$(python -c "import importlib.metadata; print(importlib.metadata.version('networkx'))")
-    END_VERSIONS
     """
 
     stub:
     """
     touch pooled_components.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-        pandas: \$(python -c "import importlib.metadata; print(importlib.metadata.version('pandas'))")
-        networkx: \$(python -c "import importlib.metadata; print(importlib.metadata.version('networkx'))")
-    END_VERSIONS
     """
 }

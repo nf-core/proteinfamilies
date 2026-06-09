@@ -88,7 +88,8 @@ workflow PIPELINE_INITIALISATION {
         show_hidden,
         before_text,
         after_text,
-        command
+        command,
+        null
     )
 
     //
@@ -271,7 +272,9 @@ def methodsDescriptionText(mqc_methods_yaml) {
 }
 
 //
-// Validate that two folders (HMMs and MSAs for update) contain the same number of files and matching base filenames
+// Validate that an HMM folder and an MSA folder contain the same number of files with matching
+// base names. Aborts early if they diverge — a mismatch would cause silent key-join failures
+// in the per-family combine steps inside UPDATE_FAMILIES.
 //
 def validateMatchingFolders(channel1, channel2) {
     // Fetch the contents of the channels

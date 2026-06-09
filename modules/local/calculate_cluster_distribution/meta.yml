@@ -36,11 +36,27 @@ output:
           type: file
           description: Custom MultiQC report file
           pattern: "*.csv"
+  versions_sed:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - sed:
+          type: string
+          description: The tool name
+      - "sed --version 2>&1 | sed -n '1s/sed (GNU sed) //p'":
+          type: eval
+          description: The expression to obtain the version of sed
+topics:
   versions:
-    - versions.yml:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - sed:
+          type: string
+          description: The name of the tool
+      - "sed --version 2>&1 | sed -n '1s/sed (GNU sed) //p'":
+          type: eval
+          description: The expression to obtain the version of sed
 authors:
   - "@vagkaratzas"
 maintainers:

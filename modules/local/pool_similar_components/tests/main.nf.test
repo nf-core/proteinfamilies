@@ -22,7 +22,7 @@ nextflow_process {
                 { assert process.success },
                 { assert snapshot(
                     process.out.pooled_components,
-                    process.out.versions.collect { path(it).yaml }
+                    process.out.findAll { key, val -> key.startsWith("versions") }
                     ).match()}
             )
         }
@@ -46,10 +46,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(
-                    process.out.pooled_components,
-                    process.out.versions.collect { path(it).yaml }
-                    ).match()}
+                { assert snapshot(process.out).match() }
             )
         }
     }

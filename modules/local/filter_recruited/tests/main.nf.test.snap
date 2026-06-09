@@ -1,0 +1,93 @@
+{
+    "proteinfamilies - hmmsearch - fasta": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "filtering",
+                        "chunk": 1
+                    },
+                    "filtering_1.fasta.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
+                ]
+            ],
+            {
+                "versions_biopython": [
+                    [
+                        "FILTER_RECRUITED",
+                        "biopython",
+                        "1.85"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "FILTER_RECRUITED",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-08T11:07:55.888057511",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "proteinfamilies - hmmsearch - fasta - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "filtering",
+                            "chunk": 1
+                        },
+                        "filtering_1.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "1": [
+                    [
+                        "FILTER_RECRUITED",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "2": [
+                    [
+                        "FILTER_RECRUITED",
+                        "biopython",
+                        "1.85"
+                    ]
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "filtering",
+                            "chunk": 1
+                        },
+                        "filtering_1.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "versions_biopython": [
+                    [
+                        "FILTER_RECRUITED",
+                        "biopython",
+                        "1.85"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "FILTER_RECRUITED",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-08T11:08:08.425113729",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    }
+}

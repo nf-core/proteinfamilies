@@ -10,7 +10,7 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'test_update' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'test_data/existing_hmms.tar.gz', checkIfExists: true),
@@ -34,9 +34,8 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
                     file(workflow.out.updated_family_reps[0][1]).name,
-                    path(workflow.out.updated_family_reps[0][1]).readLines().size(),
-                    workflow.out.versions.collect { path(it).yaml }.unique()
-                    ).match()}
+                    path(workflow.out.updated_family_reps[0][1]).readLines().size()
+                ).match()}
             )
         }
     }

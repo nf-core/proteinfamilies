@@ -1,5 +1,10 @@
 /*
     FAMILY MERGING
+
+    Groups similar families into pools, merges their seed MSAs into a single combined
+    seed, then rebuilds final family models via GENERATE_FAMILIES. The merged_id
+    encodes which original families were combined (e.g., 'sample_1_7' from 'sample_1'
+    and 'sample_7').
 */
 
 include { POOL_SIMILAR_COMPONENTS } from '../../../modules/local/pool_similar_components/main'
@@ -20,10 +25,8 @@ workflow MERGE_FAMILIES {
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
     main:
-    ch_versions = channel.empty()
 
     POOL_SIMILAR_COMPONENTS( similarities )
-    ch_versions = ch_versions.mix( POOL_SIMILAR_COMPONENTS.out.versions.first() )
 
     ch_pooled_components = POOL_SIMILAR_COMPONENTS.out.pooled_components
         .splitCsv( by:1 )
@@ -36,11 +39,13 @@ workflow MERGE_FAMILIES {
             def combinedSuffix = suffixes.join('_')
             // Keep original id, add new field merged_id
             def newMeta = meta + [merged_id: "${meta.id}_${combinedSuffix}"]
-            return [newMeta, components]
+            return [newMeta, components.join(',')]
         }
 
+    // .first() converts seed_msa to a value channel so each pooled-component group can combine
+    // with the full seed MSA collection; without it, a queue channel would be consumed after
+    // the first pairing.
     MERGE_SEEDS( ch_pooled_components, seed_msa.first() )
-    ch_versions = ch_versions.mix( MERGE_SEEDS.out.versions.first() )
 
     GENERATE_FAMILIES (
         sequences,
@@ -53,10 +58,8 @@ workflow MERGE_FAMILIES {
         skip_additional_sequence_recruiting,
         hmmsearch_query_length_threshold
     )
-    ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     emit:
-    versions = ch_versions
     seed_msa = GENERATE_FAMILIES.out.seed_msa
     full_msa = GENERATE_FAMILIES.out.full_msa
     fasta    = GENERATE_FAMILIES.out.fasta

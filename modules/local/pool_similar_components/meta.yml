@@ -42,11 +42,65 @@ output:
           pattern: "pooled_components.txt"
           ontologies:
             - edam: "http://edamontology.org/format_2330" # Textual format
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+  versions_pandas:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - pandas:
+          type: string
+          description: The tool name
+      - 'python -c "import importlib.metadata; print(importlib.metadata.version(''pandas''))"':
+          type: eval
+          description: The expression to obtain the version of pandas
+  versions_networkx:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - networkx:
+          type: string
+          description: The tool name
+      - 'python -c "import importlib.metadata; print(importlib.metadata.version(''networkx''))"':
+          type: eval
+          description: The expression to obtain the version of networkx
+topics:
   versions:
-    - "versions.yml":
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - pandas:
+          type: string
+          description: The name of the tool
+      - 'python -c "import importlib.metadata; print(importlib.metadata.version(''pandas''))"':
+          type: eval
+          description: The expression to obtain the version of pandas
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - networkx:
+          type: string
+          description: The name of the tool
+      - 'python -c "import importlib.metadata; print(importlib.metadata.version(''networkx''))"':
+          type: eval
+          description: The expression to obtain the version of networkx
 authors:
   - "@vagkaratzas"
 maintainers:

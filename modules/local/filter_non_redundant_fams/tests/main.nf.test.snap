@@ -11,7 +11,11 @@
                     ]
                 ],
                 "1": [
-                    "versions.yml:md5,36997366ce1de5272a1208b9c3cad892"
+                    [
+                        "FILTER_NON_REDUNDANT_FAMS",
+                        "python",
+                        "3.13.1"
+                    ]
                 ],
                 "filtered": [
                     [
@@ -21,16 +25,20 @@
                         "aln_1.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
-                "versions": [
-                    "versions.yml:md5,36997366ce1de5272a1208b9c3cad892"
+                "versions_python": [
+                    [
+                        "FILTER_NON_REDUNDANT_FAMS",
+                        "python",
+                        "3.13.1"
+                    ]
                 ]
             }
         ],
+        "timestamp": "2026-06-06T16:50:12.610310222",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2025-12-18T12:11:26.18829014"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
     },
     "proteinfamilies - nonredundant": {
         "content": [
@@ -42,18 +50,20 @@
                     "mgnifams_test_2.aln:md5,62ba4732047ba75151f735c2399973a4"
                 ]
             ],
-            [
-                {
-                    "FILTER_NON_REDUNDANT_FAMS": {
-                        "python": "3.13.1"
-                    }
-                }
-            ]
+            {
+                "versions_python": [
+                    [
+                        "FILTER_NON_REDUNDANT_FAMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
         ],
+        "timestamp": "2026-06-06T16:50:01.997126464",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.3"
-        },
-        "timestamp": "2025-06-13T15:16:53.342516494"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
     }
 }

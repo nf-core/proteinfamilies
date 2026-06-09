@@ -13,7 +13,7 @@ process MERGE_SEEDS {
 
     output:
     tuple val(meta), path("${prefix}.fas"), emit: merged_seed_msa
-    path "versions.yml"                   , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,21 +25,11 @@ process MERGE_SEEDS {
         --list "${similarities}" \\
         --folder seed_msa \\
         --out_file ${prefix}.fas
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-    END_VERSIONS
     """
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.fas
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-    END_VERSIONS
     """
 }

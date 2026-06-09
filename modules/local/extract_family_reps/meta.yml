@@ -48,11 +48,27 @@ output:
           a MultiQC CSV file with all family representative sequence metadata:
           "Sample Name","Family Id","Size","Representative Length","Representative Id","Sequence"
         pattern: "*_meta_mqc.csv"
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+topics:
   versions:
-    - versions.yml:
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
 authors:
   - "@vagkaratzas"
 maintainers:

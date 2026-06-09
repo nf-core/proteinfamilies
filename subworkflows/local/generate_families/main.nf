@@ -1,5 +1,12 @@
 /*
     FAMILY MODEL GENERATION
+
+    Builds per-cluster HMMs from seed alignments. Two FASTA channels serve distinct roles:
+      ch_fasta   — individual cluster chunks, each aligned into a seed MSA
+      sequences  — the full per-sample sequence pool, searched with each cluster HMM to
+                   recruit additional members beyond the initial cluster (unless
+                   skip_additional_sequence_recruiting is true, in which case the seed
+                   MSA doubles as the final full MSA).
 */
 
 include { ALIGN_SEQUENCES  } from '../../../subworkflows/local/align_sequences'
@@ -22,7 +29,6 @@ workflow GENERATE_FAMILIES {
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
     main:
-    ch_versions = channel.empty()
     ch_seed_msa = channel.empty()
     ch_full_msa = channel.empty()
     ch_hmm      = channel.empty()
@@ -36,10 +42,10 @@ workflow GENERATE_FAMILIES {
     }
 
     HMMER_HMMBUILD( ch_seed_msa, [] )
-    ch_versions = ch_versions.mix( HMMER_HMMBUILD.out.versions.first() )
     ch_hmm = HMMER_HMMBUILD.out.hmm
 
-    // Combine with same id to ensure in sync
+    // Strip chunk from meta so each cluster's HMM can be matched to the full sample sequence
+    // pool by sample ID alone; the original chunk meta is restored via _id after the combine.
     ch_input_for_hmmsearch = ch_hmm
         .map { meta, hmm -> [ [id: meta.id], meta, hmm ] }
         .combine(sequences, by: 0)
@@ -47,7 +53,6 @@ workflow GENERATE_FAMILIES {
 
     if (!skip_additional_sequence_recruiting) {
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
-        ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions.first() )
 
         // Combine with same id to ensure in sync
         ch_input_for_filter_recruited = HMMER_HMMSEARCH.out.domain_summary
@@ -56,7 +61,6 @@ workflow GENERATE_FAMILIES {
             .map { _id, meta, domtbl, seqs -> [ meta, domtbl, seqs ] }
 
         FILTER_RECRUITED( ch_input_for_filter_recruited, hmmsearch_query_length_threshold )
-        ch_versions = ch_versions.mix( FILTER_RECRUITED.out.versions.first() )
         ch_fasta = FILTER_RECRUITED.out.fasta
 
         // Join to ensure in sync
@@ -68,14 +72,13 @@ workflow GENERATE_FAMILIES {
             }
 
         HMMER_HMMALIGN( ch_input_for_hmmalign.seq, ch_input_for_hmmalign.hmm )
-        ch_versions = ch_versions.mix( HMMER_HMMALIGN.out.versions.first() )
         ch_full_msa = HMMER_HMMALIGN.out.sto
     } else {
+        // Seed MSA serves as the final full MSA when additional sequence recruiting is skipped.
         ch_full_msa = ch_seed_msa
     }
 
     emit:
-    versions = ch_versions
     seed_msa = ch_seed_msa
     full_msa = ch_full_msa
     fasta    = ch_fasta

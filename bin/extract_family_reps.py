@@ -2,6 +2,10 @@
 
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
+"""
+Selects the first sequence in each per-family FASTA as the family representative.
+Writes a MultiQC-compatible metadata CSV and a FASTA of representative sequences.
+"""
 
 import sys
 import os
@@ -10,9 +14,10 @@ import argparse
 import csv
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
+from typing import Sequence
 
 
-def parse_args(args=None):
+def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-f",
@@ -48,7 +53,7 @@ def parse_args(args=None):
     return parser.parse_args(args)
 
 
-def extract_data(filepath):
+def extract_data(filepath: str) -> tuple[str | None, str | None, int]:
     """
     Extract the first sequence and total number of entries from a FASTA file.
 
@@ -58,7 +63,9 @@ def extract_data(filepath):
     Returns:
         tuple: (header, sequence, size), where:
             header (str): ID of the first sequence.
-            sequence (str): Amino acid sequence (with gaps and dots removed).
+            sequence (str): Amino acid sequence with gaps and dots removed — the input
+                            may be an MSA, so the representative must be ungapped for
+                            downstream FASTA use.
             size (int): Total number of sequences in the file.
     """
     open_func = gzip.open if filepath.endswith(".gz") else open
@@ -87,7 +94,9 @@ def extract_data(filepath):
     return header, sequence, size
 
 
-def process_fasta_file(filename, fasta_folder):
+def process_fasta_file(
+    filename: str, fasta_folder: str
+) -> tuple[str, str, int, int, str, str] | None:
     """
     Process a single FASTA file to extract family and representative sequence info.
 
@@ -111,7 +120,7 @@ def process_fasta_file(filename, fasta_folder):
     header, sequence, size = extract_data(filepath)
     if header and sequence:
         return (
-            family_name,           # Sample Name
+            family_name,           # Sample Name — same as Family ID so each family is its own MultiQC "sample"
             family_name,           # Family ID
             size,                  # Family size
             len(sequence),         # Representative Length
@@ -121,7 +130,9 @@ def process_fasta_file(filename, fasta_folder):
     return None
 
 
-def parse_family_metadata(fasta_folder, num_threads, metadata_file, out_fasta):
+def parse_family_metadata(
+    fasta_folder: str, num_threads: int, metadata_file: str, out_fasta: str
+) -> None:
     """
     Process all FASTA files in a folder, in parallel, and write metadata and representative sequences.
 
@@ -137,7 +148,7 @@ def parse_family_metadata(fasta_folder, num_threads, metadata_file, out_fasta):
         results = list(executor.map(partial(process_fasta_file, fasta_folder=fasta_folder), all_files))
 
     with open(out_fasta, "w") as fasta_out, open(metadata_file, "w", newline="") as csv_out:
-        # Write custom metadata lines to the metadata file
+        # MultiQC-specific comment lines that configure the custom table section in the report.
         csv_out.write(
             '# id: "family_metadata"\n'
             '# section_name: "Family Metadata"\n'
@@ -162,7 +173,7 @@ def parse_family_metadata(fasta_folder, num_threads, metadata_file, out_fasta):
                 fasta_out.write(f">{rep_id}\n{seq}\n")
 
 
-def main(args=None):
+def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     parse_family_metadata(args.fasta_folder, args.num_threads, args.metadata, args.out_fasta)
 

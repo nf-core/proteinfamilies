@@ -27,6 +27,10 @@ include { EXTRACT_FAMILY_REPS                              } from '../modules/lo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+// Two-path pipeline: samples providing existing HMMs+MSAs go through UPDATE_FAMILIES to recruit
+// new sequences into those families; all other samples take the de-novo path
+// (cluster → align → HMM build). Sequences not assigned to any existing family during the
+// update path are forwarded to the de-novo path so nothing is discarded.
 workflow PROTEINFAMILIES {
     take:
     ch_samplesheet // channel: samplesheet read in from --input
@@ -37,7 +41,6 @@ workflow PROTEINFAMILIES {
 
     main:
 
-    def ch_versions = channel.empty()
     def ch_multiqc_files = channel.empty()
     ch_samplesheet_for_create = channel.empty()
     ch_samplesheet_for_update = channel.empty()
@@ -58,20 +61,15 @@ workflow PROTEINFAMILIES {
             [ meta, updated_fasta, existing_hmms, existing_msas ]
         }
 
+    // ?.size() is Groovy's null-safe operator: absent samplesheet columns yield null (falsy).
+    // Both HMMs and MSAs must be present (non-null, non-zero file size) to route to to_update.
     ch_branch_result = ch_samplesheet_updated
         .branch { _meta, _updated_fasta, existing_hmms_to_update, existing_msas_to_update ->
             to_create: !existing_hmms_to_update?.size() && !existing_msas_to_update?.size()
             to_update: existing_hmms_to_update?.size() && existing_msas_to_update?.size()
         }
 
-    /************************************/
-    /* Splitting the samplesheet into 2 */
-    /* - Entries to create new families */
-    /*   (they only have sequences)     */
-    /* - Entries to update existing     */
-    /*   families (existing HMM models  */
-    /*   and MSAs)                      */
-    /************************************/
+    // Entries with existing models go to UPDATE_FAMILIES; entries with sequences only go to de-novo creation.
     ch_samplesheet_for_create = ch_branch_result.to_create
         .map { meta, updated_fasta, _existing_hmms, _existing_msas ->
             [meta, updated_fasta]
@@ -90,9 +88,9 @@ workflow PROTEINFAMILIES {
         params.save_update_families_pre_clipped_fasta,
         params.save_update_families_clipped_fasta
     )
-    ch_versions = ch_versions.mix( UPDATE_FAMILIES.out.versions )
 
     ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
+    // Sequences not assigned to any existing family during update feed the de-novo creation path.
     ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
 
     // Creating new families
@@ -103,11 +101,10 @@ workflow PROTEINFAMILIES {
     )
 
     CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
-    ch_versions = ch_versions.mix( CALCULATE_CLUSTER_DISTRIBUTION.out.versions.first() )
 
     CHUNK_CLUSTERS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs, params.cluster_size_threshold )
-    ch_versions = ch_versions.mix( CHUNK_CLUSTERS.out.versions.first() )
 
+    // tokenize('_').last() extracts the numeric suffix from filenames like 'sample_1.faa.gz' as the chunk ID.
     ch_fasta_chunks = CHUNK_CLUSTERS.out.fasta_chunks
         .transpose()
         .map { meta, file_path ->
@@ -126,7 +123,6 @@ workflow PROTEINFAMILIES {
         params.skip_additional_sequence_recruiting,
         params.hmmsearch_query_length_threshold
     )
-    ch_versions = ch_versions.mix( GENERATE_FAMILIES.out.versions )
 
     // Remove redundant sequences and families
     REMOVE_REDUNDANCY (
@@ -149,9 +145,9 @@ workflow PROTEINFAMILIES {
         params.skip_additional_sequence_recruiting,
         params.hmmsearch_query_length_threshold
     )
-    ch_versions = ch_versions.mix( REMOVE_REDUNDANCY.out.versions )
 
-    // Collect all final HMMs per sample and concatenate into a .lib.gz library
+    // Collect all final HMMs per sample and concatenate into a .lib.gz library.
+    // Strip chunk from meta (keep only id) so all family HMMs within a sample are grouped together.
     ch_hmm_for_library = UPDATE_FAMILIES.out.hmm
         .map { meta, model -> [ [id: meta.id], model ] }
         .mix(
@@ -176,15 +172,17 @@ workflow PROTEINFAMILIES {
         .groupTuple(by: 0)
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_MEMBERS.out.versions.first() )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
-    ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
     ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     //
     // Collate and save software versions
     //
+    // channel.topic("versions") replaced legacy ch_versions by catching version emissions from any
+    // process that publishes to the 'versions' topic. distinct() prevents duplicates when many
+    // parallel tasks emit the same tool version. Branched into Path instances (versions.yml
+    // files from legacy modules) and [process, tool, version] tuples (from topic-aware modules).
     def topic_versions = channel.topic("versions")
         .distinct()
         .branch { entry ->
@@ -202,7 +200,7 @@ workflow PROTEINFAMILIES {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    def ch_collated_versions = softwareVersionsToYAML(topic_versions.versions_file)
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
@@ -244,7 +242,6 @@ workflow PROTEINFAMILIES {
     emit:
     family_reps    = EXTRACT_FAMILY_REPS.out.fasta
     multiqc_report = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
-    versions       = ch_versions // channel: [ path(versions.yml) ]
 }
 
 /*

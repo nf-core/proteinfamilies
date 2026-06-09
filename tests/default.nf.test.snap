@@ -7,8 +7,8 @@
                     "sed": 4.7
                 },
                 "CHUNK_CLUSTERS": {
-                    "python": "3.13.1",
-                    "biopython": 1.85
+                    "biopython": 1.85,
+                    "python": "3.13.1"
                 },
                 "CLIPKIT": {
                     "clipkit": "2.11.4"
@@ -35,8 +35,8 @@
                     "python": "3.13.1"
                 },
                 "FILTER_RECRUITED": {
-                    "python": "3.13.1",
-                    "biopython": 1.85
+                    "biopython": 1.85,
+                    "python": "3.13.1"
                 },
                 "FIND_CONCATENATE_HMMS": {
                     "coreutils": 9.4,
@@ -63,8 +63,8 @@
                     "hmmer": 3.4
                 },
                 "IDENTIFY_REDUNDANT_FAMS": {
-                    "python": "3.13.1",
-                    "pandas": "2.3.0"
+                    "pandas": "2.3.0",
+                    "python": "3.13.1"
                 },
                 "MMSEQS_CREATEDB": {
                     "mmseqs": "18.8cc5c"
@@ -76,8 +76,8 @@
                     "mmseqs": "18.8cc5c"
                 },
                 "REMOVE_REDUNDANT_SEQS": {
-                    "python": "3.13.1",
-                    "biopython": 1.85
+                    "biopython": 1.85,
+                    "python": "3.13.1"
                 },
                 "SEQFU_STATS_AFTER": {
                     "seqfu": "1.22.3"
@@ -95,7 +95,7 @@
                     "seqkit": "2.9.0"
                 },
                 "Workflow": {
-                    "nf-core/proteinfamilies": "v2.3.0"
+                    "nf-core/proteinfamilies": "v2.4.0"
                 }
             },
             [
@@ -205,10 +205,10 @@
             "/full_msa/filtered/famsa_align/mgnifams_test: 5",
             "/fasta/non_redundant_sequences_filtered/mgnifams_test: 5"
         ],
-        "timestamp": "2026-05-05T10:21:09.600866623",
+        "timestamp": "2026-06-06T17:19:22.794970087",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.3"
         }
     }
 }

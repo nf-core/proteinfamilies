@@ -13,7 +13,7 @@ process FILTER_NON_REDUNDANT_FAMS {
 
     output:
     tuple val(meta), path("*.${extension}"), emit: filtered
-    path "versions.yml"                    , emit: versions
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,11 +24,6 @@ process FILTER_NON_REDUNDANT_FAMS {
     filter_non_redundant_fams.py \\
         --input_folder input_folder  \\
         --redundant_ids ${redundant_ids}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-    END_VERSIONS
     """
 
     stub:
@@ -36,10 +31,5 @@ process FILTER_NON_REDUNDANT_FAMS {
     extension = files[0].extension
     """
     touch ${prefix}_1.${extension}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(python --version 2>&1 | sed 's/Python //g')
-    END_VERSIONS
     """
 }

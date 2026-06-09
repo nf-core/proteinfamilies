@@ -1,5 +1,12 @@
 /*
     REMOVAL OF REDUNDANT SEQUENCES AND FAMILIES
+
+    Two independent redundancy stages applied in order:
+    1. Family-level: concatenates all HMMs, searches family representatives against them,
+       merges similar families (if enabled), and removes fully redundant ones.
+    2. Sequence-level: clusters all sequences within each family and removes duplicates,
+       then re-aligns the remaining members.
+    Either or both stages can be skipped via parameters.
 */
 
 include { EXTRACT_FAMILY_REPS                                        } from '../../../modules/local/extract_family_reps/main'
@@ -44,17 +51,16 @@ workflow REMOVE_REDUNDANCY {
     ch_merged_full_msa = channel.empty()
     ch_merged_fasta    = channel.empty()
     ch_merged_hmm      = channel.empty()
-    ch_versions        = channel.empty()
     ch_output_hmm      = channel.empty()
 
     // FAMILY REDUNDANCY REMOVAL MECHANISM
+    // Block runs if either feature is enabled — both share the same HMM-search infrastructure.
     if (!skip_family_redundancy_removal || !skip_family_merging) {
         ch_fasta = fasta
             .map { meta, faa -> [[id: meta.id], faa] }
             .groupTuple(by: 0)
 
         EXTRACT_FAMILY_REPS( ch_fasta )
-        ch_versions = ch_versions.mix( EXTRACT_FAMILY_REPS.out.versions.first() )
 
         ch_hmm = hmm
             .map { meta, model -> [[id: meta.id], model] }
@@ -67,7 +73,6 @@ workflow REMOVE_REDUNDANCY {
             .map { meta, model, seqs -> [meta, model, seqs, false, false, true] }
 
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
-        ch_versions = ch_versions.mix( HMMER_HMMSEARCH.out.versions.first() )
 
         // Join to ensure in sync
         ch_input_for_redundant_fam_identification = EXTRACT_FAMILY_REPS.out.map
@@ -83,7 +88,6 @@ workflow REMOVE_REDUNDANCY {
             hmmsearch_family_redundancy_length_threshold,
             hmmsearch_family_similarity_length_threshold
         )
-        ch_versions = ch_versions.mix( IDENTIFY_REDUNDANT_FAMS.out.versions.first() )
 
         ch_seed_msa = seed_msa
             .map { meta, fas -> [[id: meta.id], fas] }
@@ -102,7 +106,6 @@ workflow REMOVE_REDUNDANCY {
                 skip_additional_sequence_recruiting,
                 hmmsearch_query_length_threshold
             )
-            ch_versions = ch_versions.mix( MERGE_FAMILIES.out.versions )
 
             ch_merged_seed_msa = MERGE_FAMILIES.out.seed_msa
             ch_merged_full_msa = MERGE_FAMILIES.out.full_msa
@@ -155,15 +158,12 @@ workflow REMOVE_REDUNDANCY {
             }
 
         FILTER_NON_REDUNDANT_HMM( ch_input_for_fam_removal.model, ch_input_for_fam_removal.ids )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_HMM.out.versions.first() )
         ch_output_hmm = FILTER_NON_REDUNDANT_HMM.out.filtered
             .transpose()   // unpack [meta, [f1,f2,...]] → individual [meta, file] tuples
 
         FILTER_NON_REDUNDANT_SEED_MSA( ch_input_for_fam_removal.seed, ch_input_for_fam_removal.ids )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_SEED_MSA.out.versions.first() )
 
         FILTER_NON_REDUNDANT_FULL_MSA( ch_input_for_fam_removal.full, ch_input_for_fam_removal.ids )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_FULL_MSA.out.versions.first() )
 
         full_msa = FILTER_NON_REDUNDANT_FULL_MSA.out.filtered
             .transpose()
@@ -174,7 +174,6 @@ workflow REMOVE_REDUNDANCY {
             }
 
         FILTER_NON_REDUNDANT_FASTA( ch_input_for_fam_removal.seq, ch_input_for_fam_removal.ids  )
-        ch_versions = ch_versions.mix( FILTER_NON_REDUNDANT_FASTA.out.versions.first() )
 
         fasta = FILTER_NON_REDUNDANT_FASTA.out.filtered
             .transpose()
@@ -193,14 +192,16 @@ workflow REMOVE_REDUNDANCY {
         MMSEQS_FASTA_CLUSTER( fasta, clustering_tool ) // fasta channel contains all sequences of full MSA
 
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
-        ch_versions = ch_versions.mix( REMOVE_REDUNDANT_SEQS.out.versions.first() )
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
         full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool ).alignments
         // END SEQUENCE REDUNDANCY REMOVAL MECHANISM
     } else if (!skip_additional_sequence_recruiting) { // full MSAs in Stockholm format
         // REFORMATTING FULL MSA
-        // either filtered out redundant, or families that were merged into a new super-family
+        // Two module aliases are required because Nextflow prevents calling the same import
+        // more than once in a workflow. HHSUITE_REFORMAT_FILTERED operates on the re-assigned
+        // full_msa channel (post-filtering/merging); HHSUITE_REFORMAT_RAW operates on the
+        // original full_msa from the take block (neither filtering nor merging ran).
         if (!skip_family_redundancy_removal || !skip_family_merging) {
             full_msa = HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" ).msa
         } else { // did not go through filtering processes
@@ -213,5 +214,4 @@ workflow REMOVE_REDUNDANCY {
     fasta    = fasta
     full_msa = full_msa
     hmm      = ch_output_hmm
-    versions = ch_versions
 }

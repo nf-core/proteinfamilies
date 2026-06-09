@@ -9,11 +9,11 @@ nextflow_workflow {
         when {
             workflow {
                 """
-                input[0] = Channel.of([
+                input[0] = channel.of([
                     [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
-                input[1] = Channel.of([
+                input[1] = channel.of([
                         [ id: 'test', chunk: "chunk_1" ],
                         [
                             file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
@@ -43,9 +43,8 @@ nextflow_workflow {
                     file(workflow.out.hmm[0][1]).name,
                     workflow.out.seed_msa,
                     workflow.out.full_msa,
-                    workflow.out.fasta,
-                    workflow.out.versions.collect { path(it).yaml }.unique()
-                    ).match()}
+                    workflow.out.fasta
+                ).match()}
             )
         }
     }
