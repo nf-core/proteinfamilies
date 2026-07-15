@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v2.5.0dev - [unreleased]
 
+### `Fixed`
+
+- [#177](https://github.com/nf-core/proteinfamilies/pull/177) - Fixed `OSError: [Errno 36] File name too long` in `MERGE_FAMILIES:MERGE_SEEDS` when a pool combines many families: `merged_id` now collapses to a stable hash once the readable form would exceed the filesystem name-length limit. (by @vagkaratzas, bug reported by @Yixuan39)
+
 ## v2.4.0 - [2026/06/09]
 
 ### `Changed`

@@ -4,7 +4,8 @@
     Groups similar families into pools, merges their seed MSAs into a single combined
     seed, then rebuilds final family models via GENERATE_FAMILIES. The merged_id
     encodes which original families were combined (e.g., 'sample_1_7' from 'sample_1'
-    and 'sample_7').
+    and 'sample_7'); for very large pools it collapses to a stable hash so the
+    resulting output filename stays within the filesystem's name-length limit.
 */
 
 include { POOL_SIMILAR_COMPONENTS } from '../../../modules/local/pool_similar_components/main'
@@ -35,10 +36,16 @@ workflow MERGE_FAMILIES {
             def suffixes = components.collect { component ->
                 component.split('_').last()
             }
-            // Join the suffixes with underscores
-            def combinedSuffix = suffixes.join('_')
+            // Readable id encoding every combined family, e.g. 'sample_1_7'
+            def readableId = "${meta.id}_${suffixes.join('_')}"
+            // merged_id becomes the output-file prefix for every merged-family process, so it
+            // must fit the filesystem's 255-byte name limit. Large pools (dozens of families)
+            // would overflow it; in that case fall back to a short, stable hash of the members.
+            def merged_id = readableId.length() <= 200
+                ? readableId
+                : "${meta.id}_${suffixes.size()}fams_${suffixes.join('_').md5().take(10)}"
             // Keep original id, add new field merged_id
-            def newMeta = meta + [merged_id: "${meta.id}_${combinedSuffix}"]
+            def newMeta = meta + [merged_id: merged_id]
             return [newMeta, components.join(',')]
         }
 
