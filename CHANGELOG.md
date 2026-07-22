@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#177](https://github.com/nf-core/proteinfamilies/pull/177) - Fixed `OSError: [Errno 36] File name too long` in `MERGE_FAMILIES:MERGE_SEEDS` when a pool combines many families: `merged_id` now collapses to a stable hash once the readable form would exceed the filesystem name-length limit. (by @vagkaratzas, bug reported by @Yixuan39)
+- [#177](https://github.com/nf-core/proteinfamilies/pull/177)
+  - Fixed `OSError: [Errno 36] File name too long` in `MERGE_FAMILIES:MERGE_SEEDS` when a pool combines many families: `merged_id` now collapses to a stable hash once the readable form would exceed the filesystem name-length limit. (by @vagkaratzas, bug reported by @Yixuan39)
+  - Fixed `FAMSA_ALIGN` aborting with exit status 134 on merged families: `MERGE_SEEDS` now drops all-gap records, which `CLIPKIT` can leave behind when a member's residues all fall in trimmed columns, and which FAMSA cannot realign. (by @vagkaratzas, bug reported by @Yixuan39)
 
 ## v2.4.0 - [2026/06/09]
 

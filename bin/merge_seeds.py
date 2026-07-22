@@ -44,6 +44,31 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
+def keep_non_empty_records(content: str) -> list[str]:
+    """
+    Split a FASTA alignment into records, dropping any that contain no residues.
+
+    Gap-trimming (ClipKIT) removes columns but never rows, so a member whose residues all
+    fell inside the trimmed columns survives as an all-gap record. Such records carry no
+    sequence and abort the downstream realignment (FAMSA), so they are filtered out here.
+
+    Args:
+        content (str): Contents of a FASTA-format alignment file.
+
+    Returns:
+        list[str]: Records that still hold at least one residue, as FASTA blocks.
+    """
+    kept = []
+
+    for record in content.split(">")[1:]:
+        header, _, sequence = record.partition("\n")
+        # '-' and '.' are both gap characters in the alignment formats handled here
+        if sequence.replace("-", "").replace(".", "").strip():
+            kept.append(f">{header}\n{sequence.strip()}")
+
+    return kept
+
+
 def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str) -> None:
     """
     Merge seed alignments whose basename matches one of the requested family IDs.
@@ -54,6 +79,8 @@ def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str)
         out_file (str): Output path for the merged alignment file.
     """
     merged_contents = []
+    merged_files = 0
+    dropped_records = 0
 
     for fam in family_ids:
         fname = next((os.path.join(folder, f) for f in os.listdir(folder) if os.path.splitext(f)[0] == fam), None)
@@ -61,15 +88,22 @@ def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str)
             with open(fname, "r") as f:
                 content = f.read().strip()
                 if content:
-                    merged_contents.append(content)
+                    kept = keep_non_empty_records(content)
+                    dropped_records += content.count(">") - len(kept)
+                    if kept:
+                        merged_contents.extend(kept)
+                        merged_files += 1
         else:
             print(f"[WARNING] File not found: {fname}", file=sys.stderr)
+
+    if dropped_records:
+        print(f"[WARNING] Dropped {dropped_records} all-gap record(s) while merging.", file=sys.stderr)
 
     if merged_contents:
         with open(out_file, "w") as out:
             # Literal concatenation of FASTA blocks — valid for any FASTA-format alignment.
             out.write("\n".join(merged_contents) + "\n")
-        print(f"[INFO] Merged {len(merged_contents)} files into {out_file}")
+        print(f"[INFO] Merged {merged_files} files into {out_file}")
     else:
         print("[WARNING] No files merged (none matched the provided list).", file=sys.stderr)
 
