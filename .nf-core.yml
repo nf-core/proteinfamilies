@@ -6,7 +6,7 @@ lint:
     - .github/PULL_REQUEST_TEMPLATE.md
     - docs/images/nf-core-proteinfamilies_logo_light.png
     - docs/images/nf-core-proteinfamilies_logo_dark.png
-nf_core_version: 4.0.2
+nf_core_version: 4.0.3
 repository_type: pipeline
 template:
   author: Evangelos Karatzas
@@ -21,4 +21,4 @@ template:
   skip_features:
     - igenomes
     - fastqc
-  version: 2.3.0dev
+  version: 2.5.0dev
