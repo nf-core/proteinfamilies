@@ -1,0 +1,120 @@
+nextflow_workflow {
+
+    name "Test Subworkflow MERGE_FAMILIES"
+    script "../main.nf"
+    workflow "MERGE_FAMILIES"
+
+    test("fasta") {
+
+        when {
+            workflow {
+                """
+                def similarities_content = "family_1,family_2,similarity_score\\nmgnifams_test_1,mgnifams_test_2,0.94\\n"
+
+                def similarities_file = file('similarities.csv')
+                similarities_file.text = similarities_content
+
+                input[0] = [
+                    [ id: 'test' ],
+                    similarities_file
+                ]
+                input[1] = channel.of([
+                    [ id: 'test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                    ]
+                ])
+                input[2] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[3] = "famsa"   // alignment_tool
+                input[4] = false     // skip_msa_trimming
+                input[5] = "clipkit" // clipkit_out_format
+                input[6] = false     // hmmsearch_write_target
+                input[7] = true      // hmmsearch_write_domain
+                input[8] = false     // skip_additional_sequence_recruiting
+                input[9] = 0.9       // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    file(workflow.out.hmm[0][1]).name,
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta
+                ).match()}
+            )
+        }
+    }
+
+    test("large pool - merged_id stays within filename length limit") {
+        // Regression test for the 'OSError: [Errno 36] File name too long' crash in MERGE_SEEDS
+        // when a pool combines many families. The two real seed MSAs are duplicated under 90
+        // distinct family names (headers made unique) and chained into a single connected
+        // component, so merged_id would exceed the filesystem's name limit unless it collapses
+        // to the bounded hash form.
+        when {
+            workflow {
+                """
+                def n = 90
+                def fams = (1..n).collect { "mgnifams_test_\${it}" }
+
+                // Reuse the existing fixtures, alternating between the two
+                def alns = [
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true).text,
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).text
+                ]
+                def seedFiles = fams.withIndex().collect { fam, i ->
+                    def f = file("\${fam}.aln")
+                    // Prefix every header with the family id so the merged seed has unique names
+                    f.text = alns[i % 2].replaceAll(/(?m)^>/, ">\${fam}_")
+                    f
+                }
+
+                // Chain the families into one connected component (transitive closure -> one pool)
+                def rows = (0..<n - 1).collect { "\${fams[it]},\${fams[it + 1]},0.94" }.join('\\n')
+                def similarities_file = file('similarities_large_pool.csv')
+                similarities_file.text = "family_1,family_2,similarity_score\\n" + rows + "\\n"
+
+                input[0] = [ [ id: 'test' ], similarities_file ]
+                input[1] = channel.of([ [ id: 'test' ], seedFiles ])
+                input[2] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[3] = "famsa"   // alignment_tool
+                input[4] = false     // skip_msa_trimming
+                input[5] = "clipkit" // clipkit_out_format
+                input[6] = false     // hmmsearch_write_target
+                input[7] = true      // hmmsearch_write_domain
+                input[8] = false     // skip_additional_sequence_recruiting
+                input[9] = 0.9       // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            def merged_name = file(workflow.out.hmm[0][1]).name
+            assertAll(
+                // No 'File name too long' crash in MERGE_SEEDS
+                { assert workflow.success },
+                { assert snapshot(
+                    // merged_id collapsed to the bounded hash form instead of a 200+ char name
+                    merged_name,
+                    merged_name ==~ /test_\d+fams_[0-9a-f]{10}\.hmm.gz/,
+                    merged_name.length() < 200,
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta
+                ).match()}
+            )
+        }
+    }
+
+}

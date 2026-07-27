@@ -1,0 +1,93 @@
+{
+    "proteinfamilies - tsv": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_tsv",
+                        "chunk": 1
+                    },
+                    "test_tsv_1.faa:md5,e06dfa1241372e7fe8aa9f8c20c8f8a9"
+                ]
+            ],
+            {
+                "versions_biopython": [
+                    [
+                        "REMOVE_REDUNDANT_SEQS",
+                        "biopython",
+                        "1.85"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "REMOVE_REDUNDANT_SEQS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-08T11:09:58.194673387",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "proteinfamilies - tsv - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test_tsv",
+                            "chunk": 1
+                        },
+                        "test_tsv_1.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "REMOVE_REDUNDANT_SEQS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "2": [
+                    [
+                        "REMOVE_REDUNDANT_SEQS",
+                        "biopython",
+                        "1.85"
+                    ]
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test_tsv",
+                            "chunk": 1
+                        },
+                        "test_tsv_1.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_biopython": [
+                    [
+                        "REMOVE_REDUNDANT_SEQS",
+                        "biopython",
+                        "1.85"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "REMOVE_REDUNDANT_SEQS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-08T11:10:08.384434311",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    }
+}

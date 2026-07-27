@@ -1,0 +1,53 @@
+nextflow_process {
+
+    name "Test Process POOL_SIMILAR_COMPONENTS"
+    script "../main.nf"
+    process "POOL_SIMILAR_COMPONENTS"
+
+    test("proteinfamilies - csv") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/similarities.csv', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.pooled_components,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - csv - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/similarities.csv', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

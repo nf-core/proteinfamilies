@@ -1,0 +1,117 @@
+nextflow_process {
+
+    name "Test Process MERGE_SEEDS"
+    script "../main.nf"
+    process "MERGE_SEEDS"
+
+    test("proteinfamilies - aln") {
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'test_similarities', merged_id: '1_2' ],
+                    "mgnifams_test_1,mgnifams_test_2",
+                ])
+                input[1] = channel.of([
+                    [ id: 'test_aln' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.merged_seed_msa,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - aln - all-gap records dropped") {
+        // Regression test for the FAMSA_ALIGN abort (exit 134, profile.cpp:773) on merged families.
+        // ClipKIT trims columns but never rows, so a member whose residues all sat in trimmed
+        // columns reaches MERGE_SEEDS as an all-gap record. FAMSA strips the gaps, is left with a
+        // zero-length sequence and aborts, so such records must not make it into the merged seed.
+        when {
+            process {
+                """
+                def fam1 = file('all_gap_test_1.aln')
+                fam1.text = '''>keep_1
+                    |MKVLATGGH--KLS
+                    |>all_gap_1
+                    |--------------
+                    |>keep_2
+                    |MKVLA-GGHRRKLS
+                    |'''.stripMargin()
+
+                def fam2 = file('all_gap_test_2.aln')
+                // '.' is also a gap character; a record made only of gap characters carries no residue
+                fam2.text = '''>keep_3
+                    |MKILATGGH--KLS
+                    |>all_gap_2
+                    |...--.........
+                    |'''.stripMargin()
+
+                input[0] = channel.of([
+                    [ id: 'test_similarities', merged_id: 'all_gap_1_2' ],
+                    "all_gap_test_1,all_gap_test_2",
+                ])
+                input[1] = channel.of([ [ id: 'test_aln' ], [ fam1, fam2 ] ])
+                """
+            }
+        }
+
+        then {
+            def merged = file(process.out.merged_seed_msa[0][1]).text
+            assertAll(
+                { assert process.success },
+                // The three residue-carrying records survive, the two all-gap ones are gone
+                { assert snapshot(
+                    merged.count('>'),
+                    merged.contains('all_gap_1'),
+                    merged.contains('all_gap_2'),
+                    process.out.merged_seed_msa
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - aln - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'test_similarities', merged_id: '1_2' ],
+                    "mgnifams_test_1,mgnifams_test_2",
+                ])
+                input[1] = channel.of([
+                    [ id: 'test_aln' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}

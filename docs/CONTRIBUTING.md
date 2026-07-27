@@ -40,12 +40,12 @@ The nf-core stance on the use of AI and LLMs is that humans are still ultimately
 
 If you’re using AI tools, try to stick by these guidelines:
 
-- Keep PRs as small and focussed as possible
+- Keep PRs as small and focused as possible
 - Avoid any unnecessary changes, such as moving or refactoring code (unless that is the explicit intention of the PR)
 - Review all generated code yourself before opening a PR, and ensure that you understand it
 - Engage with the community review process and expect to make revisions
 
-For more detail, see the the [blog post](https://nf-co.re/blog/2026/statement-on-ai) for a statement from the nf-core/core team.
+For more detail, see the [blog post](https://nf-co.re/blog/2026/statement-on-ai) for a statement from the nf-core/core team.
 
 ### Getting help
 
@@ -182,4 +182,11 @@ If you update images or graphics, follow the nf-core [style guidelines](https://
 
 ## Pipeline specific contribution guidelines
 
-<!-- TODO nf-core: Add any pipeline specific contribution guidelines here, such as coding styles, procedures, checklists etc. -->
+When contributing to nf-core/proteinfamilies, please keep the following pipeline-specific checks in mind:
+
+- Keep changes to protein family generation, updating, merging, and redundancy removal covered by the relevant `nf-test` tests under `tests/`, `modules/local/`, and `subworkflows/local/`.
+- If you change input requirements, output files, or parameter behaviour, update `nextflow_schema.json`, `docs/usage.md`, `docs/output.md`, and the affected test profiles in `conf/test*.config`.
+- Keep local helper scripts in `bin/` deterministic, streaming-friendly where possible, and compatible with compressed FASTA/HMMER/MMseqs2 outputs used by the existing modules.
+- Use nf-core modules for shared tools where possible; keep pipeline-specific logic in `modules/local/` or `subworkflows/local/` with matching `meta.yml`, tests, and snapshots.
+- For changes that affect the family creation or update workflows, run at least the smallest relevant profile, such as `test_minimal`, `test`, `test_update`, or `test_merge`, before opening a pull request.
+- Check that generated family identifiers, member tables, representative sequences, HMM files, and optional downstream samplesheets remain stable or document any intentional changes clearly in the pull request.

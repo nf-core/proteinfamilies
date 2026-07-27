@@ -1,6 +1,6 @@
 {
     "@context": [
-        "https://w3id.org/ro/crate/1.2/context",
+        "https://w3id.org/ro/crate/1.1/context",
         {
             "GithubService": "https://w3id.org/ro/terms/test#GithubService",
             "JenkinsService": "https://w3id.org/ro/terms/test#JenkinsService",
@@ -32,6 +32,9 @@
                     "@id": "assets/"
                 },
                 {
+                    "@id": "bin/"
+                },
+                {
                     "@id": "conf/"
                 },
                 {
@@ -42,6 +45,9 @@
                 },
                 {
                     "@id": "modules/"
+                },
+                {
+                    "@id": "modules/local/"
                 },
                 {
                     "@id": "modules/nf-core/"
@@ -112,7 +118,7 @@
             },
             "conformsTo": [
                 {
-                    "@id": "https://w3id.org/ro/crate/1.2"
+                    "@id": "https://w3id.org/ro/crate/1.1"
                 },
                 {
                     "@id": "https://w3id.org/workflowhub/workflow-ro-crate/1.0"
@@ -121,18 +127,36 @@
         },
         {
             "@id": "main.nf",
-            "@type": ["File", "SoftwareSourceCode", "ComputationalWorkflow"],
-            "contributor": [
+            "@type": [
+                "File",
+                "SoftwareSourceCode",
+                "ComputationalWorkflow"
+            ],
+            "author": [
                 {
                     "@id": "https://orcid.org/0000-0001-9132-8981"
+                }
+            ],
+            "contributor": [
+                {
+                    "@id": "https://orcid.org/0000-0003-3472-3736"
                 }
             ],
             "dateCreated": "",
             "dateModified": "2026-07-24T12:36:10Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
-            "keywords": ["nf-core", "nextflow", "metagenomics", "protein-families"],
-            "license": ["MIT"],
-            "name": ["nf-core/proteinfamilies"],
+            "keywords": [
+                "nf-core",
+                "nextflow",
+                "metagenomics",
+                "protein-families"
+            ],
+            "license": [
+                "MIT"
+            ],
+            "name": [
+                "nf-core/proteinfamilies"
+            ],
             "programmingLanguage": {
                 "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow"
             },
@@ -191,6 +215,11 @@
             "description": "Additional files"
         },
         {
+            "@id": "bin/",
+            "@type": "Dataset",
+            "description": "Scripts that must be callable from a pipeline process"
+        },
+        {
             "@id": "conf/",
             "@type": "Dataset",
             "description": "Configuration files"
@@ -209,6 +238,11 @@
             "@id": "modules/",
             "@type": "Dataset",
             "description": "Modules used by the pipeline"
+        },
+        {
+            "@id": "modules/local/",
+            "@type": "Dataset",
+            "description": "Pipeline-specific modules"
         },
         {
             "@id": "modules/nf-core/",
@@ -299,7 +333,18 @@
         {
             "@id": "https://orcid.org/0000-0001-9132-8981",
             "@type": "Person",
-            "name": "Evangelos Karatzas"
+            "affiliation": "EMBL-EBI",
+            "email": "vangelis@ebi.ac.uk",
+            "name": "Evangelos Karatzas",
+            "url": "https://github.com/vagkaratzas"
+        },
+        {
+            "@id": "https://orcid.org/0000-0003-3472-3736",
+            "@type": "Person",
+            "affiliation": "EMBL-EBI",
+            "email": "mbc@ebi.ac.uk",
+            "name": "Martin Beracochea",
+            "url": "https://github.com/mberacochea"
         }
     ]
 }

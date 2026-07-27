@@ -1,0 +1,287 @@
+{
+    "sarscov2-genome_fasta-stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,cf833211befdf890bb6b2a3cd0b91853"
+                    ]
+                ],
+                "2": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ],
+                "fastx": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "log": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,cf833211befdf890bb6b2a3cd0b91853"
+                    ]
+                ],
+                "versions_seqkit": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-03-12T13:08:29.041177508",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "sarscov2-test_1_fastq_gz": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fastq.gz:md5,4161df271f9bfcd25d5845a1e220dbec"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,a41135cfe024baaf42f135583fe73f0d"
+                    ]
+                ],
+                "2": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ],
+                "fastx": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fastq.gz:md5,4161df271f9bfcd25d5845a1e220dbec"
+                    ]
+                ],
+                "log": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,a41135cfe024baaf42f135583fe73f0d"
+                    ]
+                ],
+                "versions_seqkit": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-03-12T13:08:15.046237092",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "sarscov2-genome_fasta": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta:md5,483f4a5dfe60171c86ee9b7e6dff908b"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,a41135cfe024baaf42f135583fe73f0d"
+                    ]
+                ],
+                "2": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ],
+                "fastx": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta:md5,483f4a5dfe60171c86ee9b7e6dff908b"
+                    ]
+                ],
+                "log": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,a41135cfe024baaf42f135583fe73f0d"
+                    ]
+                ],
+                "versions_seqkit": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-03-12T13:07:53.771340434",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "repeated-fasta": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta:md5,7510a742291241e7d7556bf720caf65c"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,314c0aaef0f832a217a3f6ce3f8bc117"
+                    ]
+                ],
+                "2": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ],
+                "fastx": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta:md5,7510a742291241e7d7556bf720caf65c"
+                    ]
+                ],
+                "log": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,314c0aaef0f832a217a3f6ce3f8bc117"
+                    ]
+                ],
+                "versions_seqkit": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-03-12T13:08:00.578741348",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    },
+    "sarscov2-genome_fasta_gz": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta.gz:md5,483f4a5dfe60171c86ee9b7e6dff908b"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,a41135cfe024baaf42f135583fe73f0d"
+                    ]
+                ],
+                "2": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ],
+                "fastx": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.fasta.gz:md5,483f4a5dfe60171c86ee9b7e6dff908b"
+                    ]
+                ],
+                "log": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.log:md5,a41135cfe024baaf42f135583fe73f0d"
+                    ]
+                ],
+                "versions_seqkit": [
+                    [
+                        "SEQKIT_RMDUP",
+                        "seqkit",
+                        "2.9.0"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-03-12T13:08:07.836784907",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}
