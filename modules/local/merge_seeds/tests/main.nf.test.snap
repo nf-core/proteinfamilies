@@ -68,5 +68,26 @@
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
         }
+    },
+    "proteinfamilies - aln - all-gap records dropped": {
+        "content": [
+            3,
+            false,
+            false,
+            [
+                [
+                    {
+                        "id": "test_similarities",
+                        "merged_id": "all_gap_1_2"
+                    },
+                    "all_gap_1_2.fas:md5,7428156e5c01347fe7c1a1f71245c3f8"
+                ]
+            ]
+        ],
+        "timestamp": "2026-07-22T08:50:01.98973476",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
     }
 }

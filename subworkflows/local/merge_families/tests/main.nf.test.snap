@@ -1,4 +1,43 @@
 {
+    "large pool - merged_id stays within filename length limit": {
+        "content": [
+            "test_90fams_cef0de0010.hmm.gz",
+            true,
+            true,
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_90fams_cef0de0010"
+                    },
+                    "test_90fams_cef0de0010.clipkit:md5,7c92708da123702944bbfec1341edd38"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_90fams_cef0de0010"
+                    },
+                    "test_90fams_cef0de0010.sto.gz:md5,b432795e4a56a2284d2bce48066beb99"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_90fams_cef0de0010"
+                    },
+                    "test_90fams_cef0de0010.fasta.gz:md5,f398708f15b7e8a5e28dcb7c4f653e40"
+                ]
+            ]
+        ],
+        "timestamp": "2026-07-15T17:03:36.38742161",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
     "fasta": {
         "content": [
             "test_1_2.hmm.gz",
