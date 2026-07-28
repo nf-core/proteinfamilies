@@ -36,6 +36,103 @@
             "nextflow": "26.04.3"
         }
     },
+    "proteinfamilies - tsv - cluster_chunks": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_tsv"
+                    },
+                    [
+                        "clustering_1.tsv:md5,fa7f807aefa0328001ffb49ecef5e60d",
+                        "clustering_2.tsv:md5,bef42378f22651e0d2ae771261394bb5"
+                    ]
+                ]
+            ],
+            {
+                "versions_biopython": [
+                    [
+                        "CHUNK_CLUSTERS",
+                        "biopython",
+                        "1.85"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "CHUNK_CLUSTERS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T12:11:15.599738239",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "proteinfamilies - tsv - cluster_chunks - stub": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test_tsv"
+                        },
+                        "1.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        "CHUNK_CLUSTERS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "3": [
+                    [
+                        "CHUNK_CLUSTERS",
+                        "biopython",
+                        "1.85"
+                    ]
+                ],
+                "cluster_chunks": [
+                    [
+                        {
+                            "id": "test_tsv"
+                        },
+                        "1.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "fasta_chunks": [
+                    
+                ],
+                "versions_biopython": [
+                    [
+                        "CHUNK_CLUSTERS",
+                        "biopython",
+                        "1.85"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "CHUNK_CLUSTERS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T12:11:28.973325129",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
     "proteinfamilies - tsv - stub": {
         "content": [
             {
@@ -48,18 +145,24 @@
                     ]
                 ],
                 "1": [
+                    
+                ],
+                "2": [
                     [
                         "CHUNK_CLUSTERS",
                         "python",
                         "3.13.1"
                     ]
                 ],
-                "2": [
+                "3": [
                     [
                         "CHUNK_CLUSTERS",
                         "biopython",
                         "1.85"
                     ]
+                ],
+                "cluster_chunks": [
+                    
                 ],
                 "fasta_chunks": [
                     [
@@ -85,10 +188,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:49:05.879630134",
+        "timestamp": "2026-07-28T12:14:25.524514939",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.4"
         }
     }
 }

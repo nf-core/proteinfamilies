@@ -3,9 +3,13 @@
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
 """
-Splits MMSeqs2 cluster output into per-cluster FASTA files. Clusters smaller than
---threshold are discarded; surviving clusters are written as numbered FASTA chunks
-used as inputs to per-family alignment.
+Splits MMSeqs2 cluster output into numbered chunks. Clusters smaller than --threshold
+are discarded either way; --out_format decides what a chunk is:
+
+  fasta: one FASTA file per surviving cluster, the input to per-family alignment.
+  tsv:   one headerless representative<TAB>member TSV per --clusters_per_chunk
+         clusters, the input to iterative family generation, which builds many
+         families per task and reads sequences from the full FASTA itself.
 """
 
 import sys
@@ -35,6 +39,14 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "-o", "--out_folder", required=True, metavar="FOLDER", help="Name of the output folder to be created."
+    )
+    parser.add_argument(
+        "-f", "--out_format", metavar="STR", choices=["fasta", "tsv"], default="fasta",
+        help="Write one FASTA per cluster ('fasta', default) or clusters batched into TSV files ('tsv')."
+    )
+    parser.add_argument(
+        "-n", "--clusters_per_chunk", metavar="INT", type=int, default=1000,
+        help="Clusters per output file in 'tsv' format (default: 1000)."
     )
     return parser.parse_args(args)
 
@@ -113,6 +125,32 @@ def write_cluster(
     return output_file
 
 
+def write_cluster_chunks(prefix: str, clusters: dict[str, list[str]], clusters_per_chunk: int, out_folder: str) -> int:
+    """
+    Write clusters to '{prefix}_{chunk_num}.tsv' files of at most clusters_per_chunk
+    clusters each, as headerless representative<TAB>member lines. As in the FASTA
+    format, the sequential chunk_num names the file and is what downstream Nextflow
+    tokenizes on '_' to recover the chunk identifier.
+
+    Args:
+        prefix (str): Sample prefix derived from the clustering filename.
+        clusters (dict[str, list[str]]): Surviving clusters keyed by representative ID.
+        clusters_per_chunk (int): Maximum number of clusters per output file.
+        out_folder (str): Destination directory for the chunk TSV files.
+
+    Returns:
+        int: Number of chunk files written.
+    """
+    items = list(clusters.items())
+    for chunk_num, start in enumerate(range(0, len(items), clusters_per_chunk), 1):
+        output_file = os.path.join(out_folder, f"{prefix}_{chunk_num}.tsv")
+        with open(output_file, "w") as out_handle:
+            for rep, members in items[start : start + clusters_per_chunk]:
+                for member in members:
+                    out_handle.write(f"{rep}\t{member}\n")
+    return -(-len(items) // clusters_per_chunk)
+
+
 def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     os.makedirs(args.out_folder, exist_ok=True)
@@ -124,6 +162,12 @@ def main(args: Sequence[str] | None = None) -> None:
     # Step 1: Parse clusters
     clusters = collect_clusters(args.clustering, args.threshold)
     print(f"Clusters filtered.")
+
+    # TSV chunks carry sequence names only, so the FASTA is never read in this format
+    if args.out_format == "tsv":
+        written = write_cluster_chunks(prefix, clusters, args.clusters_per_chunk, args.out_folder)
+        print(f"Done. {len(clusters)} clusters written as {written} chunks to {args.out_folder}")
+        return
 
     # Step 2: Collect sequence IDs only from clusters above threshold
     needed_ids = set()

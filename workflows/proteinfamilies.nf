@@ -102,7 +102,7 @@ workflow PROTEINFAMILIES {
 
     CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
 
-    CHUNK_CLUSTERS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs, params.cluster_size_threshold )
+    CHUNK_CLUSTERS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs, params.cluster_size_threshold, 'fasta', params.clusters_per_chunk )
 
     // tokenize('_').last() extracts the numeric suffix from filenames like 'sample_1.faa.gz' as the chunk ID.
     ch_fasta_chunks = CHUNK_CLUSTERS.out.fasta_chunks
