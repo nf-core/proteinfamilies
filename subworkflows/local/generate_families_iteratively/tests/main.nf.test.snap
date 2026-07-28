@@ -1,0 +1,299 @@
+{
+    "clusters tsv": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_10"
+                    },
+                    "test_1_10.fas.gz:md5,38ffab4f6cb6806e1ebfa8033aa57dfa"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_1"
+                    },
+                    "test_1_1.fas.gz:md5,45181c3d0182e3e35c9d6440f2427a45"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_2"
+                    },
+                    "test_1_2.fas.gz:md5,f3a3125b271c472a050da64324486aba"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_3"
+                    },
+                    "test_1_3.fas.gz:md5,464d9dea109821a13cce5bf23bb4ab34"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_4"
+                    },
+                    "test_1_4.fas.gz:md5,504a2e587f1ae6f8733cf3d1ad384723"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_5"
+                    },
+                    "test_1_5.fas.gz:md5,6a6de5a3272b0e3bfaa3e3db901d5932"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_6"
+                    },
+                    "test_1_6.fas.gz:md5,6aacbcde6023ccacd29a4e39b9241610"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_7"
+                    },
+                    "test_1_7.fas.gz:md5,33c7fd0013d76c3edb12127d0919f1b3"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_8"
+                    },
+                    "test_1_8.fas.gz:md5,ff6b73a1d70762b5a53ba17fc456e6a9"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_9"
+                    },
+                    "test_1_9.fas.gz:md5,6548591321bcdcafacd68b68fa7153e5"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_10"
+                    },
+                    "test_1_10.sto.gz:md5,d8164af9d2e942b5227d3f0772a384c8"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_1"
+                    },
+                    "test_1_1.sto.gz:md5,d33c159913ecc31ce5f0c3bf8b305a89"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_2"
+                    },
+                    "test_1_2.sto.gz:md5,79085de79f5623fc93fd5eb63e92a1eb"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_3"
+                    },
+                    "test_1_3.sto.gz:md5,19e58a4817b9d03e5a817c0b5160c5f3"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_4"
+                    },
+                    "test_1_4.sto.gz:md5,43cedef3559a596ca77a2b26558e0507"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_5"
+                    },
+                    "test_1_5.sto.gz:md5,5184a1002753440108ccc21b3413ce9e"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_6"
+                    },
+                    "test_1_6.sto.gz:md5,7571d57fa1ac16f6956a4a357a7723cd"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_7"
+                    },
+                    "test_1_7.sto.gz:md5,e16cb1888f0fe6559c30e00d4b806cc8"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_8"
+                    },
+                    "test_1_8.sto.gz:md5,55bd11ab2b47a9fe5d4ea86efbac90b7"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_9"
+                    },
+                    "test_1_9.sto.gz:md5,d0563af90ef7b19fbaaeea111fc388c9"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_10"
+                    },
+                    "test_1_10.fasta.gz:md5,3814693bd15401da72819c482c42d136"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_1"
+                    },
+                    "test_1_1.fasta.gz:md5,c47c3cae260c8d04739ba40551ee6649"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_2"
+                    },
+                    "test_1_2.fasta.gz:md5,8084af050a3fe3fe1c160facccbcedbd"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_3"
+                    },
+                    "test_1_3.fasta.gz:md5,4dfdf672e3c7daa3a04ea6a18bc78e1d"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_4"
+                    },
+                    "test_1_4.fasta.gz:md5,685fcd8b0e23955c42643d0031cfb091"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_5"
+                    },
+                    "test_1_5.fasta.gz:md5,65d9aa9c4cfb0dd7484489a9b120550a"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_6"
+                    },
+                    "test_1_6.fasta.gz:md5,79cdbf70dee0f0f53f09c241eaeff1d2"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_7"
+                    },
+                    "test_1_7.fasta.gz:md5,dc67399ce3a975de1fcd7291f3ce4844"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_8"
+                    },
+                    "test_1_8.fasta.gz:md5,edbbcab49d1f12c4f4bb9897cc364c75"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_9"
+                    },
+                    "test_1_9.fasta.gz:md5,6a600198fbb4a5d9cfc961276dde85b0"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_10"
+                    },
+                    "test_1_10.hmm.gz:md5,f3cc21cf1a3af27e01c2f89b033e0646"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_1"
+                    },
+                    "test_1_1.hmm.gz:md5,8ad74d61b05fd4db8d868c3892a7c71e"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_2"
+                    },
+                    "test_1_2.hmm.gz:md5,30147352a8c36feba8ec0be8ee54d8d5"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_3"
+                    },
+                    "test_1_3.hmm.gz:md5,5b9c0cfb8330813b1bcfa3808b76ab3f"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_4"
+                    },
+                    "test_1_4.hmm.gz:md5,255e997196f7a32a6971e3dd15dd7b94"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_5"
+                    },
+                    "test_1_5.hmm.gz:md5,a654992ccd9b7e50763c24593544ea1a"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_6"
+                    },
+                    "test_1_6.hmm.gz:md5,5009cbbe2340bb75a75f64a3b0a634e3"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_7"
+                    },
+                    "test_1_7.hmm.gz:md5,f903bee92b96283724b4655925d296e4"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_8"
+                    },
+                    "test_1_8.hmm.gz:md5,be3f1048622d8e43ce45558f934f7015"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "chunk": "1_9"
+                    },
+                    "test_1_9.hmm.gz:md5,97ad6f4a865864bb9162ca1dedd4b112"
+                ]
+            ]
+        ],
+        "timestamp": "2026-07-28T12:24:36.42733534",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    }
+}
