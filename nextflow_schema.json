@@ -10,7 +10,10 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": [
+                "input",
+                "outdir"
+            ],
             "properties": {
                 "input": {
                     "type": "string",
@@ -116,7 +119,14 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
+                    "enum": [
+                        "symlink",
+                        "rellink",
+                        "link",
+                        "copy",
+                        "copyNoFollow",
+                        "move"
+                    ],
                     "hidden": true
                 },
                 "email_on_fail": {
@@ -186,7 +196,10 @@
                     "hidden": true
                 },
                 "help": {
-                    "type": ["boolean", "string"],
+                    "type": [
+                        "boolean",
+                        "string"
+                    ],
                     "description": "Display the help message."
                 },
                 "help_full": {
@@ -265,7 +278,10 @@
                     "default": "cluster",
                     "description": "Choose clustering algorithm. Either simple 'cluster' for medium size inputs, or 'linclust' for less sensitive clustering of larger datasets.",
                     "help_text": "mmseqs algorithms available: 'cluster' or 'linclust'.",
-                    "enum": ["linclust", "cluster"]
+                    "enum": [
+                        "linclust",
+                        "cluster"
+                    ]
                 },
                 "cluster_seq_identity": {
                     "type": "number",
@@ -307,6 +323,34 @@
                 }
             }
         },
+        "family_generation_params": {
+            "title": "Family generation parameters",
+            "type": "object",
+            "description": "Use these parameters to choose and control the family generation algorithm.",
+            "properties": {
+                "family_generation_algorithm": {
+                    "type": "string",
+                    "default": "standard",
+                    "description": "Choose the algorithm that turns clusters into family models. Either 'standard', aligning each cluster and building one HMM per task, or 'iterative', letting mgnifam loop HMM building, recruitment and realignment per cluster.",
+                    "help_text": "The 'standard' algorithm chains FAMSA/MAFFT, ClipKIT, hmmbuild, hmmsearch and hmmalign, and recruits members in a single pass. The 'iterative' algorithm runs mgnifam, which uses pyfamsa, pytrimal and pyhmmer internally and repeats recruitment and realignment until each family converges or is discarded. The alignment and recruitment parameters of the standard algorithm do not apply to the iterative one; see the usage documentation for the full mapping.",
+                    "enum": [
+                        "standard",
+                        "iterative"
+                    ]
+                },
+                "clusters_per_chunk": {
+                    "type": "integer",
+                    "default": 1000,
+                    "description": "Number of clusters handed to each family generation task by the 'iterative' algorithm.",
+                    "help_text": "Only used when family_generation_algorithm is 'iterative', which generates many families per task. Smaller chunks parallelise better and resume at a finer granularity, at the cost of more tasks. The 'standard' algorithm always processes a single cluster per task."
+                },
+                "save_iterative_family_metadata": {
+                    "type": "boolean",
+                    "description": "Save the family rosters and diagnostics reported by the 'iterative' algorithm",
+                    "help_text": "Specify to publish mgnifam's family roster, metadata, converged, successful and discarded records, its per-family reference annotations and its log."
+                }
+            }
+        },
         "alignment_params": {
             "title": "Alignment parameters",
             "type": "object",
@@ -316,7 +360,10 @@
                     "type": "string",
                     "description": "Choose alignment tool. FAMSA is recommended as best time-memory-accuracy combination option.",
                     "help_text": "Available tools: 'famsa' or 'mafft'.",
-                    "enum": ["famsa", "mafft"]
+                    "enum": [
+                        "famsa",
+                        "mafft"
+                    ]
                 },
                 "skip_msa_trimming": {
                     "type": "boolean",
@@ -525,6 +572,9 @@
         },
         {
             "$ref": "#/$defs/clustering_params"
+        },
+        {
+            "$ref": "#/$defs/family_generation_params"
         },
         {
             "$ref": "#/$defs/alignment_params"
