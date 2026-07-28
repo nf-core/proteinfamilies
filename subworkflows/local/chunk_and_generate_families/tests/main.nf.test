@@ -1,0 +1,88 @@
+nextflow_workflow {
+
+    name "Test Subworkflow CHUNK_AND_GENERATE_FAMILIES"
+    script "../main.nf"
+    workflow "CHUNK_AND_GENERATE_FAMILIES"
+
+    test("clusters - standard") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
+                ])
+                input[2]  = "standard" // family_generation_algorithm
+                input[3]  = 5          // cluster_size_threshold
+                input[4]  = 2          // clusters_per_chunk
+                input[5]  = "famsa"    // alignment_tool
+                input[6]  = false      // skip_msa_trimming
+                input[7]  = "clipkit"  // clipkit_out_format
+                input[8]  = false      // hmmsearch_write_target
+                input[9]  = true       // hmmsearch_write_domain
+                input[10] = false      // skip_additional_sequence_recruiting
+                input[11] = 0.9        // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta,
+                    workflow.out.hmm
+                ).match() }
+            )
+        }
+    }
+
+    test("clusters - iterative") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
+                ])
+                input[2]  = "iterative" // family_generation_algorithm
+                input[3]  = 5           // cluster_size_threshold
+                input[4]  = 2           // clusters_per_chunk
+                input[5]  = "famsa"     // alignment_tool
+                input[6]  = false       // skip_msa_trimming
+                input[7]  = "clipkit"   // clipkit_out_format
+                input[8]  = false       // hmmsearch_write_target
+                input[9]  = true        // hmmsearch_write_domain
+                input[10] = false       // skip_additional_sequence_recruiting
+                input[11] = 0.9         // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                // Both algorithms emit the same four per-family channels
+                { assert workflow.out.keySet().containsAll(['seed_msa', 'full_msa', 'fasta', 'hmm']) },
+                { assert snapshot(
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta,
+                    workflow.out.hmm
+                ).match() }
+            )
+        }
+    }
+}

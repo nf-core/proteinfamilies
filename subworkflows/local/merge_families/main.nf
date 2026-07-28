@@ -8,15 +8,17 @@
     resulting output filename stays within the filesystem's name-length limit.
 */
 
-include { POOL_SIMILAR_COMPONENTS } from '../../../modules/local/pool_similar_components/main'
-include { MERGE_SEEDS             } from '../../../modules/local/merge_seeds/main'
-include { GENERATE_FAMILIES       } from '../../../subworkflows/local/generate_families'
+include { POOL_SIMILAR_COMPONENTS       } from '../../../modules/local/pool_similar_components/main'
+include { MERGE_SEEDS                   } from '../../../modules/local/merge_seeds/main'
+include { GENERATE_FAMILIES             } from '../../../subworkflows/local/generate_families'
+include { GENERATE_FAMILIES_ITERATIVELY } from '../../../subworkflows/local/generate_families_iteratively'
 
 workflow MERGE_FAMILIES {
     take:
     similarities                        // tuple val(meta), path(txt)
     seed_msa                            // tuple val(meta), path(aln)
     sequences                           // tuple val(meta), path(fasta)
+    family_generation_algorithm         // string ["standard", "iterative"]
     alignment_tool                      // string ["famsa", "mafft"]
     skip_msa_trimming                   // boolean
     clipkit_out_format                  // string (default: clipkit)
@@ -54,21 +56,29 @@ workflow MERGE_FAMILIES {
     // the first pairing.
     MERGE_SEEDS( ch_pooled_components, seed_msa.first() )
 
-    GENERATE_FAMILIES (
-        sequences,
-        MERGE_SEEDS.out.merged_seed_msa,
-        alignment_tool,
-        skip_msa_trimming,
-        clipkit_out_format,
-        hmmsearch_write_target,
-        hmmsearch_write_domain,
-        skip_additional_sequence_recruiting,
-        hmmsearch_query_length_threshold
-    )
+    // The iterative algorithm rebuilds a family from a cluster rather than from a seed
+    // alignment, so it takes the merged membership MERGE_SEEDS writes alongside the seed.
+    if (family_generation_algorithm == 'iterative') {
+        GENERATE_FAMILIES_ITERATIVELY( sequences, MERGE_SEEDS.out.clusters )
+        ch_families = GENERATE_FAMILIES_ITERATIVELY.out
+    } else {
+        GENERATE_FAMILIES (
+            sequences,
+            MERGE_SEEDS.out.merged_seed_msa,
+            alignment_tool,
+            skip_msa_trimming,
+            clipkit_out_format,
+            hmmsearch_write_target,
+            hmmsearch_write_domain,
+            skip_additional_sequence_recruiting,
+            hmmsearch_query_length_threshold
+        )
+        ch_families = GENERATE_FAMILIES.out
+    }
 
     emit:
-    seed_msa = GENERATE_FAMILIES.out.seed_msa
-    full_msa = GENERATE_FAMILIES.out.full_msa
-    fasta    = GENERATE_FAMILIES.out.fasta
-    hmm      = GENERATE_FAMILIES.out.hmm
+    seed_msa = ch_families.seed_msa
+    full_msa = ch_families.full_msa
+    fasta    = ch_families.fasta
+    hmm      = ch_families.hmm
 }

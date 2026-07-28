@@ -29,13 +29,14 @@ nextflow_workflow {
                     [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
-                input[3] = "famsa"   // alignment_tool
-                input[4] = false     // skip_msa_trimming
-                input[5] = "clipkit" // clipkit_out_format
-                input[6] = false     // hmmsearch_write_target
-                input[7] = true      // hmmsearch_write_domain
-                input[8] = false     // skip_additional_sequence_recruiting
-                input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"   // alignment_tool
+                input[5] = false     // skip_msa_trimming
+                input[6] = "clipkit" // clipkit_out_format
+                input[7] = false     // hmmsearch_write_target
+                input[8] = true      // hmmsearch_write_domain
+                input[9] = false     // skip_additional_sequence_recruiting
+                input[10] = 0.9       // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -88,13 +89,14 @@ nextflow_workflow {
                     [ id: 'test' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
-                input[3] = "famsa"   // alignment_tool
-                input[4] = false     // skip_msa_trimming
-                input[5] = "clipkit" // clipkit_out_format
-                input[6] = false     // hmmsearch_write_target
-                input[7] = true      // hmmsearch_write_domain
-                input[8] = false     // skip_additional_sequence_recruiting
-                input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"   // alignment_tool
+                input[5] = false     // skip_msa_trimming
+                input[6] = "clipkit" // clipkit_out_format
+                input[7] = false     // hmmsearch_write_target
+                input[8] = true      // hmmsearch_write_domain
+                input[9] = false     // skip_additional_sequence_recruiting
+                input[10] = 0.9       // hmmsearch_query_length_threshold
                 """
             }
         }

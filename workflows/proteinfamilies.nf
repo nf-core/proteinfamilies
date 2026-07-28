@@ -13,8 +13,7 @@ include { FAA_SEQFU_SEQKIT                                 } from '../subworkflo
 include { UPDATE_FAMILIES                                  } from '../subworkflows/local/update_families'
 include { MMSEQS_FASTA_CLUSTER                             } from '../subworkflows/nf-core/mmseqs_fasta_cluster'
 include { CALCULATE_CLUSTER_DISTRIBUTION                   } from '../modules/local/calculate_cluster_distribution/main'
-include { CHUNK_CLUSTERS                                   } from '../modules/local/chunk_clusters/main'
-include { GENERATE_FAMILIES                                } from '../subworkflows/local/generate_families'
+include { CHUNK_AND_GENERATE_FAMILIES                      } from '../subworkflows/local/chunk_and_generate_families'
 include { REMOVE_REDUNDANCY                                } from '../subworkflows/local/remove_redundancy'
 include { FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY } from '../modules/nf-core/find/concatenate'
 include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
@@ -102,19 +101,15 @@ workflow PROTEINFAMILIES {
 
     CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
 
-    CHUNK_CLUSTERS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs, params.cluster_size_threshold, 'fasta', params.clusters_per_chunk )
-
-    // tokenize('_').last() extracts the numeric suffix from filenames like 'sample_1.faa.gz' as the chunk ID.
-    ch_fasta_chunks = CHUNK_CLUSTERS.out.fasta_chunks
-        .transpose()
-        .map { meta, file_path ->
-            [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName.tokenize('_').last()], file_path ]
-        }
-
-    // Multiple sequence alignments, model building and sequence recruiting
-    GENERATE_FAMILIES (
-        ch_samplesheet_for_create,
-        ch_fasta_chunks,
+    // Cluster chunking, multiple sequence alignments, model building and sequence recruiting
+    // out.seqs is out.clusters' sequence pool, joined by the clustering subworkflow to stay
+    // in sync when a run carries multiple sequence files.
+    CHUNK_AND_GENERATE_FAMILIES (
+        MMSEQS_FASTA_CLUSTER.out.seqs,
+        MMSEQS_FASTA_CLUSTER.out.clusters,
+        params.family_generation_algorithm,
+        params.cluster_size_threshold,
+        params.clusters_per_chunk,
         params.alignment_tool,
         params.skip_msa_trimming,
         params.clipkit_out_format,
@@ -127,16 +122,17 @@ workflow PROTEINFAMILIES {
     // Remove redundant sequences and families
     REMOVE_REDUNDANCY (
         ch_samplesheet_for_create,
-        GENERATE_FAMILIES.out.seed_msa,
-        GENERATE_FAMILIES.out.full_msa,
-        GENERATE_FAMILIES.out.fasta,
-        GENERATE_FAMILIES.out.hmm,
+        CHUNK_AND_GENERATE_FAMILIES.out.seed_msa,
+        CHUNK_AND_GENERATE_FAMILIES.out.full_msa,
+        CHUNK_AND_GENERATE_FAMILIES.out.fasta,
+        CHUNK_AND_GENERATE_FAMILIES.out.hmm,
         params.skip_family_redundancy_removal,
         params.skip_family_merging,
         params.hmmsearch_family_redundancy_length_threshold,
         params.hmmsearch_family_similarity_length_threshold,
         params.skip_sequence_redundancy_removal,
         params.clustering_tool,
+        params.family_generation_algorithm,
         params.alignment_tool,
         params.skip_msa_trimming,
         params.clipkit_out_format,
