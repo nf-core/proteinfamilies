@@ -32,7 +32,7 @@ nextflow_workflow {
                     workflow.out.seed_msa,
                     workflow.out.full_msa,
                     workflow.out.fasta,
-                    workflow.out.hmm
+                    workflow.out.hmm.collect { _meta, model -> model.tokenize('/').last() }
                 ).match() }
             )
         }

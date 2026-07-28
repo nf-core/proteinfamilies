@@ -218,79 +218,19 @@
                 ]
             ],
             [
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_10"
-                    },
-                    "test_1_10.hmm.gz:md5,f3cc21cf1a3af27e01c2f89b033e0646"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_1"
-                    },
-                    "test_1_1.hmm.gz:md5,8ad74d61b05fd4db8d868c3892a7c71e"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_2"
-                    },
-                    "test_1_2.hmm.gz:md5,30147352a8c36feba8ec0be8ee54d8d5"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_3"
-                    },
-                    "test_1_3.hmm.gz:md5,5b9c0cfb8330813b1bcfa3808b76ab3f"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_4"
-                    },
-                    "test_1_4.hmm.gz:md5,255e997196f7a32a6971e3dd15dd7b94"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_5"
-                    },
-                    "test_1_5.hmm.gz:md5,a654992ccd9b7e50763c24593544ea1a"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_6"
-                    },
-                    "test_1_6.hmm.gz:md5,5009cbbe2340bb75a75f64a3b0a634e3"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_7"
-                    },
-                    "test_1_7.hmm.gz:md5,f903bee92b96283724b4655925d296e4"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_8"
-                    },
-                    "test_1_8.hmm.gz:md5,be3f1048622d8e43ce45558f934f7015"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_9"
-                    },
-                    "test_1_9.hmm.gz:md5,97ad6f4a865864bb9162ca1dedd4b112"
-                ]
+                "test_1_10.hmm.gz",
+                "test_1_1.hmm.gz",
+                "test_1_2.hmm.gz",
+                "test_1_3.hmm.gz",
+                "test_1_4.hmm.gz",
+                "test_1_5.hmm.gz",
+                "test_1_6.hmm.gz",
+                "test_1_7.hmm.gz",
+                "test_1_8.hmm.gz",
+                "test_1_9.hmm.gz"
             ]
         ],
-        "timestamp": "2026-07-28T12:24:36.42733534",
+        "timestamp": "2026-07-28T13:10:31.591126773",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"

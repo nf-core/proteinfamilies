@@ -38,7 +38,8 @@ nextflow_workflow {
                     workflow.out.seed_msa,
                     workflow.out.full_msa,
                     workflow.out.fasta,
-                    workflow.out.hmm
+                    // hmmbuild stamps a build date into the model, so only the names are stable
+                    workflow.out.hmm.collect { _meta, model -> model.tokenize('/').last() }
                 ).match() }
             )
         }
@@ -80,7 +81,8 @@ nextflow_workflow {
                     workflow.out.seed_msa,
                     workflow.out.full_msa,
                     workflow.out.fasta,
-                    workflow.out.hmm
+                    // hmmbuild stamps a build date into the model, so only the names are stable
+                    workflow.out.hmm.collect { _meta, model -> model.tokenize('/').last() }
                 ).match() }
             )
         }

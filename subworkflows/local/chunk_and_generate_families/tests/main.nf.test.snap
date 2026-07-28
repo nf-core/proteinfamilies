@@ -71,30 +71,12 @@
                 ]
             ],
             [
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1"
-                    },
-                    "test_1.hmm.gz:md5,d77310946d09e9ccadbe237d9cf5dfb1"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "2"
-                    },
-                    "test_2.hmm.gz:md5,a9796d944d211678e67471d26128f902"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "3"
-                    },
-                    "test_3.hmm.gz:md5,9e9b5fd497ed545ad183b636754057eb"
-                ]
+                "test_1.hmm.gz",
+                "test_2.hmm.gz",
+                "test_3.hmm.gz"
             ]
         ],
-        "timestamp": "2026-07-28T12:33:16.364109286",
+        "timestamp": "2026-07-28T13:09:25.720258803",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
@@ -172,30 +154,12 @@
                 ]
             ],
             [
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_1"
-                    },
-                    "test_1_1.hmm.gz:md5,8ad74d61b05fd4db8d868c3892a7c71e"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "1_2"
-                    },
-                    "test_1_2.hmm.gz:md5,30147352a8c36feba8ec0be8ee54d8d5"
-                ],
-                [
-                    {
-                        "id": "test",
-                        "chunk": "2_1"
-                    },
-                    "test_2_1.hmm.gz:md5,31c3edd9b6fb3e216d2e4a443aeaa9fd"
-                ]
+                "test_1_1.hmm.gz",
+                "test_1_2.hmm.gz",
+                "test_2_1.hmm.gz"
             ]
         ],
-        "timestamp": "2026-07-28T12:33:33.394385488",
+        "timestamp": "2026-07-28T13:09:55.488940569",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.4"
