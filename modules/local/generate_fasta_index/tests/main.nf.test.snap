@@ -1,0 +1,84 @@
+{
+    "proteinfamilies - fasta - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "mgnifams_input_small.faa.ssi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "GENERATE_FASTA_INDEX",
+                        "easel",
+                        "0.49"
+                    ]
+                ],
+                "ssi": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "mgnifams_input_small.faa.ssi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_easel": [
+                    [
+                        "GENERATE_FASTA_INDEX",
+                        "easel",
+                        "0.49"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T12:05:47.625981317",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "proteinfamilies - fasta": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "mgnifams_input_small.faa.ssi:md5,2dba9a77570cf0891c3733e8687c084b"
+                    ]
+                ],
+                "1": [
+                    [
+                        "GENERATE_FASTA_INDEX",
+                        "easel",
+                        "0.49"
+                    ]
+                ],
+                "ssi": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "mgnifams_input_small.faa.ssi:md5,2dba9a77570cf0891c3733e8687c084b"
+                    ]
+                ],
+                "versions_easel": [
+                    [
+                        "GENERATE_FASTA_INDEX",
+                        "easel",
+                        "0.49"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-07-28T12:05:34.856565619",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    }
+}

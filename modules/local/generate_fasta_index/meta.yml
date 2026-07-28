@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "generate_fasta_index"
+description: Build an Easel SSI index for a FASTA file, so tools that fetch sequences by name can seek instead of scanning
+keywords:
+  - fasta
+  - index
+  - easel
+tools:
+  - "easel":
+      description: "Easel sequence analysis library, distributed with HMMER. esl-sfetch --index writes an SSI index next to the sequence file."
+      homepage: "http://hmmer.org/"
+      documentation: "http://eddylab.org/software/hmmer/Userguide.pdf"
+      tool_dev_url: "https://github.com/EddyRivasLab/easel"
+      licence: ["BSD-3-clause"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - fasta:
+        type: file
+        description: An uncompressed amino acid sequence fasta file. Easel cannot seek within a gzip stream, so the input must not be compressed.
+        pattern: "*.{fa,faa,fasta,fna}"
+        ontologies:
+          - edam: http://edamontology.org/format_1929 # FASTA
+output:
+  ssi:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - ${fasta}.ssi:
+          type: file
+          description: Easel SSI index of the input fasta. It records the name of the sequence file it indexes, so it only resolves against a fasta of that same name.
+          pattern: "*.ssi"
+  versions_easel:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - easel:
+          type: string
+          description: The tool name
+      - "esl-sfetch -h | sed '2!d;s/^# Easel *//;s/ .*//'":
+          type: eval
+          description: The expression to obtain the version of easel
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - easel:
+          type: string
+          description: The name of the tool
+      - "esl-sfetch -h | sed '2!d;s/^# Easel *//;s/ .*//'":
+          type: eval
+          description: The expression to obtain the version of easel
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"
