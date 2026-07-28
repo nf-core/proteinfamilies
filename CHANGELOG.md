@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#179](https://github.com/nf-core/proteinfamilies/pull/#179) - nf-core tools template update to 4.0.3. (by @vagkaratzas)
 
+### `Dependencies`
+
+| Tool   | Previous version | New version |
+| ------ | ---------------- | ----------- |
+| seqkit | 2.9.0            | 2.13.0      |
+
 ## v2.4.0 - [2026/06/09]
 
 ### `Changed`
