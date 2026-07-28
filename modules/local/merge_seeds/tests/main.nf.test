@@ -84,6 +84,43 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - fas.gz - clusters") {
+        // The iterative algorithm's seed MSAs arrive gzipped, and its rebuild step consumes
+        // the merged membership as a clusters TSV rather than the merged alignment.
+        when {
+            process {
+                """
+                def fam1 = file('gz_test_1.fas.gz')
+                new java.util.zip.GZIPOutputStream(fam1.newOutputStream()).withStream {
+                    it.write('>seq_1 description\\nMKVLATGGH--KLS\\n>seq_2\\nMKVLA-GGHRRKLS\\n'.bytes)
+                }
+
+                def fam2 = file('gz_test_2.fas.gz')
+                new java.util.zip.GZIPOutputStream(fam2.newOutputStream()).withStream {
+                    it.write('>seq_3\\nMKILATGGH--KLS\\n'.bytes)
+                }
+
+                input[0] = channel.of([
+                    [ id: 'test_similarities', merged_id: 'gz_test_1_2' ],
+                    "gz_test_1,gz_test_2",
+                ])
+                input[1] = channel.of([ [ id: 'test_aln' ], [ fam1, fam2 ] ])
+                """
+            }
+        }
+
+        then {
+            def clusters = file(process.out.clusters[0][1]).text
+            assertAll(
+                { assert process.success },
+                // Every member is listed against the first member, and only the sequence
+                // name is kept — the description after the first space is not part of it
+                { assert clusters == "seq_1\tseq_1\nseq_1\tseq_2\nseq_1\tseq_3\n" },
+                { assert snapshot(process.out.merged_seed_msa, process.out.clusters).match() }
+            )
+        }
+    }
+
     test("proteinfamilies - aln - stub") {
 
         options "-stub"

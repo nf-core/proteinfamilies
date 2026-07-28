@@ -45,6 +45,16 @@ output:
           type: file
           description: Merged seed MSA file
           pattern: "*.fas"
+  clusters:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}_clusters.tsv":
+          type: file
+          description: The merged membership as a headerless representative<TAB>member TSV, the first member acting as the representative
+          pattern: "*_clusters.tsv"
   versions_python:
     - - ${task.process}:
           type: string

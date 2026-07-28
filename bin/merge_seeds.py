@@ -4,11 +4,14 @@
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
 """
 Concatenates seed MSA files for a given list of family IDs into a single merged alignment
-file, used as the starting point for rebuilding a merged family HMM.
+file, used as the starting point for rebuilding a merged family HMM. The same membership
+is also written as a headerless representative<TAB>member TSV, the cluster format the
+iterative family-generation algorithm rebuilds families from.
 """
 
 import sys
 import os
+import gzip
 import argparse
 from typing import Sequence
 
@@ -41,7 +44,32 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         type=str,
         help="Path to output merged alignment file.",
     )
+    parser.add_argument(
+        "-c",
+        "--out_clusters",
+        required=True,
+        metavar="FILE",
+        type=str,
+        help="Path to output headerless representative<TAB>member TSV of the merged membership.",
+    )
     return parser.parse_args(args)
+
+
+def alignment_stem(filename: str) -> str:
+    """
+    Strip the alignment extension from a seed MSA filename, so it can be matched against a
+    family ID. Handles the compressed alignments (e.g. '.fas.gz') that the iterative
+    family-generation algorithm produces alongside the plain ones of the standard algorithm.
+
+    Args:
+        filename (str): Basename of a seed MSA file.
+
+    Returns:
+        str: The family ID the file belongs to.
+    """
+    if filename.endswith(".gz"):
+        filename = filename[: -len(".gz")]
+    return os.path.splitext(filename)[0]
 
 
 def keep_non_empty_records(content: str) -> list[str]:
@@ -69,7 +97,7 @@ def keep_non_empty_records(content: str) -> list[str]:
     return kept
 
 
-def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str) -> None:
+def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str, out_clusters: str) -> None:
     """
     Merge seed alignments whose basename matches one of the requested family IDs.
 
@@ -77,15 +105,17 @@ def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str)
         family_ids (list[str]): Family IDs whose alignments should be concatenated.
         folder (str): Directory containing per-family seed alignments.
         out_file (str): Output path for the merged alignment file.
+        out_clusters (str): Output path for the representative<TAB>member TSV.
     """
     merged_contents = []
     merged_files = 0
     dropped_records = 0
 
     for fam in family_ids:
-        fname = next((os.path.join(folder, f) for f in os.listdir(folder) if os.path.splitext(f)[0] == fam), None)
+        fname = next((os.path.join(folder, f) for f in os.listdir(folder) if alignment_stem(f) == fam), None)
         if os.path.exists(fname):
-            with open(fname, "r") as f:
+            open_func = gzip.open if fname.endswith(".gz") else open
+            with open_func(fname, "rt") as f:
                 content = f.read().strip()
                 if content:
                     kept = keep_non_empty_records(content)
@@ -103,6 +133,12 @@ def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str)
         with open(out_file, "w") as out:
             # Literal concatenation of FASTA blocks — valid for any FASTA-format alignment.
             out.write("\n".join(merged_contents) + "\n")
+        # The merged families become one cluster; its representative is the first member,
+        # which is itself listed as a member, as in MMseqs2 cluster output.
+        names = [record[1:].split()[0] for record in merged_contents]
+        with open(out_clusters, "w") as out:
+            for name in names:
+                out.write(f"{names[0]}\t{name}\n")
         print(f"[INFO] Merged {merged_files} files into {out_file}")
     else:
         print("[WARNING] No files merged (none matched the provided list).", file=sys.stderr)
@@ -113,7 +149,7 @@ def main(args: Sequence[str] | None = None) -> None:
 
     family_ids = [x.strip() for x in args.list.split(",") if x.strip()]
 
-    merge_selected_alignments(family_ids, args.folder, args.out_file)
+    merge_selected_alignments(family_ids, args.folder, args.out_file, args.out_clusters)
 
 
 if __name__ == "__main__":
