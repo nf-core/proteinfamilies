@@ -1,0 +1,56 @@
+Changes in component 'nf-core/mgnifam/generatefamilies'
+'modules/nf-core/mgnifam/generatefamilies/environment.yml' is unchanged
+Changes in 'mgnifam/generatefamilies/meta.yml':
+--- modules/nf-core/mgnifam/generatefamilies/meta.yml
++++ modules/nf-core/mgnifam/generatefamilies/meta.yml
+@@ -40,6 +40,12 @@
+         pattern: "*.{fa,fasta,fna,faa}"
+         ontologies:
+           - edam: http://edamontology.org/format_1929 # FASTA
++    - fasta_index:
++        type: file
++        description: Optional. Precomputed Easel SSI index of the FASTA file. Pass
++          `[]` to let mgnifam build the index itself; supplying it avoids rebuilding
++          the same index once per cluster chunk
++        pattern: "*.ssi"
+ output:
+   seed_msa:
+     - - meta:
+
+Changes in 'mgnifam/generatefamilies/main.nf':
+--- modules/nf-core/mgnifam/generatefamilies/main.nf
++++ modules/nf-core/mgnifam/generatefamilies/main.nf
+@@ -8,7 +8,7 @@
+         'community.wave.seqera.io/library/pip_mgnifam:b23278d764db6a8f' }"
+ 
+     input:
+-    tuple val(meta), path(clusters_chunk), path(fasta_file)
++    tuple val(meta), path(clusters_chunk), path(fasta_file), path(fasta_index)
+ 
+     output:
+     tuple val(meta), path("${prefix}/seed_msa/*.sto.gz")       , emit: seed_msa  , optional: true
+@@ -29,8 +29,9 @@
+     task.ext.when == null || task.ext.when
+ 
+     script:
+-    def args = task.ext.args ?: ''
+-    prefix   = task.ext.prefix ?: "${meta.id}"
++    def args  = task.ext.args ?: ''
++    def index = fasta_index ? "--fasta_index ${fasta_index}" : ''
++    prefix    = task.ext.prefix ?: "${meta.id}"
+     """
+     mgnifam generate_families \\
+         --clusters_chunk ${clusters_chunk} \\
+@@ -38,6 +39,7 @@
+         --output_dir ${prefix} \\
+         --cpus ${task.cpus} \\
+         --chunk_num ${prefix} \\
++        ${index} \\
+         ${args}
+     """
+ 
+
+'modules/nf-core/mgnifam/generatefamilies/tests/main.nf.test' is unchanged
+'modules/nf-core/mgnifam/generatefamilies/tests/nextflow.config' is unchanged
+'modules/nf-core/mgnifam/generatefamilies/tests/main.nf.test.snap' is unchanged
+************************************************************

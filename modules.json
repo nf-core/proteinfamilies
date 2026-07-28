@@ -25,6 +25,11 @@
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"]
                     },
+                    "gunzip": {
+                        "branch": "master",
+                        "git_sha": "0902eac3012baaf4f9ab6513c8c55acc9353c96c",
+                        "installed_by": ["modules"]
+                    },
                     "hhsuite/reformat": {
                         "branch": "master",
                         "git_sha": "0a0d038765a622ae970b3eb08c6fa0be48c7d24d",
@@ -49,6 +54,12 @@
                         "branch": "master",
                         "git_sha": "f0fc064c76250bf362d1900bbf8b62092f9f2a1b",
                         "installed_by": ["modules"]
+                    },
+                    "mgnifam/generatefamilies": {
+                        "branch": "master",
+                        "git_sha": "dda8e6fd1b806b26b5b95055943e953c551302ce",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/mgnifam/generatefamilies/mgnifam-generatefamilies.diff"
                     },
                     "mmseqs/cluster": {
                         "branch": "master",
