@@ -34,9 +34,11 @@ workflow MERGE_FAMILIES {
     ch_pooled_components = POOL_SIMILAR_COMPONENTS.out.pooled_components
         .splitCsv( by:1 )
         .map { meta, components ->
-            // Extract the suffix from each component (part after last underscore)
+            // Extract each component's family suffix, the part after the sample id. Splitting
+            // on the last underscore instead would collapse the compound suffixes the
+            // iterative algorithm produces ('2_1' and '3_1' would both become '1').
             def suffixes = components.collect { component ->
-                component.split('_').last()
+                component.split("${meta.id}_", 2)[1]
             }
             // Readable id encoding every combined family, e.g. 'sample_1_7'
             def readableId = "${meta.id}_${suffixes.join('_')}"
@@ -51,10 +53,18 @@ workflow MERGE_FAMILIES {
             return [newMeta, components.join(',')]
         }
 
-    // .first() converts seed_msa to a value channel so each pooled-component group can combine
-    // with the full seed MSA collection; without it, a queue channel would be consumed after
-    // the first pairing.
-    MERGE_SEEDS( ch_pooled_components, seed_msa.first() )
+    // Each pooled group is paired with its own sample's seed collection. combine() by sample id
+    // repeats that collection for every group of the sample, without letting one sample's groups
+    // consume another sample's seeds.
+    ch_input_for_merge_seeds = ch_pooled_components
+        .map { meta, components -> [ [id: meta.id], meta, components ] }
+        .combine(seed_msa, by: 0)
+        .multiMap { id, meta, components, seeds ->
+            components: [ meta, components ]
+            seed_msa  : [ id, seeds ]
+        }
+
+    MERGE_SEEDS( ch_input_for_merge_seeds.components, ch_input_for_merge_seeds.seed_msa )
 
     // The iterative algorithm rebuilds a family from a cluster rather than from a seed
     // alignment, so it takes the merged membership MERGE_SEEDS writes alongside the seed.

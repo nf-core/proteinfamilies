@@ -113,7 +113,7 @@ def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str,
 
     for fam in family_ids:
         fname = next((os.path.join(folder, f) for f in os.listdir(folder) if alignment_stem(f) == fam), None)
-        if os.path.exists(fname):
+        if fname and os.path.exists(fname):
             open_func = gzip.open if fname.endswith(".gz") else open
             with open_func(fname, "rt") as f:
                 content = f.read().strip()
@@ -124,7 +124,7 @@ def merge_selected_alignments(family_ids: list[str], folder: str, out_file: str,
                         merged_contents.extend(kept)
                         merged_files += 1
         else:
-            print(f"[WARNING] File not found: {fname}", file=sys.stderr)
+            print(f"[WARNING] No seed alignment found for family: {fam}", file=sys.stderr)
 
     if dropped_records:
         print(f"[WARNING] Dropped {dropped_records} all-gap record(s) while merging.", file=sys.stderr)
