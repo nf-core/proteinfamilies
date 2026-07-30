@@ -13,7 +13,7 @@
 */
 
 include { GUNZIP                                        } from '../../../modules/nf-core/gunzip/main'
-include { GENERATE_FASTA_INDEX                          } from '../../../modules/local/generate_fasta_index/main'
+include { HMMER_ESLSFETCHINDEX                          } from '../../../modules/nf-core/hmmer/eslsfetchindex/main'
 include { MGNIFAM_GENERATEFAMILIES                      } from '../../../modules/nf-core/mgnifam/generatefamilies/main'
 include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_SEED     } from '../../../modules/nf-core/hhsuite/reformat/main'
 include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_FULL     } from '../../../modules/nf-core/hhsuite/reformat/main'
@@ -38,9 +38,9 @@ workflow GENERATE_FAMILIES_ITERATIVELY {
 
     // Indexed once per sample: every chunk of a sample searches the same sequence pool, and
     // mgnifam would otherwise rebuild an identical index per chunk.
-    GENERATE_FASTA_INDEX( ch_sequences )
+    HMMER_ESLSFETCHINDEX( ch_sequences )
 
-    ch_indexed_sequences = ch_sequences.join( GENERATE_FASTA_INDEX.out.ssi )
+    ch_indexed_sequences = ch_sequences.join( HMMER_ESLSFETCHINDEX.out.ssi )
 
     // Strip chunk from meta so each chunk can be matched to the full sample sequence pool by
     // sample ID alone; the original chunk meta is restored via _id after the combine.

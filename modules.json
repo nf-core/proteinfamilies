@@ -35,6 +35,11 @@
                         "git_sha": "0a0d038765a622ae970b3eb08c6fa0be48c7d24d",
                         "installed_by": ["modules"]
                     },
+                    "hmmer/eslsfetchindex": {
+                        "branch": "master",
+                        "git_sha": "d3d8e0c6c33925e69f96f44fc6204302841f3562",
+                        "installed_by": ["modules"]
+                    },
                     "hmmer/hmmalign": {
                         "branch": "master",
                         "git_sha": "f2bed902e13076698e7d59d1fedf5c083f6f17c0",

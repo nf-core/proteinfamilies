@@ -13,7 +13,7 @@ keywords:
   - protein
 components:
   - gunzip
-  - generate_fasta_index
+  - hmmer/eslsfetchindex
   - mgnifam/generatefamilies
   - hhsuite/reformat
   - seqkit/seq
