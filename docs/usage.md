@@ -58,7 +58,7 @@ Each cluster is chunked into its own FASTA file and processed by a chain of tool
 
 ### `iterative`
 
-Whole chunks of clusters, `clusters_per_chunk` at a time, are handed to [mgnifam](https://github.com/vagkaratzas/mgnifam), which builds a family from each cluster by looping: build an HMM, recruit members from the sequence pool, realign the expanded membership, and repeat until the family converges or the cluster is discarded. A single task therefore emits many families.
+Whole chunks of clusters, `clusters_per_chunk` at a time, are handed to [mgnifam](https://github.com/vagkaratzas/mgnifam), which builds a family from each cluster by looping: build an HMM, recruit members from the sequence pool, realign the expanded membership, and repeat up to three times or, until the family converges or the cluster is discarded. A single task therefore emits many families.
 
 mgnifam performs each step in-process with its own libraries rather than by calling the pipeline's tools:
 
