@@ -315,15 +315,16 @@ Only produced when `--family_generation_algorithm iterative` is set, in place of
       - `<samplename>_*.fasta.gz`: (optional) family member sequences, taken from the full MSA with the gaps removed. Can be turned on with `--save_hmmsearch_filtered_fasta`
 - `generate_families_iteratively/`
   - `<samplename>/`
-    - `<samplename>_*_families.tsv`: (optional) roster of the families generated from the cluster chunk
-    - `<samplename>_*_metadata.csv`: (optional) metadata describing the generated families
-    - `<samplename>_*_reps.fasta.gz`: (optional) compressed representative sequences of the generated families
-    - `<samplename>_*_successful.txt`: (optional) clusters that successfully converged into families
-    - `<samplename>_*_converged.txt`: (optional) clusters that converged during family generation
-    - `<samplename>_*_discarded.csv`: (optional) clusters discarded during family generation, with the reason for each
-    - `<samplename>_*.log`: (optional) diagnostic log of the family generation run
-    - `rf/`
-      - `<samplename>_*.txt`: (optional) per-family reference annotation (RF) line, marking the match-state columns of the seed alignment
+    - `<samplename>_*/`: one directory per cluster chunk
+      - `<samplename>_*_families.tsv`: (optional) roster of the families generated from the cluster chunk
+      - `<samplename>_*_metadata.csv`: (optional) metadata describing the generated families
+      - `<samplename>_*_reps.fasta.gz`: (optional) compressed representative sequences of the generated families
+      - `<samplename>_*_successful.txt`: (optional) clusters that successfully converged into families
+      - `<samplename>_*_converged.txt`: (optional) clusters that converged during family generation
+      - `<samplename>_*_discarded.csv`: (optional) clusters discarded during family generation, with the reason for each
+      - `<samplename>_*.log`: (optional) diagnostic log of the family generation run
+      - `rf/`
+        - `<samplename>_*.txt`: (optional) per-family reference annotation (RF) line, marking the match-state columns of the seed alignment
 - `remove_redundancy/`
   - `merge_families/`
     - `hmm/raw/`, `full_msa/raw/mgnifam/`, `generate_families_iteratively/`: the same outputs for the families rebuilt after merging
