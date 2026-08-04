@@ -62,9 +62,8 @@
                     },
                     "mgnifam/generatefamilies": {
                         "branch": "master",
-                        "git_sha": "dda8e6fd1b806b26b5b95055943e953c551302ce",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/mgnifam/generatefamilies/mgnifam-generatefamilies.diff"
+                        "git_sha": "acdf5174c3bebdb1ac86858845a18015b5ee9bdb",
+                        "installed_by": ["modules"]
                     },
                     "mmseqs/cluster": {
                         "branch": "master",
