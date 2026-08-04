@@ -26,7 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | ------- | ---------------- | ----------- |
 | seqkit  | 2.9.0            | 2.13.0      |
 | mgnifam | -                | 1.0.0       |
-| easel   | -                | 0.49        |
 
 ## v2.4.0 - [2026/06/09]
 
