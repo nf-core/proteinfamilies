@@ -9,7 +9,7 @@ lint:
     - docs/images/nf-core-proteinfamilies_logo_dark.png
     - .github/workflows/branch.yml
     - .github/workflows/linting.yml
-nf_core_version: 4.1.0
+nf_core_version: 4.0.3
 repository_type: pipeline
 template:
   author: Evangelos Karatzas
