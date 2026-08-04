@@ -25,7 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Tool    | Previous version | New version |
 | ------- | ---------------- | ----------- |
 | seqkit  | 2.9.0            | 2.13.0      |
-| mgnifam | -                | 1.0.0       |
+| mgnifam | -                | 2.0.0       |
+| gunzip  | -                | 1.13        |
 
 ## v2.4.0 - [2026/06/09]
 
