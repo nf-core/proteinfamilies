@@ -42,8 +42,8 @@ workflow GENERATE_FAMILIES_ITERATIVELY {
 
     ch_indexed_sequences = ch_sequences.join( HMMER_ESLSFETCHINDEX.out.ssi )
 
-    // Strip chunk from meta so each chunk can be matched to the full sample sequence pool by
-    // sample ID alone; the original chunk meta is restored via _id after the combine.
+    // Combine on a chunk-free [id] key so each chunk matches the full sample sequence pool;
+    // the original meta rides along as an extra element and the key is dropped after.
     ch_input_for_mgnifam = clusters_chunks
         .map { meta, tsv -> [ [id: meta.id], meta, tsv ] }
         .combine(ch_indexed_sequences, by: 0)
