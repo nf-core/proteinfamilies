@@ -75,7 +75,6 @@ workflow PROTEINFAMILIES {
         }
     ch_samplesheet_for_update = ch_branch_result.to_update
 
-    // Updating existing families
     UPDATE_FAMILIES (
         ch_samplesheet_for_update,
         params.hmmsearch_query_length_threshold,
@@ -93,7 +92,6 @@ workflow PROTEINFAMILIES {
     ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
 
     // Creating new families
-    // Clustering
     MMSEQS_FASTA_CLUSTER (
         ch_samplesheet_for_create,
         params.clustering_tool
@@ -102,8 +100,6 @@ workflow PROTEINFAMILIES {
     CALCULATE_CLUSTER_DISTRIBUTION( MMSEQS_FASTA_CLUSTER.out.clusters )
 
     // Cluster chunking, multiple sequence alignments, model building and sequence recruiting
-    // out.seqs is out.clusters' sequence pool, joined by the clustering subworkflow to stay
-    // in sync when a run carries multiple sequence files.
     CHUNK_AND_GENERATE_FAMILIES (
         MMSEQS_FASTA_CLUSTER.out.seqs,
         MMSEQS_FASTA_CLUSTER.out.clusters,
@@ -119,7 +115,6 @@ workflow PROTEINFAMILIES {
         params.hmmsearch_query_length_threshold
     )
 
-    // Remove redundant sequences and families
     REMOVE_REDUNDANCY (
         ch_samplesheet_for_create,
         CHUNK_AND_GENERATE_FAMILIES.out.seed_msa,
