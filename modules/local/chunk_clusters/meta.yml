@@ -52,7 +52,7 @@ output:
             e.g. `[ id:'sample1', single_end:false ]`
     - chunked_fasta/*:
         type: file
-        description: List of files containing chunked FASTA files produced from the clustering process. Only produced in the 'fasta' format.
+        description: List of files containing chunked FASTA files produced from the clustering process. Only produced for the 'fasta' out_format.
         pattern: "*.faa"
   cluster_chunks:
     - - meta:
@@ -62,7 +62,7 @@ output:
             e.g. `[ id:'sample1', single_end:false ]`
     - chunked_tsv/*:
         type: file
-        description: List of headerless representative<TAB>member TSV files, each holding up to clusters_per_chunk clusters. Only produced in the 'tsv' format.
+        description: List of headerless representative<TAB>member TSV files, each holding up to clusters_per_chunk clusters. Only produced for the 'tsv' out_format.
         pattern: "*.tsv"
   versions_python:
     - - ${task.process}:
