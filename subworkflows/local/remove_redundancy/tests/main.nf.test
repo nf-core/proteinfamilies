@@ -75,7 +75,7 @@ nextflow_workflow {
                 input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[9]  = false      // skip_sequence_redundancy_removal
                 input[10] = "linclust" // clustering_tool
-                input[11] = "standard"  // family_generation_algorithm
+                input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
                 input[13] = false      // skip_msa_trimming
                 input[14] = "clipkit"  // clipkit_out_format
@@ -169,7 +169,7 @@ nextflow_workflow {
                 input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[9]  = false      // skip_sequence_redundancy_removal
                 input[10] = "linclust" // clustering_tool
-                input[11] = "standard"  // family_generation_algorithm
+                input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
                 input[13] = false      // skip_msa_trimming
                 input[14] = "clipkit"  // clipkit_out_format
@@ -263,7 +263,7 @@ nextflow_workflow {
                 input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[9]  = true       // skip_sequence_redundancy_removal
                 input[10] = "linclust" // clustering_tool
-                input[11] = "standard"  // family_generation_algorithm
+                input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
                 input[13] = false      // skip_msa_trimming
                 input[14] = "clipkit"  // clipkit_out_format
@@ -357,7 +357,7 @@ nextflow_workflow {
                 input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[9]  = true       // skip_sequence_redundancy_removal
                 input[10] = "linclust" // clustering_tool
-                input[11] = "standard"  // family_generation_algorithm
+                input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
                 input[13] = false      // skip_msa_trimming
                 input[14] = "clipkit"  // clipkit_out_format
@@ -451,7 +451,7 @@ nextflow_workflow {
                 input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[9]  = true       // skip_sequence_redundancy_removal
                 input[10] = "linclust" // clustering_tool
-                input[11] = "standard"  // family_generation_algorithm
+                input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
                 input[13] = false      // skip_msa_trimming
                 input[14] = "clipkit"  // clipkit_out_format
@@ -545,7 +545,7 @@ nextflow_workflow {
                 input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[9]  = true       // skip_sequence_redundancy_removal
                 input[10] = "linclust" // clustering_tool
-                input[11] = "standard"  // family_generation_algorithm
+                input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
                 input[13] = false      // skip_msa_trimming
                 input[14] = "clipkit"  // clipkit_out_format
@@ -639,7 +639,7 @@ nextflow_workflow {
                 input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[9]  = true       // skip_sequence_redundancy_removal
                 input[10] = "linclust" // clustering_tool
-                input[11] = "standard"  // family_generation_algorithm
+                input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
                 input[13] = false      // skip_msa_trimming
                 input[14] = "clipkit"  // clipkit_out_format
@@ -735,7 +735,7 @@ nextflow_workflow {
                 input[8]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[9]  = false      // skip_sequence_redundancy_removal
                 input[10] = "linclust" // clustering_tool
-                input[11] = "standard"  // family_generation_algorithm
+                input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
                 input[13] = false      // skip_msa_trimming
                 input[14] = "clipkit"  // clipkit_out_format
