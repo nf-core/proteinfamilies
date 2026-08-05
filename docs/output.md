@@ -28,7 +28,7 @@ Multiple sequence alignment:
 Generating family models:
 
 - [hmmer](#hmmer) to build the family HMM (hmmbuild) and to optionally 'fish' additional sequences from the input fasta file (hmmsearch), with given thresholds, into the family and also build the family full MSA (hmmalign)
-- [mgnifam](#mgnifam) alternative to the alignment and model building steps above, selected with `--family_generation_algorithm iterative`. It repeats HMM building, sequence recruitment and realignment per cluster until each family converges or is discarded
+- [mgnifam](#mgnifam) alternative to the alignment and model building steps above, selected with `--family_generation_algorithm iterative`. It repeats HMM building, sequence recruitment and realignment per cluster up to three rounds, or until each family converges or is discarded
 
 Removing redundancy:
 
@@ -335,7 +335,9 @@ All files under `generate_families_iteratively/` require `--save_iterative_famil
 
 Each file is named after the chunk of clusters it came from and the family's position within it, so `<samplename>_2_5` is the fifth family of the sample's second chunk.
 
-The discarded and converged records are the main way to tell why a cluster produced no family: mgnifam drops clusters whose representative falls outside the length bounds, whose starting membership does not survive recruitment, or which never converge.
+The discarded records are the main way to tell why a cluster produced no family: mgnifam drops clusters whose representative falls outside the length bounds, or whose starting membership does not survive recruitment.
+
+The converged records indicate which of the families optimized their model within three iterations.
 
 [mgnifam](https://github.com/vagkaratzas/mgnifam) iteratively builds protein family HMM profiles from sequence clusters and expands them against a protein database, using pyfamsa, pytrimal and pyhmmer internally.
 
