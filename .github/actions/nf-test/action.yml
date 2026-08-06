@@ -38,6 +38,10 @@ runs:
     - name: Setup apptainer
       if: contains(inputs.profile, 'singularity')
       uses: eWaterCycle/setup-apptainer@4bb22c52d4f63406c49e94c804632975787312b3 # v2.0.0
+      with:
+        # Action defaults to 1.1.2, which predates the AppArmor profile Ubuntu 24.04 runners
+        # need for unprivileged user namespaces ("Failed to create container process").
+        apptainer-version: 1.5.3
 
     - name: Set up Singularity
       if: contains(inputs.profile, 'singularity')
