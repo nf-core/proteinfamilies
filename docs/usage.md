@@ -48,6 +48,52 @@ Here we provide guidance regarding some parameter choices.
   Only used if `skip_msa_trimming` is off.
   The authors suggest keeping the `trim_ends_only` on, since the gaps inside the sequences may still carry evolutionary significance.
 
+## Family generation algorithms
+
+`family_generation_algorithm` ["standard", "iterative"] selects how clusters become family models. Both produce the same kinds of outputs and feed the same redundancy removal, merging and reporting steps, so the choice is invisible downstream.
+
+### `standard` (default)
+
+Each cluster is chunked into its own FASTA file and processed by a chain of tools orchestrated by Nextflow: FAMSA or mafft aligns the cluster into a seed MSA, ClipKIT optionally trims it, `hmmbuild` builds the family HMM, and `hmmsearch` optionally recruits further members from the sample's sequence pool in a single pass, which `hmmalign` then aligns into the full MSA.
+
+### `iterative`
+
+Whole chunks of clusters, `clusters_per_chunk` at a time, are handed to [mgnifam](https://github.com/vagkaratzas/mgnifam), which builds a family from each cluster by looping: build an HMM, recruit members from the sequence pool, realign the expanded membership, and repeat up to three times or, until the family converges or the cluster is discarded. A single task therefore emits many families.
+
+mgnifam performs each step in-process with its own libraries rather than by calling the pipeline's tools:
+
+| Step               | Library                                          |
+| ------------------ | ------------------------------------------------ |
+| Alignment          | [pyfamsa](https://github.com/althonos/pyfamsa)   |
+| Trimming           | [pytrimal](https://github.com/althonos/pytrimal) |
+| HMM build & search | [pyhmmer](https://github.com/althonos/pyhmmer)   |
+
+Because of that, the parameters below are honoured only by the `standard` algorithm. They are ignored on the `iterative` path, which always behaves as stated:
+
+| Parameter                                                                    | Behaviour of the `iterative` algorithm                                     |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `alignment_tool`                                                             | Always FAMSA, through pyfamsa                                              |
+| `skip_msa_trimming`                                                          | Trimming is always applied, through pytrimal                               |
+| `clipkit_out_format`, `trim_ends_only`                                       | ClipKIT is not used; trimming is by column gap occupancy (`gap_threshold`) |
+| `skip_additional_sequence_recruiting`                                        | Recruitment is always performed, and repeated until convergence            |
+| `hmmsearch_write_target`, `hmmsearch_write_domain`, `save_hmmsearch_results` | Searching is in-process, so no hmmsearch report files exist                |
+
+The parameters both algorithms share are mapped onto their mgnifam equivalents:
+
+| Parameter                             | mgnifam option                    |
+| ------------------------------------- | --------------------------------- |
+| `cluster_size_threshold`              | applied while chunking clusters   |
+| `min_seq_length`                      | `--discard_min_rep_length`        |
+| `max_seq_length`                      | `--discard_max_rep_length`        |
+| `cluster_seq_identity_for_redundancy` | `--max_seq_identity`              |
+| `gap_threshold`                       | `--max_gap_occupancy`             |
+| `hmmsearch_evalue_cutoff`             | `--recruit_evalue_cutoff`         |
+| `hmmsearch_query_length_threshold`    | `--recruit_hit_length_percentage` |
+
+mgnifam's remaining options (`--discard_min_starting_membership`, `--max_seed_seqs`, `--batch_size`, `--prefetch_targets`) keep their tool defaults and can be set through `ext.args`, as described in [Custom Tool Arguments](#custom-tool-arguments).
+
+`clusters_per_chunk` (default 1000) trades parallelism against scheduling overhead: smaller chunks give more tasks, better load balancing and finer-grained `-resume`, at the cost of more per-task startup. Set `save_iterative_family_metadata` to publish mgnifam's family roster, metadata, converged, successful and discarded records, its per-family HMM consensus match states (rf), representative sequence fasta, and its log.
+
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:

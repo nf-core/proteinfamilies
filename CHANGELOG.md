@@ -5,21 +5,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v2.5.0dev - [date]
 
+### `Added`
+
+- [#182](https://github.com/nf-core/proteinfamilies/pull/182) - Added an alternative, iterative family generation algorithm, selectable with `--family_generation_algorithm iterative`. It hands whole chunks of clusters (`--clusters_per_chunk`) to `mgnifam`, which repeats HMM building, sequence recruitment and realignment per cluster until each family converges or is discarded. Applies to both newly created and merged families. (by @vagkaratzas)
+
 ### `Fixed`
 
 - [#177](https://github.com/nf-core/proteinfamilies/pull/177)
   - Fixed `OSError: [Errno 36] File name too long` in `MERGE_FAMILIES:MERGE_SEEDS` when a pool combines many families: `merged_id` now collapses to a stable hash once the readable form would exceed the filesystem name-length limit. (by @vagkaratzas, bug reported by @Yixuan39)
   - Fixed `FAMSA_ALIGN` aborting with exit status 134 on merged families: `MERGE_SEEDS` now drops all-gap records, which `CLIPKIT` can leave behind when a member's residues all fall in trimmed columns, and which FAMSA cannot realign. (by @vagkaratzas, bug reported by @Yixuan39)
+- [#182](https://github.com/nf-core/proteinfamilies/pull/182) - Fixed `MERGE_FAMILIES:MERGE_SEEDS` using the first sample's seed MSAs for every sample: pooled families are now paired with their own sample's seeds. (by @vagkaratzas)
 
 ### `Changed`
 
+- [#182](https://github.com/nf-core/proteinfamilies/pull/#182) - Updated `CHUNK_CLUSTERS` and `MERGE_SEEDS` to optionally output `TSV`, required by the iterative family generation subworkflow. (by @vagkaratzas)
 - [#179](https://github.com/nf-core/proteinfamilies/pull/#179) - nf-core tools template update to 4.0.3. (by @vagkaratzas)
 
 ### `Dependencies`
 
-| Tool   | Previous version | New version |
-| ------ | ---------------- | ----------- |
-| seqkit | 2.9.0            | 2.13.0      |
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| seqkit  | 2.9.0            | 2.13.0      |
+| mgnifam | -                | 2.0.0       |
+| gunzip  | -                | 1.13        |
 
 ## v2.4.0 - [2026/06/09]
 

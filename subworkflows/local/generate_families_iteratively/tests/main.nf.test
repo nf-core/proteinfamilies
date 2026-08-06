@@ -1,0 +1,68 @@
+nextflow_workflow {
+
+    name "Test Subworkflow GENERATE_FAMILIES_ITERATIVELY"
+    script "../main.nf"
+    workflow "GENERATE_FAMILIES_ITERATIVELY"
+
+    test("clusters tsv") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.modules_testdata_base_path + 'proteomics/proteinfamilies/mgnify_proteins.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of([
+                    [ id: 'test', chunk: '1' ],
+                    file(params.modules_testdata_base_path + 'proteomics/proteinfamilies/mgnify_proteins_trimmed_clustering.tsv', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                // Every family of the chunk is fanned out with a per-family chunk key,
+                // the shape the redundancy and merging subworkflows consume
+                { assert workflow.out.hmm.size() > 1 },
+                { assert workflow.out.hmm.every { meta, _file -> meta.id == 'test' && meta.chunk.startsWith('1_') } },
+                { assert snapshot(
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta,
+                    workflow.out.hmm.collect { _meta, model -> model.tokenize('/').last() }
+                ).match() }
+            )
+        }
+    }
+
+    test("clusters tsv - gzipped sequences") {
+        // mgnifam cannot read a gzipped FASTA, so a compressed sequence pool must be
+        // decompressed before it, and only once per sample.
+        when {
+            workflow {
+                """
+                def gzipped = file('mgnify_proteins.faa.gz')
+                new java.util.zip.GZIPOutputStream(gzipped.newOutputStream()).withStream {
+                    it.write(file(params.modules_testdata_base_path + 'proteomics/proteinfamilies/mgnify_proteins.faa', checkIfExists: true).bytes)
+                }
+
+                input[0] = channel.of([ [ id: 'test' ], gzipped ])
+                input[1] = channel.of([
+                    [ id: 'test', chunk: '1' ],
+                    file(params.modules_testdata_base_path + 'proteomics/proteinfamilies/mgnify_proteins_trimmed_clustering.tsv', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.hmm.size() > 1 }
+            )
+        }
+    }
+}
