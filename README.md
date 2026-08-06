@@ -48,6 +48,10 @@ Generate input amino acid sequence statistics with ([`SeqFu`](https://github.com
 8. Optionally, infer sequence phylogeny, by calculating the maximum parsimonious likelihood estimation trees for the final full MSAs with ([`CMAPLE`](https://github.com/iqtree/cmaple))
 9. Present statistics for remaining/updated family size distributions and representative sequence lengths ([`MultiQC`](http://multiqc.info/))
 
+The new `iterative` family generation algorithm (i.e., `mgnifam`), can now be used in place of steps 2-4.
+In a nutshell, `mgnifam` iterates through these steps to refine the protein family alignments and models,
+for up to three rounds, or until the family model has converged. For more information, see [usage.md](docs/usage.md#iterative)
+
 ### Update families
 
 1. Find which families to update by comparing the input sequences against existing family models with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
