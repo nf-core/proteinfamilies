@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#182](https://github.com/nf-core/proteinfamilies/pull/182) - Updated `CHUNK_CLUSTERS` and `MERGE_SEEDS` to optionally output `TSV`, required by the iterative family generation subworkflow. (by @vagkaratzas)
 - [#179](https://github.com/nf-core/proteinfamilies/pull/179) - nf-core tools template update to 4.0.3. (by @vagkaratzas)
+- [#183](https://github.com/nf-core/proteinfamilies/pull/183) - Raw family HMMs are now published under a subfolder named after the tool that built them, `hmm/raw/hmmer_hmmbuild/` or `hmm/raw/mgnifam/`, matching how the seed and full MSA outputs are already organised. (by @vagkaratzas, suggested by @nickp60)
 
 ### `Dependencies`
 
