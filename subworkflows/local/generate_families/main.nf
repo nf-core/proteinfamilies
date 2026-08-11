@@ -44,8 +44,8 @@ workflow GENERATE_FAMILIES {
     HMMER_HMMBUILD( ch_seed_msa, [] )
     ch_hmm = HMMER_HMMBUILD.out.hmm
 
-    // Strip chunk from meta so each cluster's HMM can be matched to the full sample sequence
-    // pool by sample ID alone; the original chunk meta is restored via _id after the combine.
+    // Combine on a chunk-free [id] key so each cluster's HMM matches the full sample sequence
+    // pool; the original meta rides along as an extra element and the key is dropped after.
     ch_input_for_hmmsearch = ch_hmm
         .map { meta, hmm -> [ [id: meta.id], meta, hmm ] }
         .combine(sequences, by: 0)

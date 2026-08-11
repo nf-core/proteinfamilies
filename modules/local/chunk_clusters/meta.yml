@@ -37,6 +37,12 @@ input:
   - - size_threshold:
         type: integer
         description: Integer value representing the minimum allowed cluster size to chunk.
+  - - out_format:
+        type: string
+        description: Either 'fasta', for one FASTA file per cluster, or 'tsv', for clusters batched into representative<TAB>member TSV files.
+  - - clusters_per_chunk:
+        type: integer
+        description: Maximum number of clusters per output file in the 'tsv' format. Ignored in the 'fasta' format, which always writes one cluster per file.
 output:
   fasta_chunks:
     - - meta:
@@ -46,8 +52,18 @@ output:
             e.g. `[ id:'sample1', single_end:false ]`
     - chunked_fasta/*:
         type: file
-        description: List of files containing chunked FASTA files produced from the clustering process.
+        description: List of files containing chunked FASTA files produced from the clustering process. Only produced for the 'fasta' out_format.
         pattern: "*.faa"
+  cluster_chunks:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+    - chunked_tsv/*:
+        type: file
+        description: List of headerless representative<TAB>member TSV files, each holding up to clusters_per_chunk clusters. Only produced for the 'tsv' out_format.
+        pattern: "*.tsv"
   versions_python:
     - - ${task.process}:
           type: string

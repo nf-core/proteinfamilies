@@ -12,7 +12,8 @@ process MERGE_SEEDS {
     tuple val(meta2), path(seed_msa, stageAs: "seed_msa/*")
 
     output:
-    tuple val(meta), path("${prefix}.fas"), emit: merged_seed_msa
+    tuple val(meta), path("${prefix}.fas")         , emit: merged_seed_msa
+    tuple val(meta), path("${prefix}_clusters.tsv"), emit: clusters
     tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
 
     when:
@@ -24,12 +25,14 @@ process MERGE_SEEDS {
     merge_seeds.py \\
         --list "${similarities}" \\
         --folder seed_msa \\
-        --out_file ${prefix}.fas
+        --out_file ${prefix}.fas \\
+        --out_clusters ${prefix}_clusters.tsv
     """
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.fas
+    touch ${prefix}_clusters.tsv
     """
 }

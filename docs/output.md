@@ -28,6 +28,7 @@ Multiple sequence alignment:
 Generating family models:
 
 - [hmmer](#hmmer) to build the family HMM (hmmbuild) and to optionally 'fish' additional sequences from the input fasta file (hmmsearch), with given thresholds, into the family and also build the family full MSA (hmmalign)
+- [mgnifam](#mgnifam) alternative to the alignment and model building steps above, selected with `--family_generation_algorithm iterative`. It repeats HMM building, sequence recruitment and realignment per cluster up to three rounds, or until each family converges or is discarded
 
 Removing redundancy:
 
@@ -235,9 +236,10 @@ Results are stored in the `seed_msa/raw` folder.
   - `library/`
     - `<samplename>.lib.gz`: compressed compiled families HMM library model for the sample
   - `raw/`
-    - `<samplename>/`
-      - `<samplename>_*.hmm.gz`: compressed hmm model for the family
-      - `<samplename>_*.hmmbuild.txt`: (optional) hmmbuild execution log
+    - `hmmer_hmmbuild/`
+      - `<samplename>/`
+        - `<samplename>_*.hmm.gz`: compressed hmm model for the family
+        - `<samplename>_*.hmmbuild.txt`: (optional) hmmbuild execution log
 - `full_msa/`
   - `raw/`
     - `hmmer_hmmalign/`
@@ -263,9 +265,10 @@ Results are stored in the `seed_msa/raw` folder.
           - `<samplename>_*.txt.gz`: (optional) hmmsearch execution log. Can be turned on with `--save_hmmsearch_results`
     - `hmm/`
       - `raw/`
-        - `<samplename>/`
-          - `<samplename>_*.hmm.gz`: compressed hmm model for the merged family
-          - `<samplename>_*.hmmbuild.txt`: (optional) hmmbuild execution log
+        - `hmmer_hmmbuild/`
+          - `<samplename>/`
+            - `<samplename>_*.hmm.gz`: compressed hmm model for the merged family
+            - `<samplename>_*.hmmbuild.txt`: (optional) hmmbuild execution log
     - `full_msa/`
       - `raw/`
         - `hmmer_hmmalign/`
@@ -278,7 +281,8 @@ Results are stored in the `seed_msa/raw` folder.
 
 </details>
 
-The `hmm/raw` folder contains all originally created family HMMs. These models will be used downstream to recruit additional sequences in families, to compute
+The `hmm/raw` folder contains all originally created family HMMs, under a subfolder named after the tool that built them
+(`hmmer_hmmbuild/` for the standard algorithm, `mgnifam/` for the iterative one), as with the seed and full MSA outputs. These models will be used downstream to recruit additional sequences in families, to compute
 full MSAs if `--skip_additional_sequence_recruiting` is set to `false`, and/or to remove among-family redundancies if `--skip_family_redundancy_removal` is set to `false`.
 When `--skip_family_redundancy_removal` is set to `false`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
 The `hmm/library` will contain a compiled and gzipped single HMM library file per sample.
@@ -286,6 +290,60 @@ The HMMs (raw or filtered) can also be used in the `update_families` execution m
 along with the families' respective full MSAs, to recruit sequences from a new input fasta file into the families, updating both family HMM and full MSA files.
 
 [hmmer](https://github.com/EddyRivasLab/hmmer) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
+
+### mgnifam
+
+Only produced when `--family_generation_algorithm iterative` is set, in place of the FAMSA/mafft, ClipKIT and hmmer outputs of the standard algorithm.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `seed_msa/`
+  - `raw/`
+    - `mgnifam/`
+      - `<samplename>/`
+        - `<samplename>_*.fas.gz`: compressed family seed MSA, reformatted from Stockholm to aligned fasta
+- `full_msa/`
+  - `raw/`
+    - `mgnifam/`
+      - `<samplename>/`
+        - `<samplename>_*.sto.gz`: compressed family full MSA, including the recruited members (before checking for redundancy)
+- `hmm/`
+  - `raw/`
+    - `mgnifam/`
+      - `<samplename>/`
+        - `<samplename>_*.hmm.gz`: compressed hmm model for the family
+- `fasta/`
+  - `mgnifam_family_members/`
+    - `<samplename>/`
+      - `<samplename>_*.fasta.gz`: (optional) family member sequences, taken from the full MSA with the gaps removed. Can be turned on with `--save_hmmsearch_filtered_fasta`
+- `generate_families_iteratively/`
+  - `<samplename>/`
+    - `<samplename>_*/`: one directory per cluster chunk
+      - `<samplename>_*_families.tsv`: (optional) roster of the families generated from the cluster chunk
+      - `<samplename>_*_metadata.csv`: (optional) metadata describing the generated families
+      - `<samplename>_*_reps.fasta.gz`: (optional) compressed representative sequences of the generated families
+      - `<samplename>_*_successful.txt`: (optional) clusters that successfully converged into families
+      - `<samplename>_*_converged.txt`: (optional) clusters that converged during family generation
+      - `<samplename>_*_discarded.csv`: (optional) clusters discarded during family generation, with the reason for each
+      - `<samplename>_*.log`: (optional) diagnostic log of the family generation run
+      - `rf/`
+        - `<samplename>_*.txt`: (optional) per-family reference annotation (RF) line, marking the match-state columns of the seed alignment
+- `remove_redundancy/`
+  - `merge_families/`
+    - `hmm/raw/mgnifam/`, `full_msa/raw/mgnifam/`, `generate_families_iteratively/`: the same outputs for the families rebuilt after merging
+
+All files under `generate_families_iteratively/` require `--save_iterative_family_metadata`.
+
+</details>
+
+Each file is named after the chunk of clusters it came from and the family's position within it, so `<samplename>_2_5` is the fifth family of the sample's second chunk.
+
+The discarded records are the main way to tell why a cluster produced no family: mgnifam drops clusters whose representative falls outside the length bounds, or whose starting membership does not survive recruitment.
+
+The converged records indicate which of the families optimized their model within three iterations.
+
+[mgnifam](https://github.com/vagkaratzas/mgnifam) iteratively builds protein family HMM profiles from sequence clusters and expands them against a protein database, using pyfamsa, pytrimal and pyhmmer internally.
 
 ### hmmer for redundancy removal
 

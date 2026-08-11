@@ -38,6 +38,7 @@ workflow REMOVE_REDUNDANCY {
     hmmsearch_family_similarity_length_threshold // number [0.0, 1.0]
     skip_sequence_redundancy_removal             // boolean
     clustering_tool                              // string ["linclust", "cluster"]
+    family_generation_algorithm                  // string ["standard", "iterative"]
     alignment_tool                               // string ["famsa", "mafft"]
     skip_msa_trimming                            // boolean
     clipkit_out_format                           // string (default: clipkit)
@@ -98,6 +99,7 @@ workflow REMOVE_REDUNDANCY {
                 IDENTIFY_REDUNDANT_FAMS.out.similarities,
                 ch_seed_msa,
                 sequences,
+                family_generation_algorithm,
                 alignment_tool,
                 skip_msa_trimming,
                 clipkit_out_format,

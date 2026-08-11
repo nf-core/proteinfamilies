@@ -10,8 +10,8 @@
 [![GitHub Actions Linting Status](https://github.com/nf-core/proteinfamilies/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/proteinfamilies/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/proteinfamilies/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.14881993-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.14881993)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
-[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.10.4-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
-[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.0.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.0.2)
+[![Nextflow](https://img.shields.io/badge/version-%E2%89%A526.04.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.0.3-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.0.3)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -47,6 +47,10 @@ Generate input amino acid sequence statistics with ([`SeqFu`](https://github.com
 7. If in-family redundancy was not removed, reformat the `.sto` full MSAs to `.fas`, for downstream analyses compatibility, with ([`HH-suite3`](https://github.com/soedinglab/hh-suite))
 8. Optionally, infer sequence phylogeny, by calculating the maximum parsimonious likelihood estimation trees for the final full MSAs with ([`CMAPLE`](https://github.com/iqtree/cmaple))
 9. Present statistics for remaining/updated family size distributions and representative sequence lengths ([`MultiQC`](http://multiqc.info/))
+
+The new `iterative` family generation algorithm (i.e., `mgnifam`), can now be used in place of steps 2-4.
+In a nutshell, `mgnifam` iterates through these steps to refine the protein family alignments and models,
+for up to three rounds, or until the family model has converged. For more information, see [usage.md](docs/usage.md#iterative)
 
 ### Update families
 

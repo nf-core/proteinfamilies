@@ -86,16 +86,16 @@
                     "seqfu": "1.22.3"
                 },
                 "SEQKIT_REPLACE": {
-                    "seqkit": "2.9.0"
+                    "seqkit": "2.13.0"
                 },
                 "SEQKIT_RMDUP": {
-                    "seqkit": "2.9.0"
+                    "seqkit": "2.13.0"
                 },
                 "SEQKIT_SEQ": {
-                    "seqkit": "2.9.0"
+                    "seqkit": "2.13.0"
                 },
                 "Workflow": {
-                    "nf-core/proteinfamilies": "v2.4.0"
+                    "nf-core/proteinfamilies": "v2.5.0"
                 }
             },
             [
@@ -120,7 +120,8 @@
                 "hmm/library",
                 "hmm/library/mgnifams_test.lib.gz",
                 "hmm/raw",
-                "hmm/raw/mgnifams_test",
+                "hmm/raw/hmmer_hmmbuild",
+                "hmm/raw/hmmer_hmmbuild/mgnifams_test",
                 "mmseqs",
                 "mmseqs/initial_clustering",
                 "mmseqs/initial_clustering/mgnifams_test_clustering_distribution_mqc.csv",
@@ -205,10 +206,10 @@
             "/full_msa/filtered/famsa_align/mgnifams_test: 5",
             "/fasta/non_redundant_sequences_filtered/mgnifams_test: 5"
         ],
-        "timestamp": "2026-06-06T17:19:22.794970087",
+        "timestamp": "2026-08-11T08:59:54.734236631",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

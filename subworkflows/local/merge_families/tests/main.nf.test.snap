@@ -1,4 +1,104 @@
 {
+    "large pool - merged_id stays within filename length limit": {
+        "content": [
+            "test_90fams_cef0de0010.hmm.gz",
+            true,
+            true,
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_90fams_cef0de0010"
+                    },
+                    "test_90fams_cef0de0010.clipkit:md5,7c92708da123702944bbfec1341edd38"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_90fams_cef0de0010"
+                    },
+                    "test_90fams_cef0de0010.sto.gz:md5,b432795e4a56a2284d2bce48066beb99"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_90fams_cef0de0010"
+                    },
+                    "test_90fams_cef0de0010.fasta.gz:md5,f398708f15b7e8a5e28dcb7c4f653e40"
+                ]
+            ]
+        ],
+        "timestamp": "2026-07-15T17:03:36.38742161",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.4"
+        }
+    },
+    "two samples - each pool merges its own sample's seeds": {
+        "content": [
+            [
+                "sampleA_1_2.hmm.gz",
+                "sampleB_1_2.hmm.gz"
+            ],
+            [
+                [
+                    {
+                        "id": "sampleA",
+                        "merged_id": "sampleA_1_2"
+                    },
+                    "sampleA_1_2.clipkit:md5,58135adcf629c740747b2bd70bc113fe"
+                ],
+                [
+                    {
+                        "id": "sampleB",
+                        "merged_id": "sampleB_1_2"
+                    },
+                    "sampleB_1_2.clipkit:md5,04af4488bfe6731bae0e1c54eb055974"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "sampleA",
+                        "merged_id": "sampleA_1_2"
+                    },
+                    "sampleA_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
+                ],
+                [
+                    {
+                        "id": "sampleB",
+                        "merged_id": "sampleB_1_2"
+                    },
+                    "sampleB_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "sampleA",
+                        "merged_id": "sampleA_1_2"
+                    },
+                    "sampleA_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                ],
+                [
+                    {
+                        "id": "sampleB",
+                        "merged_id": "sampleB_1_2"
+                    },
+                    "sampleB_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-11T08:53:30.911954406",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "fasta": {
         "content": [
             "test_1_2.hmm.gz",
