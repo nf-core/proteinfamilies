@@ -18,8 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#184](https://github.com/nf-core/proteinfamilies/pull/184) - Raw family HMMs are now published under a subfolder named after the tool that built them, `hmm/raw/hmmer_hmmbuild/` or `hmm/raw/mgnifam/`, matching how the seed and full MSA outputs are already organised. (by @vagkaratzas, suggested by @nickp60)
-- [#184](https://github.com/nf-core/proteinfamilies/pull/184) - Restricted samplesheet sample names to letters, digits, dots, underscores and dashes. Family names are parsed back out of file names with `split("<sample>_")`, which takes a regex, so a sample name carrying a regex metacharacter could mis-split; the sample name also builds output paths. (by @vagkaratzas, raised by @erikrikarddaniel)
+- [#186](https://github.com/nf-core/proteinfamilies/pull/186) - Raw family HMMs are now published under a subfolder named after the tool that built them, `hmm/raw/hmmer_hmmbuild/` or `hmm/raw/mgnifam/`, matching how the seed and full MSA outputs are already organised. (by @vagkaratzas, suggested by @nickp60)
+- [#186](https://github.com/nf-core/proteinfamilies/pull/186) - Restricted samplesheet sample names to letters, digits, dots, underscores and dashes. Family names are parsed back out of file names with `split("<sample>_")`, which takes a regex, so a sample name carrying a regex metacharacter could mis-split; the sample name also builds output paths. (by @vagkaratzas, raised by @erikrikarddaniel)
 - [#182](https://github.com/nf-core/proteinfamilies/pull/182) - Updated `CHUNK_CLUSTERS` and `MERGE_SEEDS` to optionally output `TSV`, required by the iterative family generation subworkflow. (by @vagkaratzas)
 - [#179](https://github.com/nf-core/proteinfamilies/pull/179) - nf-core tools template update to 4.0.3. (by @vagkaratzas)
 
