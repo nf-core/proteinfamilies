@@ -9,8 +9,8 @@
         "properties": {
             "sample": {
                 "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "pattern": "^[a-zA-Z0-9._-]+$",
+                "errorMessage": "Sample name must be provided and can only contain letters, digits, dots, underscores and dashes",
                 "meta": ["id"]
             },
             "fasta": {

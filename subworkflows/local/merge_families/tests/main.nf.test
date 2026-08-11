@@ -119,4 +119,82 @@ nextflow_workflow {
         }
     }
 
+    test("two samples - each pool merges its own sample's seeds") {
+        // Regression test for MERGE_SEEDS receiving the first sample's seed MSAs for every
+        // sample. It only manifests with >= 2 samples: with a single sample the first
+        // emission of the seed channel and the sample's own seeds are the same item.
+        // Both samples reuse the two real fixtures, but under sample-scoped file names and
+        // with sample-scoped sequence headers, so a mispaired seed collection is visible
+        // twice over: merge_seeds.py finds no alignment for the requested families and the
+        // process fails on its missing output, and any merged seed that did get written
+        // would carry the wrong sample's headers.
+        when {
+            workflow {
+                """
+                def alns = [
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true).text,
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).text
+                ]
+
+                def samples = [ 'sampleA', 'sampleB' ]
+                def sequences = file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+
+                // Per sample: two seed files named '<sample>_<n>.aln', headers prefixed with the
+                // sample id so the merged seed's contents identify which sample they came from.
+                def seed_input = samples.collect { sample ->
+                    def seedFiles = (1..2).collect { n ->
+                        def f = file("\${sample}_\${n}.aln")
+                        f.text = alns[n - 1].replaceAll(/(?m)^>/, ">\${sample}_")
+                        f
+                    }
+                    [ [ id: sample ], seedFiles ]
+                }
+
+                // One pool per sample, joining that sample's two families
+                def similarities_input = samples.collect { sample ->
+                    def f = file("similarities_\${sample}.csv")
+                    f.text = "family_1,family_2,similarity_score\\n\${sample}_1,\${sample}_2,0.94\\n"
+                    [ [ id: sample ], f ]
+                }
+
+                input[0] = channel.fromList(similarities_input)
+                input[1] = channel.fromList(seed_input)
+                input[2] = channel.fromList(samples.collect { sample -> [ [ id: sample ], sequences ] })
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_msa_trimming
+                input[6] = "clipkit"  // clipkit_out_format
+                input[7] = false      // hmmsearch_write_target
+                input[8] = true       // hmmsearch_write_domain
+                input[9] = false      // skip_additional_sequence_recruiting
+                input[10] = 0.9       // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            // Merged output of each sample, keyed by the sample it should have come from
+            def seedsBySample = workflow.out.seed_msa.collectEntries { meta, msa -> [ (meta.id): file(msa) ] }
+            assertAll(
+                // Pre-fix, sampleB's pool was handed sampleA's seed files, so MERGE_SEEDS
+                // wrote no merged seed for sampleB and the task failed on its missing output.
+                { assert workflow.success },
+                { assert seedsBySample.keySet() == ['sampleA', 'sampleB'] as Set },
+                // Each merged seed carries only its own sample's sequences
+                { assert seedsBySample.sampleA.text.contains('>sampleA_') },
+                { assert !seedsBySample.sampleA.text.contains('>sampleB_') },
+                { assert seedsBySample.sampleB.text.contains('>sampleB_') },
+                { assert !seedsBySample.sampleB.text.contains('>sampleA_') },
+                // Sorted by sample id: the two samples run concurrently, so channel emission
+                // order is not stable across runs.
+                { assert snapshot(
+                    workflow.out.hmm.collect { meta, hmm -> file(hmm).name }.sort(),
+                    workflow.out.seed_msa.sort { entry -> entry[0].id },
+                    workflow.out.full_msa.sort { entry -> entry[0].id },
+                    workflow.out.fasta.sort { entry -> entry[0].id }
+                ).match()}
+            )
+        }
+    }
+
 }
