@@ -317,18 +317,21 @@
                     "default": "standard",
                     "description": "Choose the algorithm that turns clusters into family models. Either 'standard', aligning each cluster and building one HMM per task, or 'iterative', letting mgnifam loop HMM building, recruitment and realignment per cluster.",
                     "help_text": "The 'standard' algorithm chains FAMSA/MAFFT, ClipKIT, hmmbuild, hmmsearch and hmmalign, and recruits members in a single pass. The 'iterative' algorithm runs mgnifam, which uses pyfamsa, pytrimal and pyhmmer internally and repeats recruitment and realignment up to 3 iterations, or until each family converges or is discarded. Not all alignment and recruitment parameters of the standard algorithm apply to the iterative one; see the usage documentation for the full mapping.",
+                    "fa_icon": "fas fa-code-branch",
                     "enum": ["standard", "iterative"]
                 },
                 "clusters_per_chunk": {
                     "type": "integer",
                     "default": 1000,
                     "description": "Number of clusters handed to each family generation task by the 'iterative' algorithm.",
-                    "help_text": "Only used when family_generation_algorithm is 'iterative', which generates many families per task. Smaller chunks parallelise better and resume at a finer granularity, at the cost of more tasks. The 'standard' algorithm always processes a single cluster per task."
+                    "help_text": "Only used when family_generation_algorithm is 'iterative', which generates many families per task. Smaller chunks parallelise better and resume at a finer granularity, at the cost of more tasks. The 'standard' algorithm always processes a single cluster per task.",
+                    "fa_icon": "fas fa-layer-group"
                 },
                 "save_iterative_family_metadata": {
                     "type": "boolean",
                     "description": "Save the family rosters and diagnostics reported by the 'iterative' algorithm",
-                    "help_text": "Specify to publish mgnifam's family roster, metadata, converged, successful and discarded records, its per-family HMM consensus match states (rf), representative sequence fasta, and its log."
+                    "help_text": "Specify to publish mgnifam's family roster, metadata, converged, successful and discarded records, its per-family HMM consensus match states (rf), representative sequence fasta, and its log.",
+                    "fa_icon": "fas fa-save"
                 }
             }
         },
