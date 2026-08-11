@@ -37,6 +37,8 @@ workflow MERGE_FAMILIES {
             // Extract each component's family suffix, the part after the sample id. Splitting
             // on the last underscore instead would collapse the compound suffixes the
             // iterative algorithm produces ('2_1' and '3_1' would both become '1').
+            // split() takes a regex, which is safe here because assets/schema_input.json
+            // restricts sample names to letters, digits, dots, underscores and dashes.
             def suffixes = components.collect { component ->
                 component.split("${meta.id}_", 2)[1]
             }
