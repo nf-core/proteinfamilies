@@ -2,11 +2,14 @@ lint:
   files_exist:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
+    - .github/workflows/linting_comment.yml
   files_unchanged:
     - .github/PULL_REQUEST_TEMPLATE.md
     - docs/images/nf-core-proteinfamilies_logo_light.png
     - docs/images/nf-core-proteinfamilies_logo_dark.png
-nf_core_version: 4.0.3
+    - .github/workflows/branch.yml
+    - .github/workflows/linting.yml
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: Evangelos Karatzas
@@ -21,4 +24,4 @@ template:
   skip_features:
     - igenomes
     - fastqc
-  version: 2.5.0dev
+  version: 2.6.0dev
