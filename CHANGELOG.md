@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v2.6.0dev - [unreleased]
 
+### `Changed`
+
+- [#189](https://github.com/nf-core/proteinfamilies/pull/189) - nf-core tools template update to 4.1.0. (by @vagkaratzas)
+
 ## v2.5.0 - [2026/08/11]
 
 ### `Added`
