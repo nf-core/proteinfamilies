@@ -6,51 +6,93 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+**nf-core/proteinfamilies** is a bioinformatics pipeline that generates protein families from amino acid sequences and/or updates existing families with new sequences.
+It takes a protein fasta file as input, clusters the sequences and then generates protein family Hidden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
+Optionally, paths to existing family HMMs and MSAs can be given (must have matching base filenames one-to-one) in order to update with new sequences in case of matching hits.
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 2 mandatory and 2 optional columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
-
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+```csv
+sample,fasta,existing_hmms_to_update,existing_msas_to_update
+CONTROL_REP1,amino_acid_sequences_input.faa,,
+CONTROL_REP2,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,existing_msas.tar.gz
 ```
 
-### Full samplesheet
+| Column                    | Description                                                                                                                                                                                           |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`                  | Custom sample name. Only letters, digits, dots (`.`), underscores (`_`) and dashes (`-`) are allowed, since the sample name is used to build output paths and to parse family names back out of them. |
+| `fasta`                   | Full path to amino acid fasta file. Allowed extensions are ".faa", ".fasta" and ".fa", with or without a following ".gz" for gzipped files.                                                           |
+| `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. The filename needs to end with ".tar.gz".                                                                                                  |
+| `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. The filename needs to end with ".tar.gz".                                                                                                  |
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+## Parameter specifications
 
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+Here we provide guidance regarding some parameter choices.
 
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
-```
+- `clustering_tool` ["cluster", "linclust"]: The mmseqs algorithm used for clustering.
+  The `cluster` option is slower but more sensitive, and is recommended where there are sufficient compute resources available and a more sensitive search is called for.
+  It tends to produce fewer and larger clusters than `linclust`.
+  The `linclust` option is less sensitive, but extremely fast for clustering larger datasets.
+- `cluster_cov_mode` [0, 1, 2]: The default bidirectional value for coverage mode (`cluster_cov_mode` = 0) automatically sets the MMseqs2 clustering mode to greedy cluster set.
+  However, users can opt to override this parameter either indirectly, by changing the coverage mode, or directly, by setting the `--cluster-mode` argument in the modules configuration file.
+- `alignment_tool` ["famsa", "mafft"]: Multiple Sequence Alignment (MSA) options.
+  The `famsa` option is generally recommended as the best time-memory-accuracy combination.
+  The `mafft` option offers various alignment strategies, but in general is slower and less sensitive than `famsa`.
+- `trim_ends_only`: Flag to either clip MSA gaps throughout the alignment, or only at the ends.
+  Only used if `skip_msa_trimming` is off.
+  The authors suggest keeping the `trim_ends_only` on, since the gaps inside the sequences may still carry evolutionary significance.
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+## Family generation algorithms
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+`family_generation_algorithm` ["standard", "iterative"] selects how clusters become family models. Both produce the same kinds of outputs and feed the same redundancy removal, merging and reporting steps, so the choice is invisible downstream.
+
+### `standard` (default)
+
+Each cluster is chunked into its own FASTA file and processed by a chain of tools orchestrated by Nextflow: FAMSA or mafft aligns the cluster into a seed MSA, ClipKIT optionally trims it, `hmmbuild` builds the family HMM, and `hmmsearch` optionally recruits further members from the sample's sequence pool in a single pass, which `hmmalign` then aligns into the full MSA.
+
+### `iterative`
+
+Whole chunks of clusters, `clusters_per_chunk` at a time, are handed to [mgnifam](https://github.com/vagkaratzas/mgnifam), which builds a family from each cluster by looping: build an HMM, recruit members from the sequence pool, realign the expanded membership, and repeat up to three times or, until the family converges or the cluster is discarded. A single task therefore emits many families.
+
+mgnifam performs each step in-process with its own libraries rather than by calling the pipeline's tools:
+
+| Step               | Library                                          |
+| ------------------ | ------------------------------------------------ |
+| Alignment          | [pyfamsa](https://github.com/althonos/pyfamsa)   |
+| Trimming           | [pytrimal](https://github.com/althonos/pytrimal) |
+| HMM build & search | [pyhmmer](https://github.com/althonos/pyhmmer)   |
+
+Because of that, the parameters below are honoured only by the `standard` algorithm. They are ignored on the `iterative` path, which always behaves as stated:
+
+| Parameter                                                                    | Behaviour of the `iterative` algorithm                                     |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `alignment_tool`                                                             | Always FAMSA, through pyfamsa                                              |
+| `skip_msa_trimming`                                                          | Trimming is always applied, through pytrimal                               |
+| `clipkit_out_format`, `trim_ends_only`                                       | ClipKIT is not used; trimming is by column gap occupancy (`gap_threshold`) |
+| `skip_additional_sequence_recruiting`                                        | Recruitment is always performed, and repeated until convergence            |
+| `hmmsearch_write_target`, `hmmsearch_write_domain`, `save_hmmsearch_results` | Searching is in-process, so no hmmsearch report files exist                |
+
+The parameters both algorithms share are mapped onto their mgnifam equivalents:
+
+| Parameter                             | mgnifam option                    |
+| ------------------------------------- | --------------------------------- |
+| `cluster_size_threshold`              | applied while chunking clusters   |
+| `min_seq_length`                      | `--discard_min_rep_length`        |
+| `max_seq_length`                      | `--discard_max_rep_length`        |
+| `cluster_seq_identity_for_redundancy` | `--max_seq_identity`              |
+| `gap_threshold`                       | `--max_gap_occupancy`             |
+| `hmmsearch_evalue_cutoff`             | `--recruit_evalue_cutoff`         |
+| `hmmsearch_query_length_threshold`    | `--recruit_hit_length_percentage` |
+
+mgnifam's remaining options (`--discard_min_starting_membership`, `--max_seed_seqs`, `--batch_size`, `--prefetch_targets`) keep their tool defaults and can be set through `ext.args`, as described in [Custom Tool Arguments](#custom-tool-arguments).
+
+`clusters_per_chunk` (default 1000) trades parallelism against scheduling overhead: smaller chunks give more tasks, better load balancing and finer-grained `-resume`, at the cost of more per-task startup. Set `save_iterative_family_metadata` to publish mgnifam's family roster, metadata, converged, successful and discarded records, its per-family HMM consensus match states (rf), representative sequence fasta, and its log.
 
 ## Running the pipeline
 

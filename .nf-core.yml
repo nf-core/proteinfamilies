@@ -13,9 +13,7 @@ nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: Evangelos Karatzas
-  description: Generate protein family level models (Multiple Sequence Alignments
-    (MSAs), Hidden Markov Models (HMMs)) starting from a FASTA amino acid sequence
-    file.
+  description: Generate protein family level models (Multiple Sequence Alignments (MSAs), Hidden Markov Models (HMMs)) starting from a FASTA amino acid sequence file.
   force: false
   is_nfcore: true
   name: proteinfamilies

@@ -1,0 +1,111 @@
+{
+    "proteinfamilies - csv": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "pooled_components.txt:md5,784c1d263424fbd0d225308f9a719feb"
+                ]
+            ],
+            {
+                "versions_networkx": [
+                    [
+                        "POOL_SIMILAR_COMPONENTS",
+                        "networkx",
+                        "3.5"
+                    ]
+                ],
+                "versions_pandas": [
+                    [
+                        "POOL_SIMILAR_COMPONENTS",
+                        "pandas",
+                        "2.3.3"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "POOL_SIMILAR_COMPONENTS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T16:51:41.309663677",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "proteinfamilies - csv - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "pooled_components.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "POOL_SIMILAR_COMPONENTS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "2": [
+                    [
+                        "POOL_SIMILAR_COMPONENTS",
+                        "pandas",
+                        "2.3.3"
+                    ]
+                ],
+                "3": [
+                    [
+                        "POOL_SIMILAR_COMPONENTS",
+                        "networkx",
+                        "3.5"
+                    ]
+                ],
+                "pooled_components": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "pooled_components.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_networkx": [
+                    [
+                        "POOL_SIMILAR_COMPONENTS",
+                        "networkx",
+                        "3.5"
+                    ]
+                ],
+                "versions_pandas": [
+                    [
+                        "POOL_SIMILAR_COMPONENTS",
+                        "pandas",
+                        "2.3.3"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "POOL_SIMILAR_COMPONENTS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T16:51:51.22449913",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    }
+}

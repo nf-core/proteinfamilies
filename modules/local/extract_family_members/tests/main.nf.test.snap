@@ -1,0 +1,69 @@
+{
+    "proteinfamilies - faa - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "extract_family_members"
+                        },
+                        "extract_family_members.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "EXTRACT_FAMILY_MEMBERS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "tsv": [
+                    [
+                        {
+                            "id": "extract_family_members"
+                        },
+                        "extract_family_members.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "EXTRACT_FAMILY_MEMBERS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T16:49:28.442427625",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "proteinfamilies - faa": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "extract_family_members"
+                    },
+                    "extract_family_members.tsv:md5,520d0a3dec8439ac4544b34d52bd15b3"
+                ]
+            ],
+            {
+                "versions_python": [
+                    [
+                        "EXTRACT_FAMILY_MEMBERS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T16:49:17.65198514",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "fasta - update": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    "test_update.fasta.gz:md5,9854e409ebbaf4b2e93c0e6e824b4543"
+                ]
+            ],
+            "test_update_meta_mqc.csv",
+            11
+        ],
+        "timestamp": "2026-06-08T16:37:58.09809568",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    }
+}

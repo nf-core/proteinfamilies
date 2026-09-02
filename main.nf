@@ -15,7 +15,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { PROTEINFAMILIES  } from './workflows/proteinfamilies'
+include { PROTEINFAMILIES         } from './workflows/proteinfamilies'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 /*
@@ -45,6 +45,7 @@ workflow NFCORE_PROTEINFAMILIES {
         params.outdir,
     )
     emit:
+    family_reps    = PROTEINFAMILIES.out.family_reps
     multiqc_report = PROTEINFAMILIES.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
@@ -88,6 +89,42 @@ workflow {
         params.monochrome_logs,
         NFCORE_PROTEINFAMILIES.out.multiqc_report
     )
+
+    protein_reps_samplesheet = NFCORE_PROTEINFAMILIES.out.family_reps
+        .map { meta, file ->
+            [
+                id: meta.id,
+                fasta: file
+            ]
+        }
+
+    publish:
+    proteinfold_samplesheet      = protein_reps_samplesheet
+    proteinannotator_samplesheet = protein_reps_samplesheet
+}
+
+output {
+    proteinfold_samplesheet {
+        path { sample -> "proteinfold/${sample.id}/" }
+        mode params.publish_dir_mode
+        enabled !params.skip_proteinfold_samplesheet
+        index {
+            path 'proteinfold/samplesheet.csv'
+            header true
+            sep ','
+        }
+    }
+
+    proteinannotator_samplesheet {
+        path { sample -> "proteinannotator/${sample.id}/" }
+        mode params.publish_dir_mode
+        enabled !params.skip_proteinannotator_samplesheet
+        index {
+            path 'proteinannotator/samplesheet.csv'
+            header true
+            sep ','
+        }
+    }
 }
 
 /*

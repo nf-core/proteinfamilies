@@ -1,0 +1,43 @@
+nextflow_workflow {
+
+    name "Test Subworkflow UPDATE_FAMILIES"
+    script "../main.nf"
+    workflow "UPDATE_FAMILIES"
+    config "./nextflow.config"
+
+    test("fasta - update") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/existing_hmms.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/existing_msas.tar.gz', checkIfExists: true)
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_msa_trimming
+                input[6] = "clipkit"  // clipkit_out_format
+                input[7] = true       // save_update_families_pre_clipped_fasta
+                input[8] = true       // save_update_families_clipped_fasta
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.no_hit_seqs,
+                    file(workflow.out.updated_family_reps[0][1]).name,
+                    path(workflow.out.updated_family_reps[0][1]).readLines().size()
+                ).match()}
+            )
+        }
+    }
+
+}

@@ -1,0 +1,74 @@
+{
+    "fasta - famsa - stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_famsa_stub",
+                        "chunk": 1
+                    },
+                    "test_famsa_stub_1.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ]
+        ],
+        "timestamp": "2026-06-08T16:35:30.03789246",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "fasta - famsa": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_famsa",
+                        "chunk": 1
+                    },
+                    "test_famsa_1.aln:md5,61de03fefaa5f2501b65ba44f8a3fd2d"
+                ]
+            ]
+        ],
+        "timestamp": "2026-06-08T16:35:16.453769313",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "fasta - mafft": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_mafft",
+                        "chunk": 1
+                    },
+                    "test_mafft_1.fas:md5,61de03fefaa5f2501b65ba44f8a3fd2d"
+                ]
+            ]
+        ],
+        "timestamp": "2026-06-08T16:35:22.829058424",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "fasta - mafft - stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_mafft_stub",
+                        "chunk": 1
+                    },
+                    "test_mafft_stub_1.fas:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ]
+        ],
+        "timestamp": "2026-06-08T16:35:38.181309817",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    }
+}
