@@ -7,21 +7,21 @@
                         "id": "chunk",
                         "chunk": 1
                     },
-                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_1.faa.gz"
+                    "/nf-core/test-datasets/proteinfamilies/test_data/subworkflows/chunk_1.faa.gz"
                 ],
                 [
                     {
                         "id": "chunk",
                         "chunk": 2
                     },
-                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_2.faa.gz"
+                    "/nf-core/test-datasets/proteinfamilies/test_data/subworkflows/chunk_2.faa.gz"
                 ],
                 [
                     {
                         "id": "chunk",
                         "chunk": 3
                     },
-                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_3.faa.gz"
+                    "/nf-core/test-datasets/proteinfamilies/test_data/subworkflows/chunk_3.faa.gz"
                 ]
             ],
             [
@@ -48,10 +48,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-06-08T16:40:14.566185845",
+        "timestamp": "2026-09-03T11:35:12.635391897",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     },
     "faa - skip all but msa trimming": {
@@ -62,21 +62,21 @@
                         "id": "chunk",
                         "chunk": 1
                     },
-                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_1.faa.gz"
+                    "/nf-core/test-datasets/proteinfamilies/test_data/subworkflows/chunk_1.faa.gz"
                 ],
                 [
                     {
                         "id": "chunk",
                         "chunk": 2
                     },
-                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_2.faa.gz"
+                    "/nf-core/test-datasets/proteinfamilies/test_data/subworkflows/chunk_2.faa.gz"
                 ],
                 [
                     {
                         "id": "chunk",
                         "chunk": 3
                     },
-                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_3.faa.gz"
+                    "/nf-core/test-datasets/proteinfamilies/test_data/subworkflows/chunk_3.faa.gz"
                 ]
             ],
             [
@@ -85,28 +85,28 @@
                         "id": "chunk",
                         "chunk": 1
                     },
-                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_1.clipkit"
+                    "/nf-core/test-datasets/proteinfamilies/test_data/subworkflows/chunk_1.clipkit"
                 ],
                 [
                     {
                         "id": "chunk",
                         "chunk": 2
                     },
-                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_2.clipkit"
+                    "/nf-core/test-datasets/proteinfamilies/test_data/subworkflows/chunk_2.clipkit"
                 ],
                 [
                     {
                         "id": "chunk",
                         "chunk": 3
                     },
-                    "/nf-core/test-datasets/refs/heads/proteinfamilies/test_data/subworkflows/chunk_3.clipkit"
+                    "/nf-core/test-datasets/proteinfamilies/test_data/subworkflows/chunk_3.clipkit"
                 ]
             ]
         ],
-        "timestamp": "2026-06-08T16:40:27.190062128",
+        "timestamp": "2026-09-03T11:34:51.880008122",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     },
     "faa - skip none - stub": {
