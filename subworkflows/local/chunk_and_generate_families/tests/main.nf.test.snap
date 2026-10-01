@@ -7,21 +7,21 @@
                         "id": "test",
                         "chunk": "1"
                     },
-                    "test_1.clipkit:md5,78d5469b6bbd12c24c9b1abe3c085b22"
+                    "test_1.clipkit:md5,6a4c49600e62e7dbf943f035c29123f2"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "2"
                     },
-                    "test_2.clipkit:md5,0a6fc22f50b722af3adc92b212f5aac3"
+                    "test_2.clipkit:md5,6ee5a3f6817aefb3d04f3d66911ecf04"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "3"
                     },
-                    "test_3.clipkit:md5,b01e86fd97f0643c46bf44a535d8dacc"
+                    "test_3.clipkit:md5,ff8c1b08d57a1468cdad0a4eca1ca317"
                 ]
             ],
             [
@@ -30,21 +30,21 @@
                         "id": "test",
                         "chunk": "1"
                     },
-                    "test_1.sto.gz:md5,034bb006a4dc8a45e5d11111575355bf"
+                    "test_1.sto.gz:md5,ec1b7720ffdff90ea1d05f7fb0606683"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "2"
                     },
-                    "test_2.sto.gz:md5,ec1b7720ffdff90ea1d05f7fb0606683"
+                    "test_2.sto.gz:md5,086418bf1a179830f2861b60d4f81ca2"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "3"
                     },
-                    "test_3.sto.gz:md5,086418bf1a179830f2861b60d4f81ca2"
+                    "test_3.sto.gz:md5,034bb006a4dc8a45e5d11111575355bf"
                 ]
             ],
             [
@@ -53,21 +53,21 @@
                         "id": "test",
                         "chunk": "1"
                     },
-                    "test_1.fasta.gz:md5,40cd2c9c2ff618bb1d0ed29852499db8"
+                    "test_1.fasta.gz:md5,8c1d38553caff8358fd5f52527a69d69"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "2"
                     },
-                    "test_2.fasta.gz:md5,8c1d38553caff8358fd5f52527a69d69"
+                    "test_2.fasta.gz:md5,94e09d0447ece89cf85025d7bb8fadc2"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "3"
                     },
-                    "test_3.fasta.gz:md5,94e09d0447ece89cf85025d7bb8fadc2"
+                    "test_3.fasta.gz:md5,40cd2c9c2ff618bb1d0ed29852499db8"
                 ]
             ],
             [
@@ -76,10 +76,10 @@
                 "test_3.hmm.gz"
             ]
         ],
-        "timestamp": "2026-07-28T13:09:25.720258803",
+        "timestamp": "2026-09-29T16:19:14.097594045",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nextflow": "26.04.6"
         }
     },
     "clusters - iterative": {
@@ -90,21 +90,21 @@
                         "id": "test",
                         "chunk": "1_1"
                     },
-                    "test_1_1.fas.gz:md5,45181c3d0182e3e35c9d6440f2427a45"
+                    "test_1_1.fas.gz:md5,f3a3125b271c472a050da64324486aba"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "1_2"
                     },
-                    "test_1_2.fas.gz:md5,f3a3125b271c472a050da64324486aba"
+                    "test_1_2.fas.gz:md5,464d9dea109821a13cce5bf23bb4ab34"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "2_1"
                     },
-                    "test_2_1.fas.gz:md5,464d9dea109821a13cce5bf23bb4ab34"
+                    "test_2_1.fas.gz:md5,45181c3d0182e3e35c9d6440f2427a45"
                 ]
             ],
             [
@@ -113,21 +113,21 @@
                         "id": "test",
                         "chunk": "1_1"
                     },
-                    "test_1_1.sto.gz:md5,d33c159913ecc31ce5f0c3bf8b305a89"
+                    "test_1_1.sto.gz:md5,3affc615ca72d76f0ee73de8e30b9624"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "1_2"
                     },
-                    "test_1_2.sto.gz:md5,79085de79f5623fc93fd5eb63e92a1eb"
+                    "test_1_2.sto.gz:md5,7a061973de19bdd9ac1c613a8fd0a18e"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "2_1"
                     },
-                    "test_2_1.sto.gz:md5,be36fe9b27893812d33e3aaf118285ce"
+                    "test_2_1.sto.gz:md5,2497d0be84c8f3b2185cfeaaadae5c9a"
                 ]
             ],
             [
@@ -136,21 +136,21 @@
                         "id": "test",
                         "chunk": "1_1"
                     },
-                    "test_1_1.fasta.gz:md5,c47c3cae260c8d04739ba40551ee6649"
+                    "test_1_1.fasta.gz:md5,8084af050a3fe3fe1c160facccbcedbd"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "1_2"
                     },
-                    "test_1_2.fasta.gz:md5,8084af050a3fe3fe1c160facccbcedbd"
+                    "test_1_2.fasta.gz:md5,4dfdf672e3c7daa3a04ea6a18bc78e1d"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "2_1"
                     },
-                    "test_2_1.fasta.gz:md5,4dfdf672e3c7daa3a04ea6a18bc78e1d"
+                    "test_2_1.fasta.gz:md5,c47c3cae260c8d04739ba40551ee6649"
                 ]
             ],
             [
@@ -159,10 +159,10 @@
                 "test_2_1.hmm.gz"
             ]
         ],
-        "timestamp": "2026-07-28T13:09:55.488940569",
+        "timestamp": "2026-09-29T16:19:32.092414111",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nextflow": "26.04.6"
         }
     }
 }

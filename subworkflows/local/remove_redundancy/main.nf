@@ -15,6 +15,7 @@ include { HMMER_HMMSEARCH                                            } from '../
 include { IDENTIFY_REDUNDANT_FAMS                                    } from '../../../modules/local/identify_redundant_fams/main'
 include { MERGE_FAMILIES                                             } from '../../../subworkflows/local/merge_families/main'
 include { FIND_CONCATENATE as FIND_CONCATENATE_SKIP_IDS              } from '../../../modules/nf-core/find/concatenate'
+include { fileStem                                                   } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_HMM      } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_SEED_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_FULL_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
@@ -170,7 +171,7 @@ workflow REMOVE_REDUNDANCY {
         full_msa = FILTER_NON_REDUNDANT_FULL_MSA.out.filtered
             .transpose()
             .map { meta, file ->
-                def filename = file.getSimpleName()
+                def filename = fileStem(file)
                 def chunk = filename.split("${meta.id}_", 2)[1]  // Split by meta.id_ and take remainder, to also match merged ids
                 [[id: meta.id, chunk: chunk], file]
             }
@@ -180,7 +181,7 @@ workflow REMOVE_REDUNDANCY {
         fasta = FILTER_NON_REDUNDANT_FASTA.out.filtered
             .transpose()
             .map { meta, file ->
-                def filename = file.getSimpleName()
+                def filename = fileStem(file)
                 def chunk = filename.split("${meta.id}_", 2)[1]  // Split by meta.id_ and take remainder, to also match merged ids
                 [[id: meta.id, chunk: chunk], file]
             }

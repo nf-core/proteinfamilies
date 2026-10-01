@@ -16,7 +16,7 @@ import sys
 import os
 import argparse
 from collections import defaultdict
-import csv
+from operator import itemgetter
 from Bio import SeqIO
 from concurrent.futures import ThreadPoolExecutor
 from Bio.SeqRecord import SeqRecord
@@ -51,28 +51,38 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def collect_clusters(clustering_file: str, threshold: int) -> dict[str, list[str]]:
+def collect_clusters(clustering_file: str, threshold: int) -> list[tuple[str, list[str]]]:
     """
     Read an MMSeqs2 TSV (col 0 = representative, col 1 = member) and return clusters at or
     above the size threshold. The representative is counted as a member of its own cluster,
     so a singleton cluster has size 1.
+
+    MMSeqs2 does not guarantee the row order of its TSV, so clusters are sorted by
+    representative ID and members by ID, representative first. Family names and the
+    member order the aligners see are then identical across runs.
 
     Args:
         clustering_file (str): MMSeqs2 clustering TSV file.
         threshold (int): Minimum cluster size to retain.
 
     Returns:
-        dict[str, list[str]]: Surviving clusters keyed by representative ID.
+        list[tuple[str, list[str]]]: Surviving (representative ID, member IDs) pairs,
+            sorted by representative ID.
     """
     clusters = defaultdict(list)
     with open(clustering_file) as f:
-        reader = csv.reader(f, delimiter="\t")
-        for row in reader:
-            rep, member = row
+        for line in f:
+            rep, member = line.rstrip("\n").split("\t")
             clusters[rep].append(member)
-    return {
-        rep: members for rep, members in clusters.items() if len(members) >= threshold
-    }
+    kept = [(rep, members) for rep, members in clusters.items() if len(members) >= threshold]
+    del clusters
+    for rep, members in kept:
+        # keep the representative first, as MMSeqs2 writes it
+        members.sort()
+        members.remove(rep)
+        members.insert(0, rep)
+    kept.sort(key=itemgetter(0))
+    return kept
 
 
 def load_sequences(fasta_file: str, needed_ids: set[str]) -> dict[str, SeqRecord]:
@@ -125,7 +135,7 @@ def write_cluster(
     return output_file
 
 
-def write_cluster_chunks(prefix: str, clusters: dict[str, list[str]], clusters_per_chunk: int, out_folder: str) -> int:
+def write_cluster_chunks(prefix: str, clusters: list[tuple[str, list[str]]], clusters_per_chunk: int, out_folder: str) -> int:
     """
     Write clusters to '{prefix}_{chunk_num}.tsv' files of at most clusters_per_chunk
     clusters each, as headerless representative<TAB>member lines. As in the FASTA
@@ -134,21 +144,20 @@ def write_cluster_chunks(prefix: str, clusters: dict[str, list[str]], clusters_p
 
     Args:
         prefix (str): Sample prefix derived from the clustering filename.
-        clusters (dict[str, list[str]]): Surviving clusters keyed by representative ID.
+        clusters (list[tuple[str, list[str]]]): Surviving (representative, members) pairs.
         clusters_per_chunk (int): Maximum number of clusters per output file.
         out_folder (str): Destination directory for the chunk TSV files.
 
     Returns:
         int: Number of chunk files written.
     """
-    items = list(clusters.items())
-    for chunk_num, start in enumerate(range(0, len(items), clusters_per_chunk), 1):
+    for chunk_num, start in enumerate(range(0, len(clusters), clusters_per_chunk), 1):
         output_file = os.path.join(out_folder, f"{prefix}_{chunk_num}.tsv")
         with open(output_file, "w") as out_handle:
-            for rep, members in items[start : start + clusters_per_chunk]:
+            for rep, members in clusters[start : start + clusters_per_chunk]:
                 for member in members:
                     out_handle.write(f"{rep}\t{member}\n")
-    return -(-len(items) // clusters_per_chunk)
+    return -(-len(clusters) // clusters_per_chunk)
 
 
 def main(args: Sequence[str] | None = None) -> None:
@@ -171,7 +180,7 @@ def main(args: Sequence[str] | None = None) -> None:
 
     # Step 2: Collect sequence IDs only from clusters above threshold
     needed_ids = set()
-    for members in clusters.values():
+    for _, members in clusters:
         needed_ids.update(members)
     print("Required sequence IDs collected.")
 
@@ -182,7 +191,7 @@ def main(args: Sequence[str] | None = None) -> None:
     # Step 4: Parallel output writing
     with ThreadPoolExecutor(max_workers=args.threads) as executor:
         futures = []
-        for chunk_num, (_, members) in enumerate(clusters.items(), 1):
+        for chunk_num, (_, members) in enumerate(clusters, 1):
             futures.append(executor.submit(write_cluster, prefix, chunk_num, members, sequences, args.out_folder))
 
     print(f"Done. {len(clusters)} clusters written to {args.out_folder}")

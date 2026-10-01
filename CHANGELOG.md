@@ -3,6 +3,28 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v2.6.0 - [2026/10/01]
+
+### `Changed`
+
+- [#192](https://github.com/nf-core/proteinfamilies/pull/192)
+  - Updated nf-core modules and subworkflows to latest. `mgnifam` 4.0.0 now also writes a `<chunk>_mgnifam_stats.json` run summary, saved with the existing `--save_iterative_family_metadata`, and renames and reorders the columns of `<chunk>_metadata.csv`. Since mgnifam 3.0.0 a chunk in which a family crashed internally exits `3`, which stops the pipeline. (by @vagkaratzas)
+  - Added missing Font Awesome icons to the parameters and parameter groups of `nextflow_schema.json` ([#185](https://github.com/nf-core/proteinfamilies/issues/185)). (by @vagkaratzas)
+- [#189](https://github.com/nf-core/proteinfamilies/pull/189) - nf-core tools template update to 4.1.0. (by @vagkaratzas)
+
+### `Fixed`
+
+- [#193](https://github.com/nf-core/proteinfamilies/pull/193)
+  - Family numbering and member order no longer follow the unstable row order of the MMseqs2 clustering TSV: clusters are sorted by representative ID and members by ID, so repeated runs give identically named families and representatives. (by @vagkaratzas)
+  - Fixed the Nextflow head job running out of heap (`java.lang.OutOfMemoryError: Java heap space`) on large samples: each `MERGE_FAMILIES:MERGE_SEEDS` task now stages only the seed MSAs of its own pool instead of every seed MSA of the sample ([#191](https://github.com/nf-core/proteinfamilies/issues/191)). (by @vagkaratzas)
+  - Fixed sample and family names containing dots (e.g. sample `run.v2`, or Pfam-style `PF00069.29` families in the update tarballs) being cut at their first dot when family IDs are read from file names. This crashed family redundancy removal and the iterative algorithm, kept redundant families, paired each updated family's new hits with other families' MSAs, and wrote wrong family IDs to the members TSVs and the MultiQC family table. Family IDs now drop only `.gz` and the last extension. (by @vagkaratzas)
+
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- |
+| mgnifam | 2.0.0            | 4.0.0       |
+
 ## v2.5.0 - [2026/08/11]
 
 ### `Added`

@@ -115,7 +115,8 @@ def process_fasta_file(
         ), or None if data is incomplete.
     """
     filepath = os.path.join(fasta_folder, filename)
-    family_name = os.path.splitext(os.path.splitext(filename)[0])[0]
+    # Minus '.gz' and the last extension: family IDs may contain dots ('run.v2_1.faa.gz' -> 'run.v2_1')
+    family_name = os.path.splitext(filename.removesuffix(".gz"))[0]
 
     header, sequence, size = extract_data(filepath)
     if header and sequence:

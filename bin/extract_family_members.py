@@ -79,8 +79,8 @@ def process_fasta_file(filename: str, fasta_folder: str, tmp_dir: str) -> str:
         str: Path to the temporary TSV file for this family.
     """
     filepath = os.path.join(fasta_folder, filename)
-    # Applied twice to strip both extensions from compound names like 'sample_1.faa.gz'.
-    family_id = os.path.splitext(os.path.splitext(filename)[0])[0]
+    # Minus '.gz' and the last extension: family IDs may contain dots ('run.v2_1.faa.gz' -> 'run.v2_1')
+    family_id = os.path.splitext(filename.removesuffix(".gz"))[0]
     member_ids = extract_ids(filepath)
 
     tmp_path = os.path.join(tmp_dir, f"{family_id}.tsv")

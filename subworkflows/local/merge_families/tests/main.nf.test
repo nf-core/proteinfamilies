@@ -197,4 +197,83 @@ nextflow_workflow {
         }
     }
 
+    test("multiple pools - each MERGE_SEEDS task stages only its pool's seeds") {
+        // Regression test for #191: each MERGE_SEEDS task must stage only its own pool's seeds,
+        // not the whole sample. Gzipped 'test_5' covers the '.fas.gz' stem. Only the staging
+        // check fails pre-fix, since merge_seeds.py ignores extra files.
+        when {
+            workflow {
+                """
+                def alns = [
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true).text,
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).text
+                ]
+                // Family-id header prefix traces merged sequences back to their seed
+                def seedFiles = (1..4).collect { n ->
+                    def f = file("test_\${n}.aln")
+                    f.text = alns[n % 2].replaceAll(/(?m)^>/, ">test_\${n}_")
+                    f
+                }
+                def gz = file('test_5.fas.gz')
+                new java.util.zip.GZIPOutputStream(gz.newOutputStream()).withWriter { writer ->
+                    writer << alns[1].replaceAll(/(?m)^>/, '>test_5_')
+                }
+                seedFiles << gz
+
+                // Pools: {test_1, test_2}, {test_3, test_5}; test_4 unpooled
+                def similarities_file = file('similarities_multiple_pools.csv')
+                similarities_file.text = "family_1,family_2,similarity_score\\ntest_1,test_2,0.94\\ntest_3,test_5,0.94\\n"
+
+                input[0] = [ [ id: 'test' ], similarities_file ]
+                input[1] = channel.of([ [ id: 'test' ], seedFiles ])
+                input[2] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_msa_trimming
+                input[6] = "clipkit"  // clipkit_out_format
+                input[7] = false      // hmmsearch_write_target
+                input[8] = true       // hmmsearch_write_domain
+                input[9] = false      // skip_additional_sequence_recruiting
+                input[10] = 0.9       // hmmsearch_query_length_threshold
+                """
+            }
+        }
+
+        then {
+            def seedsById = workflow.out.seed_msa.collectEntries { meta, msa -> [ (meta.merged_id): file(msa).text ] }
+            // Staged seed names per MERGE_SEEDS task, keyed by its pool
+            def stagedByPool = [:]
+            new File("${launchDir}/work").eachFileRecurse(groovy.io.FileType.FILES) { script ->
+                if (script.name == '.command.sh' && script.text.contains('merge_seeds.py')) {
+                    def pool = (script.text =~ /--list "([^"]+)"/)[0][1]
+                    stagedByPool[pool] = new File(script.parentFile, 'seed_msa').list().sort()
+                }
+            }
+            assertAll(
+                { assert workflow.success },
+                { assert seedsById.keySet() == ['test_1_2', 'test_3_5'] as Set },
+                { assert seedsById.test_1_2.contains('>test_1_') && seedsById.test_1_2.contains('>test_2_') },
+                { assert !(seedsById.test_1_2 =~ />test_[345]_/) },
+                // '>test_5_': gzipped seed survived the filter
+                { assert seedsById.test_3_5.contains('>test_3_') && seedsById.test_3_5.contains('>test_5_') },
+                { assert !(seedsById.test_3_5 =~ />test_[124]_/) },
+                // Pre-fix: every task staged all five seeds
+                { assert stagedByPool == [
+                    'test_1,test_2': ['test_1.aln', 'test_2.aln'],
+                    'test_3,test_5': ['test_3.aln', 'test_5.fas.gz']
+                ] },
+                // Sorted: pools run concurrently, so emission order is unstable
+                { assert snapshot(
+                    workflow.out.hmm.collect { meta, hmm -> file(hmm).name }.sort(),
+                    workflow.out.seed_msa.sort { entry -> entry[0].merged_id },
+                    workflow.out.full_msa.sort { entry -> entry[0].merged_id },
+                    workflow.out.fasta.sort { entry -> entry[0].merged_id }
+                ).match()}
+            )
+        }
+    }
+
 }

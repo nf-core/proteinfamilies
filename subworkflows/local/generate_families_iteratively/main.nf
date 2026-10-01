@@ -15,6 +15,7 @@
 include { GUNZIP                                          } from '../../../modules/nf-core/gunzip/main'
 include { HMMER_ESLSFETCHINDEX                            } from '../../../modules/nf-core/hmmer/eslsfetchindex/main'
 include { MGNIFAM_GENERATEFAMILIES                        } from '../../../modules/nf-core/mgnifam/generatefamilies/main'
+include { fileStem                                        } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_SEED       } from '../../../modules/nf-core/hhsuite/reformat/main'
 include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_FULL       } from '../../../modules/nf-core/hhsuite/reformat/main'
 include { SEQKIT_SEQ as SEQKIT_SEQ_ITERATIVE_MSA_TO_FASTA } from '../../../modules/nf-core/seqkit/seq/main'
@@ -54,9 +55,9 @@ workflow GENERATE_FAMILIES_ITERATIVELY {
     // One task emits every family of its chunk. Family files are named <prefix>_<n>, with
     // prefix set per chunk in modules.config, so the sample id splits each name into the
     // per-family chunk key the downstream subworkflows expect.
-    ch_seed_msa = MGNIFAM_GENERATEFAMILIES.out.seed_msa.transpose().map { meta, file -> [ [id: meta.id, chunk: file.simpleName.split("${meta.id}_", 2)[1]], file ] }
-    ch_full_msa = MGNIFAM_GENERATEFAMILIES.out.full_msa.transpose().map { meta, file -> [ [id: meta.id, chunk: file.simpleName.split("${meta.id}_", 2)[1]], file ] }
-    ch_hmm      = MGNIFAM_GENERATEFAMILIES.out.hmm.transpose().map { meta, file -> [ [id: meta.id, chunk: file.simpleName.split("${meta.id}_", 2)[1]], file ] }
+    ch_seed_msa = MGNIFAM_GENERATEFAMILIES.out.seed_msa.transpose().map { meta, file -> [ [id: meta.id, chunk: fileStem(file).split("${meta.id}_", 2)[1]], file ] }
+    ch_full_msa = MGNIFAM_GENERATEFAMILIES.out.full_msa.transpose().map { meta, file -> [ [id: meta.id, chunk: fileStem(file).split("${meta.id}_", 2)[1]], file ] }
+    ch_hmm      = MGNIFAM_GENERATEFAMILIES.out.hmm.transpose().map { meta, file -> [ [id: meta.id, chunk: fileStem(file).split("${meta.id}_", 2)[1]], file ] }
 
     HHSUITE_REFORMAT_SEED( ch_seed_msa, "sto", "fas" )
 

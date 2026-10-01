@@ -31,6 +31,29 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - faa - dotted family ids") {
+        // 'run.v2_1.faa' is family 'run.v2_1'; stripping two extensions made it 'run'
+        when {
+            process {
+                """
+                def faas = (1..2).collect { n ->
+                    def f = file("run.v2_\${n}.faa")
+                    file(params.pipelines_testdata_base_path + "test_data/modules/mgnifams_test_\${n}.faa", checkIfExists: true).copyTo(f)
+                    f
+                }
+                input[0] = channel.of([ [ id: 'extract_family_members' ], faas ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.tsv[0][1]).readLines().drop(1).collect { l -> l.tokenize('\t')[0] }.unique().sort() == ['run.v2_1', 'run.v2_2'] }
+            )
+        }
+    }
+
     test("proteinfamilies - faa - stub") {
 
         options "-stub"

@@ -15,13 +15,6 @@ qc/mgnifams_test/mgnifams_test.fasta
 mmseqs/initial_clustering/mmseqs_createtsv/mgnifams_test.tsv
 mmseqs/initial_clustering/mgnifams_test_clustering_distribution_mqc.csv
 mmseqs/redundancy_clustering/**/*
-family_reps/**/*
-fasta/**/*
-seed_msa/**/*
-full_msa/**/*
 hmm/**/*
-remove_redundancy/mgnifams_test/redundant_fam_ids.txt
-proteinfold/mgnifams_test/mgnifams_test_reps.faa
 proteinfold/samplesheet.csv
-proteinannotator/mgnifams_test/mgnifams_test_reps.faa
 proteinannotator/samplesheet.csv

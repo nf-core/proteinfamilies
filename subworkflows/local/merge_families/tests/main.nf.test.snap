@@ -38,6 +38,67 @@
             "nextflow": "26.04.4"
         }
     },
+    "multiple pools - each MERGE_SEEDS task stages only its pool's seeds": {
+        "content": [
+            [
+                "test_1_2.hmm.gz",
+                "test_3_5.hmm.gz"
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_1_2"
+                    },
+                    "test_1_2.clipkit:md5,68164d49d68520a7d7c42c24eb165c2d"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_3_5"
+                    },
+                    "test_3_5.clipkit:md5,4b5bc8534e3c76869d032e0d5a9b706a"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_1_2"
+                    },
+                    "test_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_3_5"
+                    },
+                    "test_3_5.sto.gz:md5,fd5058c9f8c79e135a0dd372bc7cb422"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_1_2"
+                    },
+                    "test_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                ],
+                [
+                    {
+                        "id": "test",
+                        "merged_id": "test_3_5"
+                    },
+                    "test_3_5.fasta.gz:md5,3a7a0927b59800049ba84b30600820a2"
+                ]
+            ]
+        ],
+        "timestamp": "2026-09-30T08:10:25.875693737",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "two samples - each pool merges its own sample's seeds": {
         "content": [
             [

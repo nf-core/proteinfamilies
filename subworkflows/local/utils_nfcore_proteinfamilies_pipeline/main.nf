@@ -89,7 +89,7 @@ workflow PIPELINE_INITIALISATION {
         before_text,
         after_text,
         command,
-        null
+        false
     )
 
     //
@@ -272,6 +272,14 @@ def methodsDescriptionText(mqc_methods_yaml) {
 }
 
 //
+// Family ID of a family file: name minus '.gz' and the last extension ('run.v2_3.fas.gz' -> 'run.v2_3').
+// Not simpleName: sample and family names may contain dots. Same rule as the bin/ scripts.
+//
+def fileStem(file) {
+    return file.getBaseName(file.extension == 'gz' ? 2 : 1)
+}
+
+//
 // Validate that an HMM folder and an MSA folder contain the same number of files with matching
 // base names. Aborts early if they diverge — a mismatch would cause silent key-join failures
 // in the per-family combine steps inside UPDATE_FAMILIES.
@@ -290,8 +298,8 @@ def validateMatchingFolders(channel1, channel2) {
             }
 
             // Extract base filenames (without extensions) and sort
-            def baseNames1 = files1.collect { f -> f.getSimpleName() }.sort()
-            def baseNames2 = files2.collect { f -> f.getSimpleName() }.sort()
+            def baseNames1 = files1.collect { f -> fileStem(f) }.sort()
+            def baseNames2 = files2.collect { f -> fileStem(f) }.sort()
 
             // Check if base filenames match one to one
             if (baseNames1 != baseNames2) {

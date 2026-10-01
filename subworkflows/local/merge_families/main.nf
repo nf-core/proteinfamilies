@@ -9,6 +9,7 @@
 */
 
 include { POOL_SIMILAR_COMPONENTS       } from '../../../modules/local/pool_similar_components/main'
+include { fileStem                      } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { MERGE_SEEDS                   } from '../../../modules/local/merge_seeds/main'
 include { GENERATE_FAMILIES             } from '../../../subworkflows/local/generate_families'
 include { GENERATE_FAMILIES_ITERATIVELY } from '../../../subworkflows/local/generate_families_iteratively'
@@ -55,15 +56,15 @@ workflow MERGE_FAMILIES {
             return [newMeta, components.join(',')]
         }
 
-    // Each pooled group is paired with its own sample's seed collection. combine() by sample id
-    // repeats that collection for every group of the sample, without letting one sample's groups
-    // consume another sample's seeds.
+    // Pair each pool with its own sample's seeds, keeping only the pool's members: staging every
+    // seed of the sample into every task exhausts the head job's heap on large samples.
+    // Seeds are keyed by family ID once per sample, so each pool is a lookup, not a scan.
     ch_input_for_merge_seeds = ch_pooled_components
         .map { meta, components -> [ [id: meta.id], meta, components ] }
-        .combine(seed_msa, by: 0)
-        .multiMap { id, meta, components, seeds ->
+        .combine(seed_msa.map { id, seeds -> [ id, seeds.collectEntries { seed -> [ fileStem(seed), seed ] } ] }, by: 0)
+        .multiMap { id, meta, components, seedsByFamily ->
             components: [ meta, components ]
-            seed_msa  : [ id, seeds ]
+            seed_msa  : [ id, seedsByFamily.subMap(components.split(',')).values() as List ]
         }
 
     MERGE_SEEDS( ch_input_for_merge_seeds.components, ch_input_for_merge_seeds.seed_msa )

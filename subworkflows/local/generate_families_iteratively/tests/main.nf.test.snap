@@ -107,7 +107,7 @@
                         "id": "test",
                         "chunk": "1_4"
                     },
-                    "test_1_4.sto.gz:md5,43cedef3559a596ca77a2b26558e0507"
+                    "test_1_4.sto.gz:md5,6d74833a402f6ff3643dfc86bda65e2d"
                 ],
                 [
                     {
@@ -142,7 +142,7 @@
                         "id": "test",
                         "chunk": "1_9"
                     },
-                    "test_1_9.sto.gz:md5,d0563af90ef7b19fbaaeea111fc388c9"
+                    "test_1_9.sto.gz:md5,2a555a65c382e202a537c791ebb453b6"
                 ]
             ],
             [
@@ -179,7 +179,7 @@
                         "id": "test",
                         "chunk": "1_4"
                     },
-                    "test_1_4.fasta.gz:md5,685fcd8b0e23955c42643d0031cfb091"
+                    "test_1_4.fasta.gz:md5,a19968d8ff2f87e6f87de014b7106d2d"
                 ],
                 [
                     {
@@ -214,7 +214,7 @@
                         "id": "test",
                         "chunk": "1_9"
                     },
-                    "test_1_9.fasta.gz:md5,6a600198fbb4a5d9cfc961276dde85b0"
+                    "test_1_9.fasta.gz:md5,1a35e599f0c5ad30d62789dbdbdfde8d"
                 ]
             ],
             [
@@ -230,10 +230,10 @@
                 "test_1_9.hmm.gz"
             ]
         ],
-        "timestamp": "2026-07-28T13:10:31.591126773",
+        "timestamp": "2026-09-29T13:20:47.874655448",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nextflow": "26.04.6"
         }
     }
 }

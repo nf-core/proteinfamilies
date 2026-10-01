@@ -37,7 +37,7 @@
                     },
                     "hmmer/eslsfetchindex": {
                         "branch": "master",
-                        "git_sha": "d3d8e0c6c33925e69f96f44fc6204302841f3562",
+                        "git_sha": "f179ce7da20507dcddbd8e8eaa07a89ebebf95c0",
                         "installed_by": ["modules"]
                     },
                     "hmmer/hmmalign": {
@@ -57,12 +57,12 @@
                     },
                     "mafft/align": {
                         "branch": "master",
-                        "git_sha": "f0fc064c76250bf362d1900bbf8b62092f9f2a1b",
+                        "git_sha": "e3307865b7a10f4bc458189a494a05c0ca9da52e",
                         "installed_by": ["modules"]
                     },
                     "mgnifam/generatefamilies": {
                         "branch": "master",
-                        "git_sha": "acdf5174c3bebdb1ac86858845a18015b5ee9bdb",
+                        "git_sha": "228410a8391d1994a606a7ad5c449e077c17018d",
                         "installed_by": ["modules"]
                     },
                     "mmseqs/cluster": {
@@ -123,22 +123,22 @@
                 "nf-core": {
                     "faa_seqfu_seqkit": {
                         "branch": "master",
-                        "git_sha": "d07a945f421a4a91ce4e5a22db63e0e7f8741607",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
                     "mmseqs_fasta_cluster": {
                         "branch": "master",
-                        "git_sha": "9ef13474c5ed9a2d740b0b8565209be636361b5a",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "1a545fcbd762911c21a64ced3dbef99b2b51ac75",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {
                         "branch": "master",
-                        "git_sha": "a3fb7351b1fdb2b1de282b765816bbea190e86a8",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfschema_plugin": {

@@ -35,6 +35,33 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - nonredundant - dotted family ids") {
+        // 'run.v2_2.aln' is family 'run.v2_2'; cut at the first dot it became 'run' and was kept
+        when {
+            process {
+                """
+                def seeds = (1..2).collect { n ->
+                    def f = file("run.v2_\${n}.aln")
+                    file(params.pipelines_testdata_base_path + "test_data/modules/mgnifams_test_\${n}.aln", checkIfExists: true).copyTo(f)
+                    f
+                }
+                def redundant_ids = file('redundant_ids_dotted.txt')
+                redundant_ids.text = 'run.v2_2\\n'
+
+                input[0] = channel.of([ [ id: 'aln' ], seeds ])
+                input[1] = channel.of([ [ id: 'redundant_ids' ], redundant_ids ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.filtered.collectMany { _meta, filtered -> [filtered].flatten().collect { f -> file(f).name } } == ['run.v2_1.aln'] }
+            )
+        }
+    }
+
     test("proteinfamilies - nonredundant - stub") {
 
         options "-stub"
