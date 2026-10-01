@@ -72,15 +72,18 @@ mgnifam performs each step in-process with its own libraries rather than by call
 | Trimming           | [pytrimal](https://github.com/althonos/pytrimal) |
 | HMM build & search | [pyhmmer](https://github.com/althonos/pyhmmer)   |
 
-Because of that, the parameters below are honoured only by the `standard` algorithm. They are ignored on the `iterative` path, which always behaves as stated:
+Because of that, the parameters below are honoured only by the `standard` algorithm. They are ignored when the `iterative` path creates or merges families, which always behaves as stated:
 
-| Parameter                                                                    | Behaviour of the `iterative` algorithm                                     |
-| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `alignment_tool`                                                             | Always FAMSA, through pyfamsa                                              |
-| `skip_seed_msa_trimming`                                                     | Trimming is always applied, through pytrimal                               |
-| `trim_ends_only`                                                             | ClipKIT is not used; trimming is by column gap occupancy (`gap_threshold`) |
-| `skip_additional_sequence_recruiting`                                        | Recruitment is always performed, and repeated until convergence            |
-| `hmmsearch_write_target`, `hmmsearch_write_domain`, `save_hmmsearch_results` | Searching is in-process, so no hmmsearch report files exist                |
+| Parameter                                                                    | Behaviour of the `iterative` algorithm                                        |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `alignment_tool`                                                             | Always FAMSA, through pyfamsa                                                 |
+| `skip_seed_msa_trimming`                                                     | Trimming is always applied, through pytrimal                                  |
+| `trim_ends_only`                                                             | ClipKIT is not used; pytrimal trims by column gap occupancy (`gap_threshold`) |
+| `skip_additional_sequence_recruiting`                                        | Recruitment is always performed, and repeated until convergence               |
+| `hmmsearch_write_target`, `hmmsearch_write_domain`, `save_hmmsearch_results` | Searching is in-process, so no hmmsearch report files exist                   |
+
+> [!NOTE]
+> Updating existing families (samplesheet entries with existing HMMs and MSAs) always runs the `standard` update path, whichever algorithm is selected, so `alignment_tool`, `skip_seed_msa_trimming`, `trim_ends_only` and `gap_threshold` apply to updated families with ClipKIT.
 
 The parameters both algorithms share are mapped onto their mgnifam equivalents:
 
