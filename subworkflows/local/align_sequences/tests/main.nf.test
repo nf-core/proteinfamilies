@@ -16,6 +16,7 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
+                input[2] = true
                 """
             }
         }
@@ -40,6 +41,7 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
+                input[2] = true
                 """
             }
         }
@@ -48,6 +50,35 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(workflow.out.alignments).match() }
+            )
+        }
+    }
+
+    test("fasta - famsa - trimmed") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test_famsa_trimmed', chunk: 1 ],
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
+                ])
+                input[1] = 'famsa'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            def msa = file(workflow.out.alignments[0][1]).readLines()
+            def fasta = file(workflow.out.sequences[0][1]).readLines()
+            assertAll(
+                { assert workflow.success},
+                // Every row carries a range and the fasta holds exactly the MSA rows, degapped
+                { assert msa.findAll { it.startsWith('>') }.every { it ==~ />.+\/\d+-\d+/ } },
+                { assert fasta.findAll { it.startsWith('>') } == msa.findAll { it.startsWith('>') } },
+                { assert fasta.findAll { !it.startsWith('>') } == msa.findAll { !it.startsWith('>') }.collect { it.replaceAll(/[-.]/, '') } },
+                { assert snapshot(workflow.out.alignments, workflow.out.sequences).match() }
             )
         }
     }
@@ -66,6 +97,7 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
+                input[2] = true
                 """
             }
         }
@@ -92,6 +124,7 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
                 ])
                 input[1] = alignment_tool
+                input[2] = true
                 """
             }
         }

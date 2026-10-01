@@ -23,7 +23,7 @@ Multiple sequence alignment:
 
 - [FAMSA](#famsa) aligner option. Best speed and sensitivity option to build seed multiple sequence alignment for the families
 - [mafft](#mafft) aligner option. Fast but not as sensitive as FAMSA to build seed multiple sequence alignment for the families
-- [ClipKIT](#clipkit) to optionally clip gapped portions of the multiple sequence alignment (MSA)
+- [ClipKIT](#clipkit) to optionally clip gapped portions of the seed multiple sequence alignment (MSA), recalculating each row's `/start-end` coordinates
 
 Generating family models:
 
@@ -46,7 +46,7 @@ Updating families:
 - [MMseqs2](#mmseqs2-for-updating-families) to strictly cluster the sequences within each of the families to update
 - [FAMSA](#famsa-for-updating-families) aligner option. Re-align full MSA with final set of sequences
 - [mafft](#mafft-for-updating-families) aligner option. Re-align full MSA with final set of sequences
-- [ClipKIT](#clipkit-for-updating-families) to optionally clip gapped portions of the multiple sequence alignment (MSA)
+- [ClipKIT](#clipkit-for-updating-families) to optionally clip gapped portions of the multiple sequence alignment (MSA), recalculating each row's `/start-end` coordinates
 
 Phylogenetic tree inference:
 
@@ -197,9 +197,9 @@ These MSA files only contain the original sequences of each cluster as calculate
 
 - `seed_msa/`
   - `raw/`
-    - `clipkit/`
+    - `trimmed/`
       - `<samplename>/`
-        - `<samplename>_*.clipkit`: gap-clipped fasta files of aligned amino acid sequences
+        - `<samplename>_*.aln`: gap-clipped seed MSAs (FASTA format), rows renamed `<sequence>/<start>-<end>` to the residues they hold
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.*`: filtered seed alignments after family redundancy removal
@@ -207,15 +207,16 @@ These MSA files only contain the original sequences of each cluster as calculate
   - `merge_families/`
     - `seed_msa/`
       - `raw/`
-        - `clipkit/`
+        - `trimmed/`
           - `<samplename>/`
-            - `<samplename>_*.clipkit`: gap-clipped fasta files of aligned amino acid sequences from merged families
+            - `<samplename>_*.aln`: gap-clipped seed MSAs (FASTA format) of merged families, rows renamed `<sequence>/<start>-<end>` to the residues they hold
 
 </details>
 
-If the `--skip_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
+If the `--skip_seed_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
 gaps (above that threshold, across all aligned sequences) are either removed only at the ends of the MSA if `trim_ends_only` is set to `true`, or throughout the alignment otherwise.
-Results are stored in the `seed_msa/raw` folder.
+Each trimmed row is then renamed `<sequence>/<start>-<end>` (shifting an existing range) to the residues it still holds, and rows left without residues are dropped.
+Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; when `--skip_additional_sequence_recruiting` is set, the trimmed seed MSA also serves as the full MSA and the family FASTA holds its rows.
 
 [ClipKIT](https://github.com/JLSteenwyk/ClipKIT) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 
@@ -535,22 +536,14 @@ in the `update_families/hmmer/hmmbuild` folder, from the respective new MSAs.
     - `<family_id>.fastq`: (optional) fasta formatted family sequences from full MSA with gaps removed
 - `update_families/`
   - `fasta/`
-    - `pre_clipped_non_redundant_sequences/`
-      - `<samplename>/`
-        - `<family_id>.faa`: (optional) FASTA files before gap removal from family MSAs. Can be turned on with `--save_update_families_pre_clipped_fasta`, when `skip_sequence_redundancy_removal` is false
-    - `pre_clipped/`
-      - `<samplename>/`
-        - `<family_id>.faa`: (optional) FASTA files before gap removal from family MSAs. Can be turned on with `--save_update_families_pre_clipped_fasta`, but `skip_sequence_redundancy_removal` also needs to be true
-    - `post_clipped/`
-      - `<samplename>/`
-        - `<family_id>.faa`: (optional) FASTA files with gaps removed from family MSAs. Can be turned on with `--save_update_families_clipped_fasta` (default: `true`)
+    - `<samplename>/`
+      - `<family_id>.faa`: FASTA files of the updated families, holding exactly the rows of their (trimmed) MSAs. Not written when `--skip_seed_msa_trimming` is set
 
 </details>
 
 The `seqkit` module is mainly used during the `update_families` mode
 to extract sequences from family MSA, into intermediate fasta files (`seqkit` output folder).
-The `update_families/fasta` folder contains optional FASTA outputs: `pre_clipped_non_redundant_sequences`, if sequence redundancy within families was removed, `pre_clipped` holds gap-removed sequences from aligned MSAs (before clipping, if sequence redundancy was not removed),
-and `post_clipped` holds gappy-column-removed final sequences from clipped MSAs.
+The `update_families/fasta` folder contains the sequences of each updated family's trimmed MSA, with gaps removed and the same `<sequence>/<start>-<end>` names.
 
 [SeqKit](https://github.com/shenwei356/seqkit) is a cross-platform and ultrafast toolkit for FASTA/Q file manipulation.
 
@@ -631,15 +624,16 @@ If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be cre
 
 - `update_families/`
   - `full_msa/`
-    - `clipkit/`
+    - `trimmed/`
       - `<samplename>/`
-        - `<family_id>.clipkit`: gap-clipped fasta files of aligned amino acid sequences
+        - `<family_id>.aln`: gap-clipped family MSAs (FASTA format), rows renamed `<sequence>/<start>-<end>` to the residues they hold
 
 </details>
 
-If the `--skip_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
+If the `--skip_seed_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
 gaps (above that threshold, across all aligned sequences) are either removed only at the ends of the MSA if `trim_ends_only` is set to `true`, or throughout the alignment otherwise.
-Results are stored in the `update_families/full_msa` folder.
+Each trimmed row is then renamed `<sequence>/<start>-<end>` (shifting an existing range) to the residues it still holds, and rows left without residues are dropped.
+The trimmed MSA builds the updated family HMM. Results are stored in the `update_families/full_msa/trimmed` folder.
 
 [ClipKIT](https://github.com/JLSteenwyk/ClipKIT) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 

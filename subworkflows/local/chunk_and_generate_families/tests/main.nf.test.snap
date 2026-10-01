@@ -7,21 +7,21 @@
                         "id": "test",
                         "chunk": "1"
                     },
-                    "test_1.clipkit:md5,6a4c49600e62e7dbf943f035c29123f2"
+                    "test_1.aln:md5,e3624fa56df23813f0dbe4b7fb6aba9a"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "2"
                     },
-                    "test_2.clipkit:md5,6ee5a3f6817aefb3d04f3d66911ecf04"
+                    "test_2.aln:md5,179689df2c2a3972121901e4826d0ba5"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "3"
                     },
-                    "test_3.clipkit:md5,ff8c1b08d57a1468cdad0a4eca1ca317"
+                    "test_3.aln:md5,d0df7935d90f5f72135276f6321cbfad"
                 ]
             ],
             [
@@ -76,7 +76,7 @@
                 "test_3.hmm.gz"
             ]
         ],
-        "timestamp": "2026-09-29T16:19:14.097594045",
+        "timestamp": "2026-10-01T15:49:52.150132514",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

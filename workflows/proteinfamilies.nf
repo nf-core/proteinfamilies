@@ -81,10 +81,7 @@ workflow PROTEINFAMILIES {
         params.skip_sequence_redundancy_removal,
         params.clustering_tool,
         params.alignment_tool,
-        params.skip_msa_trimming,
-        params.clipkit_out_format,
-        params.save_update_families_pre_clipped_fasta,
-        params.save_update_families_clipped_fasta
+        params.skip_seed_msa_trimming
     )
 
     ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
@@ -107,8 +104,7 @@ workflow PROTEINFAMILIES {
         params.cluster_size_threshold,
         params.clusters_per_chunk,
         params.alignment_tool,
-        params.skip_msa_trimming,
-        params.clipkit_out_format,
+        params.skip_seed_msa_trimming,
         params.hmmsearch_write_target,
         params.hmmsearch_write_domain,
         params.skip_additional_sequence_recruiting,
@@ -129,8 +125,7 @@ workflow PROTEINFAMILIES {
         params.clustering_tool,
         params.family_generation_algorithm,
         params.alignment_tool,
-        params.skip_msa_trimming,
-        params.clipkit_out_format,
+        params.skip_seed_msa_trimming,
         params.hmmsearch_write_target,
         params.hmmsearch_write_domain,
         params.skip_additional_sequence_recruiting,

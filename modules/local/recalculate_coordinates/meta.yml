@@ -1,0 +1,81 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "recalculate_coordinates"
+description: Recalculate the `name/start-end` coordinates of trimmed MSA rows from the trimmed end columns, and write the matching degapped sequences.
+keywords:
+  - msa
+  - trimming
+  - coordinates
+tools:
+  - "recalculate_coordinates":
+      description: "Recalculate the coordinates of trimmed MSA rows."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/recalculate_coordinates/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/recalculate_coordinates/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/recalculate_coordinates/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', chunk:'1' ]`
+    - untrimmed:
+        type: file
+        description: Untrimmed MSA in FASTA format
+        pattern: "*.{aln,fas,fa,fasta}"
+    - trimmed:
+        type: file
+        description: Trimmed MSA in FASTA format, rows in the same order as the untrimmed MSA
+        pattern: "*"
+    - trim_log:
+        type: file
+        description: Trimming log with one `<position> <keep|trim> ...` line per untrimmed column (ClipKIT `--log`)
+        pattern: "*.log"
+output:
+  alignment:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', chunk:'1' ]`
+      - "${prefix}.aln":
+          type: file
+          description: Trimmed MSA with recalculated `name/start-end` coordinates; rows without residues dropped
+          pattern: "*.aln"
+  fasta:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', chunk:'1' ]`
+      - "${prefix}.faa":
+          type: file
+          description: Degapped sequences of the output MSA, same names and order
+          pattern: "*.faa"
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

@@ -8,14 +8,14 @@
                         "id": "test",
                         "chunk": "chunk_1"
                     },
-                    "test_chunk_1.clipkit:md5,dae9d5f940e2f43687e068155ebfe1ae"
+                    "test_chunk_1.aln:md5,3e24babec6564fe1365d2cc7c9de2555"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "chunk_2"
                     },
-                    "test_chunk_2.clipkit:md5,adcd7fc302b4cd66c219d2df51a7e7e8"
+                    "test_chunk_2.aln:md5,326a191e5ab343f0991c9ea6744af34b"
                 ]
             ],
             [
@@ -51,10 +51,10 @@
                 ]
             ]
         ],
-        "timestamp": "2026-06-08T16:36:07.799636446",
+        "timestamp": "2026-10-01T15:50:56.012656086",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

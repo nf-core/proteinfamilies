@@ -23,8 +23,7 @@ workflow CHUNK_AND_GENERATE_FAMILIES {
     cluster_size_threshold              // integer
     clusters_per_chunk                  // integer
     alignment_tool                      // string ["famsa", "mafft"]
-    skip_msa_trimming                   // boolean
-    clipkit_out_format                  // string (default: clipkit)
+    skip_seed_msa_trimming              // boolean
     hmmsearch_write_target              // boolean
     hmmsearch_write_domain              // boolean
     skip_additional_sequence_recruiting // boolean
@@ -50,8 +49,7 @@ workflow CHUNK_AND_GENERATE_FAMILIES {
             sequences,
             ch_chunks,
             alignment_tool,
-            skip_msa_trimming,
-            clipkit_out_format,
+            skip_seed_msa_trimming,
             hmmsearch_write_target,
             hmmsearch_write_domain,
             skip_additional_sequence_recruiting,

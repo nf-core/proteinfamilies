@@ -6,11 +6,10 @@
       sequences  — the full per-sample sequence pool, searched with each cluster HMM to
                    recruit additional members beyond the initial cluster (unless
                    skip_additional_sequence_recruiting is true, in which case the seed
-                   MSA doubles as the final full MSA).
+                   MSA doubles as the final full MSA and its rows become the family fasta).
 */
 
 include { ALIGN_SEQUENCES  } from '../../../subworkflows/local/align_sequences'
-include { CLIPKIT          } from '../../../modules/nf-core/clipkit/main'
 include { HMMER_HMMBUILD   } from '../../../modules/nf-core/hmmer/hmmbuild/main'
 include { HMMER_HMMSEARCH  } from '../../../modules/nf-core/hmmer/hmmsearch/main'
 include { FILTER_RECRUITED } from '../../../modules/local/filter_recruited/main'
@@ -21,8 +20,7 @@ workflow GENERATE_FAMILIES {
     sequences                           // tuple val(meta), path(fasta)
     ch_fasta                            // tuple val(meta), path(fasta)
     alignment_tool                      // string ["famsa", "mafft"]
-    skip_msa_trimming                   // boolean
-    clipkit_out_format                  // string (default: clipkit)
+    skip_seed_msa_trimming              // boolean
     hmmsearch_write_target              // boolean
     hmmsearch_write_domain              // boolean
     skip_additional_sequence_recruiting // boolean
@@ -33,13 +31,8 @@ workflow GENERATE_FAMILIES {
     ch_full_msa = channel.empty()
     ch_hmm      = channel.empty()
 
-    ALIGN_SEQUENCES( ch_fasta, alignment_tool )
+    ALIGN_SEQUENCES( ch_fasta, alignment_tool, skip_seed_msa_trimming )
     ch_seed_msa = ALIGN_SEQUENCES.out.alignments
-
-    if (!skip_msa_trimming) {
-        CLIPKIT( ch_seed_msa, clipkit_out_format, [] )
-        ch_seed_msa = CLIPKIT.out.clipkit
-    }
 
     HMMER_HMMBUILD( ch_seed_msa, [] )
     ch_hmm = HMMER_HMMBUILD.out.hmm
@@ -74,8 +67,10 @@ workflow GENERATE_FAMILIES {
         HMMER_HMMALIGN( ch_input_for_hmmalign.seq, ch_input_for_hmmalign.hmm )
         ch_full_msa = HMMER_HMMALIGN.out.sto
     } else {
-        // Seed MSA serves as the final full MSA when additional sequence recruiting is skipped.
+        // Seed MSA serves as the final full MSA when additional sequence recruiting is skipped,
+        // and the fasta must hold exactly its (possibly trimmed and renamed) rows.
         ch_full_msa = ch_seed_msa
+        ch_fasta    = ALIGN_SEQUENCES.out.sequences
     }
 
     emit:

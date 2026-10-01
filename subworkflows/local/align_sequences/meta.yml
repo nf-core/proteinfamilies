@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "align_sequences"
-description: Generate alignments from amino acid fasta files
+description: Generate alignments from amino acid fasta files, optionally trimmed with recalculated row coordinates
 keywords:
   - fasta
   - sequences
@@ -8,6 +8,8 @@ keywords:
 components:
   - famsa/align
   - mafft/align
+  - clipkit
+  - recalculate_coordinates
 input:
   - sequences:
       type: file
@@ -17,6 +19,10 @@ input:
       type: string
       description: |
         Alignment tool to use for generating the alignment. Options are 'famsa' or 'mafft'
+  - skip_trimming:
+      type: boolean
+      description: |
+        Skip trimming the alignments with ClipKIT and recalculating their row coordinates
 output:
   - versions:
       type: file
@@ -25,7 +31,11 @@ output:
   - alignments:
       type: file
       description: |
-        MSA files
+        MSA files, trimmed with recalculated `name/start-end` row coordinates unless skip_trimming
+  - sequences:
+      type: file
+      description: |
+        Degapped sequences of the alignments (same rows and names); the input fasta when skip_trimming
 authors:
   - "@vagkaratzas"
 maintainers:

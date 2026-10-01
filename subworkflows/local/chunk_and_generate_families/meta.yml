@@ -43,15 +43,10 @@ input:
       description: |
         Tool to use for multiple sequence alignment. Standard algorithm only.
       enum: ["famsa", "mafft"]
-  - skip_msa_trimming:
+  - skip_seed_msa_trimming:
       type: boolean
       description: |
         Skip trimming of multiple sequence alignments with ClipKIT. Standard algorithm only.
-  - clipkit_out_format:
-      type: string
-      description: |
-        Output format for ClipKIT trimming tool. Standard algorithm only.
-      default: "clipkit"
   - hmmsearch_write_target:
       type: boolean
       description: |

@@ -1,0 +1,93 @@
+{
+    "proteinfamilies - aln - clipkit ends only": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "mgnifams_test_1"
+                    },
+                    "mgnifams_test_1_null.aln:md5,bc6807ee14bd896d19547817d96e7abd"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "mgnifams_test_1"
+                    },
+                    "mgnifams_test_1_null.faa:md5,bc6807ee14bd896d19547817d96e7abd"
+                ]
+            ],
+            {
+                "versions_python": [
+                    [
+                        "RECALCULATE_COORDINATES",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T15:42:03.42058914",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "proteinfamilies - aln - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "mgnifams_test_1"
+                        },
+                        "mgnifams_test_1_null.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "mgnifams_test_1"
+                        },
+                        "mgnifams_test_1_null.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        "RECALCULATE_COORDINATES",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "alignment": [
+                    [
+                        {
+                            "id": "mgnifams_test_1"
+                        },
+                        "mgnifams_test_1_null.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "mgnifams_test_1"
+                        },
+                        "mgnifams_test_1_null.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "RECALCULATE_COORDINATES",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T15:42:49.515037495",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

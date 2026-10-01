@@ -77,12 +77,11 @@ nextflow_workflow {
                 input[10] = "linclust" // clustering_tool
                 input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
-                input[13] = false      // skip_msa_trimming
-                input[14] = "clipkit"  // clipkit_out_format
-                input[15] = false      // hmmsearch_write_target
-                input[16] = true       // hmmsearch_write_domain
-                input[17] = false      // skip_additional_sequence_recruiting
-                input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[13] = false      // skip_seed_msa_trimming
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -171,12 +170,11 @@ nextflow_workflow {
                 input[10] = "linclust" // clustering_tool
                 input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
-                input[13] = false      // skip_msa_trimming
-                input[14] = "clipkit"  // clipkit_out_format
-                input[15] = false      // hmmsearch_write_target
-                input[16] = true       // hmmsearch_write_domain
-                input[17] = false      // skip_additional_sequence_recruiting
-                input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[13] = false      // skip_seed_msa_trimming
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -265,12 +263,11 @@ nextflow_workflow {
                 input[10] = "linclust" // clustering_tool
                 input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
-                input[13] = false      // skip_msa_trimming
-                input[14] = "clipkit"  // clipkit_out_format
-                input[15] = false      // hmmsearch_write_target
-                input[16] = true       // hmmsearch_write_domain
-                input[17] = false      // skip_additional_sequence_recruiting
-                input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[13] = false      // skip_seed_msa_trimming
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -359,12 +356,11 @@ nextflow_workflow {
                 input[10] = "linclust" // clustering_tool
                 input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
-                input[13] = false      // skip_msa_trimming
-                input[14] = "clipkit"  // clipkit_out_format
-                input[15] = false      // hmmsearch_write_target
-                input[16] = true       // hmmsearch_write_domain
-                input[17] = false      // skip_additional_sequence_recruiting
-                input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[13] = false      // skip_seed_msa_trimming
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -453,12 +449,11 @@ nextflow_workflow {
                 input[10] = "linclust" // clustering_tool
                 input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
-                input[13] = false      // skip_msa_trimming
-                input[14] = "clipkit"  // clipkit_out_format
-                input[15] = false      // hmmsearch_write_target
-                input[16] = true       // hmmsearch_write_domain
-                input[17] = false      // skip_additional_sequence_recruiting
-                input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[13] = false      // skip_seed_msa_trimming
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -547,12 +542,11 @@ nextflow_workflow {
                 input[10] = "linclust" // clustering_tool
                 input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
-                input[13] = false      // skip_msa_trimming
-                input[14] = "clipkit"  // clipkit_out_format
-                input[15] = false      // hmmsearch_write_target
-                input[16] = true       // hmmsearch_write_domain
-                input[17] = false      // skip_additional_sequence_recruiting
-                input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[13] = false      // skip_seed_msa_trimming
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -641,12 +635,11 @@ nextflow_workflow {
                 input[10] = "linclust" // clustering_tool
                 input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
-                input[13] = false      // skip_msa_trimming
-                input[14] = "clipkit"  // clipkit_out_format
-                input[15] = false      // hmmsearch_write_target
-                input[16] = true       // hmmsearch_write_domain
-                input[17] = true       // skip_additional_sequence_recruiting
-                input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[13] = false      // skip_seed_msa_trimming
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = true       // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -737,12 +730,11 @@ nextflow_workflow {
                 input[10] = "linclust" // clustering_tool
                 input[11] = "standard" // family_generation_algorithm
                 input[12] = "famsa"    // alignment_tool
-                input[13] = false      // skip_msa_trimming
-                input[14] = "clipkit"  // clipkit_out_format
-                input[15] = false      // hmmsearch_write_target
-                input[16] = true       // hmmsearch_write_domain
-                input[17] = false      // skip_additional_sequence_recruiting
-                input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[13] = false      // skip_seed_msa_trimming
+                input[14] = false      // hmmsearch_write_target
+                input[15] = true       // hmmsearch_write_domain
+                input[16] = false      // skip_additional_sequence_recruiting
+                input[17] = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }
