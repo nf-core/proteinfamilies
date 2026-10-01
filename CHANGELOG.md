@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#197](https://github.com/nf-core/proteinfamilies/pull/197) - **Breaking:** seed MSAs are trimmed inside `ALIGN_SEQUENCES`, full MSAs never; `--skip_msa_trimming` renamed to `--skip_seed_msa_trimming`, `--clipkit_out_format` and `--save_update_families_{pre_clipped,clipped}_fasta` removed, `clipkit/` output folders renamed to `trimmed/` (`.aln`). Family FASTA files now always match their full MSA. (by @vagkaratzas)
+- [#197](https://github.com/nf-core/proteinfamilies/pull/197) - **Breaking:** seed MSAs are trimmed inside `ALIGN_SEQUENCES`, full MSAs never; `--skip_msa_trimming` renamed to `--skip_seed_msa_trimming`, `--clipkit_out_format` and `--save_update_families_{pre_clipped,clipped}_fasta` removed, `clipkit/` output folders renamed to `trimmed/` (`.aln`). Family FASTA files now always match their full MSA. Added a `test_mgnifam` pipeline nf-test. (by @vagkaratzas)
 
 ### `Fixed`
 
