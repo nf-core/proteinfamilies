@@ -9,10 +9,38 @@
                     "test_update.fasta.gz:md5,9854e409ebbaf4b2e93c0e6e824b4543"
                 ]
             ],
+            [
+                "mgnifams_test_1.hmm.gz",
+                "mgnifams_test_2.hmm.gz",
+                "mgnifams_test_4.hmm.gz",
+                "mgnifams_test_5.hmm.gz",
+                "mgnifams_test_6.hmm.gz"
+            ],
+            [
+                "mgnifams_test_1.aln",
+                "mgnifams_test_2.aln",
+                "mgnifams_test_4.aln",
+                "mgnifams_test_5.aln",
+                "mgnifams_test_6.aln"
+            ],
+            [
+                "mgnifams_test_1.sto.gz",
+                "mgnifams_test_2.sto.gz",
+                "mgnifams_test_4.sto.gz",
+                "mgnifams_test_5.sto.gz",
+                "mgnifams_test_6.sto.gz"
+            ],
+            [
+                "mgnifams_test_1: 22",
+                "mgnifams_test_2: 55",
+                "mgnifams_test_4: 37",
+                "mgnifams_test_5: 62",
+                "mgnifams_test_6: 20"
+            ],
             "test_update_meta_mqc.csv",
             11
         ],
-        "timestamp": "2026-10-02T16:53:19.897710165",
+        "timestamp": "2026-10-02T17:22:59.744833726",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -28,13 +56,41 @@
                     "test_update.fasta.gz:md5,9854e409ebbaf4b2e93c0e6e824b4543"
                 ]
             ],
+            [
+                "mgnifams_test_1.hmm.gz",
+                "mgnifams_test_2.hmm.gz",
+                "mgnifams_test_4.hmm.gz",
+                "mgnifams_test_5.hmm.gz",
+                "mgnifams_test_6.hmm.gz"
+            ],
+            [
+                "mgnifams_test_1.aln",
+                "mgnifams_test_2.aln",
+                "mgnifams_test_4.aln",
+                "mgnifams_test_5.aln",
+                "mgnifams_test_6.aln"
+            ],
+            [
+                "mgnifams_test_1.sto.gz",
+                "mgnifams_test_2.sto.gz",
+                "mgnifams_test_4.sto.gz",
+                "mgnifams_test_5.sto.gz",
+                "mgnifams_test_6.sto.gz"
+            ],
+            [
+                "mgnifams_test_1: 22",
+                "mgnifams_test_2: 55",
+                "mgnifams_test_4: 37",
+                "mgnifams_test_5: 62",
+                "mgnifams_test_6: 20"
+            ],
             "test_update_meta_mqc.csv",
             11
         ],
-        "timestamp": "2026-06-08T16:37:58.09809568",
+        "timestamp": "2026-10-02T17:22:11.86458827",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

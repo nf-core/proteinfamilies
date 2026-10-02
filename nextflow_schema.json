@@ -343,7 +343,7 @@
                 },
                 "skip_seed_msa_trimming": {
                     "type": "boolean",
-                    "description": "Skip trimming gappy positions from seed Multiple Sequence Alignments (MSAs). Full MSAs are not trimmed, except for updated families, whose single trimmed MSA serves as both seed and full MSA.",
+                    "description": "Skip trimming gappy positions from seed Multiple Sequence Alignments (MSAs). Full MSAs are never trimmed.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },

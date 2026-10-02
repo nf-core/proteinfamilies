@@ -40,13 +40,11 @@ Removing redundancy:
 
 Updating families:
 
-- [untar](#untar) to decompress tarballs of existing hmms and msas
-- [hmmer](#hmmer-for-updating-families) to match input sequences to existing families with hmmsearch as well as for rebuilding models with newly recruited sequences with hmmbuild
-- [SeqKit](#seqkit-for-updating-families) to extract fasta formatted family sequences from their MSA files
-- [MMseqs2](#mmseqs2-for-updating-families) to strictly cluster the sequences within each of the families to update
-- [FAMSA](#famsa-for-updating-families) aligner option. Re-align full MSA with final set of sequences
-- [mafft](#mafft-for-updating-families) aligner option. Re-align full MSA with final set of sequences
-- [ClipKIT](#clipkit-for-updating-families) to optionally clip gapped portions of the multiple sequence alignment (MSA), recalculating each row's `/start-end` coordinates
+- [untar](#untar) to decompress tarballs of existing HMMs and MSAs
+- [Pool existing members](#pool-existing-members) to pool the members of existing full MSAs with the input sequences
+- [hmmer](#hmmer-for-updating-families) to match the pooled sequences to existing families with hmmsearch
+- [MMseqs2](#mmseqs2-for-updating-families) to strictly cluster the hits of each family to update
+- [Rebuilding updated families](#rebuilding-updated-families) like newly created ones: new seed MSA (FAMSA or mafft, optionally trimmed with ClipKIT), new HMM (hmmbuild), and new full MSA recruited from the same pool (hmmsearch, hmmalign)
 
 Phylogenetic tree inference:
 
@@ -93,10 +91,7 @@ The `seqfu` module is used for statistics generation of input amino acid sequenc
 
 </details>
 
-The `seqkit` module is used for initial preprocessing of the input amino acid sequences
-as well as during the `update_families` mode to extract sequences from family MSA, into intermediate fasta files (`seqkit` output folder).
-The intermediate `update_families/fasta` folder contains the aggregation of existing family sequences along with their newly matching ones,
-that will together produce the updated family MSA.
+The `seqkit` module is used for initial preprocessing of the input amino acid sequences.
 
 [SeqKit](https://github.com/shenwei356/seqkit) is a cross-platform and ultrafast toolkit for FASTA/Q file manipulation.
 
@@ -216,7 +211,7 @@ These MSA files only contain the original sequences of each cluster as calculate
 If the `--skip_seed_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
 gaps (above that threshold, across all aligned sequences) are either removed only at the ends of the MSA if `trim_ends_only` is set to `true`, or throughout the alignment otherwise.
 Each trimmed row that lost residues is then renamed `<sequence>/<start>-<end>` (shifting an existing range) to the residues it still holds; rows that lost none keep their name, and rows left without residues are dropped.
-Results are stored in the `seed_msa/raw` folder. Full MSAs are not trimmed (updated families excepted, see below); when `--skip_additional_sequence_recruiting` is set, the trimmed seed MSA also serves as the full MSA and the family FASTA holds its rows.
+Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; when `--skip_additional_sequence_recruiting` is set, the trimmed seed MSA also serves as the full MSA and the family FASTA holds its rows.
 
 [ClipKIT](https://github.com/JLSteenwyk/ClipKIT) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 
@@ -288,7 +283,7 @@ full MSAs if `--skip_additional_sequence_recruiting` is set to `false`, and/or t
 When `--skip_family_redundancy_removal` is set to `false`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
 The `hmm/library` will contain a compiled and gzipped single HMM library file per sample.
 The HMMs (raw or filtered) can also be used in the `update_families` execution mode of the pipeline,
-along with the families' respective full MSAs, to recruit sequences from a new input fasta file into the families, updating both family HMM and full MSA files.
+optionally along with the families' full MSAs, to recruit sequences from a new input fasta file into the families, rebuilding their seed MSA, HMM and full MSA.
 
 [hmmer](https://github.com/EddyRivasLab/hmmer) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 
@@ -484,12 +479,18 @@ If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (i
 - `untar/`
   - `hmm/`
     - `<samplename>/`
-      - `<family_name>.{hmm.gz,hmm}`: (optional) decompressed input hmm tarball
+      - `<family_id>.{hmm.gz,hmm}`: (optional) decompressed input HMM tarball
   - `msa/`
     - `<samplename>/`
-      - `<family_id>.{aln,fas}`: (optional) decompressed input msa tarball
+      - `<family_id>.*`: (optional) decompressed input MSA tarball
 
 </details>
+
+### Pool existing members
+
+The members of the existing full MSAs (`existing_msas_to_update`, gaps removed) are pooled with the sample's input sequences, so that the existing families keep the old members that still hit.
+A member is skipped if the input holds its sequence (the same name without a `/<start>-<end>` range), or if another MSA already gave a member of that name.
+Pooled members that no family hits again are dropped; only input sequences without hits go on to create new families. The pool is an intermediate file and not published.
 
 ### hmmer for updating families
 
@@ -502,50 +503,19 @@ If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (i
       - `<samplename>.hmm.gz`: (optional) concatenated compressed HMM models for all families in a given sample, to be used as input for hmmsearch, to determine which families will be updated with new sequences
     - `hmmsearch/`
       - `<samplename>/`
-        - `<samplename>.domtbl.gz`: (optional) hmmsearch results of input fasta file against existing families' HMMs
-  - `hmm/`
-    - `<samplename>/`
-      - `<family_id>.hmm.gz`: (optional) compressed family HMM after the update
-      - `<family_id>.hmmbuild.txt`: (optional) hmmbuild execution log
+        - `<samplename>.domtbl.gz`: (optional) hmmsearch results of the pooled sequences against existing families' HMMs
   - `branch_fasta/`
     - `hits/`
-      - `<family_id>.fasta`: (optional) subset of the input FASTA with hit sequences for each existing family
+      - `<family_id>.fasta`: (optional) hit sequences for each existing family, cut to the hit envelope
     - `<samplename>.fasta.gz`: (optional) FASTA file that contains all remaining non-hit input sequences, which will be passed to normal execution mode to create new families
-  - `family_reps/`
-    - `<samplename>/`
-      - `<samplename>_meta_mqc.csv`: CSV file with metadata (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
-      - `<samplename>_reps.faa`: fasta file of all family representative sequences (one sequence per family)
-      - `<samplename>.tsv`: 2-column TSV file with family ids and all sequence member ids
 
 </details>
 
-The `update_families` execution mode is run if paths to `existing_hmms_to_update` and `existing_msas_to_update` are provided in the input samplesheet.csv.
-The `hmmer/hmmsearch` module is used to match new incoming sequences in the existing family models.
-In case of hits, the new sequences are reclustered along their matching family existing ones, and new models are build with `hmmer/hmmbuild`
-in the `update_families/hmmer/hmmbuild` folder, from the respective new MSAs.
+The `update_families` execution mode is run for samples with `existing_hmms_to_update` and `existing_msas_to_update` in the input samplesheet.
+The `hmmer/hmmsearch` module is used to match the pooled sequences against the existing family models.
+Families with hits are rebuilt (see [Rebuilding updated families](#rebuilding-updated-families)); families without hits are not updated.
 
-[hmmer](https://github.com/EddyRivasLab/hmmer) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
-
-### SeqKit for updating families
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `seqkit/`
-  - `<samplename>/`
-    - `<family_id>.fastq`: (optional) fasta formatted family sequences from full MSA with gaps removed
-- `update_families/`
-  - `fasta/`
-    - `<samplename>/`
-      - `<family_id>.faa`: FASTA files of the updated families, holding exactly the rows of their (trimmed) MSAs. Not written when `--skip_seed_msa_trimming` is set
-
-</details>
-
-The `seqkit` module is mainly used during the `update_families` mode
-to extract sequences from family MSA, into intermediate fasta files (`seqkit` output folder).
-The `update_families/fasta` folder contains the sequences of each updated family's trimmed MSA, with gaps removed and the same row names.
-
-[SeqKit](https://github.com/shenwei356/seqkit) is a cross-platform and ultrafast toolkit for FASTA/Q file manipulation.
+[hmmer](https://github.com/EddyRivasLab/hmmer) is a suite of tools for searching sequence databases for homologs with profile hidden Markov models.
 
 ### MMseqs2 for updating families
 
@@ -572,70 +542,49 @@ The `update_families/fasta` folder contains the sequences of each updated family
 
 </details>
 
-Similarly to the in-family sequence redundancy removal mechanism, the mmseqs suite is used to strictly cluster
-existing family sequences along newly recruited ones, keeping a non redundant set.
+If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs suite strictly clusters each family's hits, keeping a non redundant set to build the new seed MSA from.
 
 [MMseqs2](https://github.com/soedinglab/MMseqs2) clusters amino acid fasta files via either the 'cluster' or the 'linclust' algorithms.
 
-### FAMSA for updating families
+### Rebuilding updated families
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `update_families/`
-  - `full_msa/`
-    - `famsa_align/`
-    - `<samplename>/`
-      - `<family_id>.aln`: family full MSA (after updating with new sequences)
-
-</details>
-
-In the `update_families` mode, if new sequences are added in an existing family,
-and after (optionally) removing in-family sequence redundacny, if `--skip_sequence_redundancy_removal` is set to `false`,
-then the family MSA is recalculated.
-If the `--alignment_tool` is `famsa`, then this `famsa_align` folder will be created, containing the updated family MSA files.
-
-[FAMSA](https://github.com/refresh-bio/FAMSA) is a progressive algorithm for large-scale multiple sequence alignments.
-
-### mafft for updating families
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `update_families/`
-  - `full_msa/`
-    - `mafft_align/`
-    - `<samplename>/`
-      - `<family_id>.fas`: family full MSA (after updating with new sequences)
-
-</details>
-
-In the `update_families` mode, if new sequences are added in an existing family,
-and after (optionally) removing in-family sequence redundacny, if `--skip_sequence_redundancy_removal` is set to `false`,
-then the family MSA is recalculated.
-If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be created, containing the updated family MSA files.
-
-[mafft](https://github.com/GSLBiotech/mafft) is a fast but not very sensitive multiple sequence alignment tool.
-
-### ClipKIT for updating families
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `update_families/`
-  - `full_msa/`
-    - `trimmed/`
+  - `seed_msa/`
+    - `raw/`
+      - `famsa_align/` or `mafft_align/`
+        - `<samplename>/`
+          - `<family_id>.{aln,fas}`: new family seed MSA
+      - `trimmed/`
+        - `<samplename>/`
+          - `<family_id>.aln`: gap-clipped new seed MSA (FASTA format), rows that lost residues renamed `<sequence>/<start>-<end>` to the residues they hold. Not written when `--skip_seed_msa_trimming` is set
+  - `hmm/`
+    - `raw/`
+      - `hmmer_hmmbuild/`
+        - `<samplename>/`
+          - `<family_id>.hmm.gz`: compressed new family HMM
+  - `hmmer/`
+    - `hmmsearch/`
       - `<samplename>/`
-        - `<family_id>.aln`: gap-clipped family MSAs (FASTA format), rows that lost residues renamed `<sequence>/<start>-<end>` to the residues they hold
+        - `<family_id>.domtbl.gz`: (optional) recruiting hmmsearch results of the new HMM against the pool. Can be turned on with `--save_hmmsearch_results`
+  - `fasta/`
+    - `hmmsearch_filtered_recruited/`
+      - `<samplename>/`
+        - `<family_id>.fasta.gz`: (optional) recruited sequences of the new full MSA. Can be turned on with `--save_hmmsearch_filtered_fasta`
+  - `full_msa/`
+    - `raw/`
+      - `hmmer_hmmalign/`
+        - `<samplename>/`
+          - `<family_id>.sto.gz`: compressed new family full MSA produced by hmmalign
 
 </details>
 
-If the `--skip_seed_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
-gaps (above that threshold, across all aligned sequences) are either removed only at the ends of the MSA if `trim_ends_only` is set to `true`, or throughout the alignment otherwise.
-Each trimmed row that lost residues is then renamed `<sequence>/<start>-<end>` (shifting an existing range) to the residues it still holds; rows that lost none keep their name, and rows left without residues are dropped.
-The trimmed MSA builds the updated family HMM. Results are stored in the `update_families/full_msa/trimmed` folder.
-
-[ClipKIT](https://github.com/JLSteenwyk/ClipKIT) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
+Each updated family is rebuilt like a newly created one (see [FAMSA](#famsa-aligner), [mafft](#mafft-aligner), [ClipKIT](#clipkit) and [hmmer](#hmmer)), keeping its family name:
+its (non redundant) hits are aligned into a new seed MSA, optionally trimmed, built into a new HMM, and the new HMM recruits the family's full MSA from the same pool of input sequences and existing members.
+With `--skip_additional_sequence_recruiting`, the new seed MSA also serves as the full MSA.
+Hits on sequences already named `<sequence>/<start>-<end>` (e.g. pooled existing members) are named in the parent sequence's coordinates.
 
 ### CMAPLE
 

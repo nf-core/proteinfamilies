@@ -8,7 +8,7 @@
 
 **nf-core/proteinfamilies** is a bioinformatics pipeline that generates protein families from amino acid sequences and/or updates existing families with new sequences.
 It takes a protein fasta file as input, clusters the sequences and then generates protein family Hidden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
-Optionally, paths to existing family HMMs and MSAs can be given (must have matching base filenames one-to-one) in order to update with new sequences in case of matching hits.
+Optionally, existing family HMMs (and their seed and/or full MSAs) can be given in order to update those families with new sequences in case of matching hits.
 
 ## Samplesheet input
 
@@ -33,6 +33,13 @@ CONTROL_REP2,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,existing_msa
 
 Input sequences named `<sequence>/<start>-<end>` (Pfam convention) are treated as slices of `<sequence>`: family members cut from them are named in the parent sequence's coordinates (a hit on residues 3-180 of `seqA/10-200` becomes `seqA/12-189`). Any other name is taken as a full protein.
 
+### Updating existing families
+
+The input sequences, together with the members of the `existing_msas_to_update` full MSAs (gaps removed; a member is skipped if the input holds its sequence, i.e. the same name without a `/<start>-<end>` range), are searched against the existing HMMs.
+Each family's hits are then rebuilt like a newly created family: optionally made non-redundant, aligned and trimmed into a new seed MSA, built into a new HMM, and used to recruit the new full MSA from the same pool (the new seed MSA serves as the full MSA with `--skip_additional_sequence_recruiting`).
+Families without any hits are not updated.
+Members of existing full MSAs that no family hits again are dropped; they never go on to create new families.
+
 ## Parameter specifications
 
 Here we provide guidance regarding some parameter choices.
@@ -47,7 +54,7 @@ Here we provide guidance regarding some parameter choices.
   The `famsa` option is generally recommended as the best time-memory-accuracy combination.
   The `mafft` option offers various alignment strategies, but in general is slower and less sensitive than `famsa`.
 - `trim_ends_only`: Flag to either clip seed MSA gaps throughout the alignment, or only at the ends.
-  Only used if `skip_seed_msa_trimming` is off. Full MSAs are not trimmed, except for updated families, whose single trimmed MSA serves as both seed and full MSA.
+  Only used if `skip_seed_msa_trimming` is off. Full MSAs are never trimmed.
   The pipeline authors strongly recommend keeping `trim_ends_only` on (default): gaps inside the sequences may still carry evolutionary significance, and only end trimming keeps row coordinates correct.
 
 > [!WARNING]
@@ -86,7 +93,7 @@ Because of that, the parameters below are honoured only by the `standard` algori
 | `hmmsearch_write_target`, `hmmsearch_write_domain`, `save_hmmsearch_results` | Searching is in-process, so no hmmsearch report files exist                   |
 
 > [!NOTE]
-> Updating existing families (samplesheet entries with existing HMMs and MSAs) always runs the `standard` update path, whichever algorithm is selected, so `alignment_tool`, `skip_seed_msa_trimming`, `trim_ends_only` and `gap_threshold` apply to updated families with ClipKIT.
+> Updating existing families (samplesheet entries with existing HMMs and MSAs) always runs the `standard` update path, whichever algorithm is selected, so the `standard` parameters above (e.g. `alignment_tool`, `skip_seed_msa_trimming`, `trim_ends_only`, `gap_threshold`, `skip_additional_sequence_recruiting`) apply to updated families.
 
 The parameters both algorithms share are mapped onto their mgnifam equivalents:
 

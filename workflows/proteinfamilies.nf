@@ -81,7 +81,10 @@ workflow PROTEINFAMILIES {
         params.skip_sequence_redundancy_removal,
         params.clustering_tool,
         params.alignment_tool,
-        params.skip_seed_msa_trimming
+        params.skip_seed_msa_trimming,
+        params.hmmsearch_write_target,
+        params.hmmsearch_write_domain,
+        params.skip_additional_sequence_recruiting
     )
 
     ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )

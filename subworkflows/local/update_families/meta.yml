@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "update_families"
-description: Update HMMs and full MSAs of existing families with new sequences through homology search, clustering, alignment, and model building
+description: Update existing families with new sequences (and the members of their existing full MSAs) through homology search, then rebuild each family like a newly created one (new seed MSA, HMM and full MSA)
 keywords:
   - update
   - families
@@ -16,20 +16,19 @@ components:
   - untar
   - find/concatenate
   - gunzip
+  - pool_existing_members
   - hmmer/hmmsearch
   - branch_hits_fasta
-  - seqkit/seq
   - mmseqs_fasta_cluster
   - remove_redundant_seqs
-  - align_sequences
-  - hmmer/hmmbuild
+  - generate_families
   - extract_family_members
   - extract_family_reps
 input:
   - ch_samplesheet_for_update:
       type: file
       description: |
-        CSV file with the following columns; meta, sequences, existing_hmms_to_update, existing_msas_to_update
+        Channel with the following elements; meta, sequences, existing_hmms_to_update, existing_msas_to_update (full MSAs)
   - hmmsearch_query_length_threshold:
       type: number
       description: |
@@ -53,12 +52,36 @@ input:
   - skip_seed_msa_trimming:
       type: boolean
       description: |
-        Skip trimming of the re-aligned family MSAs with ClipKIT
+        Skip trimming of the new seed MSAs with ClipKIT
+  - hmmsearch_write_target:
+      type: boolean
+      description: |
+        Write target sequences in the recruiting hmmsearch output
+  - hmmsearch_write_domain:
+      type: boolean
+      description: |
+        Write domain information in the recruiting hmmsearch output
+  - skip_additional_sequence_recruiting:
+      type: boolean
+      description: |
+        Skip recruiting the full MSA with the new HMM; the new seed MSA is then also the full MSA
 output:
-  - versions:
+  - seed_msa:
       type: file
       description: |
-        Versions file containing the software versions used in the workflow
+        New seed MSA per updated family
+  - full_msa:
+      type: file
+      description: |
+        New full MSA per updated family
+  - fasta:
+      type: file
+      description: |
+        Sequences of each updated family's full MSA
+  - hmm:
+      type: file
+      description: |
+        New HMM per updated family
   - no_hit_seqs:
       type: file
       description: |

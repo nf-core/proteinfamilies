@@ -6,7 +6,7 @@ nextflow_workflow {
     config "./nextflow.config"
 
     test("fasta - update") {
-
+        // Existing (full) MSA members are pooled with the input sequences and searched again
         when {
             workflow {
                 """
@@ -21,6 +21,9 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
                 """
             }
         }
@@ -30,6 +33,10 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
+                    workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
+                    workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
+                    workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
+                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${path(faa).linesGzip.count { line -> line.startsWith('>') }}" }.sort(),
                     file(workflow.out.updated_family_reps[0][1]).name,
                     path(workflow.out.updated_family_reps[0][1]).readLines().size()
                 ).match()}
@@ -38,7 +45,7 @@ nextflow_workflow {
     }
 
     test("fasta.gz - update") {
-
+        // Gzipped input: the pool is written uncompressed for hmmsearch
         when {
             workflow {
                 """
@@ -53,6 +60,9 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
                 """
             }
         }
@@ -62,6 +72,10 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
+                    workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
+                    workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
+                    workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
+                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${path(faa).linesGzip.count { line -> line.startsWith('>') }}" }.sort(),
                     file(workflow.out.updated_family_reps[0][1]).name,
                     path(workflow.out.updated_family_reps[0][1]).readLines().size()
                 ).match()}
