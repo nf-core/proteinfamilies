@@ -8,7 +8,7 @@ process BRANCH_HITS_FASTA {
         'community.wave.seqera.io/library/biopython:1.85--6f761292fa9881b4' }"
 
     input:
-    tuple val(meta) , path(fasta)
+    tuple val(meta) , path(fasta), path(pool, stageAs: "pool/*") // pool: [] to search the fasta alone
     tuple val(meta2), path(domtbl)
     val(length_threshold)
 
@@ -23,9 +23,11 @@ process BRANCH_HITS_FASTA {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def pool_arg = pool ? "--pool ${pool}" : ''
     """
     branch_hits_fasta.py \\
         --fasta ${fasta} \\
+        ${pool_arg} \\
         --domtbl ${domtbl} \\
         --length_threshold ${length_threshold} \\
         --hits hits \\

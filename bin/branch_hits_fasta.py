@@ -6,6 +6,8 @@
 Assigns new sequences to existing families using hmmsearch domain hits. Sequences whose
 domain envelope covers at least --length_threshold of the query HMM are written into
 per-family FASTA files; the remainder are written to a single non-hit output file.
+With --pool, hits are cut from the pool (the input sequences plus existing family members),
+while only input sequences can be non-hits.
 """
 
 import sys
@@ -29,6 +31,14 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         metavar="FILE",
         type=str,
         help="Input fasta file.",
+    )
+    parser.add_argument(
+        "-p",
+        "--pool",
+        required=False,
+        metavar="FILE",
+        type=str,
+        help="Searched sequence pool in fasta format, a superset of --fasta (default: --fasta).",
     )
     parser.add_argument(
         "-d",
@@ -263,27 +273,34 @@ def filter_recruited(
     length_threshold: float,
     hits: str,
     non_hits: str,
+    pool: str | None = None,
 ) -> None:
     """
     Split recruited sequences into per-family hit FASTAs and a non-hit FASTA.
 
     Args:
-        fasta (str): Input FASTA containing all candidate sequences.
+        fasta (str): Input FASTA; its sequences without hits are the non-hits.
         domtbl (str): Path to the hmmsearch domain table.
         length_threshold (float): Minimum envelope coverage ratio relative to query length.
         hits (str): Output directory for per-family hit FASTA files.
         non_hits (str): Output path for the gzipped FASTA of non-hit sequences.
+        pool (str | None): Searched FASTA, a superset of fasta, that hits are cut from.
     """
     filtered_sequences = filter_sequences(domtbl, length_threshold)
-    sequences = parse_fasta(fasta)
-    write_non_hit_sequences(filtered_sequences, sequences, non_hits)
+    sequences = parse_fasta(pool or fasta)
+    candidates = sequences
+    if pool:
+        with open_fasta(fasta) as file:
+            input_ids = {record.id for record in SeqIO.parse(file, "fasta")}
+        candidates = {name: record for name, record in sequences.items() if name in input_ids}
+    write_non_hit_sequences(filtered_sequences, candidates, non_hits)
     write_family_fastas(filtered_sequences, sequences, hits)
 
 
 def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     filter_recruited(
-        args.fasta, args.domtbl, args.length_threshold, args.hits, args.non_hits
+        args.fasta, args.domtbl, args.length_threshold, args.hits, args.non_hits, args.pool
     )
 
 

@@ -85,7 +85,7 @@ workflow UPDATE_FAMILIES {
         .join(ch_samplesheet_for_update)
         .multiMap { meta, domtbl, fasta, _existing_hmms_to_update, _existing_msas_to_update ->
             domtbl: [ meta, domtbl ]
-            fasta: [ meta, fasta ]
+            fasta: [ meta, fasta, [] ]
         }
 
     // Branch hit families/fasta proteins from non hit fasta proteins

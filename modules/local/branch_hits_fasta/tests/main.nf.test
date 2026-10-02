@@ -11,7 +11,8 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                     [ id: 'fasta' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true),
+                    []
                 ])
                 input[1] = channel.of([
                     [ id: 'domtbl' ],
@@ -47,7 +48,7 @@ nextflow_process {
                     'p/101-110 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 3 8 3 8 0.99 -',
                     'q - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 1 10 1 10 0.99 -'
                 ].join('\\n') + '\\n'
-                input[0] = channel.of([ [ id: 'edge' ], fasta ])
+                input[0] = channel.of([ [ id: 'edge' ], fasta, [] ])
                 input[1] = channel.of([ [ id: 'edge' ], domtbl ])
                 input[2] = 0.9
                 """
@@ -63,6 +64,37 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - fasta - pool") {
+        // The pool adds existing members m/5-14 (hit full-length, keeps its name) and n (no hit):
+        // hits are cut from the pool, but only input sequences (r) can be non-hits
+        when {
+            process {
+                """
+                def fasta = file('edge.faa')
+                fasta.text = '>q\\nMNPQRSTVWY\\n>r\\nAAAAAAAAAA\\n'
+                def pool = file('edge_pool.faa')
+                pool.text = fasta.text + '>m/5-14\\nWWWWWWWWWW\\n>n\\nCCCCCCCCCC\\n'
+                def domtbl = file('edge.domtbl')
+                domtbl.text = [
+                    'q - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 1 10 1 10 0.99 -',
+                    'm/5-14 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 1 10 1 10 0.99 -'
+                ].join('\\n') + '\\n'
+                input[0] = channel.of([ [ id: 'edge' ], fasta, pool ])
+                input[1] = channel.of([ [ id: 'edge' ], domtbl ])
+                input[2] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.hits[0][1]).readLines().toSet() == ['>q fam1', 'MNPQRSTVWY', '>m/5-14 fam1', 'WWWWWWWWWW'] as Set },
+                { assert path(process.out.non_hit_fasta[0][1]).linesGzip == ['>r', 'AAAAAAAAAA'] }
+            )
+        }
+    }
+
     test("proteinfamilies - fasta - stub") {
 
         options "-stub"
@@ -72,7 +104,8 @@ nextflow_process {
                 """
                 input[0] = channel.of([
                     [ id: 'fasta' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true),
+                    []
                 ])
                 input[1] = channel.of([
                     [ id: 'domtbl' ],

@@ -25,6 +25,10 @@ input:
         type: file
         description: Input amino acid fasta file.
         pattern: "*.{fasta,faa,fa,fasta.gz,faa.gz,fa.gz}"
+    - pool:
+        type: file
+        description: Optional searched sequence pool, a superset of `fasta` (e.g. with existing family members) that hits are cut from; only `fasta` sequences can be non-hits. `[]` to search `fasta` alone.
+        pattern: "*.{fasta,faa,fa,fasta.gz,faa.gz,fa.gz}"
   - - meta2:
         type: map
         description: |
