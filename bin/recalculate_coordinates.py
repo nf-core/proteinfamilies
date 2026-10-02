@@ -11,8 +11,8 @@ longer holds. The trimmed rows are rebuilt from the untrimmed MSA and the `keep`
 trimming log, which holds for every ClipKIT mode. The leading and trailing `trim` runs of
 the log give the end columns removed; each row's residues in them shift its range:
 `seq` -> `seq/(1+left)-(len-right)` and `seq/s-e` -> `seq/(s+left)-(e-right)`. Interior
-removals (not ends-only trimming) are not reflected in the range. Rows left with no residues
-are dropped.
+removals (not ends-only trimming) are not reflected in the range. Rows that lost no residues
+keep their name unchanged; rows left with no residues are dropped.
 
 Writes the renamed trimmed MSA and its degapped sequences, so both always match.
 Plain string operations only (no Biopython): all per-row work runs in C via str.count and
@@ -128,15 +128,17 @@ def recalculate(untrimmed: str, log: str, out_msa: str, out_fasta: str) -> None:
         if not degapped:  # no residues left
             continue
 
-        base, start, end = split_range(name)
-        if start is None:
-            start, end = 1, residues(seq)
-        start += residues(seq, 0, left_cols)
-        end -= residues(seq, width - right_cols, width)
-
-        new_header = f"{base}/{start}-{end}" + (
-            f" {description}" if description else ""
-        )
+        if len(degapped) == residues(seq):  # no residues lost: keep the name
+            new_header = header
+        else:
+            base, start, end = split_range(name)
+            if start is None:
+                start, end = 1, residues(seq)
+            start += residues(seq, 0, left_cols)
+            end -= residues(seq, width - right_cols, width)
+            new_header = f"{base}/{start}-{end}" + (
+                f" {description}" if description else ""
+            )
         msa_lines.append(f">{new_header}\n{trimmed_seq}")
         fasta_lines.append(f">{new_header}\n{degapped}")
 

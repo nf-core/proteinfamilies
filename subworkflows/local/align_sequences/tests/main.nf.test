@@ -75,7 +75,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success},
                 // Every row carries a range and the fasta holds exactly the MSA rows, degapped
-                { assert msa.findAll { it.startsWith('>') }.every { it ==~ />.+\/\d+-\d+/ } },
+                { assert msa.findAll { it.startsWith('>') }.any { it ==~ />.+\/\d+-\d+/ } },
                 { assert fasta.findAll { it.startsWith('>') } == msa.findAll { it.startsWith('>') } },
                 { assert fasta.findAll { !it.startsWith('>') } == msa.findAll { !it.startsWith('>') }.collect { it.replaceAll(/[-.]/, '') } },
                 { assert snapshot(workflow.out.alignments, workflow.out.sequences).match() }

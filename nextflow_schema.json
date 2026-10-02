@@ -343,7 +343,7 @@
                 },
                 "skip_seed_msa_trimming": {
                     "type": "boolean",
-                    "description": "Skip trimming gappy positions from seed Multiple Sequence Alignments (MSAs). Full MSAs are never trimmed.",
+                    "description": "Skip trimming gappy positions from seed Multiple Sequence Alignments (MSAs). Full MSAs are not trimmed, except for updated families, whose single trimmed MSA serves as both seed and full MSA.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
@@ -351,7 +351,7 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Choose if ClipKIT should only clip gaps at the ends of the MSAs.",
-                    "help_text": "By default, ClipKIT clips gaps over the specified threshold, both at the ends and throughout the length of the MSA. This flag restricts clipping to the ends Keep this on: trimmed rows get their `name/start-end` coordinates recalculated from the residues removed at the alignment ends, so with interior trimming the range no longer matches the residues a row holds.",
+                    "help_text": "By default, ClipKIT clips gaps over the specified threshold, both at the ends and throughout the length of the MSA. This flag restricts clipping to the ends. The pipeline authors strongly recommend keeping this on: trimmed rows get their `name/start-end` coordinates recalculated from the residues removed at the alignment ends, so with interior trimming the range no longer matches the residues a row holds.",
                     "fa_icon": "fas fa-cut"
                 },
                 "gap_threshold": {

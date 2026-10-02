@@ -45,12 +45,13 @@ Here we provide guidance regarding some parameter choices.
   The `famsa` option is generally recommended as the best time-memory-accuracy combination.
   The `mafft` option offers various alignment strategies, but in general is slower and less sensitive than `famsa`.
 - `trim_ends_only`: Flag to either clip seed MSA gaps throughout the alignment, or only at the ends.
-  Only used if `skip_seed_msa_trimming` is off. Full MSAs are never trimmed.
-  The authors suggest keeping the `trim_ends_only` on, since the gaps inside the sequences may still carry evolutionary significance.
+  Only used if `skip_seed_msa_trimming` is off. Full MSAs are not trimmed, except for updated families, whose single trimmed MSA serves as both seed and full MSA.
+  The pipeline authors strongly recommend keeping `trim_ends_only` on (default): gaps inside the sequences may still carry evolutionary significance, and only end trimming keeps row coordinates correct.
 
 > [!WARNING]
-> Trimmed seed MSA rows are renamed `<sequence>/<start>-<end>` to the residues they still hold, recalculated from the residues removed at the alignment ends.
-> With `--trim_ends_only false`, residues removed from interior columns are not reflected, so a row's range spans more residues than the row contains.
+> Trimmed MSA rows that lost residues are renamed `<sequence>/<start>-<end>` to the residues they still hold, recalculated from the residues removed at the alignment ends; rows that lost none keep their name.
+> With `--trim_ends_only false`, residues removed from interior columns are **not** reflected, so a row's range spans more residues than the row contains and no longer maps back to its exact source residues.
+> Only turn it off if you need interior trimming and do not rely on row coordinates downstream.
 
 ## Family generation algorithms
 

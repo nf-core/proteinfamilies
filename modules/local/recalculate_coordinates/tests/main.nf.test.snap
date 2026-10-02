@@ -6,7 +6,7 @@
                     {
                         "id": "mgnifams_test_1"
                     },
-                    "mgnifams_test_1_null.aln:md5,bc6807ee14bd896d19547817d96e7abd"
+                    "mgnifams_test_1_null.aln:md5,9df7ec7df67f9c88a9c61301f10c209a"
                 ]
             ],
             [
@@ -14,7 +14,7 @@
                     {
                         "id": "mgnifams_test_1"
                     },
-                    "mgnifams_test_1_null.faa:md5,bc6807ee14bd896d19547817d96e7abd"
+                    "mgnifams_test_1_null.faa:md5,9df7ec7df67f9c88a9c61301f10c209a"
                 ]
             ],
             {
@@ -27,7 +27,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-01T15:42:03.42058914",
+        "timestamp": "2026-10-02T15:32:35.177546544",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

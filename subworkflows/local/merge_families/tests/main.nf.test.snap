@@ -10,7 +10,7 @@
                         "id": "test",
                         "merged_id": "test_90fams_cef0de0010"
                     },
-                    "test_90fams_cef0de0010.aln:md5,74b2593afd08df0c1b29e2e84c778172"
+                    "test_90fams_cef0de0010.aln:md5,168b375831d0cd119a44544ce234f818"
                 ]
             ],
             [
@@ -32,7 +32,7 @@
                 ]
             ]
         ],
-        "timestamp": "2026-10-01T15:47:09.541961618",
+        "timestamp": "2026-10-02T15:35:49.87689323",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -50,14 +50,14 @@
                         "id": "test",
                         "merged_id": "test_1_2"
                     },
-                    "test_1_2.aln:md5,60792bc64faadc882e196c8df30cded6"
+                    "test_1_2.aln:md5,ae70cef051edf7fa91a2f120e7d3cd3e"
                 ],
                 [
                     {
                         "id": "test",
                         "merged_id": "test_3_5"
                     },
-                    "test_3_5.aln:md5,4beee7ab56c2471eed20ec447283efc0"
+                    "test_3_5.aln:md5,ea0202c15df743a00a68499e2e7d8c2d"
                 ]
             ],
             [
@@ -93,7 +93,7 @@
                 ]
             ]
         ],
-        "timestamp": "2026-10-01T15:48:24.653982726",
+        "timestamp": "2026-10-02T15:36:30.986314911",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -111,14 +111,14 @@
                         "id": "sampleA",
                         "merged_id": "sampleA_1_2"
                     },
-                    "sampleA_1_2.aln:md5,5cd6c23c469197c457b729c85286894c"
+                    "sampleA_1_2.aln:md5,1d1819723f4a267786a75f7b58b8dc40"
                 ],
                 [
                     {
                         "id": "sampleB",
                         "merged_id": "sampleB_1_2"
                     },
-                    "sampleB_1_2.aln:md5,5fbc9ccbf21f1313b91269e0aae9c9b1"
+                    "sampleB_1_2.aln:md5,1b91386cff9061263cf4b7e99eaf2616"
                 ]
             ],
             [
@@ -154,7 +154,7 @@
                 ]
             ]
         ],
-        "timestamp": "2026-10-01T15:47:44.965898716",
+        "timestamp": "2026-10-02T15:36:11.737087819",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -169,7 +169,7 @@
                         "id": "test",
                         "merged_id": "test_1_2"
                     },
-                    "test_1_2.aln:md5,47714f7bd26048494a2bfe1cffac9b6c"
+                    "test_1_2.aln:md5,0bfa39c7da46d80cdb61e7e2f3198c37"
                 ]
             ],
             [
@@ -191,7 +191,7 @@
                 ]
             ]
         ],
-        "timestamp": "2026-10-01T15:46:24.910059909",
+        "timestamp": "2026-10-02T15:35:28.358206804",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

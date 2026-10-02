@@ -66,8 +66,8 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert file(process.out.alignment[0][1]).text == ">a/1-5\nMKVLA\n>b/2-6 desc\nMKVLA\n>c/11-14\nK.VLA\n" },
-                { assert file(process.out.fasta[0][1]).text == ">a/1-5\nMKVLA\n>b/2-6 desc\nMKVLA\n>c/11-14\nKVLA\n" }
+                { assert file(process.out.alignment[0][1]).text == ">a\nMKVLA\n>b/2-6 desc\nMKVLA\n>c/11-14\nK.VLA\n" },
+                { assert file(process.out.fasta[0][1]).text == ">a\nMKVLA\n>b/2-6 desc\nMKVLA\n>c/11-14\nKVLA\n" }
             )
         }
     }

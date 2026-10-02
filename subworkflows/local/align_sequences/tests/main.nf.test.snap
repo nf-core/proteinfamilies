@@ -43,7 +43,7 @@
                         "id": "test_famsa_trimmed",
                         "chunk": 1
                     },
-                    "test_famsa_trimmed_1.aln:md5,3e24babec6564fe1365d2cc7c9de2555"
+                    "test_famsa_trimmed_1.aln:md5,150f40d2d96db303e795779ffb444212"
                 ]
             ],
             [
@@ -52,11 +52,11 @@
                         "id": "test_famsa_trimmed",
                         "chunk": 1
                     },
-                    "test_famsa_trimmed_1.faa:md5,7cdb2d912ad1b88d46a1c576a8613068"
+                    "test_famsa_trimmed_1.faa:md5,d7353f69141434bbb625dfe547974251"
                 ]
             ]
         ],
-        "timestamp": "2026-10-01T15:48:34.349754604",
+        "timestamp": "2026-10-02T15:33:15.298165955",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

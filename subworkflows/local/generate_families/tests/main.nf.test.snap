@@ -8,14 +8,14 @@
                         "id": "test",
                         "chunk": "chunk_1"
                     },
-                    "test_chunk_1.aln:md5,3e24babec6564fe1365d2cc7c9de2555"
+                    "test_chunk_1.aln:md5,150f40d2d96db303e795779ffb444212"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "chunk_2"
                     },
-                    "test_chunk_2.aln:md5,326a191e5ab343f0991c9ea6744af34b"
+                    "test_chunk_2.aln:md5,f76a6aca7e25d6ce98eeca678b0e3ac5"
                 ]
             ],
             [
@@ -51,7 +51,7 @@
                 ]
             ]
         ],
-        "timestamp": "2026-10-01T15:50:56.012656086",
+        "timestamp": "2026-10-02T15:34:32.431363931",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
