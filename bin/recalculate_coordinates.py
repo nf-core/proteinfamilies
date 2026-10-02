@@ -8,8 +8,7 @@ FASTA-format MSA.
 
 Trimming removes alignment columns but keeps row names, so a row would claim residues it no
 longer holds. The trimmed rows are rebuilt from the untrimmed MSA and the `keep` columns of the
-trimming log, which holds for every ClipKIT mode (some, e.g. heterotachy, also reorder rows in
-their own output; here rows keep the untrimmed order). The leading and trailing `trim` runs of
+trimming log, which holds for every ClipKIT mode. The leading and trailing `trim` runs of
 the log give the end columns removed; each row's residues in them shift its range:
 `seq` -> `seq/(1+left)-(len-right)` and `seq/s-e` -> `seq/(s+left)-(e-right)`. Interior
 removals (not ends-only trimming) are not reflected in the range. Rows left with no residues
