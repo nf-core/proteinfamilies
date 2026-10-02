@@ -45,7 +45,8 @@ workflow NFCORE_PROTEINFAMILIES {
         params.outdir,
     )
     emit:
-    family_reps    = PROTEINFAMILIES.out.family_reps
+    family_reps       = PROTEINFAMILIES.out.family_reps
+    zero_hit_families = PROTEINFAMILIES.out.zero_hit_families
     multiqc_report = PROTEINFAMILIES.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
@@ -101,9 +102,15 @@ workflow {
     publish:
     proteinfold_samplesheet      = protein_reps_samplesheet
     proteinannotator_samplesheet = protein_reps_samplesheet
+    zero_hit_families            = NFCORE_PROTEINFAMILIES.out.zero_hit_families
 }
 
 output {
+    zero_hit_families {
+        path 'update_families/zero_hit_families'
+        mode params.publish_dir_mode
+    }
+
     proteinfold_samplesheet {
         path { sample -> "proteinfold/${sample.id}/" }
         mode params.publish_dir_mode

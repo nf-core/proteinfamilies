@@ -88,6 +88,12 @@ workflow PROTEINFAMILIES {
     )
 
     ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
+    // Existing families without any hit, kept unchanged, listed per sample (published in main.nf)
+    ch_zero_hit_families = UPDATE_FAMILIES.out.zero_hit_families
+        .collectFile { meta, families ->
+            [ "${meta.id}_zero_hits_existing_families.txt", families.collect { family -> "${family}\n" }.join() ]
+        }
+
     // Sequences not assigned to any existing family during update feed the de-novo creation path.
     ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
 
@@ -229,7 +235,8 @@ workflow PROTEINFAMILIES {
     )
 
     emit:
-    family_reps    = EXTRACT_FAMILY_REPS.out.fasta
+    family_reps       = EXTRACT_FAMILY_REPS.out.fasta
+    zero_hit_families = ch_zero_hit_families
     multiqc_report = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
 }
 

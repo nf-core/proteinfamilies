@@ -100,6 +100,15 @@ workflow UPDATE_FAMILIES {
     // Branch hit families from input sequences without hits
     BRANCH_HITS_FASTA ( ch_input_for_branch_hits.fasta, ch_input_for_branch_hits.domtbl, hmmsearch_query_length_threshold )
 
+    // Families without any hit are kept unchanged: their existing HMM passes through, and they
+    // are listed per sample. A sample without any hit emits no hits at all.
+    ch_zero_hit_hmms = UNTAR_HMM.out.untar
+        .join(BRANCH_HITS_FASTA.out.hits, remainder: true)
+        .map { meta, folder, hits ->
+            def hit_families = [hits].flatten().findAll().collect { hit -> fileStem(hit) }
+            [ meta, folder.listFiles().toList().findAll { hmm -> !(fileStem(hmm) in hit_families) } ]
+        }
+
     // [id, family] meta, as for created families' chunks
     ch_fasta = BRANCH_HITS_FASTA.out.hits
         .transpose()
@@ -143,6 +152,8 @@ workflow UPDATE_FAMILIES {
     full_msa            = GENERATE_FAMILIES.out.full_msa
     fasta               = GENERATE_FAMILIES.out.fasta
     hmm                 = GENERATE_FAMILIES.out.hmm
+        .mix( ch_zero_hit_hmms.transpose().map { meta, hmm -> [[id: meta.id, family: fileStem(hmm)], hmm] } )
+    zero_hit_families   = ch_zero_hit_hmms.map { meta, hmms -> [meta, hmms.collect { hmm -> fileStem(hmm) }.sort()] }
     no_hit_seqs         = BRANCH_HITS_FASTA.out.non_hit_fasta
     updated_family_reps = ch_updated_family_reps
 }

@@ -10,6 +10,16 @@
                 ]
             ],
             [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    [
+                        
+                    ]
+                ]
+            ],
+            [
                 "existing_fam_1.hmm.gz",
                 "existing_fam_2.hmm.gz",
                 "existing_fam_3.hmm.gz",
@@ -40,7 +50,7 @@
             "test_update_meta_mqc.csv",
             11
         ],
-        "timestamp": "2026-10-02T17:07:13.931852462",
+        "timestamp": "2026-10-02T17:33:22.382000302",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -57,10 +67,21 @@
                 ]
             ],
             [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    [
+                        "existing_fam_zero_hits"
+                    ]
+                ]
+            ],
+            [
                 "existing_fam_1.hmm.gz",
                 "existing_fam_2.hmm.gz",
                 "existing_fam_3.hmm.gz",
-                "existing_fam_4.hmm.gz"
+                "existing_fam_4.hmm.gz",
+                "existing_fam_zero_hits.hmm.gz"
             ],
             [
                 "existing_fam_1.aln",
@@ -83,7 +104,7 @@
             "test_update_meta_mqc.csv",
             10
         ],
-        "timestamp": "2026-10-02T17:07:51.91032032",
+        "timestamp": "2026-10-02T17:33:58.921428049",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

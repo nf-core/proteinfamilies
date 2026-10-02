@@ -82,7 +82,11 @@ output:
   - hmm:
       type: file
       description: |
-        New HMM per updated family
+        New HMM per updated family, and the unchanged existing HMM of each family without hits
+  - zero_hit_families:
+      type: list
+      description: |
+        Names of the existing families without any hit, per sample
   - no_hit_seqs:
       type: file
       description: |

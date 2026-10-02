@@ -34,6 +34,7 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
+                    workflow.out.zero_hit_families,
                     workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
                     workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
                     workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
@@ -74,6 +75,7 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
+                    workflow.out.zero_hit_families,
                     workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
                     workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
                     workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
@@ -81,6 +83,44 @@ nextflow_workflow {
                     file(workflow.out.updated_family_reps[0][1]).name,
                     path(workflow.out.updated_family_reps[0][1]).readLines().size()
                 ).match()}
+            )
+        }
+    }
+
+    test("fasta - no hits") {
+        // No family is hit: every existing family is kept unchanged and listed as zero-hit,
+        // and all input sequences flow back to family creation
+        when {
+            workflow {
+                """
+                def fasta = file('no_hits.faa')
+                fasta.text = '>junk_1\\nWWWWWWWWWWWWWWWWWWWW\\n>junk_2\\nCCCCCCCCCCCCCCCCCCCC\\n'
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    fasta,
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_hmms.tar.gz', checkIfExists: true),
+                    [],
+                    []
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert path(workflow.out.no_hit_seqs[0][1]).linesGzip.count { line -> line.startsWith('>') } == 2 },
+                { assert workflow.out.zero_hit_families == [[[id: 'test_update'], ['existing_fam_1', 'existing_fam_2', 'existing_fam_3', 'existing_fam_4', 'existing_fam_zero_hits']]] },
+                { assert workflow.out.hmm.size() == 5 },
+                { assert workflow.out.seed_msa.size() == 0 && workflow.out.full_msa.size() == 0 }
             )
         }
     }

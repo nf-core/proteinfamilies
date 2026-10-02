@@ -508,12 +508,14 @@ Pooled members that no family hits again are dropped; only input sequences witho
     - `hits/`
       - `<family_id>.fasta`: (optional) hit sequences for each existing family, cut to the hit envelope
     - `<samplename>.fasta.gz`: (optional) FASTA file that contains all remaining non-hit input sequences, which will be passed to normal execution mode to create new families
+  - `zero_hit_families/`
+    - `<samplename>_zero_hits_existing_families.txt`: existing families without any hit, one per line (empty if every family was hit)
 
 </details>
 
 The `update_families` execution mode is run for samples with `existing_hmms` in the input samplesheet.
 The `hmmer/hmmsearch` module is used to match the pooled sequences against the existing family models.
-Families with hits are rebuilt (see [Rebuilding updated families](#rebuilding-updated-families)); families without hits are not updated.
+Families with hits are rebuilt (see [Rebuilding updated families](#rebuilding-updated-families)); families without hits are kept unchanged, with their existing HMM in the sample's HMM library, and listed in `zero_hit_families/`.
 
 [hmmer](https://github.com/EddyRivasLab/hmmer) is a suite of tools for searching sequence databases for homologs with profile hidden Markov models.
 

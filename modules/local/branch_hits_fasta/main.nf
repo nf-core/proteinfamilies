@@ -13,7 +13,7 @@ process BRANCH_HITS_FASTA {
     val(length_threshold)
 
     output:
-    tuple val(meta), path("hits/*")    , emit: hits
+    tuple val(meta), path("hits/*")    , emit: hits, optional: true // none when no family is hit
     tuple val(meta), path("*.fasta.gz"), emit: non_hit_fasta
     tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
     tuple val("${task.process}"), val('biopython'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('biopython'))\""), emit: versions_biopython, topic: versions
