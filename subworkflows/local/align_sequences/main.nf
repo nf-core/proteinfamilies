@@ -36,7 +36,8 @@ workflow ALIGN_SEQUENCES {
         // ClipKIT writes FASTA (the input format); its 'clipkit' extension never clashes with the aligners' .aln/.fas
         CLIPKIT( ch_alignments, 'clipkit', [] )
 
-        RECALCULATE_COORDINATES( ch_alignments.join(CLIPKIT.out.clipkit).join(CLIPKIT.out.log) )
+        // The trimmed rows are rebuilt from the untrimmed MSA and the log's keep columns, so CLIPKIT.out.clipkit is unused
+        RECALCULATE_COORDINATES( ch_alignments.join(CLIPKIT.out.log) )
         ch_alignments = RECALCULATE_COORDINATES.out.alignment
         ch_sequences  = RECALCULATE_COORDINATES.out.fasta
     }

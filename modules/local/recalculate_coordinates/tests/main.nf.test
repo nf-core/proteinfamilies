@@ -30,7 +30,6 @@ nextflow_process {
                     [ id: 'mgnifams_test_1' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true)
                 ])
-                .join(CLIPKIT.out.clipkit)
                 .join(CLIPKIT.out.log)
                 """
             }
@@ -56,12 +55,10 @@ nextflow_process {
                 """
                 def untrimmed = file('edge.aln')
                 untrimmed.text = '>a\\n--MKVLA-\\n>b desc\\n-AMKVLAQ\\n>c/10-14\\n.MK.VLA-\\n>d\\nWW------\\n'
-                def trimmed = file('edge.clipkit')
-                trimmed.text = '>a\\nMKVLA\\n>b desc\\nMKVLA\\n>c/10-14\\nK.VLA\\n>d\\n-----\\n'
                 def log = file('edge.clipkit.log')
                 log.text = (1..8).collect { "\${it} \${it in [1, 2, 8] ? 'trim' : 'keep'} other 0.5" }.join('\\n') + '\\n'
 
-                input[0] = channel.of([ [ id: 'edge' ], untrimmed, trimmed, log ])
+                input[0] = channel.of([ [ id: 'edge' ], untrimmed, log ])
                 """
             }
         }
@@ -86,7 +83,6 @@ nextflow_process {
                     [ id: 'mgnifams_test_1' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true)
                 ])
-                .join(CLIPKIT.out.clipkit)
                 .join(CLIPKIT.out.log)
                 """
             }

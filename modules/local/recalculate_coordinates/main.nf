@@ -8,8 +8,8 @@ process RECALCULATE_COORDINATES {
         'community.wave.seqera.io/library/python:3.13.1--d00663700fcc8bcf' }"
 
     input:
-    // Inputs staged in subfolders, so they never clash with the outputs (e.g. FAMSA's ${prefix}.aln)
-    tuple val(meta), path(untrimmed, stageAs: "untrimmed/*"), path(trimmed, stageAs: "trimmed/*"), path(trim_log, stageAs: "trimmed/*")
+    // Untrimmed MSA staged in a subfolder, so it never clashes with the outputs (e.g. FAMSA's ${prefix}.aln)
+    tuple val(meta), path(untrimmed, stageAs: "untrimmed/*"), path(trim_log)
 
     output:
     tuple val(meta), path("${prefix}.aln"), emit: alignment
@@ -24,7 +24,6 @@ process RECALCULATE_COORDINATES {
     """
     recalculate_coordinates.py \\
         --untrimmed ${untrimmed} \\
-        --trimmed ${trimmed} \\
         --log ${trim_log} \\
         --out_msa ${prefix}.aln \\
         --out_fasta ${prefix}.faa

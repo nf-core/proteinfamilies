@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "recalculate_coordinates"
-description: Recalculate the `name/start-end` coordinates of trimmed MSA rows from the trimmed end columns, and write the matching degapped sequences.
+description: Trim an MSA by the `keep` columns of its trimming log, recalculate the rows' `name/start-end` coordinates from the trimmed end columns, and write the matching degapped sequences.
 keywords:
   - msa
   - trimming
@@ -25,10 +25,6 @@ input:
         type: file
         description: Untrimmed MSA in FASTA format
         pattern: "*.{aln,fas,fa,fasta}"
-    - trimmed:
-        type: file
-        description: Trimmed MSA in FASTA format, rows in the same order as the untrimmed MSA
-        pattern: "*"
     - trim_log:
         type: file
         description: Trimming log with one `<position> <keep|trim> ...` line per untrimmed column (ClipKIT `--log`)

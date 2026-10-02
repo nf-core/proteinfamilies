@@ -7,17 +7,22 @@ Recalculates the `name/start-end` row coordinates (Pfam naming convention) of a 
 FASTA-format MSA.
 
 Trimming removes alignment columns but keeps row names, so a row would claim residues it no
-longer holds. The leading and trailing `trim` runs of the trimming log give the end columns
-removed; each row's residues in them shift its range: `seq` -> `seq/(1+left)-(len-right)` and
-`seq/s-e` -> `seq/(s+left)-(e-right)`. Interior removals (not ends-only trimming) are not
-reflected in the range. Rows left with no residues are dropped.
+longer holds. The trimmed rows are rebuilt from the untrimmed MSA and the `keep` columns of the
+trimming log, which holds for every ClipKIT mode (some, e.g. heterotachy, also reorder rows in
+their own output; here rows keep the untrimmed order). The leading and trailing `trim` runs of
+the log give the end columns removed; each row's residues in them shift its range:
+`seq` -> `seq/(1+left)-(len-right)` and `seq/s-e` -> `seq/(s+left)-(e-right)`. Interior
+removals (not ends-only trimming) are not reflected in the range. Rows left with no residues
+are dropped.
 
 Writes the renamed trimmed MSA and its degapped sequences, so both always match.
-Plain string operations only (no Biopython): all per-row counting runs in C via str.count.
+Plain string operations only (no Biopython): all per-row work runs in C via str.count and
+itertools.compress.
 """
 
 import sys
 import argparse
+from itertools import compress
 from typing import Sequence
 
 
@@ -30,14 +35,6 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         metavar="FILE",
         type=str,
         help="Untrimmed MSA in FASTA format.",
-    )
-    parser.add_argument(
-        "-t",
-        "--trimmed",
-        required=True,
-        metavar="FILE",
-        type=str,
-        help="Trimmed MSA in FASTA format, rows in the same order as the untrimmed MSA.",
     )
     parser.add_argument(
         "-l",
@@ -82,21 +79,22 @@ def read_fasta(path: str) -> list[tuple[str, str]]:
     return records
 
 
-def end_trim_runs(log: str) -> tuple[int, int, int]:
+def read_kept(log: str) -> list[bool]:
+    """Per untrimmed column: True if the trimming log kept it."""
+    with open(log, "r") as f:
+        return [line.split(maxsplit=2)[1] == "keep" for line in f if line.strip()]
+
+
+def end_trim_runs(kept: list[bool]) -> tuple[int, int]:
     """
     Count the trimmed columns at each end of the untrimmed alignment.
 
     Returns:
-        (left, right, width): leading and trailing `trim` run lengths, total columns.
+        (left, right): leading and trailing `trim` run lengths.
     """
-    with open(log, "r") as f:
-        kept = [line.split(maxsplit=2)[1] == "keep" for line in f if line.strip()]
-    width = len(kept)
     if True not in kept:  # everything trimmed
-        return width, 0, width
-    left = kept.index(True)
-    right = kept[::-1].index(True)
-    return left, right, width
+        return len(kept), 0
+    return kept.index(True), kept[::-1].index(True)
 
 
 def residues(seq: str, start: int = 0, end: int | None = None) -> int:
@@ -115,25 +113,18 @@ def split_range(name: str) -> tuple[str, int | None, int | None]:
     return name, None, None
 
 
-def recalculate(
-    untrimmed: str, trimmed: str, log: str, out_msa: str, out_fasta: str
-) -> None:
-    left_cols, right_cols, width = end_trim_runs(log)
-    before = read_fasta(untrimmed)
-    after = read_fasta(trimmed)
-    if len(before) != len(after):
-        sys.exit(f"Row count differs: {len(before)} untrimmed vs {len(after)} trimmed.")
+def recalculate(untrimmed: str, log: str, out_msa: str, out_fasta: str) -> None:
+    kept = read_kept(log)
+    width = len(kept)
+    left_cols, right_cols = end_trim_runs(kept)
 
     msa_lines, fasta_lines = [], []
-    for (header, seq), (trimmed_header, trimmed_seq) in zip(before, after):
+    for header, seq in read_fasta(untrimmed):
         name, _, description = header.partition(" ")
-        if trimmed_header.partition(" ")[0] != name:
-            sys.exit(
-                f"Row order differs: '{name}' untrimmed vs '{trimmed_header}' trimmed."
-            )
         if len(seq) != width:
             sys.exit(f"Row '{name}' has {len(seq)} columns, the log has {width}.")
 
+        trimmed_seq = "".join(compress(seq, kept))
         degapped = trimmed_seq.replace("-", "").replace(".", "")
         if not degapped:  # no residues left
             continue
@@ -158,7 +149,7 @@ def recalculate(
 
 def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
-    recalculate(args.untrimmed, args.trimmed, args.log, args.out_msa, args.out_fasta)
+    recalculate(args.untrimmed, args.log, args.out_msa, args.out_fasta)
 
 
 if __name__ == "__main__":
