@@ -15,6 +15,7 @@ keywords:
 components:
   - untar
   - find/concatenate
+  - gunzip
   - hmmer/hmmsearch
   - branch_hits_fasta
   - seqkit/seq

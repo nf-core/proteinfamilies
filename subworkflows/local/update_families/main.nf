@@ -11,6 +11,7 @@ include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/m
 include { UNTAR as UNTAR_MSA            } from '../../../modules/nf-core/untar/main'
 include { validateMatchingFolders       } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { FIND_CONCATENATE as CAT_HMM   } from '../../../modules/nf-core/find/concatenate/main'
+include { GUNZIP                        } from '../../../modules/nf-core/gunzip/main'
 include { HMMER_HMMSEARCH               } from '../../../modules/nf-core/hmmer/hmmsearch/main'
 include { BRANCH_HITS_FASTA             } from '../../../modules/local/branch_hits_fasta'
 include { fileStem                      } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
@@ -60,10 +61,23 @@ workflow UPDATE_FAMILIES {
     // Squeeze the HMMs into a single file
     CAT_HMM( UNTAR_HMM.out.untar.map { meta, folder -> [meta, file("${folder.toUriString()}/*", checkIfExists: true)] } )
 
+    // HMMER rewinds the target database for every query HMM; a gzip stream cannot rewind, so
+    // only the first HMM of the library would be searched against a gzipped FASTA.
+    ch_branched_sequences = ch_samplesheet_for_update
+        .map { meta, fasta, _existing_hmms_to_update, _existing_msas_to_update -> [meta, fasta] }
+        .branch { _meta, fasta ->
+            compressed  : fasta.name.endsWith('.gz')
+            uncompressed: true
+        }
+
+    GUNZIP( ch_branched_sequences.compressed )
+
+    ch_sequences = ch_branched_sequences.uncompressed.mix( GUNZIP.out.gunzip )
+
     // Prep the sequences to search against the HMM concatenated model of families
     ch_input_for_hmmsearch = CAT_HMM.out.file_out
-        .combine(ch_samplesheet_for_update, by: 0)
-        .map { meta, concatenated_hmm, fasta, _existing_hmms_to_update, _existing_msas_to_update -> [meta, concatenated_hmm, fasta, false, false, true] }
+        .join(ch_sequences)
+        .map { meta, concatenated_hmm, fasta -> [meta, concatenated_hmm, fasta, false, false, true] }
 
     HMMER_HMMSEARCH( ch_input_for_hmmsearch )
 
