@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198)
+  - Updated families no longer change between identical runs: `BRANCH_HITS_FASTA` wrote each family's hits in Python set order, which varies per run, so seed alignments, HMMs and full MSAs could differ. Hits are now written sorted. (by @vagkaratzas)
   - Fixed samplesheet rows with existing HMMs but no MSAs (or the reverse) being silently dropped: they matched neither the create nor the update path. (by @vagkaratzas)
   - Input sequences already named `<sequence>/<start>-<end>` give family members named in the parent sequence's coordinates (`seqA/10-200` hit on 3-180 → `seqA/12-189`) instead of nested ranges (`seqA/10-200/3-180`). During updates, such a sequence was also written to the unassigned sequences despite its hit. (by @vagkaratzas)
   - Fixed updates silently searching only the first existing family when the sample FASTA is gzipped: HMMER cannot rewind a gzip stream between query HMMs, so the FASTA is now decompressed before `hmmsearch`. (by @vagkaratzas)

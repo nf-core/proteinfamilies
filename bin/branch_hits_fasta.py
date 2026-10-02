@@ -232,7 +232,7 @@ def write_family_fastas(
     for family, hits in results.items():
         family_records = []
 
-        for hit in hits:
+        for hit in sorted(hits):  # sets iterate in a per-run order
             try:
                 sequence_name, env_from, env_to = validate_and_parse_hit_name(hit)
 
