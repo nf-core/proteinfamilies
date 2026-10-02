@@ -73,14 +73,14 @@ First, prepare a samplesheet with your input data that looks as follows:
 `samplesheet.csv`:
 
 ```csv
-sample,fasta,existing_hmms_to_update,existing_msas_to_update
-CONTROL_REP1,input/mgnifams_input_small.faa,,
+id,fasta,existing_hmms,existing_seed_msas,existing_full_msas
+CONTROL_REP1,input/mgnifams_input_small.faa,,,
 ```
 
 Each row contains a fasta file with amino acid sequences (can be zipped or unzipped).
-Optionally, a row may contain tarball archives (tar.gz) of existing families' HMM and MSA folders, in order to be updated.
-In this case, the HMM and MSA files must be matching in numbers and in base filenames (not the extension).
-Hit families/sequences will be updated, while no hit sequences will create new families.
+Optionally, a row may contain tarball archives (tar.gz) of existing families' HMMs, and optionally their seed and/or full MSAs, in order to be updated.
+Each HMM's `NAME` must match its file name, and seed MSA files must match the HMM files one-to-one by base filename (not the extension).
+Hit families will be updated, while no hit sequences will create new families.
 
 Now, you can run the pipeline using:
 

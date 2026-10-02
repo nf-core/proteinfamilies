@@ -28,7 +28,8 @@ input:
   - ch_samplesheet_for_update:
       type: file
       description: |
-        Channel with the following elements; meta, sequences, existing_hmms_to_update, existing_msas_to_update (full MSAs)
+        Channel with the following elements; meta, sequences, existing_hmms, existing_seed_msas, existing_full_msas.
+        The MSA archives are optional ([]); seed MSAs are only validated against the HMMs.
   - hmmsearch_query_length_threshold:
       type: number
       description: |

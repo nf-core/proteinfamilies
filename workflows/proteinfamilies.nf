@@ -26,7 +26,7 @@ include { EXTRACT_FAMILY_REPS                              } from '../modules/lo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Two-path pipeline: samples providing existing HMMs+MSAs go through UPDATE_FAMILIES to recruit
+// Two-path pipeline: samples providing existing HMMs go through UPDATE_FAMILIES to recruit
 // new sequences into those families; all other samples take the de-novo path
 // (cluster → align → HMM build). Sequences not assigned to any existing family during the
 // update path are forwarded to the de-novo path so nothing is discarded.
@@ -46,7 +46,7 @@ workflow PROTEINFAMILIES {
     ch_family_reps            = channel.empty()
 
     ch_input_for_qc = ch_samplesheet
-        .map { meta, fasta, _existing_hmms_to_update, _existing_msas_to_update ->
+        .map { meta, fasta, _existing_hmms, _existing_seed_msas, _existing_full_msas ->
             [ meta, fasta ]
         }
 
@@ -56,21 +56,21 @@ workflow PROTEINFAMILIES {
     ch_samplesheet_updated = ch_samplesheet
         .combine(FAA_SEQFU_SEQKIT.out.fasta, by: 0)
         .map {
-            meta, _fasta, existing_hmms, existing_msas, updated_fasta ->
-            [ meta, updated_fasta, existing_hmms, existing_msas ]
+            meta, _fasta, existing_hmms, existing_seed_msas, existing_full_msas, updated_fasta ->
+            [ meta, updated_fasta, existing_hmms, existing_seed_msas, existing_full_msas ]
         }
 
+    // Existing HMMs route a sample to the update path (MSAs without HMMs fail schema validation).
     // ?.size() is Groovy's null-safe operator: absent samplesheet columns yield null (falsy).
-    // Both HMMs and MSAs must be present (non-null, non-zero file size) to route to to_update.
     ch_branch_result = ch_samplesheet_updated
-        .branch { _meta, _updated_fasta, existing_hmms_to_update, existing_msas_to_update ->
-            to_create: !existing_hmms_to_update?.size() && !existing_msas_to_update?.size()
-            to_update: existing_hmms_to_update?.size() && existing_msas_to_update?.size()
+        .branch { _meta, _updated_fasta, existing_hmms, _existing_seed_msas, _existing_full_msas ->
+            to_update: existing_hmms?.size()
+            to_create: true
         }
 
     // Entries with existing models go to UPDATE_FAMILIES; entries with sequences only go to de-novo creation.
     ch_samplesheet_for_create = ch_branch_result.to_create
-        .map { meta, updated_fasta, _existing_hmms, _existing_msas ->
+        .map { meta, updated_fasta, _existing_hmms, _existing_seed_msas, _existing_full_msas ->
             [meta, updated_fasta]
         }
     ch_samplesheet_for_update = ch_branch_result.to_update

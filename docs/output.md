@@ -482,13 +482,13 @@ If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (i
       - `<family_id>.{hmm.gz,hmm}`: (optional) decompressed input HMM tarball
   - `msa/`
     - `<samplename>/`
-      - `<family_id>.*`: (optional) decompressed input MSA tarball
+      - `<family_id>.*`: (optional) decompressed input seed or full MSA tarball
 
 </details>
 
 ### Pool existing members
 
-The members of the existing full MSAs (`existing_msas_to_update`, gaps removed) are pooled with the sample's input sequences, so that the existing families keep the old members that still hit.
+When `existing_full_msas` are given, their members (gaps removed) are pooled with the sample's input sequences, so that the existing families keep the old members that still hit.
 A member is skipped if the input holds its sequence (the same name without a `/<start>-<end>` range), or if another MSA already gave a member of that name.
 Pooled members that no family hits again are dropped; only input sequences without hits go on to create new families. The pool is an intermediate file and not published.
 
@@ -511,7 +511,7 @@ Pooled members that no family hits again are dropped; only input sequences witho
 
 </details>
 
-The `update_families` execution mode is run for samples with `existing_hmms_to_update` and `existing_msas_to_update` in the input samplesheet.
+The `update_families` execution mode is run for samples with `existing_hmms` in the input samplesheet.
 The `hmmer/hmmsearch` module is used to match the pooled sequences against the existing family models.
 Families with hits are rebuilt (see [Rebuilding updated families](#rebuilding-updated-families)); families without hits are not updated.
 

@@ -5,16 +5,17 @@ nextflow_workflow {
     workflow "UPDATE_FAMILIES"
     config "./nextflow.config"
 
-    test("fasta - update") {
-        // Existing (full) MSA members are pooled with the input sequences and searched again
+    test("fasta - hmm + seed + full") {
+        // Existing full MSA members are pooled with the input sequences and searched again
         when {
             workflow {
                 """
                 input[0] = channel.of([
                     [ id: 'test_update' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
-                    file(params.pipelines_testdata_base_path + 'test_data/existing_hmms.tar.gz', checkIfExists: true),
-                    file(params.pipelines_testdata_base_path + 'test_data/existing_msas.tar.gz', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_hmms.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_seed_msas.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_full_msas.tar.gz', checkIfExists: true)
                 ])
                 input[1] = 0.9        // hmmsearch_query_length_threshold
                 input[2] = false      // skip_sequence_redundancy_removal
@@ -44,16 +45,17 @@ nextflow_workflow {
         }
     }
 
-    test("fasta.gz - update") {
-        // Gzipped input: the pool is written uncompressed for hmmsearch
+    test("fasta.gz - hmm only") {
+        // Gzipped input, no existing MSAs: the input alone is decompressed and searched
         when {
             workflow {
                 """
                 input[0] = channel.of([
                     [ id: 'test_update' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa.gz', checkIfExists: true),
-                    file(params.pipelines_testdata_base_path + 'test_data/existing_hmms.tar.gz', checkIfExists: true),
-                    file(params.pipelines_testdata_base_path + 'test_data/existing_msas.tar.gz', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_hmms.tar.gz', checkIfExists: true),
+                    [],
+                    []
                 ])
                 input[1] = 0.9        // hmmsearch_query_length_threshold
                 input[2] = false      // skip_sequence_redundancy_removal
@@ -97,7 +99,8 @@ nextflow_workflow {
                     [ id: 'test_update' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
                     archive,
-                    file(params.pipelines_testdata_base_path + 'test_data/existing_msas.tar.gz', checkIfExists: true)
+                    [],
+                    []
                 ])
                 input[1] = 0.9        // hmmsearch_query_length_threshold
                 input[2] = false      // skip_sequence_redundancy_removal

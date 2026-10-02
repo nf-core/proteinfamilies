@@ -7,15 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - **Breaking:** update rework (standard engine).
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - **Breaking:** samplesheet v3 and update rework (standard engine).
+  - Samplesheet columns are now `id,fasta,existing_hmms,existing_seed_msas,existing_full_msas` (was `sample,fasta,existing_hmms_to_update,existing_msas_to_update`). Existing HMMs alone route a sample to the update path; both MSA archives are optional, and MSAs without HMMs fail validation. (by @vagkaratzas)
+  - Existing HMMs must be `NAME`d after their file name, and seed MSAs must match the HMM files one-to-one; the pipeline stops otherwise. (by @vagkaratzas)
   - Updated families are rebuilt like created ones (`GENERATE_FAMILIES`): their hits give a new (trimmed) seed MSA and HMM, which recruits the new full MSA (hmmalign, Stockholm) from the input sequences pooled with the members of the existing full MSAs (aligned FASTA or Stockholm). `--skip_additional_sequence_recruiting` and the hmmsearch/recruiting `save_*` params now also apply to updated families. Existing full-MSA members are searched again rather than re-aligned blindly, and never create new families. (by @vagkaratzas)
-  - Existing HMMs must be `NAME`d after their file name; the pipeline stops otherwise, instead of silently detaching a family's hits from its MSAs. (by @vagkaratzas)
   - Updated family outputs moved to `update_families/{seed_msa,hmm,full_msa}/raw/<tool>/<id>/` (as created families); `update_families/fasta/<id>/` removed. (by @vagkaratzas)
 - [#197](https://github.com/nf-core/proteinfamilies/pull/197) - **Breaking:** seed MSAs are trimmed inside `ALIGN_SEQUENCES`, full MSAs never (except updated families, whose single MSA is both); `--skip_msa_trimming` renamed to `--skip_seed_msa_trimming`, `--clipkit_out_format` and `--save_update_families_{pre_clipped,clipped}_fasta` removed, `clipkit/` output folders renamed to `trimmed/` (`.aln`). Family FASTA files now always match their full MSA. Added a `test_mgnifam` pipeline nf-test. (by @vagkaratzas)
 
 ### `Fixed`
 
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198)
+  - Fixed samplesheet rows with existing HMMs but no MSAs (or the reverse) being silently dropped: they matched neither the create nor the update path. (by @vagkaratzas)
   - Input sequences already named `<sequence>/<start>-<end>` give family members named in the parent sequence's coordinates (`seqA/10-200` hit on 3-180 → `seqA/12-189`) instead of nested ranges (`seqA/10-200/3-180`). During updates, such a sequence was also written to the unassigned sequences despite its hit. (by @vagkaratzas)
   - Fixed updates silently searching only the first existing family when the sample FASTA is gzipped: HMMER cannot rewind a gzip stream between query HMMs, so the FASTA is now decompressed before `hmmsearch`. (by @vagkaratzas)
 - [#197](https://github.com/nf-core/proteinfamilies/pull/197) - Trimmed MSA rows that lost residues are renamed `<sequence>/<start>-<end>` to the residues they still hold; untouched rows keep their name ([#119](https://github.com/nf-core/proteinfamilies/issues/119)). (by @vagkaratzas)

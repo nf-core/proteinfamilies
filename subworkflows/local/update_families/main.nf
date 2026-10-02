@@ -10,8 +10,10 @@
 */
 
 include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/main'
+include { UNTAR as UNTAR_SEED_MSA       } from '../../../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_FULL_MSA       } from '../../../modules/nf-core/untar/main'
 include { validateHmmNames              } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
+include { validateMatchingFolders       } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { FIND_CONCATENATE as CAT_HMM   } from '../../../modules/nf-core/find/concatenate/main'
 include { GUNZIP                        } from '../../../modules/nf-core/gunzip/main'
 include { POOL_EXISTING_MEMBERS         } from '../../../modules/local/pool_existing_members/main'
@@ -26,7 +28,7 @@ include { EXTRACT_FAMILY_REPS           } from '../../../modules/local/extract_f
 
 workflow UPDATE_FAMILIES {
     take:
-    ch_samplesheet_for_update           // channel: [meta, sequences, existing_hmms_to_update, existing_msas_to_update]; the MSAs are full MSAs
+    ch_samplesheet_for_update           // channel: [meta, sequences, existing_hmms, existing_seed_msas, existing_full_msas]; MSAs may be []
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
     skip_sequence_redundancy_removal    // boolean
     clustering_tool                     // string ["linclust", "cluster"]
@@ -40,16 +42,19 @@ workflow UPDATE_FAMILIES {
     ch_updated_family_reps = channel.empty()
 
     ch_input_for_untar = ch_samplesheet_for_update
-        .multiMap { meta, _fasta, existing_hmms_to_update, existing_msas_to_update ->
-            hmm: [ meta, existing_hmms_to_update ]
-            full_msa: [ meta, existing_msas_to_update ]
+        .multiMap { meta, _fasta, existing_hmms, existing_seed_msas, existing_full_msas ->
+            hmm: [ meta, existing_hmms ]
+            seed_msa: [ meta, existing_seed_msas ]
+            full_msa: [ meta, existing_full_msas ]
         }
 
     UNTAR_HMM( ch_input_for_untar.hmm )
+    UNTAR_SEED_MSA( ch_input_for_untar.seed_msa.filter { _meta, archive -> archive } )
     UNTAR_FULL_MSA( ch_input_for_untar.full_msa.filter { _meta, archive -> archive } )
 
-    // hmmsearch reports hits by HMM NAME, while families are matched by file stem: both must agree
+    // Families are matched by HMM NAME (hmmsearch) and by file stem (seed MSAs): both must agree
     validateHmmNames( UNTAR_HMM.out.untar )
+    validateMatchingFolders( UNTAR_HMM.out.untar, UNTAR_SEED_MSA.out.untar )
 
     // Squeeze the HMMs into a single file
     CAT_HMM( UNTAR_HMM.out.untar.map { meta, folder -> [meta, file("${folder.toUriString()}/*", checkIfExists: true)] } )
@@ -58,7 +63,7 @@ workflow UPDATE_FAMILIES {
     // the families keep the old members that still hit. HMMER rewinds the target database for
     // every query HMM and a gzip stream cannot rewind, so the pool is always uncompressed.
     ch_input_fasta = ch_samplesheet_for_update
-        .map { meta, fasta, _existing_hmms_to_update, _existing_msas_to_update -> [meta, fasta] }
+        .map { meta, fasta, _existing_hmms, _existing_seed_msas, _existing_full_msas -> [meta, fasta] }
 
     POOL_EXISTING_MEMBERS( ch_input_fasta.join(UNTAR_FULL_MSA.out.untar) )
 

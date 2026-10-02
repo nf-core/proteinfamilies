@@ -12,38 +12,40 @@ Optionally, existing family HMMs (and their seed and/or full MSAs) can be given 
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 2 mandatory and 2 optional columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 2 mandatory and 3 optional columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
 ```csv
-sample,fasta,existing_hmms_to_update,existing_msas_to_update
-CONTROL_REP1,amino_acid_sequences_input.faa,,
-CONTROL_REP2,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,existing_msas.tar.gz
+id,fasta,existing_hmms,existing_seed_msas,existing_full_msas
+CONTROL_REP1,amino_acid_sequences_input.faa,,,
+CONTROL_REP2,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,,
+CONTROL_REP3,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,existing_seed_msas.tar.gz,existing_full_msas.tar.gz
 ```
 
-| Column                    | Description                                                                                                                                                                                           |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`                  | Custom sample name. Only letters, digits, dots (`.`), underscores (`_`) and dashes (`-`) are allowed, since the sample name is used to build output paths and to parse family names back out of them. |
-| `fasta`                   | Full path to amino acid fasta file. Allowed extensions are ".faa", ".fasta" and ".fa", with or without a following ".gz" for gzipped files.                                                           |
-| `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. The filename needs to end with ".tar.gz".                                                                                                  |
-| `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. The filename needs to end with ".tar.gz".                                                                                                  |
+| Column               | Description                                                                                                                                                                                                                                                         |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                 | Custom sample name. Only letters, digits, dots (`.`), underscores (`_`) and dashes (`-`) are allowed, since the sample name is used to build output paths and to parse family names back out of them.                                                               |
+| `fasta`              | Full path to amino acid fasta file. Allowed extensions are ".faa", ".fasta" and ".fa", with or without a following ".gz" for gzipped files.                                                                                                                         |
+| `existing_hmms`      | (Optional) Full path to a ".tar.gz" archive with one HMM file per existing family. A sample with existing HMMs is updated: its sequences are searched against these families, and only the sequences without hits go on to create new families.                     |
+| `existing_seed_msas` | (Optional, needs `existing_hmms`) Full path to a ".tar.gz" archive with one seed MSA (aligned FASTA or Stockholm, optionally gzipped) per existing HMM, with the same file name stem.                                                                               |
+| `existing_full_msas` | (Optional, needs `existing_hmms`) Full path to a ".tar.gz" archive with existing full MSAs (aligned FASTA or Stockholm, optionally gzipped). Their members are pooled with the input sequences and searched again, so families keep the old members that still hit. |
 
 Input sequences named `<sequence>/<start>-<end>` (Pfam convention) are treated as slices of `<sequence>`: family members cut from them are named in the parent sequence's coordinates (a hit on residues 3-180 of `seqA/10-200` becomes `seqA/12-189`). Any other name is taken as a full protein.
 
 ### Updating existing families
 
-Each existing family is identified by the `NAME` inside its HMM, which must equal the HMM's file name without extensions (e.g. `NAME  fam_1` in `fam_1.hmm.gz`).
+Each existing family is identified by the `NAME` inside its HMM, which must equal the HMM's file name without extensions (e.g. `NAME  fam_1` in `fam_1.hmm.gz`); seed MSAs must then share the same file name stem (`fam_1.aln`).
 
 > [!WARNING]
-> hmmsearch reports hits by HMM `NAME`, while MSAs are matched to their family by file name. The pipeline stops if an existing HMM's `NAME` differs from its file name.
+> hmmsearch reports hits by HMM `NAME`, while MSAs are matched to their family by file name. The pipeline stops if an existing HMM's `NAME` differs from its file name, or if the seed MSA files do not match the HMM files one-to-one.
 > HMMs created by nf-core/proteinfamilies are already named after their files and can be used as they are.
 
-The input sequences, together with the members of the `existing_msas_to_update` full MSAs (gaps removed; a member is skipped if the input holds its sequence, i.e. the same name without a `/<start>-<end>` range), are searched against the existing HMMs.
+The input sequences, together with the members of any `existing_full_msas` (gaps removed; a member is skipped if the input holds its sequence, i.e. the same name without a `/<start>-<end>` range), are searched against the existing HMMs.
 Each family's hits are then rebuilt like a newly created family: optionally made non-redundant, aligned and trimmed into a new seed MSA, built into a new HMM, and used to recruit the new full MSA from the same pool (the new seed MSA serves as the full MSA with `--skip_additional_sequence_recruiting`).
-Families without any hits are not updated.
+Families without any hits are not updated. `existing_seed_msas` are validated, but not used when updating.
 Members of existing full MSAs that no family hits again are dropped; they never go on to create new families.
 
 ## Parameter specifications
@@ -99,7 +101,7 @@ Because of that, the parameters below are honoured only by the `standard` algori
 | `hmmsearch_write_target`, `hmmsearch_write_domain`, `save_hmmsearch_results` | Searching is in-process, so no hmmsearch report files exist                   |
 
 > [!NOTE]
-> Updating existing families (samplesheet entries with existing HMMs and MSAs) always runs the `standard` update path, whichever algorithm is selected, so the `standard` parameters above (e.g. `alignment_tool`, `skip_seed_msa_trimming`, `trim_ends_only`, `gap_threshold`, `skip_additional_sequence_recruiting`) apply to updated families.
+> Updating existing families (samplesheet entries with existing HMMs) always runs the `standard` update path, whichever algorithm is selected, so the `standard` parameters above (e.g. `alignment_tool`, `skip_seed_msa_trimming`, `trim_ends_only`, `gap_threshold`, `skip_additional_sequence_recruiting`) apply to updated families.
 
 The parameters both algorithms share are mapped onto their mgnifam equivalents:
 
