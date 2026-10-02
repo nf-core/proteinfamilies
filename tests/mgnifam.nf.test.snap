@@ -331,7 +331,6 @@
                 "mgnifams_test_3_1.sto.gz:md5,d7299b511dfd35a986ecfd58f3ea5097",
                 "mgnifams_test_3_2.sto.gz:md5,9c1f1454961fad4b877b09769ef1133e",
                 "mgnifams_test_4_1.sto.gz:md5,27fc245f67b4dbf30fb2c1aa553b8676",
-                "mgnifams_test_1.log:md5,5fcb6cffb4e2cb3bdbb1e5acbf29f0ff",
                 "mgnifams_test_1_converged.txt:md5,6ddb4095eb719e2a9f0a3f95677d24e0",
                 "mgnifams_test_1_discarded.csv:md5,f0c7145bc4a8f8c013e1baaf3c0ab593",
                 "mgnifams_test_1_families.tsv:md5,c237ac9b69a81886f1d484cf41ea6107",
@@ -341,7 +340,6 @@
                 "mgnifams_test_1_successful.txt:md5,146b8ec88755deff3bea84550136e380",
                 "mgnifams_test_1_1.txt:md5,f8223004b95aefcd56a5649de586d98b",
                 "mgnifams_test_1_2.txt:md5,512898fcb23f0a593ad5d8e83a7519fc",
-                "mgnifams_test_2.log:md5,6d03dcdfca9ac07143fc925a725c835d",
                 "mgnifams_test_2_converged.txt:md5,26ab0db90d72e28ad0ba1e22ee510510",
                 "mgnifams_test_2_discarded.csv:md5,f0c7145bc4a8f8c013e1baaf3c0ab593",
                 "mgnifams_test_2_families.tsv:md5,76367c4c178b2429a0e0488d1026043a",
@@ -351,7 +349,6 @@
                 "mgnifams_test_2_successful.txt:md5,5adfd70631bad8bbe96746a9ccc2f63c",
                 "mgnifams_test_2_1.txt:md5,f604270428cddfd5bf542b642b5f316d",
                 "mgnifams_test_2_2.txt:md5,dfc9383549531da270d78ba6d98df14d",
-                "mgnifams_test_3.log:md5,4ec69f692e3ddf757a6361022aeae19b",
                 "mgnifams_test_3_converged.txt:md5,b026324c6904b2a9cb4b88d6d61c81d1",
                 "mgnifams_test_3_discarded.csv:md5,f0c7145bc4a8f8c013e1baaf3c0ab593",
                 "mgnifams_test_3_families.tsv:md5,bd61983683c68398ef84f2f8579e1cc2",
@@ -361,7 +358,6 @@
                 "mgnifams_test_3_successful.txt:md5,7995f4c2b5d77e902884db7dde68c4b6",
                 "mgnifams_test_3_1.txt:md5,2a94ea5e2f8744c87c81f2643320f7f1",
                 "mgnifams_test_3_2.txt:md5,5c50c2b316dd413b3c3921f1bab84b8c",
-                "mgnifams_test_4.log:md5,d4538f9e21cb2417bfcc21d8cf510ebd",
                 "mgnifams_test_4_converged.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "mgnifams_test_4_discarded.csv:md5,f0c7145bc4a8f8c013e1baaf3c0ab593",
                 "mgnifams_test_4_families.tsv:md5,2d77c14baa3998c5d0d318f51d893a30",
@@ -379,7 +375,6 @@
                 "mgnifams_test.log:md5,a41135cfe024baaf42f135583fe73f0d",
                 "mgnifams_test_before.tsv:md5,eb88faa675b2d0c6a9ebbff1aecb33a3",
                 "mgnifams_test_before_mqc.txt:md5,45de3e3c31c354347494309581b9ad2a",
-                "mgnifams_test_2_2_4_1.log:md5,62079cf428d8de264683e06b4f567905",
                 "mgnifams_test_2_2_4_1_converged.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "mgnifams_test_2_2_4_1_discarded.csv:md5,263b4267bba56d2bc06e6bdf1c29504f",
                 "mgnifams_test_2_2_4_1_families.tsv:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -404,7 +399,7 @@
                 "mgnifams_test_4_1.fas.gz:md5,337772ef311687afe5642e6c7e5d2631"
             ]
         ],
-        "timestamp": "2026-10-01T16:02:03.92713681",
+        "timestamp": "2026-10-02T07:29:23.163102977",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
