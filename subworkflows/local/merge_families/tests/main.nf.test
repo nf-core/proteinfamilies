@@ -31,12 +31,11 @@ nextflow_workflow {
                 ])
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
-                input[5] = false      // skip_msa_trimming
-                input[6] = "clipkit"  // clipkit_out_format
-                input[7] = false      // hmmsearch_write_target
-                input[8] = true       // hmmsearch_write_domain
-                input[9] = false      // skip_additional_sequence_recruiting
-                input[10] = 0.9       // hmmsearch_query_length_threshold
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = 0.9       // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -91,12 +90,11 @@ nextflow_workflow {
                 ])
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
-                input[5] = false      // skip_msa_trimming
-                input[6] = "clipkit"  // clipkit_out_format
-                input[7] = false      // hmmsearch_write_target
-                input[8] = true       // hmmsearch_write_domain
-                input[9] = false      // skip_additional_sequence_recruiting
-                input[10] = 0.9       // hmmsearch_query_length_threshold
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = 0.9       // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -162,12 +160,11 @@ nextflow_workflow {
                 input[2] = channel.fromList(samples.collect { sample -> [ [ id: sample ], sequences ] })
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
-                input[5] = false      // skip_msa_trimming
-                input[6] = "clipkit"  // clipkit_out_format
-                input[7] = false      // hmmsearch_write_target
-                input[8] = true       // hmmsearch_write_domain
-                input[9] = false      // skip_additional_sequence_recruiting
-                input[10] = 0.9       // hmmsearch_query_length_threshold
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = 0.9       // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -232,12 +229,11 @@ nextflow_workflow {
                 ])
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
-                input[5] = false      // skip_msa_trimming
-                input[6] = "clipkit"  // clipkit_out_format
-                input[7] = false      // hmmsearch_write_target
-                input[8] = true       // hmmsearch_write_domain
-                input[9] = false      // skip_additional_sequence_recruiting
-                input[10] = 0.9       // hmmsearch_query_length_threshold
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = 0.9       // hmmsearch_query_length_threshold
                 """
             }
         }

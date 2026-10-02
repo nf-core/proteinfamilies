@@ -41,8 +41,7 @@ workflow REMOVE_REDUNDANCY {
     clustering_tool                              // string ["linclust", "cluster"]
     family_generation_algorithm                  // string ["standard", "iterative"]
     alignment_tool                               // string ["famsa", "mafft"]
-    skip_msa_trimming                            // boolean
-    clipkit_out_format                           // string (default: clipkit)
+    skip_seed_msa_trimming                       // boolean
     hmmsearch_write_target                       // boolean
     hmmsearch_write_domain                       // boolean
     skip_additional_sequence_recruiting          // boolean
@@ -102,8 +101,7 @@ workflow REMOVE_REDUNDANCY {
                 sequences,
                 family_generation_algorithm,
                 alignment_tool,
-                skip_msa_trimming,
-                clipkit_out_format,
+                skip_seed_msa_trimming,
                 hmmsearch_write_target,
                 hmmsearch_write_domain,
                 skip_additional_sequence_recruiting,
@@ -197,7 +195,8 @@ workflow REMOVE_REDUNDANCY {
         REMOVE_REDUNDANT_SEQS( MMSEQS_FASTA_CLUSTER.out.clusters, MMSEQS_FASTA_CLUSTER.out.seqs )
         fasta = REMOVE_REDUNDANT_SEQS.out.fasta
 
-        full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool ).alignments
+        // Full MSAs are never trimmed, so the fasta keeps matching them
+        full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool, true ).alignments
         // END SEQUENCE REDUNDANCY REMOVAL MECHANISM
     } else if (!skip_additional_sequence_recruiting) { // full MSAs in Stockholm format
         // REFORMATTING FULL MSA

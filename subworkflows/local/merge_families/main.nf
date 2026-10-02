@@ -21,8 +21,7 @@ workflow MERGE_FAMILIES {
     sequences                           // tuple val(meta), path(fasta)
     family_generation_algorithm         // string ["standard", "iterative"]
     alignment_tool                      // string ["famsa", "mafft"]
-    skip_msa_trimming                   // boolean
-    clipkit_out_format                  // string (default: clipkit)
+    skip_seed_msa_trimming              // boolean
     hmmsearch_write_target              // boolean
     hmmsearch_write_domain              // boolean
     skip_additional_sequence_recruiting // boolean
@@ -79,8 +78,7 @@ workflow MERGE_FAMILIES {
             sequences,
             MERGE_SEEDS.out.merged_seed_msa,
             alignment_tool,
-            skip_msa_trimming,
-            clipkit_out_format,
+            skip_seed_msa_trimming,
             hmmsearch_write_target,
             hmmsearch_write_domain,
             skip_additional_sequence_recruiting,

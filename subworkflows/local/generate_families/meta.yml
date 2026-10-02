@@ -13,7 +13,6 @@ keywords:
   - protein
 components:
   - align_sequences
-  - clipkit
   - hmmer/hmmbuild
   - hmmer/hmmsearch
   - filter_recruited
@@ -32,15 +31,10 @@ input:
       description: |
         Tool to use for multiple sequence alignment
       enum: ["famsa", "mafft"]
-  - skip_msa_trimming:
+  - skip_seed_msa_trimming:
       type: boolean
       description: |
-        Skip trimming of multiple sequence alignments with ClipKIT
-  - clipkit_out_format:
-      type: string
-      description: |
-        Output format for ClipKIT trimming tool
-      default: "clipkit"
+        Skip trimming of seed multiple sequence alignments with ClipKIT
   - hmmsearch_write_target:
       type: boolean
       description: |

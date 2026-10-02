@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            90,
+            97,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -74,6 +74,9 @@
                 },
                 "MMSEQS_LINCLUST": {
                     "mmseqs": "18.8cc5c"
+                },
+                "RECALCULATE_COORDINATES": {
+                    "python": "3.13.1"
                 },
                 "REMOVE_REDUNDANT_SEQS": {
                     "biopython": 1.85,
@@ -219,21 +222,12 @@
                 "seed_msa",
                 "seed_msa/filtered",
                 "seed_msa/filtered/mgnifams_test",
-                "seed_msa/filtered/mgnifams_test/mgnifams_test_1.clipkit",
-                "seed_msa/filtered/mgnifams_test/mgnifams_test_2.clipkit",
-                "seed_msa/filtered/mgnifams_test/mgnifams_test_3.clipkit",
-                "seed_msa/filtered/mgnifams_test/mgnifams_test_5.clipkit",
-                "seed_msa/filtered/mgnifams_test/mgnifams_test_7.clipkit",
+                "seed_msa/filtered/mgnifams_test/mgnifams_test_1.aln",
+                "seed_msa/filtered/mgnifams_test/mgnifams_test_2.aln",
+                "seed_msa/filtered/mgnifams_test/mgnifams_test_3.aln",
+                "seed_msa/filtered/mgnifams_test/mgnifams_test_5.aln",
+                "seed_msa/filtered/mgnifams_test/mgnifams_test_7.aln",
                 "seed_msa/raw",
-                "seed_msa/raw/clipkit",
-                "seed_msa/raw/clipkit/mgnifams_test",
-                "seed_msa/raw/clipkit/mgnifams_test/mgnifams_test_1.clipkit",
-                "seed_msa/raw/clipkit/mgnifams_test/mgnifams_test_2.clipkit",
-                "seed_msa/raw/clipkit/mgnifams_test/mgnifams_test_3.clipkit",
-                "seed_msa/raw/clipkit/mgnifams_test/mgnifams_test_4.clipkit",
-                "seed_msa/raw/clipkit/mgnifams_test/mgnifams_test_5.clipkit",
-                "seed_msa/raw/clipkit/mgnifams_test/mgnifams_test_6.clipkit",
-                "seed_msa/raw/clipkit/mgnifams_test/mgnifams_test_7.clipkit",
                 "seed_msa/raw/famsa_align",
                 "seed_msa/raw/famsa_align/mgnifams_test",
                 "seed_msa/raw/famsa_align/mgnifams_test/mgnifams_test_1.aln",
@@ -242,7 +236,16 @@
                 "seed_msa/raw/famsa_align/mgnifams_test/mgnifams_test_4.aln",
                 "seed_msa/raw/famsa_align/mgnifams_test/mgnifams_test_5.aln",
                 "seed_msa/raw/famsa_align/mgnifams_test/mgnifams_test_6.aln",
-                "seed_msa/raw/famsa_align/mgnifams_test/mgnifams_test_7.aln"
+                "seed_msa/raw/famsa_align/mgnifams_test/mgnifams_test_7.aln",
+                "seed_msa/raw/trimmed",
+                "seed_msa/raw/trimmed/mgnifams_test",
+                "seed_msa/raw/trimmed/mgnifams_test/mgnifams_test_1.aln",
+                "seed_msa/raw/trimmed/mgnifams_test/mgnifams_test_2.aln",
+                "seed_msa/raw/trimmed/mgnifams_test/mgnifams_test_3.aln",
+                "seed_msa/raw/trimmed/mgnifams_test/mgnifams_test_4.aln",
+                "seed_msa/raw/trimmed/mgnifams_test/mgnifams_test_5.aln",
+                "seed_msa/raw/trimmed/mgnifams_test/mgnifams_test_6.aln",
+                "seed_msa/raw/trimmed/mgnifams_test/mgnifams_test_7.aln"
             ],
             [
                 "mgnifams_test.tsv:md5,84352ddab0a87d0761c2fc66214fa8b8",
@@ -276,28 +279,28 @@
                 "mgnifams_test_before_mqc.txt:md5,45de3e3c31c354347494309581b9ad2a",
                 "redundant_fam_ids.txt:md5,731a5c6e1ad59766a37ef026001c11d1",
                 "similar_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "mgnifams_test_1.clipkit:md5,e7aac387b8280bf2d06404b5f3907184",
-                "mgnifams_test_2.clipkit:md5,6a4c49600e62e7dbf943f035c29123f2",
-                "mgnifams_test_3.clipkit:md5,c13a00d3d89341a62148cdd7c0277147",
-                "mgnifams_test_5.clipkit:md5,7b23259e60b44f8fa8acc30df683c023",
-                "mgnifams_test_7.clipkit:md5,413ff61004a63b1970611e74b1fcd062",
-                "mgnifams_test_1.clipkit:md5,e7aac387b8280bf2d06404b5f3907184",
-                "mgnifams_test_2.clipkit:md5,6a4c49600e62e7dbf943f035c29123f2",
-                "mgnifams_test_3.clipkit:md5,c13a00d3d89341a62148cdd7c0277147",
-                "mgnifams_test_4.clipkit:md5,6ee5a3f6817aefb3d04f3d66911ecf04",
-                "mgnifams_test_5.clipkit:md5,7b23259e60b44f8fa8acc30df683c023",
-                "mgnifams_test_6.clipkit:md5,ff8c1b08d57a1468cdad0a4eca1ca317",
-                "mgnifams_test_7.clipkit:md5,413ff61004a63b1970611e74b1fcd062",
+                "mgnifams_test_1.aln:md5,42ccad426dd97cf180fff3462f4ffbd7",
+                "mgnifams_test_2.aln:md5,fa91c7c3eb6c52807d68705cd9677119",
+                "mgnifams_test_3.aln:md5,6416beddf5cfb328402737e163b85851",
+                "mgnifams_test_5.aln:md5,72037330d3d7b3962cc64bb14cffb8af",
+                "mgnifams_test_7.aln:md5,e25c22eba4f49e12153f00f39088d87b",
                 "mgnifams_test_1.aln:md5,4e8c23d370e3637db7d1897c012014b9",
                 "mgnifams_test_2.aln:md5,5d5939048bf81acab03d22345ad96d02",
                 "mgnifams_test_3.aln:md5,83cd617eba871e7734bd3f8dfac6767c",
                 "mgnifams_test_4.aln:md5,4c3673472b46006ec4aea0c341dea7a4",
                 "mgnifams_test_5.aln:md5,f6e71b8537b6fde353301665d5a8ed51",
                 "mgnifams_test_6.aln:md5,b010fce4736ab1a4f9060bba1a19eeb7",
-                "mgnifams_test_7.aln:md5,dede6abd4794241858de7121372d5408"
+                "mgnifams_test_7.aln:md5,dede6abd4794241858de7121372d5408",
+                "mgnifams_test_1.aln:md5,42ccad426dd97cf180fff3462f4ffbd7",
+                "mgnifams_test_2.aln:md5,fa91c7c3eb6c52807d68705cd9677119",
+                "mgnifams_test_3.aln:md5,6416beddf5cfb328402737e163b85851",
+                "mgnifams_test_4.aln:md5,2c93a08c2896bdeb586cf3c0e32b3c8b",
+                "mgnifams_test_5.aln:md5,72037330d3d7b3962cc64bb14cffb8af",
+                "mgnifams_test_6.aln:md5,1e9d90f104f0e52c32d3276a961fd00a",
+                "mgnifams_test_7.aln:md5,e25c22eba4f49e12153f00f39088d87b"
             ]
         ],
-        "timestamp": "2026-09-29T16:25:28.976471442",
+        "timestamp": "2026-10-02T15:40:06.554316412",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

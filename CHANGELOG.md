@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v3.0.0dev - [unreleased]
 
+### `Changed`
+
+- [#197](https://github.com/nf-core/proteinfamilies/pull/197) - **Breaking:** seed MSAs are trimmed inside `ALIGN_SEQUENCES`, full MSAs never (except updated families, whose single MSA is both); `--skip_msa_trimming` renamed to `--skip_seed_msa_trimming`, `--clipkit_out_format` and `--save_update_families_{pre_clipped,clipped}_fasta` removed, `clipkit/` output folders renamed to `trimmed/` (`.aln`). Family FASTA files now always match their full MSA. Added a `test_mgnifam` pipeline nf-test. (by @vagkaratzas)
+
+### `Fixed`
+
+- [#197](https://github.com/nf-core/proteinfamilies/pull/197) - Trimmed MSA rows that lost residues are renamed `<sequence>/<start>-<end>` to the residues they still hold; untouched rows keep their name ([#119](https://github.com/nf-core/proteinfamilies/issues/119)). (by @vagkaratzas)
+
 ## v2.6.0 - [2026/10/01]
 
 ### `Changed`

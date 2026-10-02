@@ -35,6 +35,33 @@
             "nextflow": "26.04.3"
         }
     },
+    "fasta - famsa - trimmed": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_famsa_trimmed",
+                        "chunk": 1
+                    },
+                    "test_famsa_trimmed_1.aln:md5,150f40d2d96db303e795779ffb444212"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test_famsa_trimmed",
+                        "chunk": 1
+                    },
+                    "test_famsa_trimmed_1.faa:md5,d7353f69141434bbb625dfe547974251"
+                ]
+            ]
+        ],
+        "timestamp": "2026-10-02T15:33:15.298165955",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "fasta - mafft": {
         "content": [
             [

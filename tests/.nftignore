@@ -18,3 +18,5 @@ mmseqs/redundancy_clustering/**/*
 hmm/**/*
 proteinfold/samplesheet.csv
 proteinannotator/samplesheet.csv
+generate_families_iteratively/**/*.log
+remove_redundancy/merge_families/generate_families_iteratively/**/*.log

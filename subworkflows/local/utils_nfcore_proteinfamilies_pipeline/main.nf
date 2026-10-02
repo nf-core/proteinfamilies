@@ -181,7 +181,7 @@ def toolCitationText() {
         params.alignment_tool == 'mafft' ? "mafft (Katoh et al. 2013)." : ""
     ].join(' ').trim()
 
-    def clipping_text = "MSAs were gap-trimmed with ClipKIT (Steenwyk et al. 2020)."
+    def clipping_text = "Seed MSAs were gap-trimmed with ClipKIT (Steenwyk et al. 2020)."
 
     def model_text = "Family Hidden Markov Models (HMMs) were built with hmmer (Eddy et al. 2011)."
 
@@ -193,7 +193,7 @@ def toolCitationText() {
         quality_check_text,
         clustering_text,
         alignment_text,
-        !params.skip_msa_trimming ? clipping_text : "",
+        !params.skip_seed_msa_trimming ? clipping_text : "",
         model_text,
         !params.skip_phylogenetic_inference ? phylogeny_text : "",
         postprocessing_text
@@ -229,7 +229,7 @@ def toolBibliographyText() {
         quality_check_text,
         clustering_text,
         alignment_text,
-        !params.skip_msa_trimming ? clipping_text : "",
+        !params.skip_seed_msa_trimming ? clipping_text : "",
         model_text,
         !params.skip_phylogenetic_inference ? phylogeny_text : "",
         postprocessing_text

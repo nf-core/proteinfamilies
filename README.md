@@ -40,7 +40,7 @@ Generate input amino acid sequence statistics with ([`SeqFu`](https://github.com
 
 1. Cluster sequences ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/))
 2. Perform multiple sequence alignment (MSA) ([`FAMSA`](https://github.com/refresh-bio/FAMSA/) or [`mafft`](https://github.com/GSLBiotech/mafft/))
-3. Optionally, clip gap parts of the MSA ([`ClipKIT`](https://github.com/JLSteenwyk/ClipKIT/))
+3. Optionally, clip gap parts of the seed MSA ([`ClipKIT`](https://github.com/JLSteenwyk/ClipKIT/)), recalculating the sequence coordinates
 4. Generate family HMMs and fish additional sequences into the family ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
 5. Optionally, remove redundant and/or merge similar families by comparing family representative sequences against family models with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
 6. Optionally, from the remaining families, remove in-family redundant sequences by strictly clustering with ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/)) and discarding non-cluster representatives

@@ -21,7 +21,6 @@ components:
   - mmseqs_fasta_cluster
   - remove_redundant_seqs
   - align_sequences
-  - clipkit
   - hmmer/hmmbuild
   - extract_family_members
   - extract_family_reps
@@ -50,15 +49,10 @@ input:
       description: |
         Tool to use for multiple sequence alignment
       enum: ["famsa", "mafft"]
-  - skip_msa_trimming:
+  - skip_seed_msa_trimming:
       type: boolean
       description: |
-        Skip trimming of multiple sequence alignments with ClipKIT
-  - clipkit_out_format:
-      type: string
-      description: |
-        Output format for ClipKIT trimming tool
-      default: "clipkit"
+        Skip trimming of the re-aligned family MSAs with ClipKIT
 output:
   - versions:
       type: file
