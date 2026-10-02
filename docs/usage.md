@@ -35,6 +35,12 @@ Input sequences named `<sequence>/<start>-<end>` (Pfam convention) are treated a
 
 ### Updating existing families
 
+Each existing family is identified by the `NAME` inside its HMM, which must equal the HMM's file name without extensions (e.g. `NAME  fam_1` in `fam_1.hmm.gz`).
+
+> [!WARNING]
+> hmmsearch reports hits by HMM `NAME`, while MSAs are matched to their family by file name. The pipeline stops if an existing HMM's `NAME` differs from its file name.
+> HMMs created by nf-core/proteinfamilies are already named after their files and can be used as they are.
+
 The input sequences, together with the members of the `existing_msas_to_update` full MSAs (gaps removed; a member is skipped if the input holds its sequence, i.e. the same name without a `/<start>-<end>` range), are searched against the existing HMMs.
 Each family's hits are then rebuilt like a newly created family: optionally made non-redundant, aligned and trimmed into a new seed MSA, built into a new HMM, and used to recruit the new full MSA from the same pool (the new seed MSA serves as the full MSA with `--skip_additional_sequence_recruiting`).
 Families without any hits are not updated.

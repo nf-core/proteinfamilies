@@ -11,6 +11,7 @@
 
 include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_FULL_MSA       } from '../../../modules/nf-core/untar/main'
+include { validateHmmNames              } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { FIND_CONCATENATE as CAT_HMM   } from '../../../modules/nf-core/find/concatenate/main'
 include { GUNZIP                        } from '../../../modules/nf-core/gunzip/main'
 include { POOL_EXISTING_MEMBERS         } from '../../../modules/local/pool_existing_members/main'
@@ -46,6 +47,9 @@ workflow UPDATE_FAMILIES {
 
     UNTAR_HMM( ch_input_for_untar.hmm )
     UNTAR_FULL_MSA( ch_input_for_untar.full_msa.filter { _meta, archive -> archive } )
+
+    // hmmsearch reports hits by HMM NAME, while families are matched by file stem: both must agree
+    validateHmmNames( UNTAR_HMM.out.untar )
 
     // Squeeze the HMMs into a single file
     CAT_HMM( UNTAR_HMM.out.untar.map { meta, folder -> [meta, file("${folder.toUriString()}/*", checkIfExists: true)] } )

@@ -280,6 +280,26 @@ def fileStem(file) {
 }
 
 //
+// Validate that each HMM in a folder is NAMEd after its file stem. hmmsearch reports hits by
+// HMM NAME while MSAs are matched to families by file stem, so a mismatch would silently
+// detach a family's hits from its MSAs inside UPDATE_FAMILIES.
+//
+def validateHmmNames(ch_hmm_folders) {
+    ch_hmm_folders
+        .map { _meta, folder ->
+            folder.listFiles().each { hmm ->
+                def stream = hmm.name.endsWith('.gz') ? new java.util.zip.GZIPInputStream(hmm.newInputStream()) : hmm.newInputStream()
+                def name = stream.withReader { reader ->
+                    reader.readLines().find { line -> line.startsWith('NAME') }?.tokenize()?.getAt(1)
+                }
+                if (name != fileStem(hmm)) {
+                    error("[nf-core/proteinfamilies] ERROR: HMM NAME mismatch: ${hmm.name} holds NAME '${name}', but existing HMMs must be NAMEd after their file name ('${fileStem(hmm)}').")
+                }
+            }
+        }
+}
+
+//
 // Validate that an HMM folder and an MSA folder contain the same number of files with matching
 // base names. Aborts early if they diverge — a mismatch would cause silent key-join failures
 // in the per-family combine steps inside UPDATE_FAMILIES.
