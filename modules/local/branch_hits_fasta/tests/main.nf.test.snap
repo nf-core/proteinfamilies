@@ -92,7 +92,7 @@
                     {
                         "id": "fasta"
                     },
-                    "fasta.fasta.gz:md5,7ab7e32d9e439bba8ee151cd2d278994"
+                    "fasta.fasta.gz:md5,2391aaa4786517b02fca15d1f67178c9"
                 ]
             ],
             {
@@ -112,10 +112,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:53:31.771106399",
+        "timestamp": "2026-10-02T16:56:21.624633108",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Fixed updates silently searching only the first existing family when the sample FASTA is gzipped: HMMER cannot rewind a gzip stream between query HMMs, so the FASTA is now decompressed before `hmmsearch`. (by @vagkaratzas)
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198)
+  - Input sequences already named `<sequence>/<start>-<end>` give family members named in the parent sequence's coordinates (`seqA/10-200` hit on 3-180 → `seqA/12-189`) instead of nested ranges (`seqA/10-200/3-180`). During updates, such a sequence was also written to the unassigned sequences despite its hit. (by @vagkaratzas)
+  - Fixed updates silently searching only the first existing family when the sample FASTA is gzipped: HMMER cannot rewind a gzip stream between query HMMs, so the FASTA is now decompressed before `hmmsearch`. (by @vagkaratzas)
 - [#197](https://github.com/nf-core/proteinfamilies/pull/197) - Trimmed MSA rows that lost residues are renamed `<sequence>/<start>-<end>` to the residues they still hold; untouched rows keep their name ([#119](https://github.com/nf-core/proteinfamilies/issues/119)). (by @vagkaratzas)
 
 ## v2.6.0 - [2026/10/01]

@@ -146,7 +146,7 @@ def write_non_hit_sequences(
         non_hits (str): Output path for the gzipped FASTA of non-hit sequences.
     """
     # Determine the non-hit sequences
-    hit_sequence_names = {hit.split("/")[0] for hits in filtered_sequences.values() for hit in hits}
+    hit_sequence_names = {hit.rpartition("/")[0] for hits in filtered_sequences.values() for hit in hits}
     non_hit_records = [
         record for name, record in sequences.items()
         if name not in hit_sequence_names
@@ -188,6 +188,18 @@ def validate_and_parse_hit_name(hit: str) -> tuple[str, int, int]:
     return sequence_name, env_from, env_to
 
 
+def slice_name(name: str, start: int, end: int) -> str:
+    """
+    Name a slice `name/start-end`. A name that already holds a `/s-e` range is itself a slice,
+    so the new range is given in its parent's coordinates: `seq/10-200` [3, 180] -> `seq/12-189`.
+    """
+    match = re.match(r"^(.*)/(\d+)-(\d+)$", name)
+    if match:
+        offset = int(match.group(2)) - 1
+        return f"{match.group(1)}/{start + offset}-{end + offset}"
+    return f"{name}/{start}-{end}"
+
+
 def write_family_fastas(
     results: dict[str, set[str]],
     sequences: dict[str, SeqRecord],
@@ -224,7 +236,7 @@ def write_family_fastas(
                 if len(extracted_seq) == len(original_record.seq):
                     new_id = sequence_name  # Omit range if full-length
                 else:
-                    new_id = f"{sequence_name}/{env_from}-{env_to}"
+                    new_id = slice_name(sequence_name, env_from, env_to)
 
                 # Create a new SeqRecord for the extracted range
                 new_record = SeqRecord(

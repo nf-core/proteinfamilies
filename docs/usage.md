@@ -31,6 +31,8 @@ CONTROL_REP2,amino_acid_sequences_extra.faa.gz,existing_hmms.tar.gz,existing_msa
 | `existing_hmms_to_update` | Full path to compressed archive with existing family HMMs. The filename needs to end with ".tar.gz".                                                                                                  |
 | `existing_msas_to_update` | Full path to compressed archive with existing family MSAs. The filename needs to end with ".tar.gz".                                                                                                  |
 
+Input sequences named `<sequence>/<start>-<end>` (Pfam convention) are treated as slices of `<sequence>`: family members cut from them are named in the parent sequence's coordinates (a hit on residues 3-180 of `seqA/10-200` becomes `seqA/12-189`). Any other name is taken as a full protein.
+
 ## Parameter specifications
 
 Here we provide guidance regarding some parameter choices.
