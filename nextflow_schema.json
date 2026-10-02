@@ -319,6 +319,12 @@
                     "help_text": "Only used when family_generation_algorithm is 'iterative', which generates many families per task. Smaller chunks parallelise better and resume at a finer granularity, at the cost of more tasks. The 'standard' algorithm always processes a single cluster per task.",
                     "fa_icon": "fas fa-layer-group"
                 },
+                "skip_update_refinement": {
+                    "type": "boolean",
+                    "description": "Keep the existing HMMs of updated families, only rebuilding their full MSAs.",
+                    "help_text": "By default, each updated family is rebuilt from its hits like a newly created family: new seed MSA, new HMM, and a full MSA recruited with the new HMM. With this flag, the existing HMM is kept and aligns its hits (from the input sequences and the members of any existing full MSAs) into the new full MSA with hmmalign; a provided seed MSA passes through unchanged, otherwise the family has no seed MSA.",
+                    "fa_icon": "fas fa-lock"
+                },
                 "save_iterative_family_metadata": {
                     "type": "boolean",
                     "description": "Save the family rosters and diagnostics reported by the 'iterative' algorithm",

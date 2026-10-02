@@ -66,6 +66,10 @@ input:
       type: boolean
       description: |
         Skip recruiting the full MSA with the new HMM; the new seed MSA is then also the full MSA
+  - skip_update_refinement:
+      type: boolean
+      description: |
+        Keep the existing HMMs, which align their hits into the new full MSAs; provided seed MSAs pass through unchanged
 output:
   - seed_msa:
       type: file

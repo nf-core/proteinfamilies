@@ -1,4 +1,61 @@
 {
+    "fasta - hmm + seed + full - skip update refinement": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    "test_update.fasta.gz:md5,60ad9187c064f434cb473a1e0ec68350"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    [
+                        
+                    ]
+                ]
+            ],
+            [
+                "existing_fam_1.hmm.gz",
+                "existing_fam_2.hmm.gz",
+                "existing_fam_3.hmm.gz",
+                "existing_fam_4.hmm.gz",
+                "existing_fam_zero_hits.hmm.gz"
+            ],
+            [
+                "existing_fam_1.aln",
+                "existing_fam_2.aln",
+                "existing_fam_3.aln",
+                "existing_fam_4.aln",
+                "existing_fam_zero_hits.aln"
+            ],
+            [
+                "existing_fam_1.sto.gz",
+                "existing_fam_2.sto.gz",
+                "existing_fam_3.sto.gz",
+                "existing_fam_4.sto.gz",
+                "existing_fam_zero_hits.sto.gz"
+            ],
+            [
+                "existing_fam_1: 62",
+                "existing_fam_2: 6",
+                "existing_fam_3: 15",
+                "existing_fam_4: 27",
+                "existing_fam_zero_hits: 10"
+            ],
+            "test_update_meta_mqc.csv",
+            11
+        ],
+        "timestamp": "2026-10-02T17:42:12.613571546",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "fasta - hmm + seed + full": {
         "content": [
             [

@@ -25,6 +25,7 @@ nextflow_workflow {
                 input[6] = false      // hmmsearch_write_target
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
                 """
             }
         }
@@ -38,7 +39,49 @@ nextflow_workflow {
                     workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
                     workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
                     workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
-                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${path(faa).linesGzip.count { line -> line.startsWith('>') }}" }.sort(),
+                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
+                    file(workflow.out.updated_family_reps[0][1]).name,
+                    path(workflow.out.updated_family_reps[0][1]).readLines().size()
+                ).match()}
+            )
+        }
+    }
+
+    test("fasta - hmm + seed + full - skip update refinement") {
+        // Existing HMMs kept: they align their hits into new full MSAs, the seed MSAs pass through
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_hmms.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_seed_msas.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_full_msas.tar.gz', checkIfExists: true)
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = true       // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.no_hit_seqs,
+                    workflow.out.zero_hit_families,
+                    workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
+                    workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
+                    workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
+                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
                     file(workflow.out.updated_family_reps[0][1]).name,
                     path(workflow.out.updated_family_reps[0][1]).readLines().size()
                 ).match()}
@@ -66,6 +109,7 @@ nextflow_workflow {
                 input[6] = false      // hmmsearch_write_target
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
                 """
             }
         }
@@ -79,7 +123,7 @@ nextflow_workflow {
                     workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
                     workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
                     workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
-                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${path(faa).linesGzip.count { line -> line.startsWith('>') }}" }.sort(),
+                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
                     file(workflow.out.updated_family_reps[0][1]).name,
                     path(workflow.out.updated_family_reps[0][1]).readLines().size()
                 ).match()}
@@ -110,6 +154,7 @@ nextflow_workflow {
                 input[6] = false      // hmmsearch_write_target
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
                 """
             }
         }
@@ -150,6 +195,7 @@ nextflow_workflow {
                 input[6] = false      // hmmsearch_write_target
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
                 """
             }
         }

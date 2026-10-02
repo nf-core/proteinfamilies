@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Added `--skip_update_refinement` (default `false`): updated families keep their existing HMM, which aligns its hits into the new full MSA, and a provided seed MSA passes through unchanged. (by @vagkaratzas)
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Existing families without any hit during an update are kept unchanged (their HMM stays in the sample's HMM library) and listed in `update_families/zero_hit_families/<id>_zero_hits_existing_families.txt`. A sample without any hit no longer crashes `BRANCH_HITS_FASTA`: all its sequences go to family creation. (by @vagkaratzas)
 
 ### `Changed`

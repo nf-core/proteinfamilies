@@ -45,7 +45,7 @@ Each existing family is identified by the `NAME` inside its HMM, which must equa
 
 The input sequences, together with the members of any `existing_full_msas` (gaps removed; a member is skipped if the input holds its sequence, i.e. the same name without a `/<start>-<end>` range), are searched against the existing HMMs.
 Each family's hits are then rebuilt like a newly created family: optionally made non-redundant, aligned and trimmed into a new seed MSA, built into a new HMM, and used to recruit the new full MSA from the same pool (the new seed MSA serves as the full MSA with `--skip_additional_sequence_recruiting`).
-Families without any hits are kept unchanged (their existing HMM goes into the sample's HMM library) and listed in `update_families/zero_hit_families/<id>_zero_hits_existing_families.txt`; a sample without any hit sends all its sequences to family creation. `existing_seed_msas` are validated, but not used when updating.
+Families without any hits are kept unchanged (their existing HMM goes into the sample's HMM library) and listed in `update_families/zero_hit_families/<id>_zero_hits_existing_families.txt`; a sample without any hit sends all its sequences to family creation. With `--skip_update_refinement`, the existing HMMs are kept instead: each one aligns its hits into the new full MSA (hmmalign), and its `existing_seed_msas` file, if given, passes through unchanged. Otherwise `existing_seed_msas` are validated, but not used.
 Members of existing full MSAs that no family hits again are dropped; they never go on to create new families.
 
 ## Parameter specifications
