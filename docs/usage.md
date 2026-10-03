@@ -49,12 +49,19 @@ With `--skip_update_refinement`, the existing HMMs are kept instead: each one al
 Families without any hit, or whose rebuilt HMM recruits nothing, are kept unchanged (their existing HMM, seed and full MSA pass through) and listed with the reason in `update_families/kept_families/<id>_kept_existing_families.tsv`.
 Input sequences that end up in no updated family go to family creation (a sample without any hit sends all of them); members of existing full MSAs that no family holds anymore are dropped and never create new families.
 
+Every run writes each sample's final families to `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz` (see [output](output.md#archives-of-final-families)). To update them later, give the three archives in the existing columns, with the new sequences in `fasta` and a new `id` (the families created for `<id>` are named `<id>_<number>`, so reusing it would clash):
+
+```csv title="samplesheet.csv"
+id,fasta,existing_hmms,existing_seed_msas,existing_full_msas
+s1_r2,new_sequences.faa.gz,results/archives/s1/s1_hmms.tar.gz,results/archives/s1/s1_seed_msas.tar.gz,results/archives/s1/s1_full_msas.tar.gz
+```
+
 ### Migrating from v2 to v3
 
 - **Samplesheet:** rename the columns `sample` → `id`, `existing_hmms_to_update` → `existing_hmms` and `existing_msas_to_update` → `existing_full_msas`, and add an `existing_seed_msas` column (may be left empty). MSA archives are now optional; a row with MSAs but no HMMs is rejected.
 - **Existing HMMs** must be `NAME`d after their file name (see [Updating existing families](#updating-existing-families)).
 - **Parameters:** `--skip_msa_trimming` is now `--skip_seed_msa_trimming`; `--clipkit_out_format`, `--save_update_families_pre_clipped_fasta` and `--save_update_families_clipped_fasta` are removed (updated families use the same `save_*` parameters as created ones); `--skip_update_refinement` is new.
-- **Outputs:** `clipkit/` folders are now `trimmed/` (FASTA `.aln`). Updated families are published like created ones under `update_families/{seed_msa,hmm,full_msa}/raw/<tool>/<id>/`, with full MSAs in Stockholm format (hmmalign) instead of `update_families/full_msa/<tool>/` and `update_families/fasta/`. Existing families kept unchanged are listed in `update_families/kept_families/`.
+- **Outputs:** `clipkit/` folders are now `trimmed/` (FASTA `.aln`). Updated families are published like created ones under `update_families/{seed_msa,hmm,full_msa}/raw/<tool>/<id>/`, with full MSAs in Stockholm format (hmmalign) instead of `update_families/full_msa/<tool>/` and `update_families/fasta/`. Existing families kept unchanged are listed in `update_families/kept_families/`, and every sample's final families are archived under `archives/<id>/` for later updates.
 
 ## Parameter specifications
 

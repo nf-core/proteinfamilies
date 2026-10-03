@@ -163,6 +163,8 @@ workflow REMOVE_REDUNDANCY {
             .transpose()   // unpack [meta, [f1,f2,...]] → individual [meta, file] tuples
 
         FILTER_NON_REDUNDANT_SEED_MSA( ch_input_for_fam_removal.seed, ch_input_for_fam_removal.ids )
+        seed_msa = FILTER_NON_REDUNDANT_SEED_MSA.out.filtered
+            .transpose()
 
         FILTER_NON_REDUNDANT_FULL_MSA( ch_input_for_fam_removal.full, ch_input_for_fam_removal.ids )
 
@@ -213,6 +215,7 @@ workflow REMOVE_REDUNDANCY {
     }
 
     emit:
+    seed_msa = seed_msa
     fasta    = fasta
     full_msa = full_msa
     hmm      = ch_output_hmm

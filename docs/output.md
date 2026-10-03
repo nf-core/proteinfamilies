@@ -52,6 +52,7 @@ Phylogenetic tree inference:
 
 Reporting:
 
+- [Archives of final families](#archives-of-final-families) to update the families in a later run
 - [Extract family representatives](#extract-family-representatives) to produce the final metadata file along with a fasta of all family representative sequences (can be used downstream for structural prediction).
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
@@ -607,6 +608,21 @@ Hits on sequences already named `<sequence>/<start>-<end>` (e.g. pooled existing
 
 If the `--skip_phylogenetic_inference` is set to `false`, the full MSA treefiles will be calculated for the final protein families.
 The generated treefiles can be visualized externally with any Newick phylogenetic tree viewer.
+
+### Archives of final families
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `archives/`
+  - `<samplename>/`
+    - `<samplename>_hmms.tar.gz`: the HMM of every final family of the sample (created after redundancy removal, updated, and kept unchanged)
+    - `<samplename>_seed_msas.tar.gz`: their seed MSAs (families without one, e.g. updated with `--skip_update_refinement` and no provided seed, are absent)
+    - `<samplename>_full_msas.tar.gz`: their full MSAs
+
+</details>
+
+The archives have the shape of the samplesheet's `existing_hmms`, `existing_seed_msas` and `existing_full_msas` columns, so a later run can update these families with new sequences (see [Updating existing families](usage.md#updating-existing-families)).
 
 ### Extract family representatives
 

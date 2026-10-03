@@ -16,6 +16,9 @@ include { CALCULATE_CLUSTER_DISTRIBUTION                   } from '../modules/lo
 include { CHUNK_AND_GENERATE_FAMILIES                      } from '../subworkflows/local/chunk_and_generate_families'
 include { REMOVE_REDUNDANCY                                } from '../subworkflows/local/remove_redundancy'
 include { FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY } from '../modules/nf-core/find/concatenate'
+include { TAR as TAR_HMMS                                  } from '../modules/nf-core/tar/main'
+include { TAR as TAR_SEED_MSAS                             } from '../modules/nf-core/tar/main'
+include { TAR as TAR_FULL_MSAS                             } from '../modules/nf-core/tar/main'
 include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
@@ -143,17 +146,16 @@ workflow PROTEINFAMILIES {
         params.hmmsearch_query_length_threshold
     )
 
-    // Collect all final HMMs per sample and concatenate into a .lib.gz library.
-    // Strip chunk from meta (keep only id) so all family HMMs within a sample are grouped together.
-    ch_hmm_for_library = UPDATE_FAMILIES.out.hmm
-        .map { meta, model -> [ [id: meta.id], model ] }
-        .mix(
-            REMOVE_REDUNDANCY.out.hmm
-                .map { meta, model -> [ [id: meta.id], model ] }
-        )
-        .groupTuple()
+    // Collect all final HMMs per sample and concatenate into a .lib.gz library
+    ch_hmm_for_library = finalFilesPerSample( UPDATE_FAMILIES.out.hmm, REMOVE_REDUNDANCY.out.hmm )
 
     FIND_CONCATENATE_HMM_LIBRARY( ch_hmm_for_library )
+
+    // Archive each sample's final families in the shape of the samplesheet's existing_* columns,
+    // so they can be updated in a later run
+    TAR_HMMS( ch_hmm_for_library, '.gz' )
+    TAR_SEED_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.seed_msa, REMOVE_REDUNDANCY.out.seed_msa ), '.gz' )
+    TAR_FULL_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.full_msa, REMOVE_REDUNDANCY.out.full_msa ), '.gz' )
 
     // Infer Phylogenetic relations of full MSAs
     if (!params.skip_phylogenetic_inference) {
@@ -240,6 +242,14 @@ workflow PROTEINFAMILIES {
     family_reps       = EXTRACT_FAMILY_REPS.out.fasta
     kept_families     = ch_kept_families
     multiqc_report = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
+}
+
+// Updated and created family files of each sample, grouped under a chunk/family-free [id] meta
+def finalFilesPerSample(ch_updated, ch_created) {
+    ch_updated
+        .mix(ch_created)
+        .map { meta, file -> [ [id: meta.id], file ] }
+        .groupTuple()
 }
 
 /*

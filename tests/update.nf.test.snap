@@ -1,7 +1,7 @@
 {
     "-profile test_update": {
         "content": [
-            307,
+            316,
             {
                 "BRANCH_HITS_FASTA": {
                     "biopython": 1.85,
@@ -112,6 +112,15 @@
                 "SEQKIT_SEQ": {
                     "seqkit": "2.13.0"
                 },
+                "TAR_FULL_MSAS": {
+                    "tar": 1.34
+                },
+                "TAR_HMMS": {
+                    "tar": 1.34
+                },
+                "TAR_SEED_MSAS": {
+                    "tar": 1.34
+                },
                 "UNTAR_FULL_MSA": {
                     "untar": 1.34
                 },
@@ -126,6 +135,19 @@
                 }
             },
             [
+                "archives",
+                "archives/update_hmm_only",
+                "archives/update_hmm_only/update_hmm_only_full_msas.tar.gz",
+                "archives/update_hmm_only/update_hmm_only_hmms.tar.gz",
+                "archives/update_hmm_only/update_hmm_only_seed_msas.tar.gz",
+                "archives/update_hmm_seed_full",
+                "archives/update_hmm_seed_full/update_hmm_seed_full_full_msas.tar.gz",
+                "archives/update_hmm_seed_full/update_hmm_seed_full_hmms.tar.gz",
+                "archives/update_hmm_seed_full/update_hmm_seed_full_seed_msas.tar.gz",
+                "archives/update_hmm_seed_gz",
+                "archives/update_hmm_seed_gz/update_hmm_seed_gz_full_msas.tar.gz",
+                "archives/update_hmm_seed_gz/update_hmm_seed_gz_hmms.tar.gz",
+                "archives/update_hmm_seed_gz/update_hmm_seed_gz_seed_msas.tar.gz",
                 "family_reps",
                 "family_reps/update_hmm_only",
                 "family_reps/update_hmm_only/update_hmm_only.tsv",
@@ -585,9 +607,20 @@
                 "existing_fam_2.aln:md5,867ded1af915de782693c6c997f0c194",
                 "existing_fam_3.aln:md5,34ead8203acd573e7ad5b2aa43242a5d",
                 "existing_fam_4.aln:md5,3f999eafea3b49448947cd59f14ac20d"
+            ],
+            [
+                "update_hmm_only_full_msas.tar.gz: existing_fam_1.sto.gz, existing_fam_2.sto.gz, existing_fam_3.sto.gz, existing_fam_4.sto.gz, update_hmm_only_1.aln, update_hmm_only_2.aln",
+                "update_hmm_only_hmms.tar.gz: existing_fam_1.hmm.gz, existing_fam_2.hmm.gz, existing_fam_3.hmm.gz, existing_fam_4.hmm.gz, existing_fam_zero_hits.hmm.gz, update_hmm_only_1.hmm.gz, update_hmm_only_2.hmm.gz",
+                "update_hmm_only_seed_msas.tar.gz: existing_fam_1.aln, existing_fam_2.aln, existing_fam_3.aln, existing_fam_4.aln, update_hmm_only_1.aln, update_hmm_only_2.aln",
+                "update_hmm_seed_full_full_msas.tar.gz: existing_fam_1.sto.gz, existing_fam_2.sto.gz, existing_fam_3.sto.gz, existing_fam_4.sto.gz, existing_fam_zero_hits.sto.gz, update_hmm_seed_full_1.aln, update_hmm_seed_full_2.aln",
+                "update_hmm_seed_full_hmms.tar.gz: existing_fam_1.hmm.gz, existing_fam_2.hmm.gz, existing_fam_3.hmm.gz, existing_fam_4.hmm.gz, existing_fam_zero_hits.hmm.gz, update_hmm_seed_full_1.hmm.gz, update_hmm_seed_full_2.hmm.gz",
+                "update_hmm_seed_full_seed_msas.tar.gz: existing_fam_1.aln, existing_fam_2.aln, existing_fam_3.aln, existing_fam_4.aln, existing_fam_zero_hits.aln, update_hmm_seed_full_1.aln, update_hmm_seed_full_2.aln",
+                "update_hmm_seed_gz_full_msas.tar.gz: existing_fam_1.sto.gz, existing_fam_2.sto.gz, existing_fam_3.sto.gz, existing_fam_4.sto.gz, update_hmm_seed_gz_1.aln, update_hmm_seed_gz_2.aln",
+                "update_hmm_seed_gz_hmms.tar.gz: existing_fam_1.hmm.gz, existing_fam_2.hmm.gz, existing_fam_3.hmm.gz, existing_fam_4.hmm.gz, existing_fam_zero_hits.hmm.gz, update_hmm_seed_gz_1.hmm.gz, update_hmm_seed_gz_2.hmm.gz",
+                "update_hmm_seed_gz_seed_msas.tar.gz: existing_fam_1.aln, existing_fam_2.aln, existing_fam_3.aln, existing_fam_4.aln, existing_fam_zero_hits.aln, update_hmm_seed_gz_1.aln, update_hmm_seed_gz_2.aln"
             ]
         ],
-        "timestamp": "2026-10-03T09:55:05.397069336",
+        "timestamp": "2026-10-03T10:01:00.298259666",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

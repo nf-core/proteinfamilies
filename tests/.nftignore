@@ -17,6 +17,7 @@ mmseqs/initial_clustering/*_clustering_distribution_mqc.csv
 mmseqs/redundancy_clustering/**/*
 hmm/**/*
 update_families/hmm/**/*
+archives/**/*
 proteinfold/samplesheet.csv
 proteinannotator/samplesheet.csv
 generate_families_iteratively/**/*.log
