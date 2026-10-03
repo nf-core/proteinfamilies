@@ -3,9 +3,9 @@
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
 """
-Assigns new sequences to existing families using hmmsearch domain hits. Sequences whose
-domain envelope covers at least --length_threshold of the query HMM are written into
-per-family FASTA files; the remainder are written to a single non-hit output file.
+Assigns searched sequences to existing families using hmmsearch domain hits. Sequences whose
+domain envelope covers at least --length_threshold of the query HMM are written, cut to that
+envelope, into per-family FASTA files.
 """
 
 import sys
@@ -28,7 +28,7 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         required=True,
         metavar="FILE",
         type=str,
-        help="Input fasta file.",
+        help="Searched fasta file, that hits are cut from.",
     )
     parser.add_argument(
         "-d",
@@ -53,14 +53,6 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         metavar="FOLDER",
         type=str,
         help="Name of the output folder with hit fasta files (one file per family, where the filename is the family id).",
-    )
-    parser.add_argument(
-        "-n",
-        "--non_hits",
-        required=True,
-        metavar="FILE",
-        type=str,
-        help="Name of the output fasta file with the non hit sequences.",
     )
     return parser.parse_args(args)
 
@@ -129,35 +121,6 @@ def parse_fasta(file_path: str) -> dict[str, SeqRecord]:
         return {record.id: record for record in SeqIO.parse(file, "fasta")}
 
 
-def write_non_hit_sequences(
-    filtered_sequences: dict[str, set[str]],
-    sequences: dict[str, SeqRecord],
-    non_hits: str,
-) -> None:
-    """
-    Write sequences with no hit to any family to a gzipped FASTA.
-
-    A sequence is a non-hit if its bare ID (without /from-to suffix) does not appear
-    in any family's hit set.
-
-    Args:
-        filtered_sequences (dict[str, set[str]]): Passing hits grouped by family ID.
-        sequences (dict[str, Bio.SeqRecord.SeqRecord]): Input sequences keyed by ID.
-        non_hits (str): Output path for the gzipped FASTA of non-hit sequences.
-    """
-    # Determine the non-hit sequences
-    hit_sequence_names = {hit.split("/")[0] for hits in filtered_sequences.values() for hit in hits}
-    non_hit_records = [
-        record for name, record in sequences.items()
-        if name not in hit_sequence_names
-    ]
-
-    # Write the non-hit sequences to a gzipped file
-    with gzip.open(non_hits, "wt") as non_hits_file:  # 'wt' mode for text writing
-        SeqIO.write(non_hit_records, non_hits_file, "fasta")
-    print(f"Written {len(non_hit_records)} non-hit sequences to {non_hits}")
-
-
 def validate_and_parse_hit_name(hit: str) -> tuple[str, int, int]:
     """
     Validates and parses a hit string.
@@ -188,6 +151,18 @@ def validate_and_parse_hit_name(hit: str) -> tuple[str, int, int]:
     return sequence_name, env_from, env_to
 
 
+def slice_name(name: str, start: int, end: int) -> str:
+    """
+    Name a slice `name/start-end`. A name that already holds a `/s-e` range is itself a slice,
+    so the new range is given in its parent's coordinates: `seq/10-200` [3, 180] -> `seq/12-189`.
+    """
+    match = re.match(r"^(.*)/(\d+)-(\d+)$", name)
+    if match:
+        offset = int(match.group(2)) - 1
+        return f"{match.group(1)}/{start + offset}-{end + offset}"
+    return f"{name}/{start}-{end}"
+
+
 def write_family_fastas(
     results: dict[str, set[str]],
     sequences: dict[str, SeqRecord],
@@ -210,7 +185,7 @@ def write_family_fastas(
     for family, hits in results.items():
         family_records = []
 
-        for hit in hits:
+        for hit in sorted(hits):  # sets iterate in a per-run order
             try:
                 sequence_name, env_from, env_to = validate_and_parse_hit_name(hit)
 
@@ -224,7 +199,7 @@ def write_family_fastas(
                 if len(extracted_seq) == len(original_record.seq):
                     new_id = sequence_name  # Omit range if full-length
                 else:
-                    new_id = f"{sequence_name}/{env_from}-{env_to}"
+                    new_id = slice_name(sequence_name, env_from, env_to)
 
                 # Create a new SeqRecord for the extracted range
                 new_record = SeqRecord(
@@ -245,34 +220,22 @@ def write_family_fastas(
             print(f"Written {len(family_records)} sequences to {family_fasta_path}")
 
 
-def filter_recruited(
-    fasta: str,
-    domtbl: str,
-    length_threshold: float,
-    hits: str,
-    non_hits: str,
-) -> None:
+def branch_hits(fasta: str, domtbl: str, length_threshold: float, hits: str) -> None:
     """
-    Split recruited sequences into per-family hit FASTAs and a non-hit FASTA.
+    Write the hits passing the length threshold into per-family FASTA files.
 
     Args:
-        fasta (str): Input FASTA containing all candidate sequences.
+        fasta (str): Searched FASTA that hits are cut from.
         domtbl (str): Path to the hmmsearch domain table.
         length_threshold (float): Minimum envelope coverage ratio relative to query length.
         hits (str): Output directory for per-family hit FASTA files.
-        non_hits (str): Output path for the gzipped FASTA of non-hit sequences.
     """
-    filtered_sequences = filter_sequences(domtbl, length_threshold)
-    sequences = parse_fasta(fasta)
-    write_non_hit_sequences(filtered_sequences, sequences, non_hits)
-    write_family_fastas(filtered_sequences, sequences, hits)
+    write_family_fastas(filter_sequences(domtbl, length_threshold), parse_fasta(fasta), hits)
 
 
 def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
-    filter_recruited(
-        args.fasta, args.domtbl, args.length_threshold, args.hits, args.non_hits
-    )
+    branch_hits(args.fasta, args.domtbl, args.length_threshold, args.hits)
 
 
 if __name__ == "__main__":

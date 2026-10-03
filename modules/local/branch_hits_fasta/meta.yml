@@ -1,14 +1,14 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "branch_hits_fasta"
-description: Check if there are hmmsearch matches for sequences and if so, assign them to the respective hit family file, else put them in a fasta.gz file.
+description: Assign the searched sequences with hmmsearch hits to per-family fasta files, cut to their hit envelope.
 keywords:
   - chunking
   - clusters
   - fasta
 tools:
   - "branch_hits_fasta":
-      description: "Check if there are hmmsearch matches for sequences and if so, assign them to the respective hit family file, else put them in a fasta.gz file."
+      description: "Assign the searched sequences with hmmsearch hits to per-family fasta files, cut to their hit envelope."
       homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/branch_hits_fasta/"
       documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/branch_hits_fasta/"
       tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/branch_hits_fasta/"
@@ -23,7 +23,7 @@ input:
           e.g. `[ id:'sample1', single_end:false ]`
     - fasta:
         type: file
-        description: Input amino acid fasta file.
+        description: Searched amino acid fasta file (e.g. input sequences pooled with existing family members), that hits are cut from.
         pattern: "*.{fasta,faa,fa,fasta.gz,faa.gz,fa.gz}"
   - - meta2:
         type: map
@@ -48,16 +48,6 @@ output:
         type: file
         description: List of fasta files containing sequences that had HMM hits across families -one file per family.
         pattern: "hits/*.fasta"
-  non_hit_fasta:
-    - - meta2:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
-    - .fasta.gz:
-        type: file
-        description: Updated compressed input fasta file containing non-hit sequences, to go through the basic family generation workflow.
-        pattern: "*.fasta.gz"
   versions_python:
     - - ${task.process}:
           type: string

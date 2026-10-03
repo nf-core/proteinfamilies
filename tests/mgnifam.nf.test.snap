@@ -1,7 +1,7 @@
 {
     "-profile test_mgnifam": {
         "content": [
-            73,
+            76,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -106,11 +106,25 @@
                 "SEQKIT_SEQ_ITERATIVE_MSA_TO_FASTA": {
                     "seqkit": "2.13.0"
                 },
+                "TAR_FULL_MSAS": {
+                    "tar": 1.34
+                },
+                "TAR_HMMS": {
+                    "tar": 1.34
+                },
+                "TAR_SEED_MSAS": {
+                    "tar": 1.34
+                },
                 "Workflow": {
                     "nf-core/proteinfamilies": "v3.0.0dev"
                 }
             },
             [
+                "archives",
+                "archives/mgnifams_test",
+                "archives/mgnifams_test/mgnifams_test_full_msas.tar.gz",
+                "archives/mgnifams_test/mgnifams_test_hmms.tar.gz",
+                "archives/mgnifams_test/mgnifams_test_seed_msas.tar.gz",
                 "family_reps",
                 "family_reps/mgnifams_test",
                 "family_reps/mgnifams_test/mgnifams_test.tsv",
@@ -397,9 +411,14 @@
                 "mgnifams_test_3_1.fas.gz:md5,b0cdd5e31cf77b5fa61f54331605e307",
                 "mgnifams_test_3_2.fas.gz:md5,45181c3d0182e3e35c9d6440f2427a45",
                 "mgnifams_test_4_1.fas.gz:md5,337772ef311687afe5642e6c7e5d2631"
+            ],
+            [
+                "mgnifams_test_full_msas.tar.gz: mgnifams_test_1_1.aln, mgnifams_test_1_2.aln, mgnifams_test_2_1.aln, mgnifams_test_3_1.aln",
+                "mgnifams_test_hmms.tar.gz: mgnifams_test_1_1.hmm.gz, mgnifams_test_1_2.hmm.gz, mgnifams_test_2_1.hmm.gz, mgnifams_test_3_1.hmm.gz",
+                "mgnifams_test_seed_msas.tar.gz: mgnifams_test_1_1.fas.gz, mgnifams_test_1_2.fas.gz, mgnifams_test_2_1.fas.gz, mgnifams_test_3_1.fas.gz"
             ]
         ],
-        "timestamp": "2026-10-02T07:29:23.163102977",
+        "timestamp": "2026-10-03T10:09:00.439257494",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

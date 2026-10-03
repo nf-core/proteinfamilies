@@ -20,7 +20,7 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file '.csv' containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file '.csv' with 3 columns, and a header row. See [usage docs](https://nf-co.re/proteinfamilies/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file '.csv' with 2 mandatory and 3 optional columns, and a header row. See [usage docs](https://nf-co.re/proteinfamilies/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
@@ -319,6 +319,12 @@
                     "help_text": "Only used when family_generation_algorithm is 'iterative', which generates many families per task. Smaller chunks parallelise better and resume at a finer granularity, at the cost of more tasks. The 'standard' algorithm always processes a single cluster per task.",
                     "fa_icon": "fas fa-layer-group"
                 },
+                "skip_update_refinement": {
+                    "type": "boolean",
+                    "description": "Keep the existing HMMs of updated families, only rebuilding their full MSAs.",
+                    "help_text": "By default, each updated family is rebuilt from its hits like a newly created family: new seed MSA, new HMM, and a full MSA recruited with the new HMM. With this flag, the existing HMM is kept and aligns its hits (from the input sequences and the members of any existing full MSAs) into the new full MSA with hmmalign; a provided seed MSA passes through unchanged, otherwise the family has no seed MSA.",
+                    "fa_icon": "fas fa-lock"
+                },
                 "save_iterative_family_metadata": {
                     "type": "boolean",
                     "description": "Save the family rosters and diagnostics reported by the 'iterative' algorithm",
@@ -343,7 +349,7 @@
                 },
                 "skip_seed_msa_trimming": {
                     "type": "boolean",
-                    "description": "Skip trimming gappy positions from seed Multiple Sequence Alignments (MSAs). Full MSAs are not trimmed, except for updated families, whose single trimmed MSA serves as both seed and full MSA.",
+                    "description": "Skip trimming gappy positions from seed Multiple Sequence Alignments (MSAs). Full MSAs are never trimmed.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },

@@ -20,6 +20,10 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
             // stable_content: All files in ${params.outdir}/ with stable content
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            // archives/: member order and timestamps vary, so their sorted member names are checked
+            def archive_members = file("${params.outdir}/archives").listFiles().sort().collectMany { sample ->
+                sample.listFiles().sort().collect { archive -> "${archive.name}: ${['tar', '-tzf', archive.toString()].execute().text.readLines().sort().join(', ')}" }
+            }
             assert workflow.success
 
             assertAll(
@@ -31,7 +35,8 @@ nextflow_pipeline {
                     // All stable path name, with a relative path
                     stable_path,
                     // All files with stable contents
-                    stable_content
+                    stable_content,
+                    archive_members
                 ).match() }
             )
         }

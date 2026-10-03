@@ -16,6 +16,9 @@ include { CALCULATE_CLUSTER_DISTRIBUTION                   } from '../modules/lo
 include { CHUNK_AND_GENERATE_FAMILIES                      } from '../subworkflows/local/chunk_and_generate_families'
 include { REMOVE_REDUNDANCY                                } from '../subworkflows/local/remove_redundancy'
 include { FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY } from '../modules/nf-core/find/concatenate'
+include { TAR as TAR_HMMS                                  } from '../modules/nf-core/tar/main'
+include { TAR as TAR_SEED_MSAS                             } from '../modules/nf-core/tar/main'
+include { TAR as TAR_FULL_MSAS                             } from '../modules/nf-core/tar/main'
 include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
@@ -26,7 +29,7 @@ include { EXTRACT_FAMILY_REPS                              } from '../modules/lo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Two-path pipeline: samples providing existing HMMs+MSAs go through UPDATE_FAMILIES to recruit
+// Two-path pipeline: samples providing existing HMMs go through UPDATE_FAMILIES to recruit
 // new sequences into those families; all other samples take the de-novo path
 // (cluster → align → HMM build). Sequences not assigned to any existing family during the
 // update path are forwarded to the de-novo path so nothing is discarded.
@@ -46,7 +49,7 @@ workflow PROTEINFAMILIES {
     ch_family_reps            = channel.empty()
 
     ch_input_for_qc = ch_samplesheet
-        .map { meta, fasta, _existing_hmms_to_update, _existing_msas_to_update ->
+        .map { meta, fasta, _existing_hmms, _existing_seed_msas, _existing_full_msas ->
             [ meta, fasta ]
         }
 
@@ -56,21 +59,21 @@ workflow PROTEINFAMILIES {
     ch_samplesheet_updated = ch_samplesheet
         .combine(FAA_SEQFU_SEQKIT.out.fasta, by: 0)
         .map {
-            meta, _fasta, existing_hmms, existing_msas, updated_fasta ->
-            [ meta, updated_fasta, existing_hmms, existing_msas ]
+            meta, _fasta, existing_hmms, existing_seed_msas, existing_full_msas, updated_fasta ->
+            [ meta, updated_fasta, existing_hmms, existing_seed_msas, existing_full_msas ]
         }
 
+    // Existing HMMs route a sample to the update path (MSAs without HMMs fail schema validation).
     // ?.size() is Groovy's null-safe operator: absent samplesheet columns yield null (falsy).
-    // Both HMMs and MSAs must be present (non-null, non-zero file size) to route to to_update.
     ch_branch_result = ch_samplesheet_updated
-        .branch { _meta, _updated_fasta, existing_hmms_to_update, existing_msas_to_update ->
-            to_create: !existing_hmms_to_update?.size() && !existing_msas_to_update?.size()
-            to_update: existing_hmms_to_update?.size() && existing_msas_to_update?.size()
+        .branch { _meta, _updated_fasta, existing_hmms, _existing_seed_msas, _existing_full_msas ->
+            to_update: existing_hmms?.size()
+            to_create: true
         }
 
     // Entries with existing models go to UPDATE_FAMILIES; entries with sequences only go to de-novo creation.
     ch_samplesheet_for_create = ch_branch_result.to_create
-        .map { meta, updated_fasta, _existing_hmms, _existing_msas ->
+        .map { meta, updated_fasta, _existing_hmms, _existing_seed_msas, _existing_full_msas ->
             [meta, updated_fasta]
         }
     ch_samplesheet_for_update = ch_branch_result.to_update
@@ -81,10 +84,21 @@ workflow PROTEINFAMILIES {
         params.skip_sequence_redundancy_removal,
         params.clustering_tool,
         params.alignment_tool,
-        params.skip_seed_msa_trimming
+        params.skip_seed_msa_trimming,
+        params.hmmsearch_write_target,
+        params.hmmsearch_write_domain,
+        params.skip_additional_sequence_recruiting,
+        params.skip_update_refinement
     )
 
     ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
+    // Existing families the update did not return, kept unchanged, listed per sample with the
+    // reason (published in main.nf)
+    ch_kept_families = UPDATE_FAMILIES.out.kept_families
+        .collectFile { meta, families ->
+            [ "${meta.id}_kept_existing_families.tsv", "family\treason\n" + families.collect { family, reason -> "${family}\t${reason}\n" }.join() ]
+        }
+
     // Sequences not assigned to any existing family during update feed the de-novo creation path.
     ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
 
@@ -132,17 +146,16 @@ workflow PROTEINFAMILIES {
         params.hmmsearch_query_length_threshold
     )
 
-    // Collect all final HMMs per sample and concatenate into a .lib.gz library.
-    // Strip chunk from meta (keep only id) so all family HMMs within a sample are grouped together.
-    ch_hmm_for_library = UPDATE_FAMILIES.out.hmm
-        .map { meta, model -> [ [id: meta.id], model ] }
-        .mix(
-            REMOVE_REDUNDANCY.out.hmm
-                .map { meta, model -> [ [id: meta.id], model ] }
-        )
-        .groupTuple()
+    // Collect all final HMMs per sample and concatenate into a .lib.gz library
+    ch_hmm_for_library = finalFilesPerSample( UPDATE_FAMILIES.out.hmm, REMOVE_REDUNDANCY.out.hmm )
 
     FIND_CONCATENATE_HMM_LIBRARY( ch_hmm_for_library )
+
+    // Archive each sample's final families in the shape of the samplesheet's existing_* columns,
+    // so they can be updated in a later run
+    TAR_HMMS( ch_hmm_for_library, '.gz' )
+    TAR_SEED_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.seed_msa, REMOVE_REDUNDANCY.out.seed_msa ), '.gz' )
+    TAR_FULL_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.full_msa, REMOVE_REDUNDANCY.out.full_msa ), '.gz' )
 
     // Infer Phylogenetic relations of full MSAs
     if (!params.skip_phylogenetic_inference) {
@@ -226,8 +239,17 @@ workflow PROTEINFAMILIES {
     )
 
     emit:
-    family_reps    = EXTRACT_FAMILY_REPS.out.fasta
+    family_reps       = EXTRACT_FAMILY_REPS.out.fasta
+    kept_families     = ch_kept_families
     multiqc_report = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
+}
+
+// Updated and created family files of each sample, grouped under a chunk/family-free [id] meta
+def finalFilesPerSample(ch_updated, ch_created) {
+    ch_updated
+        .mix(ch_created)
+        .map { meta, file -> [ [id: meta.id], file ] }
+        .groupTuple()
 }
 
 /*

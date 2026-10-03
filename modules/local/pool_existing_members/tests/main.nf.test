@@ -1,0 +1,97 @@
+nextflow_process {
+
+    name "Test Process POOL_EXISTING_MEMBERS"
+    script "../main.nf"
+    process "POOL_EXISTING_MEMBERS"
+
+    setup {
+        run("UNTAR") {
+            script "../../../nf-core/untar/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_full_msas.tar.gz', checkIfExists: true)
+                ])
+                """
+            }
+        }
+    }
+
+    test("proteinfamilies - fasta - full msas") {
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa.gz', checkIfExists: true)
+                ])
+                .join(UNTAR.out.untar)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("proteinfamilies - edge cases") {
+        // Dropped: seqA/10-20 (inside input seqA/1-50), seqB/3-9 (input holds whole seqB),
+        // seqF/12-18 (inside member seqF/10-20), the second seqC/2-9 (exact duplicate).
+        // Kept: seqE/100-200 (outside input slice seqE/1-50), both partially overlapping seqG rows.
+        // Stockholm blocks are joined, gaps removed and insert columns upper-cased.
+        when {
+            process {
+                """
+                def fasta = file('edge.faa')
+                fasta.text = '>seqA/1-50 desc\\nMKV\\n>seqB\\nAAA\\n>seqE/1-50\\nMM'
+                def sto = file('f1.sto')
+                sto.text = '# STOCKHOLM 1.0\\n#=GF ID f1\\nseqA/10-20 MK-v.\\nseqC/2-9   AA..c\\nseqB/3-9   KK\\n#=GC RF xxxxx\\n\\nseqA/10-20 LL\\nseqC/2-9   -W\\nseqB/3-9   K\\n//\\n'
+                def aln = file('f2.aln')
+                aln.text = '>seqC/2-9\\nAA-C\\n>seqD\\nM-M\\n>seqE/100-200\\nWW\\n>seqF/12-18\\nFF\\n>seqF/10-20\\nFFFF\\n>seqG/5-15\\nGG\\n>seqG/1-10\\nG\\n'
+                input[0] = channel.of([ [ id: 'edge' ], fasta, [ sto, aln ] ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fasta[0][1]).readLines() == [
+                    '>seqA/1-50 desc', 'MKV', '>seqB', 'AAA', '>seqE/1-50', 'MM',
+                    '>seqC/2-9', 'AACW', '>seqD', 'MM', '>seqE/100-200', 'WW', '>seqF/10-20', 'FFFF',
+                    '>seqG/5-15', 'GG', '>seqG/1-10', 'G'
+                ] }
+            )
+        }
+    }
+
+    test("proteinfamilies - fasta - full msas - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa.gz', checkIfExists: true)
+                ])
+                .join(UNTAR.out.untar)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

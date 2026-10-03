@@ -1,10 +1,11 @@
 nextflow_pipeline {
 
-    name "Test pipeline"
+    name "Test pipeline - update"
     script "../main.nf"
     tag "pipeline"
+    profile "test_update"
 
-    test("-profile test") {
+    test("-profile test_update") {
         // This allows to also check files published with the new workflow output syntax
         options "-output-dir $outputDir"
 

@@ -1,0 +1,79 @@
+nextflow_process {
+
+    name "Test Process EXTRACT_UNASSIGNED_SEQS"
+    script "../main.nf"
+    process "EXTRACT_UNASSIGNED_SEQS"
+
+    test("proteinfamilies - fasta - families") {
+        // Assigned: p (member p/3-8 cut from it), s/1-50 (member s/10-20 inside it), q (member q).
+        // Unassigned: r (no member), t/1-50 (member t/40-90 is not inside it).
+        when {
+            process {
+                """
+                def fasta = file('input.faa')
+                fasta.text = '>p desc\\nACDEFGHIKL\\n>q\\nMNPQ\\nRSTV\\n>r\\nAAAA\\n>s/1-50\\nCC\\n>t/1-50\\nWW'
+                def fam1 = file('fam1.fasta')
+                fam1.text = '>p/3-8 fam1\\nDEFGHI\\n>q fam1\\nMNPQRSTV\\n'
+                def fam2 = file('fam2.fasta')
+                fam2.text = '>s/10-20 fam2\\nC\\n>t/40-90 fam2\\nW\\n'
+                input[0] = channel.of([ [ id: 'test' ], fasta, [ fam1, fam2 ] ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fasta[0][1]).linesGzip == ['>r', 'AAAA', '>t/1-50', 'WW'] },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("proteinfamilies - fasta.gz - no families") {
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa.gz', checkIfExists: true),
+                    []
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fasta[0][1]).linesGzip.size() > 0 },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("proteinfamilies - fasta - families - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa.gz', checkIfExists: true),
+                    []
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

@@ -23,7 +23,7 @@
 
 **nf-core/proteinfamilies** is a bioinformatics pipeline that generates protein families from amino acid sequences and/or updates existing families with new sequences.
 It takes a protein fasta file as input, clusters the sequences and then generates protein family Hidden Markov Models (HMMs) along with their multiple sequence alignments (MSAs).
-Optionally, paths to existing family HMMs and MSAs can be given (must have matching base filenames one-to-one) in order to update with new sequences in case of matching hits.
+Optionally, existing family HMMs (and their seed and/or full MSAs) can be given in order to update those families with new sequences in case of matching hits.
 
 <p>
   <picture>
@@ -54,13 +54,10 @@ for up to three rounds, or until the family model has converged. For more inform
 
 ### Update families
 
-1. Find which families to update by comparing the input sequences against existing family models with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
-2. For non hit sequences, continue in the [`Create families`](#create-families) paragraph above. For hit sequences and families continue to point 3 below
-3. Extract family sequences ([`SeqKit`](https://github.com/shenwei356/seqkit/)) and concatenate with filtered hit sequences of each family
-4. Optionally, remove in-family redundant sequences by strictly clustering with ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/)) and keeping cluster representatives
-5. Perform multiple sequence alignment (MSA) ([`FAMSA`](https://github.com/refresh-bio/FAMSA/) or [`mafft`](https://github.com/GSLBiotech/mafft/))
-6. Optionally, clip gap parts of the MSA ([`ClipKIT`](https://github.com/JLSteenwyk/ClipKIT/))
-7. Update family HMM with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
+1. Pool the input sequences with the members of existing full MSAs, if given, and find which families to update by comparing them against existing family models with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
+2. For non hit input sequences, continue in the [`Create families`](#create-families) paragraph above. For hit sequences and families continue to point 3 below
+3. Optionally, remove in-family redundant hits by strictly clustering with ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/)) and keeping cluster representatives
+4. Rebuild each hit family like a new one: seed MSA ([`FAMSA`](https://github.com/refresh-bio/FAMSA/) or [`mafft`](https://github.com/GSLBiotech/mafft/)), optionally clipped ([`ClipKIT`](https://github.com/JLSteenwyk/ClipKIT/)), new HMM and full MSA recruited from the same pool ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
 
 ### Prepare downstream samplesheets
 
@@ -76,14 +73,15 @@ First, prepare a samplesheet with your input data that looks as follows:
 `samplesheet.csv`:
 
 ```csv
-sample,fasta,existing_hmms_to_update,existing_msas_to_update
-CONTROL_REP1,input/mgnifams_input_small.faa,,
+id,fasta,existing_hmms,existing_seed_msas,existing_full_msas
+CONTROL_REP1,input/mgnifams_input_small.faa,,,
 ```
 
 Each row contains a fasta file with amino acid sequences (can be zipped or unzipped).
-Optionally, a row may contain tarball archives (tar.gz) of existing families' HMM and MSA folders, in order to be updated.
-In this case, the HMM and MSA files must be matching in numbers and in base filenames (not the extension).
-Hit families/sequences will be updated, while no hit sequences will create new families.
+Optionally, a row may contain tarball archives (tar.gz) of existing families' HMMs, and optionally their seed and/or full MSAs, in order to be updated.
+Each HMM's `NAME` must match its file name, and each seed or full MSA file must be named after an HMM file (same base filename, not the extension).
+Hit families will be updated, while sequences in no updated family will create new families.
+Every run also archives each sample's final families under `archives/<id>/`, in the same tar.gz shape, so they can be updated again later.
 
 Now, you can run the pipeline using:
 

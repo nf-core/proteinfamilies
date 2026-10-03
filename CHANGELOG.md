@@ -5,12 +5,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## v3.0.0dev - [unreleased]
 
+### `Added`
+
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198)
+  - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
+  - Added `--skip_update_refinement` (default `false`): updated families keep their existing HMM, which aligns its hits into the new full MSA, and a provided seed MSA passes through unchanged. (by @vagkaratzas)
+  - Existing families without any hit during an update, or whose rebuilt HMM recruits nothing, are kept unchanged (their HMM, seed and full MSA pass through) and listed with the reason in `update_families/kept_families/<id>_kept_existing_families.tsv`. A sample without any hit no longer crashes `BRANCH_HITS_FASTA`: all its sequences go to family creation. (by @vagkaratzas)
+
 ### `Changed`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - **Breaking:** samplesheet v3 and update rework (standard engine).
+  - Samplesheet columns are now `id,fasta,existing_hmms,existing_seed_msas,existing_full_msas` (was `sample,fasta,existing_hmms_to_update,existing_msas_to_update`). Existing HMMs alone route a sample to the update path; both MSA archives are optional, and MSAs without HMMs fail validation. (by @vagkaratzas)
+  - Existing HMMs must be `NAME`d after their file name, each seed and full MSA file must be named after an HMM file, no family may be given twice, and existing families may not be named like the families the run creates for the sample (`<id>_<number>...`); the pipeline stops otherwise. (by @vagkaratzas)
+  - Updated families are rebuilt like created ones (`GENERATE_FAMILIES`): their hits give a new (trimmed) seed MSA and HMM, which recruits the new full MSA (hmmalign, Stockholm) from the input sequences pooled with the members of the existing full MSAs (aligned FASTA or Stockholm). `--skip_additional_sequence_recruiting` and the hmmsearch/recruiting `save_*` params now also apply to updated families. Existing full-MSA members are searched again rather than re-aligned blindly, and never create new families. Input sequences go to family creation only if no updated family holds them, so sequences recruited by a rebuilt HMM no longer also create new families. A member is pooled only if its region is not already inside an input sequence of the same protein or inside another member (exact and nested duplicates pooled once, partial overlaps kept); seed MSAs are never searched. (by @vagkaratzas)
+  - Added a `test_update` pipeline nf-test, and a v2 → v3 migration note to `docs/usage.md`. (by @vagkaratzas)
+  - Updated family outputs moved to `update_families/{seed_msa,hmm,full_msa}/raw/<tool>/<id>/` (as created families); `update_families/fasta/<id>/` removed. (by @vagkaratzas)
 - [#197](https://github.com/nf-core/proteinfamilies/pull/197) - **Breaking:** seed MSAs are trimmed inside `ALIGN_SEQUENCES`, full MSAs never (except updated families, whose single MSA is both); `--skip_msa_trimming` renamed to `--skip_seed_msa_trimming`, `--clipkit_out_format` and `--save_update_families_{pre_clipped,clipped}_fasta` removed, `clipkit/` output folders renamed to `trimmed/` (`.aln`). Family FASTA files now always match their full MSA. Added a `test_mgnifam` pipeline nf-test. (by @vagkaratzas)
 
 ### `Fixed`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198)
+  - Updated families no longer change between identical runs: `BRANCH_HITS_FASTA` wrote each family's hits in Python set order, which varies per run, so seed alignments, HMMs and full MSAs could differ. Hits are now written sorted. (by @vagkaratzas)
+  - Fixed samplesheet rows with existing HMMs but no MSAs (or the reverse) being silently dropped: they matched neither the create nor the update path. (by @vagkaratzas)
+  - Input sequences already named `<sequence>/<start>-<end>` give family members named in the parent sequence's coordinates (`seqA/10-200` hit on 3-180 → `seqA/12-189`) instead of nested ranges (`seqA/10-200/3-180`). During updates, such a sequence was also written to the unassigned sequences despite its hit. (by @vagkaratzas)
+  - Fixed updates silently searching only the first existing family when the sample FASTA is gzipped: HMMER cannot rewind a gzip stream between query HMMs, so the FASTA is now decompressed before `hmmsearch`. (by @vagkaratzas)
 - [#197](https://github.com/nf-core/proteinfamilies/pull/197) - Trimmed MSA rows that lost residues are renamed `<sequence>/<start>-<end>` to the residues they still hold; untouched rows keep their name ([#119](https://github.com/nf-core/proteinfamilies/issues/119)). (by @vagkaratzas)
 
 ## v2.6.0 - [2026/10/01]
@@ -39,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
 - [#182](https://github.com/nf-core/proteinfamilies/pull/182) - Added an alternative, iterative family generation algorithm, selectable with `--family_generation_algorithm iterative`. It hands whole chunks of clusters (`--clusters_per_chunk`) to `mgnifam`, which repeats HMM building, sequence recruitment and realignment per cluster until each family converges or is discarded. Applies to both newly created and merged families. (by @vagkaratzas)
 
 ### `Fixed`
@@ -82,6 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
 - [#159](https://github.com/nf-core/proteinfamilies/pull/159) - Added functionality to generate a HMM library file (compressed) with its respective final protein families HMMs, per input sample. Family library files can be found at `hmm/library` (by @juanfmx2) (Hackathon 2026)
 - [#154](https://github.com/nf-core/proteinfamilies/pull/154) - Added optional save parameters for `update_families` mode: `--save_update_families_pre_clipped_fasta`, and `--save_update_families_clipped_fasta` (with gaps removed) to save FASTA files from updated family MSAs at various stages of the subworkflow (`update_families/fasta/pre_clipped/`, `update_families/fasta/pre_clipped_non_redundant_sequences/`, and `update_families/fasta/post_clipped/`). (by @eparisis) (Hackathon 2026)
 
@@ -108,6 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
 - [#143](https://github.com/nf-core/proteinfamilies/pull/143)
   - Added the `cmaple` module for optional phylogenetic tree inference for final family full MSAs. (by @vagkaratzas)
   - Added extra nf-tests for the `REMOVE_REDUNDANCY` subworkflow. (by @vagkaratzas)
@@ -138,6 +159,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
 - [#133](https://github.com/nf-core/proteinfamilies/pull/133) - Using the new workflow output syntax to publish the downstream `nf-core/proteinfold` samplesheet. (by @vagkaratzas)
 - [#132](https://github.com/nf-core/proteinfamilies/pull/132) - Added optimized memory and time resources for `test` and `test_full` profiles. (by @vagkaratzas)
 
@@ -157,6 +179,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
 - [#124](https://github.com/nf-core/proteinfamilies/pull/124)
   - Added new subworkflow `MERGE_FAMILIES` that can optionally merge similar (but not redundant) generated protein families. (by @vagkaratzas)
   - Added new functionality to the local module `IDENTIFY_REDUNDANT_FAMS` which now also detects and outputs the identifiers of similar families that can optionally be merged downstream. These identifiers are written to _"/remove_redundancy/&lt;samplename&gt;/similar_fam_ids.txt"_, and the corresponding family pairwise similarity scores to _"/remove_redundancy/&lt;samplename&gt;/similarities.csv"_. (by @vagkaratzas)
@@ -219,6 +242,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
 - [#105](https://github.com/nf-core/proteinfamilies/pull/105) - `CHECK_QUALITY` subworkflow added at the start of the pipeline.
   It utilizes the `seqkit/stats` nf-core module to generate a `MultiQC`-ready report with statistics for the input amino acid sequences.
   The metro-map has been updated to reflect this change.
@@ -227,6 +251,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
 - [#93](https://github.com/nf-core/proteinfamilies/pull/93)
   - Added nf-test and `meta.yml` file for local subworkflow `GENERATE_FAMILIES`.
   - Added nf-test and `meta.yml` file for local subworkflow `REMOVE_REDUNDANCY`.
@@ -274,6 +299,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
 - [#69](https://github.com/nf-core/proteinfamilies/pull/69)
   - Added the `hhsuite/reformat` nf-core module to reformat `.sto` alignments to `.fas` when in-family sequence redundancy is not removed.
   - Added the option to save intermediate and final family fasta files throughout the workflow with various `save` parameters.
@@ -325,6 +351,7 @@ Initial release of nf-core/proteinfamilies, created with the [nf-core](https://n
 
 ### `Added`
 
+- [#198](https://github.com/nf-core/proteinfamilies/pull/198) - Each sample's final families (created, updated and kept) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
 - Amino acid sequence clustering (mmseqs)
 - Multiple sequence alignment (famsa, mafft, clipkit)
 - Hidden Markov Model generation (hmmer)
