@@ -207,4 +207,127 @@ nextflow_workflow {
             )
         }
     }
+
+    test("hmm duplicate stems - fail") {
+        // fam_a.hmm and fam_a.hmm.gz give the same family twice
+        when {
+            workflow {
+                """
+                def f1 = file('dup_hmms/hmm/fam_a.hmm')
+                f1.parent.mkdirs()
+                f1.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                ['gzip', '-k', file('dup_hmms/hmm/fam_a.hmm').toString()].execute().waitFor()
+                ['tar', '-czf', file('dup_hmms.tar.gz').toString(), '-C', file('dup_hmms').toString(), 'hmm'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('dup_hmms.tar.gz'),
+                    [],
+                    []
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("fam_a each given by more than one file") } }
+            )
+        }
+    }
+
+    test("hmm names like created families - fail") {
+        // test_update_1 could be created for sample test_update; test_update_ and test_update_x1 could not
+        when {
+            workflow {
+                """
+                def f2 = file('colliding_hmms/hmm/test_update_.hmm')
+                f2.parent.mkdirs()
+                f2.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  test_update_\\nLENG  1\\n//\\n'
+                def f6 = file('colliding_hmms/hmm/test_update_x1.hmm')
+                f6.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  test_update_x1\\nLENG  1\\n//\\n'
+                def f7 = file('colliding_hmms/hmm/test_update_1.hmm')
+                f7.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  test_update_1\\nLENG  1\\n//\\n'
+                ['tar', '-czf', file('colliding_hmms.tar.gz').toString(), '-C', file('colliding_hmms').toString(), 'hmm'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('colliding_hmms.tar.gz'),
+                    [],
+                    []
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("Existing families test_update_1 are named like families created for sample 'test_update'") } }
+            )
+        }
+    }
+
+    test("full msa without hmm - fails") {
+        // other.aln names no existing HMM, so it could never be passed through with its family
+        when {
+            workflow {
+                """
+                def f3 = file('one_hmm/hmm/fam_a.hmm')
+                f3.parent.mkdirs()
+                f3.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                ['tar', '-czf', file('one_hmm.tar.gz').toString(), '-C', file('one_hmm').toString(), 'hmm'].execute().waitFor()
+                def f4 = file('stray_msas/full_msa/fam_a.aln')
+                f4.parent.mkdirs()
+                f4.text = '>s1\\nMK\\n'
+                def f5 = file('stray_msas/full_msa/other.aln')
+                f5.text = '>s2\\nMK\\n'
+                ['tar', '-czf', file('stray_msas.tar.gz').toString(), '-C', file('stray_msas').toString(), 'full_msa'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('one_hmm.tar.gz'),
+                    [],
+                    file('stray_msas.tar.gz')
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("without an existing HMM of the same name: other") } }
+            )
+        }
+    }
+
 }
