@@ -3,11 +3,9 @@
 ## Originally written by Evangelos Karatzas and released under the MIT license.
 ## See git repository (https://github.com/nf-core/proteinfamilies) for full license text.
 """
-Assigns new sequences to existing families using hmmsearch domain hits. Sequences whose
-domain envelope covers at least --length_threshold of the query HMM are written into
-per-family FASTA files; the remainder are written to a single non-hit output file.
-With --pool, hits are cut from the pool (the input sequences plus existing family members),
-while only input sequences can be non-hits.
+Assigns searched sequences to existing families using hmmsearch domain hits. Sequences whose
+domain envelope covers at least --length_threshold of the query HMM are written, cut to that
+envelope, into per-family FASTA files.
 """
 
 import sys
@@ -30,15 +28,7 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         required=True,
         metavar="FILE",
         type=str,
-        help="Input fasta file.",
-    )
-    parser.add_argument(
-        "-p",
-        "--pool",
-        required=False,
-        metavar="FILE",
-        type=str,
-        help="Searched sequence pool in fasta format, a superset of --fasta (default: --fasta).",
+        help="Searched fasta file, that hits are cut from.",
     )
     parser.add_argument(
         "-d",
@@ -63,14 +53,6 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         metavar="FOLDER",
         type=str,
         help="Name of the output folder with hit fasta files (one file per family, where the filename is the family id).",
-    )
-    parser.add_argument(
-        "-n",
-        "--non_hits",
-        required=True,
-        metavar="FILE",
-        type=str,
-        help="Name of the output fasta file with the non hit sequences.",
     )
     return parser.parse_args(args)
 
@@ -137,35 +119,6 @@ def parse_fasta(file_path: str) -> dict[str, SeqRecord]:
     """
     with open_fasta(file_path) as file:
         return {record.id: record for record in SeqIO.parse(file, "fasta")}
-
-
-def write_non_hit_sequences(
-    filtered_sequences: dict[str, set[str]],
-    sequences: dict[str, SeqRecord],
-    non_hits: str,
-) -> None:
-    """
-    Write sequences with no hit to any family to a gzipped FASTA.
-
-    A sequence is a non-hit if its bare ID (without /from-to suffix) does not appear
-    in any family's hit set.
-
-    Args:
-        filtered_sequences (dict[str, set[str]]): Passing hits grouped by family ID.
-        sequences (dict[str, Bio.SeqRecord.SeqRecord]): Input sequences keyed by ID.
-        non_hits (str): Output path for the gzipped FASTA of non-hit sequences.
-    """
-    # Determine the non-hit sequences
-    hit_sequence_names = {hit.rpartition("/")[0] for hits in filtered_sequences.values() for hit in hits}
-    non_hit_records = [
-        record for name, record in sequences.items()
-        if name not in hit_sequence_names
-    ]
-
-    # Write the non-hit sequences to a gzipped file
-    with gzip.open(non_hits, "wt") as non_hits_file:  # 'wt' mode for text writing
-        SeqIO.write(non_hit_records, non_hits_file, "fasta")
-    print(f"Written {len(non_hit_records)} non-hit sequences to {non_hits}")
 
 
 def validate_and_parse_hit_name(hit: str) -> tuple[str, int, int]:
@@ -267,41 +220,22 @@ def write_family_fastas(
             print(f"Written {len(family_records)} sequences to {family_fasta_path}")
 
 
-def filter_recruited(
-    fasta: str,
-    domtbl: str,
-    length_threshold: float,
-    hits: str,
-    non_hits: str,
-    pool: str | None = None,
-) -> None:
+def branch_hits(fasta: str, domtbl: str, length_threshold: float, hits: str) -> None:
     """
-    Split recruited sequences into per-family hit FASTAs and a non-hit FASTA.
+    Write the hits passing the length threshold into per-family FASTA files.
 
     Args:
-        fasta (str): Input FASTA; its sequences without hits are the non-hits.
+        fasta (str): Searched FASTA that hits are cut from.
         domtbl (str): Path to the hmmsearch domain table.
         length_threshold (float): Minimum envelope coverage ratio relative to query length.
         hits (str): Output directory for per-family hit FASTA files.
-        non_hits (str): Output path for the gzipped FASTA of non-hit sequences.
-        pool (str | None): Searched FASTA, a superset of fasta, that hits are cut from.
     """
-    filtered_sequences = filter_sequences(domtbl, length_threshold)
-    sequences = parse_fasta(pool or fasta)
-    candidates = sequences
-    if pool:
-        with open_fasta(fasta) as file:
-            input_ids = {record.id for record in SeqIO.parse(file, "fasta")}
-        candidates = {name: record for name, record in sequences.items() if name in input_ids}
-    write_non_hit_sequences(filtered_sequences, candidates, non_hits)
-    write_family_fastas(filtered_sequences, sequences, hits)
+    write_family_fastas(filter_sequences(domtbl, length_threshold), parse_fasta(fasta), hits)
 
 
 def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
-    filter_recruited(
-        args.fasta, args.domtbl, args.length_threshold, args.hits, args.non_hits, args.pool
-    )
+    branch_hits(args.fasta, args.domtbl, args.length_threshold, args.hits)
 
 
 if __name__ == "__main__":

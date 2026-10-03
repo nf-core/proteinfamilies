@@ -1,13 +1,20 @@
 /*
     UPDATE EXISTING FAMILIES
 
-    Assigns new sequences to existing families by searching them, together with the members of
-    any existing full MSAs, against a concatenated library of the existing HMMs. Each family's
-    hits are then rebuilt like a newly created family (GENERATE_FAMILIES): aligned and trimmed
-    into a new seed MSA, built into a new HMM and, unless skipped, used to recruit the full MSA
-    from the same sequence pool. With skip_update_refinement, the existing HMMs are kept and
-    only align their hits into new full MSAs. Input sequences matching no family are emitted as no_hit_seqs
-    for downstream de-novo family creation.
+    PREPARE (engine-agnostic): untar and validate the existing families, and pool the input
+    sequences with the members of any existing full MSAs.
+
+    ENGINE (standard, below; mgnifam update_families from v3.1.0): the existing HMMs search the
+    pool. Each family's hits are rebuilt like a newly created family (GENERATE_FAMILIES): aligned
+    and trimmed into a new seed MSA, built into a new HMM and, unless skipped, used to recruit the
+    full MSA from the pool. With skip_update_refinement, the existing HMMs only align their hits
+    into new full MSAs. An engine returns a family by emitting its full MSA, plus a new HMM, seed
+    MSA and family FASTA where it built them.
+
+    FINALISE (engine-agnostic): every provided HMM, seed or full MSA passes through unless the
+    engine built a new one, so families the engine did not return are kept unchanged and listed
+    with a reason. Input sequences not in any returned family are emitted as no_hit_seqs for
+    downstream de-novo family creation.
 */
 
 include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/main'
@@ -25,6 +32,7 @@ include { MMSEQS_FASTA_CLUSTER          } from '../../../subworkflows/nf-core/mm
 include { REMOVE_REDUNDANT_SEQS         } from '../../../modules/local/remove_redundant_seqs/main'
 include { GENERATE_FAMILIES             } from '../../../subworkflows/local/generate_families'
 include { HMMER_HMMALIGN                } from '../../../modules/nf-core/hmmer/hmmalign/main'
+include { EXTRACT_UNASSIGNED_SEQS       } from '../../../modules/local/extract_unassigned_seqs/main'
 include { EXTRACT_FAMILY_MEMBERS        } from '../../../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS           } from '../../../modules/local/extract_family_reps/main'
 
@@ -63,6 +71,11 @@ workflow UPDATE_FAMILIES {
     // Squeeze the HMMs into a single file
     CAT_HMM( UNTAR_HMM.out.untar.map { meta, folder -> [meta, file("${folder.toUriString()}/*", checkIfExists: true)] } )
 
+    // Provided family files, [id, family] meta
+    ch_existing_hmm      = familyFiles( UNTAR_HMM.out.untar )
+    ch_existing_seed_msa = familyFiles( UNTAR_SEED_MSA.out.untar )
+    ch_existing_full_msa = familyFiles( UNTAR_FULL_MSA.out.untar )
+
     // The searched pool: the input sequences, plus the members of existing full MSAs, so that
     // the families keep the old members that still hit. HMMER rewinds the target database for
     // every query HMM and a gzip stream cannot rewind, so the pool is always uncompressed.
@@ -90,44 +103,28 @@ workflow UPDATE_FAMILIES {
         .join(ch_pool)
         .map { meta, concatenated_hmm, pool -> [meta, concatenated_hmm, pool, false, false, true] }
 
+    // ENGINE (standard)
     HMMER_HMMSEARCH( ch_input_for_hmmsearch )
 
-    // Hits are cut from the pool, but only input sequences can be non-hits
+    // Hits are cut from the pool
     ch_input_for_branch_hits = HMMER_HMMSEARCH.out.domain_summary
-        .join(ch_input_fasta)
-        .join(POOL_EXISTING_MEMBERS.out.fasta, remainder: true)
-        .multiMap { meta, domtbl, fasta, pool ->
+        .join(ch_pool)
+        .multiMap { meta, domtbl, pool ->
             domtbl: [ meta, domtbl ]
-            fasta: [ meta, fasta, pool ?: [] ]
+            fasta: [ meta, pool ]
         }
 
-    // Branch hit families from input sequences without hits
     BRANCH_HITS_FASTA ( ch_input_for_branch_hits.fasta, ch_input_for_branch_hits.domtbl, hmmsearch_query_length_threshold )
-
-    // Families without any hit are kept unchanged: their existing HMM passes through, and they
-    // are listed per sample. A sample without any hit emits no hits at all.
-    ch_zero_hit_hmms = UNTAR_HMM.out.untar
-        .join(BRANCH_HITS_FASTA.out.hits, remainder: true)
-        .map { meta, folder, hits ->
-            def hit_families = [hits].flatten().findAll().collect { hit -> fileStem(hit) }
-            [ meta, folder.listFiles().toList().findAll { hmm -> !(fileStem(hmm) in hit_families) } ]
-        }
 
     // [id, family] meta, as for created families' chunks
     ch_hits = BRANCH_HITS_FASTA.out.hits
         .transpose()
-        .map { meta, file ->
-            [[id: meta.id, family: fileStem(file)], file]
-        }
+        .map { meta, file -> [[id: meta.id, family: fileStem(file)], file] }
 
     if (skip_update_refinement) {
-        // The existing HMMs stay as they are and align their own hits into the new full MSAs;
-        // a provided seed MSA passes through unchanged
-        ch_existing_hmms = UNTAR_HMM.out.untar
-            .flatMap { meta, folder -> folder.listFiles().collect { hmm -> [[id: meta.id, family: fileStem(hmm)], hmm] } }
-
+        // The existing HMMs stay as they are and align their own hits into the new full MSAs
         ch_input_for_hmmalign = ch_hits
-            .join(ch_existing_hmms)
+            .join(ch_existing_hmm)
             .multiMap { meta, seqs, hmm ->
                 seq: [ meta, seqs ]
                 hmm: [ hmm ]
@@ -135,13 +132,10 @@ workflow UPDATE_FAMILIES {
 
         HMMER_HMMALIGN( ch_input_for_hmmalign.seq, ch_input_for_hmmalign.hmm )
 
-        ch_seed_msa = UNTAR_SEED_MSA.out.untar
-            .flatMap { meta, folder -> folder.listFiles().collect { msa -> [[id: meta.id, family: fileStem(msa)], msa] } }
-            .join(ch_hits)
-            .map { meta, msa, _hits -> [ meta, msa ] }
-        ch_full_msa = HMMER_HMMALIGN.out.sto
-        ch_fasta    = ch_hits
-        ch_hmm      = ch_existing_hmms // zero-hit families included
+        ch_engine_seed_msa = channel.empty()
+        ch_engine_full_msa = HMMER_HMMALIGN.out.sto
+        ch_engine_fasta    = ch_hits
+        ch_engine_hmm      = channel.empty()
     } else {
         ch_fasta = ch_hits
         if (!skip_sequence_redundancy_removal) {
@@ -164,18 +158,50 @@ workflow UPDATE_FAMILIES {
             hmmsearch_query_length_threshold
         )
 
-        ch_seed_msa = GENERATE_FAMILIES.out.seed_msa
-        ch_full_msa = GENERATE_FAMILIES.out.full_msa
-        ch_fasta    = GENERATE_FAMILIES.out.fasta
-        ch_hmm      = GENERATE_FAMILIES.out.hmm
-            .mix( ch_zero_hit_hmms.transpose().map { meta, hmm -> [[id: meta.id, family: fileStem(hmm)], hmm] } )
+        // A family whose new HMM recruits nothing has no full MSA, so it is not returned
+        ch_engine_full_msa = GENERATE_FAMILIES.out.full_msa
+        ch_engine_seed_msa = GENERATE_FAMILIES.out.seed_msa.join(ch_engine_full_msa).map { meta, seed, _full -> [meta, seed] }
+        ch_engine_hmm      = GENERATE_FAMILIES.out.hmm.join(ch_engine_full_msa).map { meta, hmm, _full -> [meta, hmm] }
+        ch_engine_fasta    = GENERATE_FAMILIES.out.fasta
     }
+    // Families with hits that the engine did not return
+    ch_engine_reasons = ch_hits
+        .join(ch_engine_full_msa, remainder: true)
+        .filter { _meta, hits, full_msa -> hits && !full_msa }
+        .map { meta, _hits, _full_msa -> [meta, 'no recruits'] }
+    // END ENGINE
+
+    // FINALISE
+    ch_seed_msa = passThrough(ch_existing_seed_msa, ch_engine_seed_msa)
+    ch_full_msa = passThrough(ch_existing_full_msa, ch_engine_full_msa)
+    ch_hmm      = passThrough(ch_existing_hmm, ch_engine_hmm)
+    ch_fasta    = ch_engine_fasta
+
+    // Existing families the engine did not return, kept unchanged, listed per sample
+    ch_kept_families = ch_existing_hmm
+        .join(ch_engine_full_msa, remainder: true)
+        .filter { _meta, hmm, full_msa -> hmm && !full_msa }
+        .map { meta, _hmm, _full_msa -> [meta, 'no hits'] }
+        .join(ch_engine_reasons, remainder: true)
+        .filter { _meta, default_reason, _reason -> default_reason }
+        .map { meta, default_reason, reason -> [[id: meta.id], [meta.family, reason ?: default_reason]] }
+        .groupTuple()
+    ch_kept_families = UNTAR_HMM.out.untar
+        .join(ch_kept_families, remainder: true)
+        .map { meta, _folder, kept -> [meta, (kept ?: []).sort { family_reason -> family_reason[0] }] }
 
     // Strip family from meta and group by sample ID so EXTRACT_FAMILY_MEMBERS/REPS
     // receive all families for a sample together.
     ch_fasta_per_sample = ch_fasta
         .map { meta, faa -> [ [id: meta.id], faa ] }
         .groupTuple(by: 0)
+
+    // Input sequences not in any returned family go to family creation
+    EXTRACT_UNASSIGNED_SEQS(
+        ch_input_fasta
+            .join(ch_fasta_per_sample, remainder: true)
+            .map { meta, fasta, family_fastas -> [meta, fasta, family_fastas ?: []] }
+    )
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta_per_sample )
 
@@ -187,7 +213,22 @@ workflow UPDATE_FAMILIES {
     full_msa            = ch_full_msa
     fasta               = ch_fasta
     hmm                 = ch_hmm
-    zero_hit_families   = ch_zero_hit_hmms.map { meta, hmms -> [meta, hmms.collect { hmm -> fileStem(hmm) }.sort()] }
-    no_hit_seqs         = BRANCH_HITS_FASTA.out.non_hit_fasta
+    kept_families       = ch_kept_families    // [meta, [[family, reason], ...]], [] if every family was returned
+    no_hit_seqs         = EXTRACT_UNASSIGNED_SEQS.out.fasta
     updated_family_reps = ch_updated_family_reps
+}
+
+// One [[id, family], file] per file of each sample's folder
+def familyFiles(ch_folders) {
+    ch_folders.flatMap { meta, folder -> folder.listFiles().collect { file -> [[id: meta.id, family: fileStem(file)], file] } }
+}
+
+// A provided family file ([id, family] meta) unless the engine built a new one for that family
+def passThrough(ch_existing_files, ch_engine_files) {
+    ch_engine_files.mix(
+        ch_existing_files
+            .join(ch_engine_files, remainder: true)
+            .filter { _meta, existing, engine -> existing && !engine }
+            .map { meta, existing, _engine -> [meta, existing] }
+    )
 }

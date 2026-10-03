@@ -45,15 +45,16 @@ Each existing family is identified by the `NAME` inside its HMM, which must equa
 
 The input sequences, together with the members of any `existing_full_msas` (gaps removed; a member `seq/<start>-<end>` is skipped if its region lies inside an input sequence of the same protein `seq`, where a name without a range is the whole protein, or inside another member; partial overlaps are kept), are searched against the existing HMMs.
 Each family's hits are then rebuilt like a newly created family: optionally made non-redundant, aligned and trimmed into a new seed MSA, built into a new HMM, and used to recruit the new full MSA from the same pool (the new seed MSA serves as the full MSA with `--skip_additional_sequence_recruiting`).
-Families without any hits are kept unchanged (their existing HMM goes into the sample's HMM library) and listed in `update_families/zero_hit_families/<id>_zero_hits_existing_families.txt`; a sample without any hit sends all its sequences to family creation. With `--skip_update_refinement`, the existing HMMs are kept instead: each one aligns its hits into the new full MSA (hmmalign), and its `existing_seed_msas` file, if given, passes through unchanged. Otherwise `existing_seed_msas` are validated, but not used.
-Members of existing full MSAs that no family hits again are dropped; they never go on to create new families.
+With `--skip_update_refinement`, the existing HMMs are kept instead: each one aligns its hits into the new full MSA (hmmalign), and its `existing_seed_msas` file, if given, passes through unchanged. Seed MSAs are never searched, so sequences only found in a seed MSA must also be in the `fasta` or in a full MSA to stay in their family.
+Families without any hit, or whose rebuilt HMM recruits nothing, are kept unchanged (their existing HMM, seed and full MSA pass through) and listed with the reason in `update_families/kept_families/<id>_kept_existing_families.tsv`.
+Input sequences that end up in no updated family go to family creation (a sample without any hit sends all of them); members of existing full MSAs that no family holds anymore are dropped and never create new families.
 
 ### Migrating from v2 to v3
 
 - **Samplesheet:** rename the columns `sample` → `id`, `existing_hmms_to_update` → `existing_hmms` and `existing_msas_to_update` → `existing_full_msas`, and add an `existing_seed_msas` column (may be left empty). MSA archives are now optional; a row with MSAs but no HMMs is rejected.
 - **Existing HMMs** must be `NAME`d after their file name (see [Updating existing families](#updating-existing-families)).
 - **Parameters:** `--skip_msa_trimming` is now `--skip_seed_msa_trimming`; `--clipkit_out_format`, `--save_update_families_pre_clipped_fasta` and `--save_update_families_clipped_fasta` are removed (updated families use the same `save_*` parameters as created ones); `--skip_update_refinement` is new.
-- **Outputs:** `clipkit/` folders are now `trimmed/` (FASTA `.aln`). Updated families are published like created ones under `update_families/{seed_msa,hmm,full_msa}/raw/<tool>/<id>/`, with full MSAs in Stockholm format (hmmalign) instead of `update_families/full_msa/<tool>/` and `update_families/fasta/`. Existing families without hits are listed in `update_families/zero_hit_families/`.
+- **Outputs:** `clipkit/` folders are now `trimmed/` (FASTA `.aln`). Updated families are published like created ones under `update_families/{seed_msa,hmm,full_msa}/raw/<tool>/<id>/`, with full MSAs in Stockholm format (hmmalign) instead of `update_families/full_msa/<tool>/` and `update_families/fasta/`. Existing families kept unchanged are listed in `update_families/kept_families/`.
 
 ## Parameter specifications
 

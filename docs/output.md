@@ -507,15 +507,16 @@ Pooled members that no family hits again are dropped; only input sequences witho
   - `branch_fasta/`
     - `hits/`
       - `<family_id>.fasta`: (optional) hit sequences for each existing family, cut to the hit envelope
-    - `<samplename>.fasta.gz`: (optional) FASTA file that contains all remaining non-hit input sequences, which will be passed to normal execution mode to create new families
-  - `zero_hit_families/`
-    - `<samplename>_zero_hits_existing_families.txt`: existing families without any hit, one per line (empty if every family was hit)
+  - `unassigned/`
+    - `<samplename>_unassigned.fasta.gz`: (optional) input sequences in no updated family, which will be passed to normal execution mode to create new families
+  - `kept_families/`
+    - `<samplename>_kept_existing_families.tsv`: existing families kept unchanged, with the reason (`no hits`, or `no recruits` when the rebuilt HMM recruited nothing); header only if every family was updated
 
 </details>
 
 The `update_families` execution mode is run for samples with `existing_hmms` in the input samplesheet.
 The `hmmer/hmmsearch` module is used to match the pooled sequences against the existing family models.
-Families with hits are rebuilt (see [Rebuilding updated families](#rebuilding-updated-families)); families without hits are kept unchanged, with their existing HMM in the sample's HMM library, and listed in `zero_hit_families/`.
+Families with hits are rebuilt (see [Rebuilding updated families](#rebuilding-updated-families)); families without hits, or whose rebuilt HMM recruits nothing, are kept unchanged (existing HMM in the sample's HMM library, existing seed and full MSA passed through) and listed in `kept_families/`. An input sequence is unassigned unless an updated family holds a member cut from it, so sequences only the rebuilt HMMs recruit stay in their family instead of also creating new ones.
 
 [hmmer](https://github.com/EddyRivasLab/hmmer) is a suite of tools for searching sequence databases for homologs with profile hidden Markov models.
 

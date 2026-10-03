@@ -8,13 +8,12 @@ process BRANCH_HITS_FASTA {
         'community.wave.seqera.io/library/biopython:1.85--6f761292fa9881b4' }"
 
     input:
-    tuple val(meta) , path(fasta), path(pool, stageAs: "pool/*") // pool: [] to search the fasta alone
+    tuple val(meta) , path(fasta)
     tuple val(meta2), path(domtbl)
     val(length_threshold)
 
     output:
     tuple val(meta), path("hits/*")    , emit: hits, optional: true // none when no family is hit
-    tuple val(meta), path("*.fasta.gz"), emit: non_hit_fasta
     tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
     tuple val("${task.process}"), val('biopython'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('biopython'))\""), emit: versions_biopython, topic: versions
 
@@ -22,22 +21,17 @@ process BRANCH_HITS_FASTA {
     task.ext.when == null || task.ext.when
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def pool_arg = pool ? "--pool ${pool}" : ''
     """
     branch_hits_fasta.py \\
         --fasta ${fasta} \\
-        ${pool_arg} \\
         --domtbl ${domtbl} \\
         --length_threshold ${length_threshold} \\
-        --hits hits \\
-        --non_hits ${prefix}.fasta.gz
+        --hits hits
     """
 
     stub:
     """
     mkdir -p hits
     touch hits/test.fasta
-    echo "" | gzip > test.fasta.gz
     """
 }

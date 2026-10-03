@@ -6,7 +6,7 @@
                     {
                         "id": "test_update"
                     },
-                    "test_update.fasta.gz:md5,60ad9187c064f434cb473a1e0ec68350"
+                    "test_update_unassigned.fasta.gz:md5,36416f3575426d9a8b57eb8e576ed118"
                 ]
             ],
             [
@@ -50,7 +50,7 @@
             "test_update_meta_mqc.csv",
             11
         ],
-        "timestamp": "2026-10-02T17:42:12.613571546",
+        "timestamp": "2026-10-03T09:49:08.998972809",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -63,7 +63,7 @@
                     {
                         "id": "test_update"
                     },
-                    "test_update.fasta.gz:md5,60ad9187c064f434cb473a1e0ec68350"
+                    "test_update_unassigned.fasta.gz:md5,e377fff16136e3f983d98ed8d9ee4dce"
                 ]
             ],
             [
@@ -107,7 +107,7 @@
             "test_update_meta_mqc.csv",
             11
         ],
-        "timestamp": "2026-10-02T17:33:22.382000302",
+        "timestamp": "2026-10-03T09:48:53.132566276",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -120,7 +120,7 @@
                     {
                         "id": "test_update"
                     },
-                    "test_update.fasta.gz:md5,60ad9187c064f434cb473a1e0ec68350"
+                    "test_update_unassigned.fasta.gz:md5,e377fff16136e3f983d98ed8d9ee4dce"
                 ]
             ],
             [
@@ -129,7 +129,10 @@
                         "id": "test_update"
                     },
                     [
-                        "existing_fam_zero_hits"
+                        [
+                            "existing_fam_zero_hits",
+                            "no hits"
+                        ]
                     ]
                 ]
             ],
@@ -161,7 +164,7 @@
             "test_update_meta_mqc.csv",
             10
         ],
-        "timestamp": "2026-10-02T17:33:58.921428049",
+        "timestamp": "2026-10-03T09:49:40.635136122",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

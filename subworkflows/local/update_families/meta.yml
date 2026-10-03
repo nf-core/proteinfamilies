@@ -22,6 +22,8 @@ components:
   - mmseqs_fasta_cluster
   - remove_redundant_seqs
   - generate_families
+  - hmmer/hmmalign
+  - extract_unassigned_seqs
   - extract_family_members
   - extract_family_reps
 input:
@@ -29,7 +31,8 @@ input:
       type: file
       description: |
         Channel with the following elements; meta, sequences, existing_hmms, existing_seed_msas, existing_full_msas.
-        The MSA archives are optional ([]); seed MSAs are only validated against the HMMs.
+        The MSA archives are optional ([]); their files are named after the HMM files. Full MSA members are
+        searched again; seed MSAs are never searched, only passed through.
   - hmmsearch_query_length_threshold:
       type: number
       description: |
@@ -74,27 +77,28 @@ output:
   - seed_msa:
       type: file
       description: |
-        New seed MSA per updated family
+        New seed MSA per rebuilt family; the provided seed MSA of every other family
   - full_msa:
       type: file
       description: |
-        New full MSA per updated family
+        New full MSA per returned family; the provided full MSA of every kept family
   - fasta:
       type: file
       description: |
-        Sequences of each updated family's full MSA
+        Sequences of each returned family's full MSA
   - hmm:
       type: file
       description: |
-        New HMM per updated family, and the unchanged existing HMM of each family without hits
-  - zero_hit_families:
+        New HMM per rebuilt family; the existing HMM of every other family
+  - kept_families:
       type: list
       description: |
-        Names of the existing families without any hit, per sample
+        [family, reason] of each existing family the update did not return (kept unchanged), per sample;
+        reason "no hits" or "no recruits" (the rebuilt HMM recruited nothing)
   - no_hit_seqs:
       type: file
       description: |
-        FASTA file with sequences without hits, to go through the base family generation workflow
+        Gzipped FASTA of the input sequences in no returned family, to go through the base family generation workflow
   - updated_family_reps:
       type: file
       description: |

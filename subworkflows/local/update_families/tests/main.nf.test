@@ -35,7 +35,7 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
-                    workflow.out.zero_hit_families,
+                    workflow.out.kept_families,
                     workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
                     workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
                     workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
@@ -77,7 +77,7 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
-                    workflow.out.zero_hit_families,
+                    workflow.out.kept_families,
                     workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
                     workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
                     workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
@@ -119,7 +119,7 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
-                    workflow.out.zero_hit_families,
+                    workflow.out.kept_families,
                     workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
                     workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
                     workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
@@ -132,7 +132,7 @@ nextflow_workflow {
     }
 
     test("fasta - no hits") {
-        // No family is hit: every existing family is kept unchanged and listed as zero-hit,
+        // No family is hit: every existing family is kept unchanged and listed with "no hits",
         // and all input sequences flow back to family creation
         when {
             workflow {
@@ -163,7 +163,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert path(workflow.out.no_hit_seqs[0][1]).linesGzip.count { line -> line.startsWith('>') } == 2 },
-                { assert workflow.out.zero_hit_families == [[[id: 'test_update'], ['existing_fam_1', 'existing_fam_2', 'existing_fam_3', 'existing_fam_4', 'existing_fam_zero_hits']]] },
+                { assert workflow.out.kept_families == [[[id: 'test_update'], ['existing_fam_1', 'existing_fam_2', 'existing_fam_3', 'existing_fam_4', 'existing_fam_zero_hits'].collect { family -> [family, 'no hits'] }]] },
                 { assert workflow.out.hmm.size() == 5 },
                 { assert workflow.out.seed_msa.size() == 0 && workflow.out.full_msa.size() == 0 }
             )

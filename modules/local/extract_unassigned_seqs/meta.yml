@@ -1,0 +1,67 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "extract_unassigned_seqs"
+description: Write the input sequences that no updated family holds, to go through family creation.
+keywords:
+  - fasta
+  - families
+  - update
+tools:
+  - "extract_unassigned_seqs":
+      description: "Write the input sequences that no updated family holds, to go through family creation."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/extract_unassigned_seqs/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/extract_unassigned_seqs/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/extract_unassigned_seqs/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - fasta:
+        type: file
+        description: Input amino acid fasta file, plain or gzipped.
+        pattern: "*.{fasta,faa,fa,fasta.gz,faa.gz,fa.gz}"
+    - families:
+        type: file
+        description: Member fasta files of the updated families (`[]` if none). An input sequence is assigned if a member of the same protein lies inside it (`seq/start-end` names, a name without a range being the whole protein).
+        pattern: "*.{fasta,faa,fa,fasta.gz,faa.gz,fa.gz}"
+output:
+  fasta:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - ${prefix}.fasta.gz:
+          type: file
+          description: Gzipped fasta of the input sequences no updated family holds.
+          pattern: "*.fasta.gz"
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"
