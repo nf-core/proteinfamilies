@@ -489,7 +489,7 @@ If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (i
 ### Pool existing members
 
 When `existing_full_msas` are given, their members (gaps removed) are pooled with the sample's input sequences, so that the existing families keep the old members that still hit.
-A member is skipped if the input holds its sequence (the same name without a `/<start>-<end>` range), or if another MSA already gave a member of that name.
+A member `seq/<start>-<end>` is skipped if its region lies inside an input sequence of the same protein `seq` (a name without a range is the whole protein) or inside another member, so exact and nested duplicates are pooled once; partially overlapping members are kept.
 Pooled members that no family hits again are dropped; only input sequences without hits go on to create new families. The pool is an intermediate file and not published.
 
 ### hmmer for updating families

@@ -7,9 +7,11 @@ Pools the members of existing family MSAs with a sample's input sequences, so th
 families searches both again.
 
 MSAs may be Stockholm or aligned FASTA, plain or gzipped. Members are degapped and
-upper-cased (Stockholm insert columns are lower case). A member is dropped if the input holds
-the same sequence (same name once a trailing `/start-end` range is removed), since the input
-is the newer copy, or if an earlier member has the same name.
+upper-cased (Stockholm insert columns are lower case). A name `seq/start-end` is the slice
+start..end of protein `seq`; a name without a range is the whole protein. A member is dropped
+if its region is contained in an input sequence of the same protein (the input is the newer
+copy) or in another kept member of it, so exact and nested duplicates collapse, while partial
+overlaps and separate regions (e.g. two domains) are kept.
 
 Writes the uncompressed pool (HMMER cannot search a gzip stream): the input sequences
 first, then the kept members.
@@ -18,12 +20,13 @@ first, then the kept members.
 import sys
 import gzip
 import argparse
+import math
 import re
 from pathlib import Path
 from typing import Iterator, Sequence
 
 GAPS = str.maketrans("", "", "-.~")
-RANGE = re.compile(r"/\d+-\d+$")
+RANGE = re.compile(r"^(.+)/(\d+)-(\d+)$")
 
 
 def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
@@ -60,9 +63,17 @@ def open_text(path: Path):
     return (gzip.open if path.name.endswith(".gz") else open)(path, "rt")
 
 
-def base_name(name: str) -> str:
-    """The sequence a `name/start-end` slice is cut from."""
-    return RANGE.sub("", name)
+def region(name: str) -> tuple[str, int, float]:
+    """The protein a name belongs to and the residue range it covers (whole protein if no range)."""
+    match = RANGE.match(name)
+    if not match:
+        return name, 1, math.inf
+    start, end = sorted((int(match[2]), int(match[3])))
+    return match[1], start, end
+
+
+def contained(start: float, end: float, ranges: list[tuple[float, float]]) -> bool:
+    return any(s <= start and end <= e for s, e in ranges)
 
 
 def msa_rows(text: str) -> Iterator[tuple[str, str]]:
@@ -88,25 +99,42 @@ def pool_members(fasta: str, msas: Sequence[str], out_fasta: str) -> None:
 
     with open(out_fasta, "w") as out:
         # Streamed: the input can be far larger than memory, only its names are kept
-        input_bases, line = set(), "\n"
+        input_ranges: dict[str, list[tuple[float, float]]] = {}
+        line = "\n"
         with open_text(Path(fasta)) as f:
             for line in f:
                 if line.startswith(">"):
-                    input_bases.add(base_name(line[1:].split(maxsplit=1)[0]))
+                    protein, start, end = region(line[1:].split(maxsplit=1)[0])
+                    input_ranges.setdefault(protein, []).append((start, end))
                 out.write(line)
         if not line.endswith("\n"):
             out.write("\n")
 
-        seen = set()
+        # protein -> [(start, end, file order, name, residues)]
+        members: dict[str, list[tuple[int, float, int, str, str]]] = {}
+        order = 0
         for path in files:
             with open_text(path) as f:
-                rows = msa_rows(f.read())
+                rows = list(msa_rows(f.read()))
             for name, seq in rows:
                 residues = seq.translate(GAPS).upper()
-                if residues and name not in seen and base_name(name) not in input_bases:
-                    seen.add(name)
-                    out.write(f">{name}\n{residues}\n")
-    print(f"Pooled {len(seen)} existing family members with the input sequences.")
+                if residues:
+                    protein, start, end = region(name)
+                    members.setdefault(protein, []).append((start, end, order, name, residues))
+                    order += 1
+
+        kept = []
+        for protein, group in members.items():
+            kept_ranges: list[tuple[float, float]] = []
+            # Leftmost and widest first: a region can then only be contained in one already kept
+            for start, end, order, name, residues in sorted(group, key=lambda m: (m[0], -m[1], m[2])):
+                if contained(start, end, input_ranges.get(protein, [])) or contained(start, end, kept_ranges):
+                    continue
+                kept_ranges.append((start, end))
+                kept.append((order, name, residues))
+        for _, name, residues in sorted(kept):  # file order
+            out.write(f">{name}\n{residues}\n")
+    print(f"Pooled {len(kept)} existing family members with the input sequences.")
 
 
 def main(args: Sequence[str] | None = None) -> None:
