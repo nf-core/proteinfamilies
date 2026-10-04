@@ -92,11 +92,11 @@ workflow PROTEINFAMILIES {
     )
 
     ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
-    // Existing families the update did not return, kept unchanged, listed per sample with the
+    // Existing families the update did not return, left unchanged, listed per sample with the
     // reason (published in main.nf)
-    ch_kept_families = UPDATE_FAMILIES.out.kept_families
+    ch_unchanged_families = UPDATE_FAMILIES.out.unchanged_families
         .collectFile { meta, families ->
-            [ "${meta.id}_kept_existing_families.tsv", "family\treason\n" + families.collect { family, reason -> "${family}\t${reason}\n" }.join() ]
+            [ "${meta.id}_unchanged_existing_families.tsv", "family\treason\n" + families.collect { family, reason -> "${family}\t${reason}\n" }.join() ]
         }
 
     // Sequences not assigned to any existing family during update feed the de-novo creation path.
@@ -239,9 +239,9 @@ workflow PROTEINFAMILIES {
     )
 
     emit:
-    family_reps       = EXTRACT_FAMILY_REPS.out.fasta
-    kept_families     = ch_kept_families
-    multiqc_report = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
+    family_reps        = EXTRACT_FAMILY_REPS.out.fasta
+    unchanged_families = ch_unchanged_families
+    multiqc_report     = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
 }
 
 // Updated and created family files of each sample, grouped under a chunk/family-free [id] meta

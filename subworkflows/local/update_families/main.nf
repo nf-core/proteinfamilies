@@ -177,8 +177,8 @@ workflow UPDATE_FAMILIES {
     ch_hmm      = passThrough(ch_existing_hmm, ch_engine_hmm)
     ch_fasta    = ch_engine_fasta
 
-    // Existing families the engine did not return, kept unchanged, listed per sample
-    ch_kept_families = ch_existing_hmm
+    // Existing families the engine did not return, left unchanged, listed per sample
+    ch_unchanged_families = ch_existing_hmm
         .join(ch_engine_full_msa, remainder: true)
         .filter { _meta, hmm, full_msa -> hmm && !full_msa }
         .map { meta, _hmm, _full_msa -> [meta, 'no hits'] }
@@ -186,9 +186,9 @@ workflow UPDATE_FAMILIES {
         .filter { _meta, default_reason, _reason -> default_reason }
         .map { meta, default_reason, reason -> [[id: meta.id], [meta.family, reason ?: default_reason]] }
         .groupTuple()
-    ch_kept_families = UNTAR_HMM.out.untar
-        .join(ch_kept_families, remainder: true)
-        .map { meta, _folder, kept -> [meta, (kept ?: []).sort { family_reason -> family_reason[0] }] }
+    ch_unchanged_families = UNTAR_HMM.out.untar
+        .join(ch_unchanged_families, remainder: true)
+        .map { meta, _folder, unchanged -> [meta, (unchanged ?: []).sort { family_reason -> family_reason[0] }] }
 
     // Strip family from meta and group by sample ID so EXTRACT_FAMILY_MEMBERS/REPS
     // receive all families for a sample together.
@@ -213,7 +213,7 @@ workflow UPDATE_FAMILIES {
     full_msa            = ch_full_msa
     fasta               = ch_fasta
     hmm                 = ch_hmm
-    kept_families       = ch_kept_families    // [meta, [[family, reason], ...]], [] if every family was returned
+    unchanged_families  = ch_unchanged_families // [meta, [[family, reason], ...]], [] if every family was returned
     no_hit_seqs         = EXTRACT_UNASSIGNED_SEQS.out.fasta
     updated_family_reps = ch_updated_family_reps
 }

@@ -90,10 +90,10 @@ output:
       type: file
       description: |
         New HMM per rebuilt family; the existing HMM of every other family
-  - kept_families:
+  - unchanged_families:
       type: list
       description: |
-        [family, reason] of each existing family the update did not return (kept unchanged), per sample;
+        [family, reason] of each existing family the update did not return (left unchanged), per sample;
         reason "no hits" or "no recruits" (the rebuilt HMM recruited nothing)
   - no_hit_seqs:
       type: file
