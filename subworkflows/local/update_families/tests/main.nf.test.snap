@@ -34,11 +34,11 @@
                 "existing_fam_zero_hits.aln"
             ],
             [
-                "existing_fam_1.sto.gz",
-                "existing_fam_2.sto.gz",
-                "existing_fam_3.sto.gz",
-                "existing_fam_4.sto.gz",
-                "existing_fam_zero_hits.sto.gz"
+                "existing_fam_1.fas.gz",
+                "existing_fam_2.fas.gz",
+                "existing_fam_3.fas.gz",
+                "existing_fam_4.fas.gz",
+                "existing_fam_zero_hits.fas.gz"
             ],
             [
                 "existing_fam_1: 62",
@@ -50,7 +50,7 @@
             "test_update_meta_mqc.csv",
             11
         ],
-        "timestamp": "2026-10-03T09:49:08.998972809",
+        "timestamp": "2026-10-04T11:16:22.984230312",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -91,11 +91,11 @@
                 "existing_fam_zero_hits.aln"
             ],
             [
-                "existing_fam_1.sto.gz",
-                "existing_fam_2.sto.gz",
-                "existing_fam_3.sto.gz",
-                "existing_fam_4.sto.gz",
-                "existing_fam_zero_hits.sto.gz"
+                "existing_fam_1.fas.gz",
+                "existing_fam_2.fas.gz",
+                "existing_fam_3.fas.gz",
+                "existing_fam_4.fas.gz",
+                "existing_fam_zero_hits.fas.gz"
             ],
             [
                 "existing_fam_1: 62",
@@ -107,7 +107,7 @@
             "test_update_meta_mqc.csv",
             11
         ],
-        "timestamp": "2026-10-03T09:48:53.132566276",
+        "timestamp": "2026-10-04T11:16:04.117220289",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -150,10 +150,10 @@
                 "existing_fam_4.aln"
             ],
             [
-                "existing_fam_1.sto.gz",
-                "existing_fam_2.sto.gz",
-                "existing_fam_3.sto.gz",
-                "existing_fam_4.sto.gz"
+                "existing_fam_1.fas.gz",
+                "existing_fam_2.fas.gz",
+                "existing_fam_3.fas.gz",
+                "existing_fam_4.fas.gz"
             ],
             [
                 "existing_fam_1: 31",
@@ -164,7 +164,7 @@
             "test_update_meta_mqc.csv",
             10
         ],
-        "timestamp": "2026-10-03T09:49:40.635136122",
+        "timestamp": "2026-10-04T11:16:53.003187441",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

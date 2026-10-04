@@ -1,7 +1,7 @@
 {
     "-profile test_update": {
         "content": [
-            316,
+            329,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -60,6 +60,9 @@
                     "coreutils": 9.4,
                     "find": "4.6.0",
                     "pigz": 2.8
+                },
+                "HHSUITE_REFORMAT": {
+                    "hhsuite": "3.3.0"
                 },
                 "HMMER_HMMALIGN": {
                     "hmmer": 3.4
@@ -395,6 +398,23 @@
                 "update_families/family_reps/update_hmm_seed_gz/update_hmm_seed_gz_reps.faa",
                 "update_families/full_msa",
                 "update_families/full_msa/raw",
+                "update_families/full_msa/raw/hhsuite_reformat",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_only",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_only/existing_fam_1.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_only/existing_fam_2.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_only/existing_fam_3.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_only/existing_fam_4.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_full",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_full/existing_fam_1.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_full/existing_fam_2.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_full/existing_fam_3.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_full/existing_fam_4.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_full/existing_fam_zero_hits.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_gz/existing_fam_1.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_gz/existing_fam_2.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_gz/existing_fam_3.fas.gz",
+                "update_families/full_msa/raw/hhsuite_reformat/update_hmm_seed_gz/existing_fam_4.fas.gz",
                 "update_families/full_msa/raw/hmmer_hmmalign",
                 "update_families/full_msa/raw/hmmer_hmmalign/update_hmm_only",
                 "update_families/full_msa/raw/hmmer_hmmalign/update_hmm_only/existing_fam_1.sto.gz",
@@ -565,6 +585,19 @@
                 "update_hmm_seed_gz.tsv:md5,0b89ea2edf93916c82a1160cde5d0c82",
                 "update_hmm_seed_gz_meta_mqc.csv:md5,a42c183a34507462d4fef93c9c0273c3",
                 "update_hmm_seed_gz_reps.faa:md5,f420aa411165ff81fec5e12388ce45a8",
+                "existing_fam_1.fas.gz:md5,2df010b78ea7a44384d23c269cef597a",
+                "existing_fam_2.fas.gz:md5,2fa3dba690ffc16fe4b38ab572467d91",
+                "existing_fam_3.fas.gz:md5,e045affc59e50f770ea86f036d5755bf",
+                "existing_fam_4.fas.gz:md5,180e1a1a7f827cd2db19df8b246eb4ef",
+                "existing_fam_1.fas.gz:md5,fec4fed721b7744a220e8ec60b19fa7f",
+                "existing_fam_2.fas.gz:md5,2fa3dba690ffc16fe4b38ab572467d91",
+                "existing_fam_3.fas.gz:md5,e045affc59e50f770ea86f036d5755bf",
+                "existing_fam_4.fas.gz:md5,180e1a1a7f827cd2db19df8b246eb4ef",
+                "existing_fam_zero_hits.fas.gz:md5,817ff0b02946d720deb5b7b48bb076ac",
+                "existing_fam_1.fas.gz:md5,2df010b78ea7a44384d23c269cef597a",
+                "existing_fam_2.fas.gz:md5,2fa3dba690ffc16fe4b38ab572467d91",
+                "existing_fam_3.fas.gz:md5,e045affc59e50f770ea86f036d5755bf",
+                "existing_fam_4.fas.gz:md5,180e1a1a7f827cd2db19df8b246eb4ef",
                 "existing_fam_1.sto.gz:md5,aa689909217d5b789524eb530867a755",
                 "existing_fam_2.sto.gz:md5,6fb394cde2871b8674ffb36ded8376f8",
                 "existing_fam_3.sto.gz:md5,d11cb055c6aa325d67b2d285ccb094b5",
@@ -609,18 +642,18 @@
                 "update_hmm_seed_gz_unchanged_existing_families.tsv:md5,919b67773a2f3ba80861a2aa7e7e2fda"
             ],
             [
-                "update_hmm_only_full_msas.tar.gz: existing_fam_1.sto.gz, existing_fam_2.sto.gz, existing_fam_3.sto.gz, existing_fam_4.sto.gz, update_hmm_only_1.aln, update_hmm_only_2.aln",
+                "update_hmm_only_full_msas.tar.gz: existing_fam_1.fas.gz, existing_fam_2.fas.gz, existing_fam_3.fas.gz, existing_fam_4.fas.gz, update_hmm_only_1.aln, update_hmm_only_2.aln",
                 "update_hmm_only_hmms.tar.gz: existing_fam_1.hmm.gz, existing_fam_2.hmm.gz, existing_fam_3.hmm.gz, existing_fam_4.hmm.gz, existing_fam_zero_hits.hmm.gz, update_hmm_only_1.hmm.gz, update_hmm_only_2.hmm.gz",
                 "update_hmm_only_seed_msas.tar.gz: existing_fam_1.aln, existing_fam_2.aln, existing_fam_3.aln, existing_fam_4.aln, update_hmm_only_1.aln, update_hmm_only_2.aln",
-                "update_hmm_seed_full_full_msas.tar.gz: existing_fam_1.sto.gz, existing_fam_2.sto.gz, existing_fam_3.sto.gz, existing_fam_4.sto.gz, existing_fam_zero_hits.sto.gz, update_hmm_seed_full_1.aln, update_hmm_seed_full_2.aln",
+                "update_hmm_seed_full_full_msas.tar.gz: existing_fam_1.fas.gz, existing_fam_2.fas.gz, existing_fam_3.fas.gz, existing_fam_4.fas.gz, existing_fam_zero_hits.fas.gz, update_hmm_seed_full_1.aln, update_hmm_seed_full_2.aln",
                 "update_hmm_seed_full_hmms.tar.gz: existing_fam_1.hmm.gz, existing_fam_2.hmm.gz, existing_fam_3.hmm.gz, existing_fam_4.hmm.gz, existing_fam_zero_hits.hmm.gz, update_hmm_seed_full_1.hmm.gz, update_hmm_seed_full_2.hmm.gz",
                 "update_hmm_seed_full_seed_msas.tar.gz: existing_fam_1.aln, existing_fam_2.aln, existing_fam_3.aln, existing_fam_4.aln, existing_fam_zero_hits.aln, update_hmm_seed_full_1.aln, update_hmm_seed_full_2.aln",
-                "update_hmm_seed_gz_full_msas.tar.gz: existing_fam_1.sto.gz, existing_fam_2.sto.gz, existing_fam_3.sto.gz, existing_fam_4.sto.gz, update_hmm_seed_gz_1.aln, update_hmm_seed_gz_2.aln",
+                "update_hmm_seed_gz_full_msas.tar.gz: existing_fam_1.fas.gz, existing_fam_2.fas.gz, existing_fam_3.fas.gz, existing_fam_4.fas.gz, update_hmm_seed_gz_1.aln, update_hmm_seed_gz_2.aln",
                 "update_hmm_seed_gz_hmms.tar.gz: existing_fam_1.hmm.gz, existing_fam_2.hmm.gz, existing_fam_3.hmm.gz, existing_fam_4.hmm.gz, existing_fam_zero_hits.hmm.gz, update_hmm_seed_gz_1.hmm.gz, update_hmm_seed_gz_2.hmm.gz",
                 "update_hmm_seed_gz_seed_msas.tar.gz: existing_fam_1.aln, existing_fam_2.aln, existing_fam_3.aln, existing_fam_4.aln, existing_fam_zero_hits.aln, update_hmm_seed_gz_1.aln, update_hmm_seed_gz_2.aln"
             ]
         ],
-        "timestamp": "2026-10-03T10:01:00.298259666",
+        "timestamp": "2026-10-04T11:20:07.002869556",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

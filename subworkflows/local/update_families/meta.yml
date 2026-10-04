@@ -23,6 +23,7 @@ components:
   - remove_redundant_seqs
   - generate_families
   - hmmer/hmmalign
+  - hhsuite/reformat
   - extract_unassigned_seqs
   - extract_family_members
   - extract_family_reps
@@ -81,7 +82,7 @@ output:
   - full_msa:
       type: file
       description: |
-        New full MSA per returned family; the provided full MSA of every kept family
+        New full MSA (aligned FASTA) per returned family; the provided full MSA of every unchanged family
   - fasta:
       type: file
       description: |

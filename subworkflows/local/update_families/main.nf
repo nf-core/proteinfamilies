@@ -32,6 +32,7 @@ include { MMSEQS_FASTA_CLUSTER          } from '../../../subworkflows/nf-core/mm
 include { REMOVE_REDUNDANT_SEQS         } from '../../../modules/local/remove_redundant_seqs/main'
 include { GENERATE_FAMILIES             } from '../../../subworkflows/local/generate_families'
 include { HMMER_HMMALIGN                } from '../../../modules/nf-core/hmmer/hmmalign/main'
+include { HHSUITE_REFORMAT              } from '../../../modules/nf-core/hhsuite/reformat/main'
 include { EXTRACT_UNASSIGNED_SEQS       } from '../../../modules/local/extract_unassigned_seqs/main'
 include { EXTRACT_FAMILY_MEMBERS        } from '../../../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS           } from '../../../modules/local/extract_family_reps/main'
@@ -163,6 +164,12 @@ workflow UPDATE_FAMILIES {
         ch_engine_seed_msa = GENERATE_FAMILIES.out.seed_msa.join(ch_engine_full_msa).map { meta, seed, _full -> [meta, seed] }
         ch_engine_hmm      = GENERATE_FAMILIES.out.hmm.join(ch_engine_full_msa).map { meta, hmm, _full -> [meta, hmm] }
         ch_engine_fasta    = GENERATE_FAMILIES.out.fasta
+    }
+    // hmmalign full MSAs (Stockholm) become FASTA, as created families' do in REMOVE_REDUNDANCY.
+    // ponytail: done here until UPDATE_FAMILIES runs REMOVE_REDUNDANCY itself
+    if (skip_update_refinement || !skip_additional_sequence_recruiting) {
+        HHSUITE_REFORMAT( ch_engine_full_msa, "sto", "fas" )
+        ch_engine_full_msa = HHSUITE_REFORMAT.out.msa
     }
     // Families with hits that the engine did not return
     ch_engine_reasons = ch_hits

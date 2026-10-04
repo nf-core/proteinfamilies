@@ -582,13 +582,16 @@ If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs suite stri
       - `hmmer_hmmalign/`
         - `<samplename>/`
           - `<family_id>.sto.gz`: compressed new family full MSA produced by hmmalign
+      - `hhsuite_reformat/`
+        - `<samplename>/`
+          - `<family_id>.fas.gz`: the hmmalign full MSA reformatted to aligned FASTA, as for created families; this is the full MSA archived and used downstream
 
 </details>
 
 Each updated family is rebuilt like a newly created one (see [FAMSA](#famsa-aligner), [mafft](#mafft-aligner), [ClipKIT](#clipkit) and [hmmer](#hmmer)), keeping its family name:
 its (non redundant) hits are aligned into a new seed MSA, optionally trimmed, built into a new HMM, and the new HMM recruits the family's full MSA from the same pool of input sequences and existing members.
 With `--skip_additional_sequence_recruiting`, the new seed MSA also serves as the full MSA.
-With `--skip_update_refinement`, families are not rebuilt: the existing HMM is kept and aligns the family's hits into the new full MSA (`update_families/full_msa/raw/hmmer_hmmalign/`), and no new seed MSA or HMM is written.
+With `--skip_update_refinement`, families are not rebuilt: the existing HMM is kept and aligns the family's hits into the new full MSA (`update_families/full_msa/raw/hmmer_hmmalign/`, reformatted in `hhsuite_reformat/`), and no new seed MSA or HMM is written.
 Hits on sequences already named `<sequence>/<start>-<end>` (e.g. pooled existing members) are named in the parent sequence's coordinates.
 
 ### CMAPLE
