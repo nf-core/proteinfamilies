@@ -9,12 +9,13 @@
     and trimmed into a new seed MSA, built into a new HMM and, unless skipped, used to recruit the
     full MSA from the pool. With skip_update_refinement, the existing HMMs only align their hits
     into new full MSAs. An engine returns a family by emitting its full MSA, plus a new HMM, seed
-    MSA and family FASTA where it built them.
+    MSA and family FASTA where it built them. Pooled full-MSA members without hits are dropped,
+    they never go to de-novo family creation. Stockholm full MSAs are reformatted to aligned FASTA.
 
     FINALISE (engine-agnostic): every provided HMM, seed or full MSA passes through unless the
-    engine built a new one, so families the engine did not return are kept unchanged and listed
-    with a reason. Input sequences not in any returned family are emitted as no_hit_seqs for
-    downstream de-novo family creation.
+    engine built a new one, so families the engine did not return are left unchanged and listed
+    with a reason. Only input FASTA sequences (never pooled full-MSA members) that no returned
+    family holds are emitted as no_hit_seqs for downstream de-novo family creation.
 */
 
 include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/main'

@@ -55,9 +55,9 @@ for up to three rounds, or until the family model has converged. For more inform
 ### Update families
 
 1. Pool the input sequences with the members of existing full MSAs, if given, and find which families to update by comparing them against existing family models with ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
-2. For non hit input sequences, continue in the [`Create families`](#create-families) paragraph above. For hit sequences and families continue to point 3 below
-3. Optionally, remove in-family redundant hits by strictly clustering with ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/)) and keeping cluster representatives
-4. Rebuild each hit family like a new one: seed MSA ([`FAMSA`](https://github.com/refresh-bio/FAMSA/) or [`mafft`](https://github.com/GSLBiotech/mafft/)), optionally clipped ([`ClipKIT`](https://github.com/JLSteenwyk/ClipKIT/)), new HMM and full MSA recruited from the same pool ([`hmmer`](https://github.com/EddyRivasLab/hmmer/))
+2. Optionally, remove in-family redundant hits by strictly clustering with ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/)) and keeping cluster representatives
+3. Rebuild each hit family like a new one, following steps 2-4 of [`Create families`](#create-families) with the `standard` algorithm (always used for updates): new seed MSA and HMM, and new full MSA recruited from the same pool, reformatted to `.fas` ([`HH-suite3`](https://github.com/soedinglab/hh-suite))
+4. Input fasta sequences that no updated family holds (including those recruited by a rebuilt HMM) continue in the [`Create families`](#create-families) paragraph above; members of existing full MSAs never do
 
 ### Prepare downstream samplesheets
 
@@ -77,10 +77,10 @@ id,fasta,existing_hmms,existing_seed_msas,existing_full_msas
 CONTROL_REP1,input/mgnifams_input_small.faa,,,
 ```
 
-Each row contains a fasta file with amino acid sequences (can be zipped or unzipped).
+Each row contains a fasta file with amino acid sequences (gzipped or uncompressed).
 Optionally, a row may contain tarball archives (tar.gz) of existing families' HMMs, and optionally their seed and/or full MSAs, in order to be updated.
-Each HMM's `NAME` must match its file name, and each seed or full MSA file must be named after an HMM file (same base filename, not the extension).
-Hit families will be updated, while sequences in no updated family will create new families.
+Each HMM's `NAME` must match its file name exactly (case-sensitive), and each seed or full MSA file must be named after an HMM file (same base filename, not the extension).
+Hit families will be updated, while input fasta sequences in no updated family will create new families (members of existing full MSAs never do).
 Every run also archives each sample's final families under `archives/<id>/`, in the same tar.gz shape, so they can be updated again later.
 
 Now, you can run the pipeline using:

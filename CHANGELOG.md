@@ -21,14 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added a `test_update` pipeline nf-test, and a v2 → v3 migration note to `docs/usage.md`. (by @vagkaratzas)
   - Updated family outputs moved to `update_families/{seed_msa,hmm,full_msa}/raw/<tool>/<id>/` (as created families); `update_families/fasta/<id>/` removed. (by @vagkaratzas)
   - Local module `BRANCH_HITS_FASTA` renamed to `SPLIT_FAMILY_HITS`: it only splits the hits per family now, unassigned input sequences come from `EXTRACT_UNASSIGNED_SEQS`. (by @vagkaratzas)
-- [#197](https://github.com/nf-core/proteinfamilies/pull/197) - **Breaking:** seed MSAs are trimmed inside `ALIGN_SEQUENCES`, full MSAs never (except updated families, whose single MSA is both); `--skip_msa_trimming` renamed to `--skip_seed_msa_trimming`, `--clipkit_out_format` and `--save_update_families_{pre_clipped,clipped}_fasta` removed, `clipkit/` output folders renamed to `trimmed/` (`.aln`). Family FASTA files now always match their full MSA. Added a `test_mgnifam` pipeline nf-test. (by @vagkaratzas)
+- [#197](https://github.com/nf-core/proteinfamilies/pull/197) - **Breaking:** seed MSAs are trimmed inside `ALIGN_SEQUENCES`, full MSAs never (except with `--skip_additional_sequence_recruiting`, where the seed MSA is also the full MSA); `--skip_msa_trimming` renamed to `--skip_seed_msa_trimming`, `--clipkit_out_format` and `--save_update_families_{pre_clipped,clipped}_fasta` removed, `clipkit/` output folders renamed to `trimmed/` (`.aln`). Family FASTA files now always match their full MSA. Added a `test_mgnifam` pipeline nf-test. (by @vagkaratzas)
 
 ### `Fixed`
 
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198)
   - Updated families no longer change between identical runs: `BRANCH_HITS_FASTA` wrote each family's hits in Python set order, which varies per run, so seed alignments, HMMs and full MSAs could differ. Hits are now written sorted. (by @vagkaratzas)
   - Fixed samplesheet rows with existing HMMs but no MSAs (or the reverse) being silently dropped: they matched neither the create nor the update path. (by @vagkaratzas)
-  - Input sequences already named `<sequence>/<start>-<end>` give family members named in the parent sequence's coordinates (`seqA/10-200` hit on 3-180 → `seqA/12-189`) instead of nested ranges (`seqA/10-200/3-180`). During updates, such a sequence was also written to the unassigned sequences despite its hit. (by @vagkaratzas)
+  - Input sequences already named `<sequence>/<start>-<end>` give family members, when creating and when updating families, named in the parent sequence's coordinates (`seqA/10-200` hit on 3-180 → `seqA/12-189`) instead of nested ranges (`seqA/10-200/3-180`). During updates, such a sequence was also written to the unassigned sequences despite its hit. (by @vagkaratzas)
   - Fixed updates silently searching only the first existing family when the sample FASTA is gzipped: HMMER cannot rewind a gzip stream between query HMMs, so the FASTA is now decompressed before `hmmsearch`. (by @vagkaratzas)
 - [#197](https://github.com/nf-core/proteinfamilies/pull/197) - Trimmed MSA rows that lost residues are renamed `<sequence>/<start>-<end>` to the residues they still hold; untouched rows keep their name ([#119](https://github.com/nf-core/proteinfamilies/issues/119)). (by @vagkaratzas)
 
