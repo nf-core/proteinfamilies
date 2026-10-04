@@ -18,7 +18,7 @@ components:
   - gunzip
   - pool_existing_members
   - hmmer/hmmsearch
-  - branch_hits_fasta
+  - split_family_hits
   - mmseqs_fasta_cluster
   - remove_redundant_seqs
   - generate_families

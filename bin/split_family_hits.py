@@ -220,7 +220,7 @@ def write_family_fastas(
             print(f"Written {len(family_records)} sequences to {family_fasta_path}")
 
 
-def branch_hits(fasta: str, domtbl: str, length_threshold: float, hits: str) -> None:
+def split_family_hits(fasta: str, domtbl: str, length_threshold: float, hits: str) -> None:
     """
     Write the hits passing the length threshold into per-family FASTA files.
 
@@ -235,7 +235,7 @@ def branch_hits(fasta: str, domtbl: str, length_threshold: float, hits: str) -> 
 
 def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
-    branch_hits(args.fasta, args.domtbl, args.length_threshold, args.hits)
+    split_family_hits(args.fasta, args.domtbl, args.length_threshold, args.hits)
 
 
 if __name__ == "__main__":

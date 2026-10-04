@@ -3,10 +3,6 @@
         "content": [
             316,
             {
-                "BRANCH_HITS_FASTA": {
-                    "biopython": 1.85,
-                    "python": "3.13.1"
-                },
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
                 },
@@ -111,6 +107,10 @@
                 },
                 "SEQKIT_SEQ": {
                     "seqkit": "2.13.0"
+                },
+                "SPLIT_FAMILY_HITS": {
+                    "biopython": 1.85,
+                    "python": "3.13.1"
                 },
                 "TAR_FULL_MSAS": {
                     "tar": 1.34

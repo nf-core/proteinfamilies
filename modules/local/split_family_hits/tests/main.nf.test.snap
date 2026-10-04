@@ -12,14 +12,14 @@
                 ],
                 "1": [
                     [
-                        "BRANCH_HITS_FASTA",
+                        "SPLIT_FAMILY_HITS",
                         "python",
                         "3.13.1"
                     ]
                 ],
                 "2": [
                     [
-                        "BRANCH_HITS_FASTA",
+                        "SPLIT_FAMILY_HITS",
                         "biopython",
                         "1.85"
                     ]
@@ -34,14 +34,14 @@
                 ],
                 "versions_biopython": [
                     [
-                        "BRANCH_HITS_FASTA",
+                        "SPLIT_FAMILY_HITS",
                         "biopython",
                         "1.85"
                     ]
                 ],
                 "versions_python": [
                     [
-                        "BRANCH_HITS_FASTA",
+                        "SPLIT_FAMILY_HITS",
                         "python",
                         "3.13.1"
                     ]
@@ -74,14 +74,14 @@
             {
                 "versions_biopython": [
                     [
-                        "BRANCH_HITS_FASTA",
+                        "SPLIT_FAMILY_HITS",
                         "biopython",
                         "1.85"
                     ]
                 ],
                 "versions_python": [
                     [
-                        "BRANCH_HITS_FASTA",
+                        "SPLIT_FAMILY_HITS",
                         "python",
                         "3.13.1"
                     ]

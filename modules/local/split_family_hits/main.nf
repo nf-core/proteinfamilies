@@ -1,4 +1,4 @@
-process BRANCH_HITS_FASTA {
+process SPLIT_FAMILY_HITS {
     tag "$meta.id"
     label 'process_single'
 
@@ -22,7 +22,7 @@ process BRANCH_HITS_FASTA {
 
     script:
     """
-    branch_hits_fasta.py \\
+    split_family_hits.py \\
         --fasta ${fasta} \\
         --domtbl ${domtbl} \\
         --length_threshold ${length_threshold} \\

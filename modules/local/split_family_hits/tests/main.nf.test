@@ -1,8 +1,8 @@
 nextflow_process {
 
-    name "Test Process BRANCH_HITS_FASTA"
+    name "Test Process SPLIT_FAMILY_HITS"
     script "../main.nf"
-    process "BRANCH_HITS_FASTA"
+    process "SPLIT_FAMILY_HITS"
 
     test("proteinfamilies - fasta") {
 

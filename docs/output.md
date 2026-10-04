@@ -505,7 +505,7 @@ Pooled members that no family hits again are dropped; only input sequences witho
     - `hmmsearch/`
       - `<samplename>/`
         - `<samplename>.domtbl.gz`: (optional) hmmsearch results of the pooled sequences against existing families' HMMs
-  - `branch_fasta/`
+  - `split_family_hits/`
     - `hits/`
       - `<family_id>.fasta`: (optional) hit sequences for each existing family, cut to the hit envelope
   - `unassigned/`

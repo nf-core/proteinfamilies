@@ -26,7 +26,7 @@ include { FIND_CONCATENATE as CAT_HMM   } from '../../../modules/nf-core/find/co
 include { GUNZIP                        } from '../../../modules/nf-core/gunzip/main'
 include { POOL_EXISTING_MEMBERS         } from '../../../modules/local/pool_existing_members/main'
 include { HMMER_HMMSEARCH               } from '../../../modules/nf-core/hmmer/hmmsearch/main'
-include { BRANCH_HITS_FASTA             } from '../../../modules/local/branch_hits_fasta'
+include { SPLIT_FAMILY_HITS             } from '../../../modules/local/split_family_hits'
 include { fileStem                      } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { MMSEQS_FASTA_CLUSTER          } from '../../../subworkflows/nf-core/mmseqs_fasta_cluster'
 include { REMOVE_REDUNDANT_SEQS         } from '../../../modules/local/remove_redundant_seqs/main'
@@ -107,17 +107,17 @@ workflow UPDATE_FAMILIES {
     HMMER_HMMSEARCH( ch_input_for_hmmsearch )
 
     // Hits are cut from the pool
-    ch_input_for_branch_hits = HMMER_HMMSEARCH.out.domain_summary
+    ch_input_for_split_hits = HMMER_HMMSEARCH.out.domain_summary
         .join(ch_pool)
         .multiMap { meta, domtbl, pool ->
             domtbl: [ meta, domtbl ]
             fasta: [ meta, pool ]
         }
 
-    BRANCH_HITS_FASTA ( ch_input_for_branch_hits.fasta, ch_input_for_branch_hits.domtbl, hmmsearch_query_length_threshold )
+    SPLIT_FAMILY_HITS ( ch_input_for_split_hits.fasta, ch_input_for_split_hits.domtbl, hmmsearch_query_length_threshold )
 
     // [id, family] meta, as for created families' chunks
-    ch_hits = BRANCH_HITS_FASTA.out.hits
+    ch_hits = SPLIT_FAMILY_HITS.out.hits
         .transpose()
         .map { meta, file -> [[id: meta.id, family: fileStem(file)], file] }
 
