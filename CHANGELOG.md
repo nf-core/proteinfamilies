@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#202](https://github.com/nf-core/proteinfamilies/pull/202)
   - Updated families go through redundancy removal together with the sample's created families: an updated family is never removed (a created family redundant with it is, two redundant updated families are both kept), and it can merge with similar families, recruiting from the update pool. Families without a seed MSA are never merged. (by @vagkaratzas)
   - Added `--skip_updated_family_redundancy_removal` (default `false`): updated families bypass the family redundancy check, so created families may duplicate them. (by @vagkaratzas)
+  - Added `--skip_updated_family_merging` (default `false`): updated families are left out of family merging. (by @vagkaratzas)
   - Passed-through families with a provided full MSA get its degapped members as their family FASTA (written by `POOL_EXISTING_MEMBERS`), so they are listed in the family members and representatives. (by @vagkaratzas)
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198)
   - Each sample's final families (created, updated and passed through) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)

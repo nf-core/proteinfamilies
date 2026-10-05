@@ -378,7 +378,7 @@ to identify family representative sequences that are identical or similar (respe
 In case of redundancy, the smaller sized families are flagged for removal.
 Updated families (samples with `existing_hmms`) go through these steps together with the sample's created families and keep their names (the existing HMM `NAME`) in every output from here on, next to the created `<samplename>_*` families.
 An updated family is never flagged: a created family redundant with it is, and two redundant updated families are both kept. With `--skip_updated_family_redundancy_removal`, updated families bypass the redundancy check.
-Families without a seed MSA (updated with `--skip_update_refinement` and no `existing_seed_msas` file) are never merged, as merging rebuilds a family from its seed MSA.
+With `--skip_updated_family_merging`, updated families are left out of merging. Families without a seed MSA (updated with `--skip_update_refinement` and no `existing_seed_msas` file) are never merged, as merging rebuilds a family from its seed MSA.
 A merged family recruits from the sequences its families were built from: the update pool (input sequences plus existing full MSA members) when it holds an updated family, otherwise the sequences the created families came from.
 Merged families are named after the sample and their created families' numbers, followed by the names of their updated families.
 If `--skip_family_merging` is set to `false`, and if `hmmsearch_family_similarity_length_threshold` is correctly set

@@ -124,6 +124,37 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - family similarity - skip updated family merging") {
+        // Every hit is similar, none redundant: pairs with the updated 7 are left out
+        when {
+            params {
+                skip_updated_family_merging = true
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'mqc' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_meta_mqc.csv', checkIfExists: true),
+                ])
+                input[1] = channel.of([
+                    [ id: 'domtbl' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
+                ])
+                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_7' ], [] ])
+                input[3] = 1.01
+                input[4] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.similar_ids[0][1]).readLines() == [ 'mgnifams_test_5', 'mgnifams_test_6' ] }
+            )
+        }
+    }
+
     test("proteinfamilies - family redundancy - stub") {
 
         options "-stub"

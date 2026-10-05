@@ -47,6 +47,11 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         help="If set, pairs with an updated family are left out of the redundancy check.",
     )
     parser.add_argument(
+        "--skip_updated_family_merging",
+        action="store_true",
+        help="If set, updated families are left out of the similar pairs, so they are never merged.",
+    )
+    parser.add_argument(
         "-r",
         "--redundancy_length_threshold",
         default=1.0,
@@ -364,7 +369,8 @@ def main(args: Sequence[str] | None = None) -> None:
         args.pairwise_similarities_file,
         args.skip_family_redundancy_removal,
         read_ids(args.updated_ids),
-        read_ids(args.unmergeable_ids),
+        # updated families are unmergeable too when their merging is skipped
+        read_ids(args.unmergeable_ids) | (read_ids(args.updated_ids) if args.skip_updated_family_merging else set()),
         args.skip_updated_family_redundancy_removal
     )
 
