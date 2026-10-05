@@ -20,9 +20,17 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
             // stable_content: All files in ${params.outdir}/ with stable content
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
-            // archives/: member order and timestamps vary, so their sorted member names are checked
+            // archives/: member order and timestamps vary, so each member is checked by the md5 of its
+            // decompressed content, without the run-dependent DATE line of HMMs
             def archive_members = file("${params.outdir}/archives").listFiles().sort().collectMany { sample ->
-                sample.listFiles().sort().collect { archive -> "${archive.name}: ${['tar', '-tzf', archive.toString()].execute().text.readLines().sort().join(', ')}" }
+                sample.listFiles().sort().collect { archive ->
+                    def members = File.createTempDir()
+                    ['tar', '-xzf', archive.toString(), '-C', members.toString()].execute().waitFor()
+                    "${archive.name}: " + members.listFiles().sort().collect { member ->
+                        def text = member.name.endsWith('.gz') ? new java.util.zip.GZIPInputStream(member.newInputStream()).text : member.text
+                        "${member.name}=${text.readLines().findAll { line -> !line.startsWith('DATE') }.join('\n').md5()}"
+                    }.join(', ')
+                }
             }
             assert workflow.success
 
