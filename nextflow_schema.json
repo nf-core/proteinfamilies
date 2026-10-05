@@ -439,6 +439,12 @@
                     "hidden": true,
                     "help_text": "If false, similar families (but not redundant!) will be merged, depending on the hmmsearch_family_similarity_length_threshold parameter."
                 },
+                "skip_updated_family_redundancy_removal": {
+                    "type": "boolean",
+                    "description": "Skip the family redundancy check for updated families.",
+                    "fa_icon": "fas fa-question-circle",
+                    "help_text": "By default, updated families take part in the family redundancy check with the created families of their sample: an updated family is never removed, but a created family redundant with it is. With this flag, updated families bypass the check, so created families may duplicate them. Has no effect when `--skip_family_redundancy_removal` is set."
+                },
                 "hmmsearch_family_redundancy_length_threshold": {
                     "type": "number",
                     "default": 1.0,

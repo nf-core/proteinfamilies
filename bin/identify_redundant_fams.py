@@ -42,6 +42,11 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         help="If set, skip filtering of similar families above redundancy threshold.",
     )
     parser.add_argument(
+        "--skip_updated_family_redundancy_removal",
+        action="store_true",
+        help="If set, pairs with an updated family are left out of the redundancy check.",
+    )
+    parser.add_argument(
         "-r",
         "--redundancy_length_threshold",
         default=1.0,
@@ -177,11 +182,13 @@ def process_redundant(
     redundant_ids_file: str,
     skip_family_redundancy_removal: bool,
     updated_ids: set[str],
+    skip_updated_family_redundancy_removal: bool = False,
 ) -> set[str]:
     """
     Determine which family to discard for each redundant pair. An updated family is never
     discarded: against a created family the created one is, and two updated families are both
-    kept. Otherwise the smaller one is marked redundant. For equal-sized pairs, the
+    kept; with skip_updated_family_redundancy_removal, pairs with an updated family are skipped.
+    Otherwise the smaller one is marked redundant. For equal-sized pairs, the
     alphabetically later name is chosen — this ensures deterministic, collision-free
     deduplication without marking both directions. Returns the set of redundant family names.
 
@@ -191,6 +198,7 @@ def process_redundant(
         redundant_ids_file (str): Output path for redundant family IDs.
         skip_family_redundancy_removal (bool): Whether to suppress redundant-family output.
         updated_ids (set[str]): Updated (existing) family IDs, never marked redundant.
+        skip_updated_family_redundancy_removal (bool): Whether to skip pairs with an updated family.
 
     Returns:
         set[str]: Family IDs selected for removal.
@@ -211,6 +219,8 @@ def process_redundant(
         target_size = int(row["target size"])
 
         if query in updated_ids or target in updated_ids:
+            if skip_updated_family_redundancy_removal:
+                continue
             if query not in updated_ids:
                 redundant_fam_names.add(query)
             elif target not in updated_ids:
@@ -288,6 +298,7 @@ def process_family_similarity(
     skip_family_redundancy_removal: bool,
     updated_ids: set[str],
     unmergeable_ids: set[str],
+    skip_updated_family_redundancy_removal: bool = False,
 ) -> None:
     """
     Classify family relationships as redundant or similar from hmmsearch hits.
@@ -302,7 +313,9 @@ def process_family_similarity(
         pairwise_similarities_file (str): Output CSV for similar non-redundant pairs.
         skip_family_redundancy_removal (bool): Whether to suppress redundant-family output.
         updated_ids (set[str]): Updated (existing) family IDs, never marked redundant.
+        skip_updated_family_redundancy_removal (bool): Whether to skip pairs with an updated family.
         unmergeable_ids (set[str]): Families that must not be paired for merging.
+        skip_updated_family_redundancy_removal (bool): Whether to skip pairs with an updated family.
     """
     mapping_df = pd.read_csv(
         mapping, comment="#", usecols=["Family Id", "Size", "Representative Id"]
@@ -328,7 +341,7 @@ def process_family_similarity(
 
     redundant_df, similar_df = filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_length_threshold, skip_family_redundancy_removal)
 
-    redundant_fam_names = process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_family_redundancy_removal, updated_ids)
+    redundant_fam_names = process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_family_redundancy_removal, updated_ids, skip_updated_family_redundancy_removal)
 
     process_similar(similar_df, redundant_fam_names, pairwise_similarities_file, similar_ids_file, unmergeable_ids)
 
@@ -351,7 +364,8 @@ def main(args: Sequence[str] | None = None) -> None:
         args.pairwise_similarities_file,
         args.skip_family_redundancy_removal,
         read_ids(args.updated_ids),
-        read_ids(args.unmergeable_ids)
+        read_ids(args.unmergeable_ids),
+        args.skip_updated_family_redundancy_removal
     )
 
 
