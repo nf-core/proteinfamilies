@@ -45,6 +45,7 @@ Updating families:
 - [hmmer](#hmmer-for-updating-families) to match the pooled sequences to existing families with hmmsearch
 - [MMseqs2](#mmseqs2-for-updating-families) to strictly cluster the hits of each family to update
 - [Rebuilding updated families](#rebuilding-updated-families) like newly created ones: new seed MSA (FAMSA or mafft, optionally trimmed with ClipKIT), new HMM (hmmbuild), and new full MSA recruited from the same pool (hmmsearch, hmmalign)
+- Updated families then go through [redundancy removal](#hmmer-for-redundancy-removal) together with the sample's created families
 
 Phylogenetic tree inference:
 
@@ -375,6 +376,11 @@ The converged records indicate which of the families optimized their model withi
 If one of `--skip_family_redundancy_removal` or `--skip_family_merging` is set to `false`, the `hmmer/hmmsearch` module is used
 to identify family representative sequences that are identical or similar (respectively) to other family HMMs.
 In case of redundancy, the smaller sized families are flagged for removal.
+Updated families (samples with `existing_hmms`) go through these steps together with the sample's created families and keep their names (the existing HMM `NAME`) in every output from here on, next to the created `<samplename>_*` families.
+An updated family is never flagged: a created family redundant with it is, and two redundant updated families are both kept.
+Families without a seed MSA (updated with `--skip_update_refinement` and no `existing_seed_msas` file) are never merged, as merging rebuilds a family from its seed MSA.
+A merged family recruits from the sequences its families were built from: the update pool (input sequences plus existing full MSA members) when it holds an updated family, otherwise the sequences the created families came from.
+Merged families are named after the sample and their created families' numbers, followed by the names of their updated families.
 If `--skip_family_merging` is set to `false`, and if `hmmsearch_family_similarity_length_threshold` is correctly set
 lower than `hmmsearch_family_redundancy_length_threshold` (or `skip_family_redundancy_removal` is set to `true`), then similar family seed alignments can be merged
 and go through the `generate_families` subworkflow once more.
@@ -468,7 +474,7 @@ If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be cre
 
 </details>
 
-If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (if `--skip_family_redundancy_removal` is set to `true`) or the filtered (if `--skip_family_redundancy_removal` is set to `false`) full `.sto` MSAs will be reformatted to `.fas`.
+If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (if `--skip_family_redundancy_removal` is set to `true`) or the filtered (if `--skip_family_redundancy_removal` is set to `false`) full `.sto` MSAs (recruited with hmmalign, for created and updated families) will be reformatted to `.fas`.
 
 [HH-suite3](https://github.com/soedinglab/hh-suite) is an open-source software package for sensitive protein sequence searching based on the pairwise alignment of hidden Markov models (HMMs).
 
@@ -579,16 +585,14 @@ If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs suite stri
       - `hmmer_hmmalign/`
         - `<samplename>/`
           - `<family_id>.sto.gz`: compressed new family full MSA produced by hmmalign
-      - `hhsuite_reformat/`
-        - `<samplename>/`
-          - `<family_id>.fas.gz`: the hmmalign full MSA reformatted to aligned FASTA, as for created families; this is the full MSA archived and used downstream
 
 </details>
 
 Each updated family is rebuilt like a newly created one (see [FAMSA](#famsa-aligner), [mafft](#mafft-aligner), [ClipKIT](#clipkit) and [hmmer](#hmmer)), keeping its family name:
 its (non redundant) hits are aligned into a new seed MSA, optionally trimmed, built into a new HMM, and the new HMM recruits the family's full MSA from the same pool of input sequences and existing members.
 With `--skip_additional_sequence_recruiting`, the new seed MSA also serves as the full MSA.
-With `--skip_update_refinement`, families are not rebuilt: the existing HMM is kept and aligns the family's hits into the new full MSA (`update_families/full_msa/raw/hmmer_hmmalign/`, reformatted in `hhsuite_reformat/`), and no new seed MSA or HMM is written.
+With `--skip_update_refinement`, families are not rebuilt: the existing HMM is kept and aligns the family's hits into the new full MSA (`update_families/full_msa/raw/hmmer_hmmalign/`), and no new seed MSA or HMM is written.
+The updated families then go through [redundancy removal](#hmmer-for-redundancy-removal) with the created families, so their final seed MSAs, HMMs and full MSAs are published with them (e.g. `hmm/filtered/`, `seed_msa/filtered/`, `full_msa/filtered/`).
 Hits on sequences already named `<sequence>/<start>-<end>` (e.g. pooled existing members) are named in the parent sequence's coordinates.
 
 ### CMAPLE
@@ -634,16 +638,10 @@ The archives have the shape of the samplesheet's `existing_hmms`, `existing_seed
     - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
     - `<samplename>_reps.faa`: fasta file of all family representative sequences (one sequence per family)
     - `<samplename>.tsv`: 2-column TSV file with family ids and all sequence member ids
-- `update_families/`
-  - `family_reps/`
-    - `<samplename>/`
-      - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
-      - `<samplename>_reps.faa`: fasta file of all family representative sequences (one sequence per family)
-      - `<samplename>.tsv`: 2-column TSV file with family ids and all sequence member ids
 
 </details>
 
-Updated families include passed-through families given with a full MSA, whose members are the degapped rows of that full MSA.
+Every final family of a sample is included: created, updated, and passed-through families given with a full MSA (whose members are the degapped rows of that full MSA).
 
 The final report of the nf-core/proteinfamilies pipeline.
 The `*_meta_mqc.csv` file are used to report family metadata and statistics in the browser, via the MultiQC software.

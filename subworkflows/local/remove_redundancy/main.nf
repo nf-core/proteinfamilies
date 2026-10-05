@@ -7,6 +7,10 @@
     2. Sequence-level: clusters all sequences within each family and removes duplicates,
        then re-aligns the remaining members.
     Either or both stages can be skipped via parameters.
+
+    Created and updated families enter together, keyed [id, family] by file stem. Updated
+    families (existing NAMEs, never `<id>_<digit>...`) are never dropped: a created family
+    redundant with an updated one is. Families without a seed MSA cannot merge.
 */
 
 include { EXTRACT_FAMILY_REPS                                        } from '../../../modules/local/extract_family_reps/main'
@@ -16,6 +20,7 @@ include { IDENTIFY_REDUNDANT_FAMS                                    } from '../
 include { MERGE_FAMILIES                                             } from '../../../subworkflows/local/merge_families/main'
 include { FIND_CONCATENATE as FIND_CONCATENATE_SKIP_IDS              } from '../../../modules/nf-core/find/concatenate'
 include { fileStem                                                   } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
+include { isCreatedFamily                                            } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_HMM      } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_SEED_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
 include { FILTER_NON_REDUNDANT_FAMS as FILTER_NON_REDUNDANT_FULL_MSA } from '../../../modules/local/filter_non_redundant_fams/main'
@@ -28,11 +33,12 @@ include { HHSUITE_REFORMAT as HHSUITE_REFORMAT_RAW                   } from '../
 
 workflow REMOVE_REDUNDANCY {
     take:
-    sequences                                    // tuple val(meta), path(faa)
-    seed_msa                                     // tuple val(meta), path({clipkit,aln,fas})
-    full_msa                                     // tuple val(meta), path({sto.gz,clipkit,aln,fas})
-    fasta                                        // tuple val(meta), path(faa.gz)
-    hmm                                          // tuple val(meta), path(hmm.gz)
+    sequences                                    // tuple val(meta), path(faa): the sequences families were created from
+    update_pool                                  // tuple val(meta), path(fasta): update samples' searched pool
+    seed_msa                                     // tuple val(meta), path({aln,fas}), meta [id, family]
+    full_msa                                     // tuple val(meta), path({sto.gz,aln,fas}), meta [id, family]
+    fasta                                        // tuple val(meta), path(faa.gz), meta [id, family]
+    hmm                                          // tuple val(meta), path(hmm.gz), meta [id, family]
     skip_family_redundancy_removal               // boolean
     skip_family_merging                          // boolean
     hmmsearch_family_redundancy_length_threshold // number [0.0, 1.0]
@@ -75,17 +81,29 @@ workflow REMOVE_REDUNDANCY {
 
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
 
+        // Per sample: the updated families, and the families without a seed MSA to merge from
+        ch_family_roles = hmm
+            .map { meta, model -> [[id: meta.id], fileStem(model)] }
+            .groupTuple()
+            .join(seed_msa.map { meta, seed -> [[id: meta.id], fileStem(seed)] }.groupTuple(), remainder: true)
+            .map { meta, families, seeded ->
+                [meta, families.findAll { family -> !isCreatedFamily(meta.id, family) }.sort(), (families - (seeded ?: [])).sort()]
+            }
+
         // Join to ensure in sync
         ch_input_for_redundant_fam_identification = EXTRACT_FAMILY_REPS.out.map
             .join(HMMER_HMMSEARCH.out.domain_summary)
-            .multiMap { meta, map, domtbl ->
+            .join(ch_family_roles)
+            .multiMap { meta, map, domtbl, updated, seedless ->
                 map: [meta, map]
                 domtbl: [meta, domtbl]
+                roles: [meta, updated, seedless]
             }
 
         IDENTIFY_REDUNDANT_FAMS (
             ch_input_for_redundant_fam_identification.map,
             ch_input_for_redundant_fam_identification.domtbl,
+            ch_input_for_redundant_fam_identification.roles,
             hmmsearch_family_redundancy_length_threshold,
             hmmsearch_family_similarity_length_threshold
         )
@@ -95,10 +113,16 @@ workflow REMOVE_REDUNDANCY {
             .groupTuple(by: 0)
 
         if (!skip_family_merging) {
+            // A merge recruits from the sequences its families were built from: created families
+            // from `sequences`, updated ones from their sample's update pool
+            ch_merge_sequences = sequences
+                .map { meta, faa -> [[id: meta.id, pool: 'create'], faa] }
+                .mix(update_pool.map { meta, faa -> [[id: meta.id, pool: 'update'], faa] })
+
             MERGE_FAMILIES (
                 IDENTIFY_REDUNDANT_FAMS.out.similarities,
                 ch_seed_msa,
-                sequences,
+                ch_merge_sequences,
                 family_generation_algorithm,
                 alignment_tool,
                 skip_seed_msa_trimming,
@@ -170,23 +194,15 @@ workflow REMOVE_REDUNDANCY {
 
         full_msa = FILTER_NON_REDUNDANT_FULL_MSA.out.filtered
             .transpose()
-            .map { meta, file ->
-                def filename = fileStem(file)
-                def chunk = filename.split("${meta.id}_", 2)[1]  // Split by meta.id_ and take remainder, to also match merged ids
-                [[id: meta.id, chunk: chunk], file]
-            }
+            .map { meta, file -> [[id: meta.id, family: fileStem(file)], file] }
 
         FILTER_NON_REDUNDANT_FASTA( ch_input_for_fam_removal.seq, ch_input_for_fam_removal.ids  )
 
         fasta = FILTER_NON_REDUNDANT_FASTA.out.filtered
             .transpose()
-            .map { meta, file ->
-                def filename = fileStem(file)
-                def chunk = filename.split("${meta.id}_", 2)[1]  // Split by meta.id_ and take remainder, to also match merged ids
-                [[id: meta.id, chunk: chunk], file]
-            }
+            .map { meta, file -> [[id: meta.id, family: fileStem(file)], file] }
     } else {
-        ch_output_hmm = hmm  // raw individual [meta(id,chunk), file] tuples
+        ch_output_hmm = hmm  // raw individual [meta(id,family), file] tuples
     }
     // END FAMILY REDUNDANCY REMOVAL MECHANISM
 
@@ -200,17 +216,22 @@ workflow REMOVE_REDUNDANCY {
         // Full MSAs are never trimmed, so the fasta keeps matching them
         full_msa = ALIGN_SEQUENCES( REMOVE_REDUNDANT_SEQS.out.fasta, alignment_tool, true ).alignments
         // END SEQUENCE REDUNDANCY REMOVAL MECHANISM
-    } else if (!skip_additional_sequence_recruiting) { // full MSAs in Stockholm format
+    } else {
         // REFORMATTING FULL MSA
-        // Two module aliases are required because Nextflow prevents calling the same import
-        // more than once in a workflow. HHSUITE_REFORMAT_FILTERED operates on the re-assigned
-        // full_msa channel (post-filtering/merging); HHSUITE_REFORMAT_RAW operates on the
-        // original full_msa from the take block (neither filtering nor merging ran).
-        if (!skip_family_redundancy_removal || !skip_family_merging) {
-            full_msa = HHSUITE_REFORMAT_FILTERED( full_msa, "sto", "fas" ).msa
-        } else { // did not go through filtering processes
-            full_msa = HHSUITE_REFORMAT_RAW( full_msa, "sto", "fas" ).msa
+        // Recruited full MSAs (hmmalign, Stockholm) become aligned FASTA; seed MSAs reused as full
+        // MSAs (no recruiting) already are. Two module aliases are required because Nextflow
+        // prevents calling the same import more than once in a workflow: HHSUITE_REFORMAT_FILTERED
+        // for full MSAs after filtering/merging, HHSUITE_REFORMAT_RAW when neither ran.
+        ch_full_msa_format = full_msa.branch { _meta, msa ->
+            stockholm: msa.name.endsWith('.sto.gz')
+            fasta: true
         }
+        if (!skip_family_redundancy_removal || !skip_family_merging) {
+            ch_reformatted = HHSUITE_REFORMAT_FILTERED( ch_full_msa_format.stockholm, "sto", "fas" ).msa
+        } else { // did not go through filtering processes
+            ch_reformatted = HHSUITE_REFORMAT_RAW( ch_full_msa_format.stockholm, "sto", "fas" ).msa
+        }
+        full_msa = ch_full_msa_format.fasta.mix(ch_reformatted)
         // END REFORMATTING FULL MSA
     }
 

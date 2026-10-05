@@ -62,6 +62,37 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - nonredundant - mixed formats") {
+        // Created and updated families' full MSAs can differ in format: every format is kept
+        when {
+            process {
+                """
+                def fas = file('fam_a.fas')
+                fas.text = '>s1\\nMK-V\\n'
+                def sto = file('fam_b.sto.gz')
+                sto.bytes = new java.io.ByteArrayOutputStream().withCloseable { bytes ->
+                    new java.util.zip.GZIPOutputStream(bytes).withCloseable { gz -> gz.write('# STOCKHOLM 1.0\\ns2 MKV\\n//\\n'.bytes) }
+                    bytes.toByteArray()
+                }
+                def redundant = file('fam_c.fas')
+                redundant.text = '>s3\\nMKV\\n'
+                def redundant_ids = file('redundant_ids_mixed.txt')
+                redundant_ids.text = 'fam_c\\n'
+
+                input[0] = channel.of([ [ id: 'mixed' ], [ fas, sto, redundant ] ])
+                input[1] = channel.of([ [ id: 'redundant_ids' ], redundant_ids ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.filtered.collectMany { _meta, filtered -> [filtered].flatten().collect { f -> file(f).name } }.sort() == ['fam_a.fas', 'fam_b.sto.gz'] }
+            )
+        }
+    }
+
     test("proteinfamilies - nonredundant - stub") {
 
         options "-stub"

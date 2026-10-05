@@ -37,12 +37,10 @@ nextflow_workflow {
                     workflow.out.no_hit_seqs,
                     workflow.out.passed_through_families,
                     // HMM header lines, without the run-dependent DATE
-                    workflow.out.hmm.collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
-                    workflow.out.seed_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
-                    workflow.out.full_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
-                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
-                    file(workflow.out.updated_family_reps[0][1]).name,
-                    path(workflow.out.updated_family_reps[0][1]).readLines().size()
+                    (workflow.out.hmm + workflow.out.passed_through_hmm).collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
+                    (workflow.out.seed_msa + workflow.out.passed_through_seed_msa).collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    (workflow.out.full_msa + workflow.out.passed_through_full_msa).collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    (workflow.out.fasta + workflow.out.passed_through_fasta).collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort()
                 ).match()}
             )
         }
@@ -80,12 +78,10 @@ nextflow_workflow {
                     workflow.out.no_hit_seqs,
                     workflow.out.passed_through_families,
                     // HMM header lines, without the run-dependent DATE
-                    workflow.out.hmm.collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
-                    workflow.out.seed_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
-                    workflow.out.full_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
-                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
-                    file(workflow.out.updated_family_reps[0][1]).name,
-                    path(workflow.out.updated_family_reps[0][1]).readLines().size()
+                    (workflow.out.hmm + workflow.out.passed_through_hmm).collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
+                    (workflow.out.seed_msa + workflow.out.passed_through_seed_msa).collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    (workflow.out.full_msa + workflow.out.passed_through_full_msa).collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    (workflow.out.fasta + workflow.out.passed_through_fasta).collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort()
                 ).match()}
             )
         }
@@ -123,12 +119,10 @@ nextflow_workflow {
                     workflow.out.no_hit_seqs,
                     workflow.out.passed_through_families,
                     // HMM header lines, without the run-dependent DATE
-                    workflow.out.hmm.collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
-                    workflow.out.seed_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
-                    workflow.out.full_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
-                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
-                    file(workflow.out.updated_family_reps[0][1]).name,
-                    path(workflow.out.updated_family_reps[0][1]).readLines().size()
+                    (workflow.out.hmm + workflow.out.passed_through_hmm).collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
+                    (workflow.out.seed_msa + workflow.out.passed_through_seed_msa).collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    (workflow.out.full_msa + workflow.out.passed_through_full_msa).collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    (workflow.out.fasta + workflow.out.passed_through_fasta).collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort()
                 ).match()}
             )
         }
@@ -171,9 +165,9 @@ nextflow_workflow {
                 { assert workflow.success },
                 { assert path(workflow.out.no_hit_seqs[0][1]).linesGzip.count { line -> line.startsWith('>') } == 2 },
                 { assert workflow.out.passed_through_families == [[[id: 'test_update'], ['existing_fam_1', 'existing_fam_2', 'existing_fam_3', 'existing_fam_4', 'existing_fam_zero_hits'].collect { family -> [family, 'no hits'] }]] },
-                { assert workflow.out.hmm.size() == 5 },
-                { assert workflow.out.seed_msa.size() == 0 && workflow.out.full_msa.size() == 1 },
-                { assert workflow.out.fasta.collect { meta, faa -> [meta.family, path(faa.toString()).linesGzip] } == [['existing_fam_1', ['>junk_3/1-10', 'GGGGGGGGGG', '>junk_4', 'PPPPPPPPPP']]] }
+                { assert workflow.out.hmm.size() == 0 && workflow.out.passed_through_hmm.size() == 5 },
+                { assert workflow.out.seed_msa.size() == 0 && workflow.out.full_msa.size() == 0 && workflow.out.passed_through_full_msa.size() == 1 },
+                { assert workflow.out.passed_through_fasta.collect { meta, faa -> [meta.family, path(faa.toString()).linesGzip] } == [['existing_fam_1', ['>junk_3/1-10', 'GGGGGGGGGG', '>junk_4', 'PPPPPPPPPP']]] }
             )
         }
     }

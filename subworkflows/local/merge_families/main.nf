@@ -10,6 +10,7 @@
 
 include { POOL_SIMILAR_COMPONENTS       } from '../../../modules/local/pool_similar_components/main'
 include { fileStem                      } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
+include { isCreatedFamily               } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { MERGE_SEEDS                   } from '../../../modules/local/merge_seeds/main'
 include { GENERATE_FAMILIES             } from '../../../subworkflows/local/generate_families'
 include { GENERATE_FAMILIES_ITERATIVELY } from '../../../subworkflows/local/generate_families_iteratively'
@@ -18,7 +19,7 @@ workflow MERGE_FAMILIES {
     take:
     similarities                        // tuple val(meta), path(txt)
     seed_msa                            // tuple val(meta), path(aln)
-    sequences                           // tuple val(meta), path(fasta)
+    sequences                           // tuple val(meta), path(fasta), meta [id, pool: 'create' or 'update']
     family_generation_algorithm         // string ["standard", "iterative"]
     alignment_tool                      // string ["famsa", "mafft"]
     skip_seed_msa_trimming              // boolean
@@ -34,14 +35,13 @@ workflow MERGE_FAMILIES {
     ch_pooled_components = POOL_SIMILAR_COMPONENTS.out.pooled_components
         .splitCsv( by:1 )
         .map { meta, components ->
-            // Extract each component's family suffix, the part after the sample id. Splitting
-            // on the last underscore instead would collapse the compound suffixes the
-            // iterative algorithm produces ('2_1' and '3_1' would both become '1').
-            // split() takes a regex, which is safe here because assets/schema_input.json
-            // restricts sample names to letters, digits, dots, underscores and dashes.
-            def suffixes = components.collect { component ->
-                component.split("${meta.id}_", 2)[1]
-            }
+            // Extract each created component's family suffix, the part after the sample id.
+            // Splitting on the last underscore instead would collapse the compound suffixes the
+            // iterative algorithm produces ('2_1' and '3_1' would both become '1'). Updated
+            // families keep their whole name and come last, so the merged name still starts
+            // like a created one ('<id>_<digit>...').
+            def created = components.findAll { component -> isCreatedFamily(meta.id, component) }
+            def suffixes = created.collect { component -> component.substring(meta.id.length() + 1) } + (components - created)
             // Readable id encoding every combined family, e.g. 'sample_1_7'
             def readableId = "${meta.id}_${suffixes.join('_')}"
             // merged_id becomes the output-file prefix for every merged-family process, so it
@@ -50,8 +50,9 @@ workflow MERGE_FAMILIES {
             def merged_id = readableId.length() <= 200
                 ? readableId
                 : "${meta.id}_${suffixes.size()}fams_${suffixes.join('_').md5().take(10)}"
-            // Keep original id, add new field merged_id
-            def newMeta = meta + [merged_id: merged_id]
+            // Keep original id, add new field merged_id, and the pool to recruit from: a merge
+            // holding an updated family recruits from its sample's update pool
+            def newMeta = meta + [merged_id: merged_id, pool: created.size() < components.size() ? 'update' : 'create']
             return [newMeta, components.join(',')]
         }
 

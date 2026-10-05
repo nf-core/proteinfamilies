@@ -1,38 +1,41 @@
 {
     "large pool - merged_id stays within filename length limit": {
         "content": [
-            "test_90fams_cef0de0010.hmm.gz",
+            "mgnifams_test_90fams_cef0de0010.hmm.gz",
             true,
             true,
             [
                 [
                     {
-                        "id": "test",
-                        "merged_id": "test_90fams_cef0de0010"
+                        "id": "mgnifams_test",
+                        "merged_id": "mgnifams_test_90fams_cef0de0010",
+                        "pool": "create"
                     },
-                    "test_90fams_cef0de0010.aln:md5,168b375831d0cd119a44544ce234f818"
+                    "mgnifams_test_90fams_cef0de0010.aln:md5,168b375831d0cd119a44544ce234f818"
                 ]
             ],
             [
                 [
                     {
-                        "id": "test",
-                        "merged_id": "test_90fams_cef0de0010"
+                        "id": "mgnifams_test",
+                        "merged_id": "mgnifams_test_90fams_cef0de0010",
+                        "pool": "create"
                     },
-                    "test_90fams_cef0de0010.sto.gz:md5,b432795e4a56a2284d2bce48066beb99"
+                    "mgnifams_test_90fams_cef0de0010.sto.gz:md5,b432795e4a56a2284d2bce48066beb99"
                 ]
             ],
             [
                 [
                     {
-                        "id": "test",
-                        "merged_id": "test_90fams_cef0de0010"
+                        "id": "mgnifams_test",
+                        "merged_id": "mgnifams_test_90fams_cef0de0010",
+                        "pool": "create"
                     },
-                    "test_90fams_cef0de0010.fasta.gz:md5,f398708f15b7e8a5e28dcb7c4f653e40"
+                    "mgnifams_test_90fams_cef0de0010.fasta.gz:md5,f398708f15b7e8a5e28dcb7c4f653e40"
                 ]
             ]
         ],
-        "timestamp": "2026-10-02T15:35:49.87689323",
+        "timestamp": "2026-10-05T15:47:59.63774822",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -48,14 +51,16 @@
                 [
                     {
                         "id": "test",
-                        "merged_id": "test_1_2"
+                        "merged_id": "test_1_2",
+                        "pool": "create"
                     },
                     "test_1_2.aln:md5,ae70cef051edf7fa91a2f120e7d3cd3e"
                 ],
                 [
                     {
                         "id": "test",
-                        "merged_id": "test_3_5"
+                        "merged_id": "test_3_5",
+                        "pool": "create"
                     },
                     "test_3_5.aln:md5,ea0202c15df743a00a68499e2e7d8c2d"
                 ]
@@ -64,14 +69,16 @@
                 [
                     {
                         "id": "test",
-                        "merged_id": "test_1_2"
+                        "merged_id": "test_1_2",
+                        "pool": "create"
                     },
                     "test_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
                 ],
                 [
                     {
                         "id": "test",
-                        "merged_id": "test_3_5"
+                        "merged_id": "test_3_5",
+                        "pool": "create"
                     },
                     "test_3_5.sto.gz:md5,fd5058c9f8c79e135a0dd372bc7cb422"
                 ]
@@ -80,20 +87,22 @@
                 [
                     {
                         "id": "test",
-                        "merged_id": "test_1_2"
+                        "merged_id": "test_1_2",
+                        "pool": "create"
                     },
                     "test_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
                 ],
                 [
                     {
                         "id": "test",
-                        "merged_id": "test_3_5"
+                        "merged_id": "test_3_5",
+                        "pool": "create"
                     },
                     "test_3_5.fasta.gz:md5,3a7a0927b59800049ba84b30600820a2"
                 ]
             ]
         ],
-        "timestamp": "2026-10-02T15:36:30.986314911",
+        "timestamp": "2026-10-05T15:48:48.519257924",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -109,14 +118,16 @@
                 [
                     {
                         "id": "sampleA",
-                        "merged_id": "sampleA_1_2"
+                        "merged_id": "sampleA_1_2",
+                        "pool": "create"
                     },
                     "sampleA_1_2.aln:md5,1d1819723f4a267786a75f7b58b8dc40"
                 ],
                 [
                     {
                         "id": "sampleB",
-                        "merged_id": "sampleB_1_2"
+                        "merged_id": "sampleB_1_2",
+                        "pool": "create"
                     },
                     "sampleB_1_2.aln:md5,1b91386cff9061263cf4b7e99eaf2616"
                 ]
@@ -125,14 +136,16 @@
                 [
                     {
                         "id": "sampleA",
-                        "merged_id": "sampleA_1_2"
+                        "merged_id": "sampleA_1_2",
+                        "pool": "create"
                     },
                     "sampleA_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
                 ],
                 [
                     {
                         "id": "sampleB",
-                        "merged_id": "sampleB_1_2"
+                        "merged_id": "sampleB_1_2",
+                        "pool": "create"
                     },
                     "sampleB_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
                 ]
@@ -141,20 +154,22 @@
                 [
                     {
                         "id": "sampleA",
-                        "merged_id": "sampleA_1_2"
+                        "merged_id": "sampleA_1_2",
+                        "pool": "create"
                     },
                     "sampleA_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
                 ],
                 [
                     {
                         "id": "sampleB",
-                        "merged_id": "sampleB_1_2"
+                        "merged_id": "sampleB_1_2",
+                        "pool": "create"
                     },
                     "sampleB_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
                 ]
             ]
         ],
-        "timestamp": "2026-10-02T15:36:11.737087819",
+        "timestamp": "2026-10-05T15:48:24.925938989",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -162,36 +177,39 @@
     },
     "fasta": {
         "content": [
-            "test_1_2.hmm.gz",
+            "mgnifams_test_1_2.hmm.gz",
             [
                 [
                     {
-                        "id": "test",
-                        "merged_id": "test_1_2"
+                        "id": "mgnifams_test",
+                        "merged_id": "mgnifams_test_1_2",
+                        "pool": "create"
                     },
-                    "test_1_2.aln:md5,0bfa39c7da46d80cdb61e7e2f3198c37"
+                    "mgnifams_test_1_2.aln:md5,0bfa39c7da46d80cdb61e7e2f3198c37"
                 ]
             ],
             [
                 [
                     {
-                        "id": "test",
-                        "merged_id": "test_1_2"
+                        "id": "mgnifams_test",
+                        "merged_id": "mgnifams_test_1_2",
+                        "pool": "create"
                     },
-                    "test_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
+                    "mgnifams_test_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
                 ]
             ],
             [
                 [
                     {
-                        "id": "test",
-                        "merged_id": "test_1_2"
+                        "id": "mgnifams_test",
+                        "merged_id": "mgnifams_test_1_2",
+                        "pool": "create"
                     },
-                    "test_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                    "mgnifams_test_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
                 ]
             ]
         ],
-        "timestamp": "2026-10-02T15:35:28.358206804",
+        "timestamp": "2026-10-05T15:47:37.895652694",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

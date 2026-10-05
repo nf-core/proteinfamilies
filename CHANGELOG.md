@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#202](https://github.com/nf-core/proteinfamilies/pull/202)
+  - Updated families go through redundancy removal together with the sample's created families: an updated family is never removed (a created family redundant with it is, two redundant updated families are both kept), and it can merge with similar families, recruiting from the update pool. Families without a seed MSA are never merged. (by @vagkaratzas)
   - Passed-through families with a provided full MSA get its degapped members as their family FASTA (written by `POOL_EXISTING_MEMBERS`), so they are listed in the family members and representatives. (by @vagkaratzas)
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198)
   - Each sample's final families (created, updated and passed through) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#202](https://github.com/nf-core/proteinfamilies/pull/202) - **Breaking:** updated families' final files are published with the created families' (e.g. `hmm/filtered/`, `full_msa/filtered/`), and their family representatives in `family_reps/<id>/`; `update_families/family_reps/` and `update_families/full_msa/raw/hhsuite_reformat/` are removed. `FILTER_NON_REDUNDANT_FAMS` keeps files of every format it is given. (by @vagkaratzas)
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198) - **Breaking:** samplesheet v3 and update rework (standard engine).
   - Samplesheet columns are now `id,fasta,existing_hmms,existing_seed_msas,existing_full_msas` (was `sample,fasta,existing_hmms_to_update,existing_msas_to_update`). Existing HMMs alone route a sample to the update path; both MSA archives are optional, and MSAs without HMMs fail validation. (by @vagkaratzas)
   - Existing HMMs may be given as a `.tar.gz` archive of HMM files or as one HMM library (`.hmm`, `.lib`, plain or gzipped, e.g. a previous run's `<id>.lib.gz`); local module `SPLIT_HMMS` writes one gzipped `<NAME>.hmm.gz` per model, so each model is a family named by its `NAME` and unchanged families mix with rebuilt ones in the HMM library. Each seed and full MSA file must be named after an HMM `NAME`, no family may be given twice, and existing families may not be named like the families the run creates for the sample (`<id>_<number>...`); the pipeline stops otherwise. Sample `id`s must be unique, and unknown samplesheet columns (e.g. v2 column names) fail validation instead of being ignored. (by @vagkaratzas)

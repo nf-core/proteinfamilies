@@ -23,10 +23,7 @@ components:
   - remove_redundant_seqs
   - generate_families
   - hmmer/hmmalign
-  - hhsuite/reformat
   - extract_unassigned_seqs
-  - extract_family_members
-  - extract_family_reps
 input:
   - ch_samplesheet_for_update:
       type: file
@@ -78,19 +75,35 @@ output:
   - seed_msa:
       type: file
       description: |
-        New seed MSA per rebuilt family; the provided seed MSA of every other family
+        Seed MSA of each returned family: new where rebuilt, else the provided one (skip_update_refinement)
   - full_msa:
       type: file
       description: |
-        New full MSA (aligned FASTA) per returned family; the provided full MSA of every passed-through family
+        New full MSA of each returned family (hmmalign Stockholm, or the seed MSA without recruiting)
   - fasta:
       type: file
       description: |
-        Sequences of each returned family's full MSA; the degapped provided full MSA of every passed-through family
+        Sequences of each returned family's full MSA
   - hmm:
       type: file
       description: |
-        New HMM per rebuilt family; the existing HMM of every other family
+        HMM of each returned family: new where rebuilt, else the existing one (skip_update_refinement)
+  - passed_through_seed_msa:
+      type: file
+      description: |
+        Provided seed MSA of each family the update did not return
+  - passed_through_full_msa:
+      type: file
+      description: |
+        Provided full MSA of each family the update did not return
+  - passed_through_fasta:
+      type: file
+      description: |
+        Degapped members of the provided full MSA of each family the update did not return
+  - passed_through_hmm:
+      type: file
+      description: |
+        Existing HMM of each family the update did not return
   - passed_through_families:
       type: list
       description: |
@@ -100,11 +113,10 @@ output:
       type: file
       description: |
         Gzipped FASTA of the input sequences in no returned family, to go through the base family generation workflow
-  - updated_family_reps:
+  - pool:
       type: file
       description: |
-        A MultiQC CSV file containing metadata about the updated family representatives;
-        "Sample Name","Family Id","Size","Representative Length","Representative Id","Sequence"
+        Uncompressed FASTA the existing HMMs searched: the input sequences plus the kept existing full MSA members
 authors:
   - "@vagkaratzas"
 maintainers:

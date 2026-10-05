@@ -25,23 +25,26 @@ components:
 input:
   - sequences:
       type: file
-      description: Input sequences file that might be used for any merged-family re-generation
+      description: Sequences the created families were built from; merges of created families recruit from them
+  - update_pool:
+      type: file
+      description: Update samples' searched pool (input sequences plus existing full MSA members); merges holding an updated family recruit from it
   - seed_msa:
       type: file
       description: |
-        Seed MSA files along with their meta IDs and chunk number
+        Seed MSA files of created and updated families, meta [id, family] (family = file stem)
   - full_msa:
       type: file
       description: |
-        Full MSA files along with their meta IDs and chunk number
+        Full MSA files of created and updated families, meta [id, family]
   - fasta:
       type: file
       description: |
-        FASTA files along with their meta IDs and chunk number
+        FASTA files of created and updated families, meta [id, family]
   - hmm:
       type: file
       description: |
-        HMM files along with their meta IDs and chunk number
+        HMM files of created and updated families, meta [id, family]
   - skip_family_redundancy_removal:
       type: boolean
       description: |

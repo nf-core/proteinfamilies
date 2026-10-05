@@ -33,7 +33,8 @@ input:
   - sequences:
       type: file
       description: |
-        FASTA file containing input sequences
+        FASTA files to recruit from, meta [id, pool]: pool 'create' (the sequences created families came from)
+        for merges of created families only, pool 'update' (the update pool) for merges holding an updated family
   - alignment_tool:
       type: string
       description: |
