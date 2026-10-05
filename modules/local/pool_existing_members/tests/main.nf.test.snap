@@ -12,6 +12,16 @@
                 ],
                 "1": [
                     [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "placeholder.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
                         "POOL_EXISTING_MEMBERS",
                         "python",
                         "3.13.1"
@@ -25,6 +35,16 @@
                         "test_pool.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
+                "members": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "placeholder.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
                 "versions_python": [
                     [
                         "POOL_EXISTING_MEMBERS",
@@ -34,7 +54,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-02T17:00:55.968800718",
+        "timestamp": "2026-10-05T15:08:25.876334224",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -53,6 +73,20 @@
                 ],
                 "1": [
                     [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "existing_fam_1.fasta.gz:md5,111e789564e33dab4386279b6e897db8",
+                            "existing_fam_2.fasta.gz:md5,72063a974356e134ef41cef6d6a5b8ce",
+                            "existing_fam_3.fasta.gz:md5,7801df7087937a4417329055c666039b",
+                            "existing_fam_4.fasta.gz:md5,79bbbfb99b478d113f6084087ad54f91",
+                            "existing_fam_zero_hits.fasta.gz:md5,609808c6370e8a98642b7e5c35a145a9"
+                        ]
+                    ]
+                ],
+                "2": [
+                    [
                         "POOL_EXISTING_MEMBERS",
                         "python",
                         "3.13.1"
@@ -66,6 +100,20 @@
                         "test_pool.fasta:md5,791db9f885a8618cb2cd542fcb2d5476"
                     ]
                 ],
+                "members": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "existing_fam_1.fasta.gz:md5,111e789564e33dab4386279b6e897db8",
+                            "existing_fam_2.fasta.gz:md5,72063a974356e134ef41cef6d6a5b8ce",
+                            "existing_fam_3.fasta.gz:md5,7801df7087937a4417329055c666039b",
+                            "existing_fam_4.fasta.gz:md5,79bbbfb99b478d113f6084087ad54f91",
+                            "existing_fam_zero_hits.fasta.gz:md5,609808c6370e8a98642b7e5c35a145a9"
+                        ]
+                    ]
+                ],
                 "versions_python": [
                     [
                         "POOL_EXISTING_MEMBERS",
@@ -75,7 +123,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-02T17:00:33.857366516",
+        "timestamp": "2026-10-05T15:08:11.089274557",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

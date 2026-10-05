@@ -639,8 +639,11 @@ The archives have the shape of the samplesheet's `existing_hmms`, `existing_seed
     - `<samplename>/`
       - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
       - `<samplename>_reps.faa`: fasta file of all family representative sequences (one sequence per family)
+      - `<samplename>.tsv`: 2-column TSV file with family ids and all sequence member ids
 
 </details>
+
+Updated families include passed-through families given with a full MSA, whose members are the degapped rows of that full MSA.
 
 The final report of the nf-core/proteinfamilies pipeline.
 The `*_meta_mqc.csv` file are used to report family metadata and statistics in the browser, via the MultiQC software.

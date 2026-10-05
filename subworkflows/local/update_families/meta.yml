@@ -86,7 +86,7 @@ output:
   - fasta:
       type: file
       description: |
-        Sequences of each returned family's full MSA
+        Sequences of each returned family's full MSA; the degapped provided full MSA of every passed-through family
   - hmm:
       type: file
       description: |

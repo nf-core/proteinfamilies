@@ -136,18 +136,22 @@ nextflow_workflow {
 
     test("fasta - no hits") {
         // No family is hit: every existing family passes through and is listed with "no hits",
-        // and all input sequences flow back to family creation
+        // and all input sequences flow back to family creation. The given full MSA's members
+        // (gaps removed) become its family's FASTA, but never go to creation.
         when {
             workflow {
                 """
                 def fasta = file('no_hits.faa')
                 fasta.text = '>junk_1\\nWWWWWWWWWWWWWWWWWWWW\\n>junk_2\\nCCCCCCCCCCCCCCCCCCCC\\n'
+                def msa = file('existing_fam_1.aln')
+                msa.text = '>junk_3/1-10\\nGG-GGGGGGGG\\n>junk_4\\nPPPPPP-PPPP\\n'
+                ['tar', '-czf', 'no_hits_full_msas.tar.gz', msa.name].execute(null, msa.parent.toFile()).waitFor()
                 input[0] = channel.of([
                     [ id: 'test_update' ],
                     fasta,
                     file(params.pipelines_testdata_base_path + 'test_data/v3/existing_hmms.tar.gz', checkIfExists: true),
                     [],
-                    []
+                    file('no_hits_full_msas.tar.gz', checkIfExists: true)
                 ])
                 input[1] = 0.9        // hmmsearch_query_length_threshold
                 input[2] = false      // skip_sequence_redundancy_removal
@@ -168,7 +172,8 @@ nextflow_workflow {
                 { assert path(workflow.out.no_hit_seqs[0][1]).linesGzip.count { line -> line.startsWith('>') } == 2 },
                 { assert workflow.out.passed_through_families == [[[id: 'test_update'], ['existing_fam_1', 'existing_fam_2', 'existing_fam_3', 'existing_fam_4', 'existing_fam_zero_hits'].collect { family -> [family, 'no hits'] }]] },
                 { assert workflow.out.hmm.size() == 5 },
-                { assert workflow.out.seed_msa.size() == 0 && workflow.out.full_msa.size() == 0 }
+                { assert workflow.out.seed_msa.size() == 0 && workflow.out.full_msa.size() == 1 },
+                { assert workflow.out.fasta.collect { meta, faa -> [meta.family, path(faa.toString()).linesGzip] } == [['existing_fam_1', ['>junk_3/1-10', 'GGGGGGGGGG', '>junk_4', 'PPPPPPPPPP']]] }
             )
         }
     }

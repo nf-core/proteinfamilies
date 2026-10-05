@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#202](https://github.com/nf-core/proteinfamilies/pull/202)
+  - Passed-through families with a provided full MSA get its degapped members as their family FASTA (written by `POOL_EXISTING_MEMBERS`), so they are listed in the family members and representatives. (by @vagkaratzas)
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198)
   - Each sample's final families (created, updated and passed through) are archived in `archives/<id>/<id>_{hmms,seed_msas,full_msas}.tar.gz`, ready to be given as `existing_*` columns to update them in a later run (nf-core `tar` module). (by @vagkaratzas)
   - Added `--skip_update_refinement` (default `false`): updated families keep their existing HMM, which aligns its hits into the new full MSA, and a provided seed MSA passes through unchanged. (by @vagkaratzas)

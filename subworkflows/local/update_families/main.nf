@@ -12,9 +12,9 @@
     MSA and family FASTA where it built them. Pooled full-MSA members without hits are dropped,
     they never go to de-novo family creation. Stockholm full MSAs are reformatted to aligned FASTA.
 
-    FINALISE (engine-agnostic): every provided HMM, seed or full MSA passes through unless the
-    engine built a new one, so families the engine did not return pass through and are listed
-    with a reason. Only input FASTA sequences (never pooled full-MSA members) that no returned
+    FINALISE (engine-agnostic): every provided HMM, seed or full MSA (with its degapped members
+    as the family FASTA) passes through unless the engine built a new one, so families the
+    engine did not return pass through and are listed with a reason. Only input FASTA sequences (never pooled full-MSA members) that no returned
     family holds are emitted as no_hit_seqs for downstream de-novo family creation.
 */
 
@@ -86,6 +86,8 @@ workflow UPDATE_FAMILIES {
         .map { meta, fasta, _existing_hmms, _existing_seed_msas, _existing_full_msas -> [meta, fasta] }
 
     POOL_EXISTING_MEMBERS( ch_input_fasta.join(UNTAR_FULL_MSA.out.untar) )
+    // The degapped members of each existing full MSA, the FASTA of a family that passes through
+    ch_existing_fasta = familyFiles( POOL_EXISTING_MEMBERS.out.members )
 
     ch_branched_sequences = ch_input_fasta
         .join(UNTAR_FULL_MSA.out.untar, remainder: true)
@@ -184,7 +186,7 @@ workflow UPDATE_FAMILIES {
     ch_seed_msa = passThrough(ch_existing_seed_msa, ch_engine_seed_msa)
     ch_full_msa = passThrough(ch_existing_full_msa, ch_engine_full_msa)
     ch_hmm      = passThrough(ch_existing_hmm, ch_engine_hmm)
-    ch_fasta    = ch_engine_fasta
+    ch_fasta    = passThrough(ch_existing_fasta, ch_engine_fasta)
 
     // Existing families the engine did not return pass through, listed per sample
     ch_passed_through_families = ch_existing_hmm
@@ -208,7 +210,7 @@ workflow UPDATE_FAMILIES {
     // Input sequences not in any returned family go to family creation
     EXTRACT_UNASSIGNED_SEQS(
         ch_input_fasta
-            .join(ch_fasta_per_sample, remainder: true)
+            .join(ch_engine_fasta.map { meta, faa -> [ [id: meta.id], faa ] }.groupTuple(by: 0), remainder: true)
             .map { meta, fasta, family_fastas -> [meta, fasta, family_fastas ?: []] }
     )
 
