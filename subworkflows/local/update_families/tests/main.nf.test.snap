@@ -1,21 +1,173 @@
 {
-    "fasta - update": {
+    "fasta - hmm + seed + full - skip update refinement": {
         "content": [
             [
                 [
                     {
                         "id": "test_update"
                     },
-                    "test_update.fasta.gz:md5,9854e409ebbaf4b2e93c0e6e824b4543"
+                    "test_update_unassigned.fasta.gz:md5,36416f3575426d9a8b57eb8e576ed118"
                 ]
+            ],
+            [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    [
+                        
+                    ]
+                ]
+            ],
+            [
+                "existing_fam_1.hmm.gz: NAME  existing_fam_1; LENG  127; NSEQ  5; CKSUM 599545480",
+                "existing_fam_2.hmm.gz: NAME  existing_fam_2; LENG  148; NSEQ  5; CKSUM 1087376708",
+                "existing_fam_3.hmm.gz: NAME  existing_fam_3; LENG  178; NSEQ  5; CKSUM 4184946879",
+                "existing_fam_4.hmm.gz: NAME  existing_fam_4; LENG  109; NSEQ  6; CKSUM 3532831058",
+                "existing_fam_zero_hits.hmm.gz: NAME  existing_fam_zero_hits; LENG  72; NSEQ  5; CKSUM 2907342728"
+            ],
+            [
+                "existing_fam_1.aln: 82b60a44745712b2df843b5c6aa29f84",
+                "existing_fam_2.aln: 7836fb05544b99875a14a3f379d7681a",
+                "existing_fam_3.aln: 13ab7ed3fd17c813d6aa03f3d20ee90f",
+                "existing_fam_4.aln: 67d1966b90db6c96d167b1ca846fb7fc",
+                "existing_fam_zero_hits.aln: dc8a37fd9e29fe0d988cbb9e9cbc6a27"
+            ],
+            [
+                "existing_fam_1.fas.gz: e60d57c1594589ba660631d0a6e5c4df",
+                "existing_fam_2.fas.gz: 99eb5205fd4a5ead399ece1406d33ded",
+                "existing_fam_3.fas.gz: ce1c81f1c87785e3e49dae4bace2ab41",
+                "existing_fam_4.fas.gz: 5488c8d7c8f332cbd7a7bb55a7d032c7",
+                "existing_fam_zero_hits.fas.gz: 84c6480d3988359b8045d7a1c353f5e2"
+            ],
+            [
+                "existing_fam_1: 62",
+                "existing_fam_2: 6",
+                "existing_fam_3: 15",
+                "existing_fam_4: 27",
+                "existing_fam_zero_hits: 10"
             ],
             "test_update_meta_mqc.csv",
             11
         ],
-        "timestamp": "2026-06-08T16:37:58.09809568",
+        "timestamp": "2026-10-05T12:46:23.21987206",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
+        }
+    },
+    "fasta - hmm + seed + full": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    "test_update_unassigned.fasta.gz:md5,e377fff16136e3f983d98ed8d9ee4dce"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    [
+                        
+                    ]
+                ]
+            ],
+            [
+                "existing_fam_1.hmm.gz: NAME  existing_fam_1; LENG  126; NSEQ  60; CKSUM 4201024011",
+                "existing_fam_2.hmm.gz: NAME  existing_fam_2; LENG  148; NSEQ  5; CKSUM 735595637",
+                "existing_fam_3.hmm.gz: NAME  existing_fam_3; LENG  172; NSEQ  15; CKSUM 815713389",
+                "existing_fam_4.hmm.gz: NAME  existing_fam_4; LENG  106; NSEQ  27; CKSUM 2275757557",
+                "existing_fam_zero_hits.hmm.gz: NAME  existing_fam_zero_hits; LENG  72; NSEQ  10; CKSUM 369861990"
+            ],
+            [
+                "existing_fam_1.aln: 0c3365df4113939c924d7495671e458e",
+                "existing_fam_2.aln: 6decb80123f299bb14a4f5fef1bade52",
+                "existing_fam_3.aln: ef03d86964c3b011e4e9de17d95eea37",
+                "existing_fam_4.aln: 56e7a0c27513e42507e315bbbbdf042d",
+                "existing_fam_zero_hits.aln: 5b95acffcd6141546c3cd938a97a739a"
+            ],
+            [
+                "existing_fam_1.fas.gz: 4f45e5dad11bf184d60f829a5eaa4550",
+                "existing_fam_2.fas.gz: 424c3ad334cda84641976b311df3a659",
+                "existing_fam_3.fas.gz: e841a447719397b066a568c96468f903",
+                "existing_fam_4.fas.gz: 705cb7e9df45afefba4c3f2ff3a710fb",
+                "existing_fam_zero_hits.fas.gz: 4ac728a4d7b65e84af6c6f93259bf41d"
+            ],
+            [
+                "existing_fam_1: 62",
+                "existing_fam_2: 6",
+                "existing_fam_3: 16",
+                "existing_fam_4: 57",
+                "existing_fam_zero_hits: 10"
+            ],
+            "test_update_meta_mqc.csv",
+            11
+        ],
+        "timestamp": "2026-10-05T12:46:09.737780153",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "fasta.gz - hmm only": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    "test_update_unassigned.fasta.gz:md5,e377fff16136e3f983d98ed8d9ee4dce"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test_update"
+                    },
+                    [
+                        [
+                            "existing_fam_zero_hits",
+                            "no hits"
+                        ]
+                    ]
+                ]
+            ],
+            [
+                "existing_fam_1.hmm.gz: NAME  existing_fam_1; LENG  126; NSEQ  31; CKSUM 1180971014",
+                "existing_fam_2.hmm.gz: NAME  existing_fam_2; LENG  148; NSEQ  5; CKSUM 735595637",
+                "existing_fam_3.hmm.gz: NAME  existing_fam_3; LENG  172; NSEQ  15; CKSUM 815713389",
+                "existing_fam_4.hmm.gz: NAME  existing_fam_4; LENG  106; NSEQ  27; CKSUM 2275757557",
+                "existing_fam_zero_hits.hmm.gz: NAME  existing_fam_zero_hits; LENG  72; NSEQ  5; CKSUM 2907342728"
+            ],
+            [
+                "existing_fam_1.aln: dfa5c40157a56b8dcb25743b56194f68",
+                "existing_fam_2.aln: 6decb80123f299bb14a4f5fef1bade52",
+                "existing_fam_3.aln: ef03d86964c3b011e4e9de17d95eea37",
+                "existing_fam_4.aln: 56e7a0c27513e42507e315bbbbdf042d"
+            ],
+            [
+                "existing_fam_1.fas.gz: 8c5b75e8429023bc4dae4e1c3421357f",
+                "existing_fam_2.fas.gz: 424c3ad334cda84641976b311df3a659",
+                "existing_fam_3.fas.gz: e841a447719397b066a568c96468f903",
+                "existing_fam_4.fas.gz: 705cb7e9df45afefba4c3f2ff3a710fb"
+            ],
+            [
+                "existing_fam_1: 31",
+                "existing_fam_2: 6",
+                "existing_fam_3: 16",
+                "existing_fam_4: 57"
+            ],
+            "test_update_meta_mqc.csv",
+            10
+        ],
+        "timestamp": "2026-10-05T12:46:54.038564224",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
         }
     }
 }

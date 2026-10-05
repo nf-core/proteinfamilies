@@ -5,22 +5,27 @@ nextflow_workflow {
     workflow "UPDATE_FAMILIES"
     config "./nextflow.config"
 
-    test("fasta - update") {
-
+    test("fasta - hmm + seed + full") {
+        // Existing full MSA members are pooled with the input sequences and searched again
         when {
             workflow {
                 """
                 input[0] = channel.of([
                     [ id: 'test_update' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
-                    file(params.pipelines_testdata_base_path + 'test_data/existing_hmms.tar.gz', checkIfExists: true),
-                    file(params.pipelines_testdata_base_path + 'test_data/existing_msas.tar.gz', checkIfExists: true)
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_hmms.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_seed_msas.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_full_msas.tar.gz', checkIfExists: true)
                 ])
                 input[1] = 0.9        // hmmsearch_query_length_threshold
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
                 """
             }
         }
@@ -30,9 +35,389 @@ nextflow_workflow {
                 { assert workflow.success},
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
+                    workflow.out.unchanged_families,
+                    // HMM header lines, without the run-dependent DATE
+                    workflow.out.hmm.collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
+                    workflow.out.seed_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    workflow.out.full_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
                     file(workflow.out.updated_family_reps[0][1]).name,
                     path(workflow.out.updated_family_reps[0][1]).readLines().size()
                 ).match()}
+            )
+        }
+    }
+
+    test("fasta - hmm + seed + full - skip update refinement") {
+        // Existing HMMs kept: they align their hits into new full MSAs, the seed MSAs pass through
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_hmms.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_seed_msas.tar.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_full_msas.tar.gz', checkIfExists: true)
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = true       // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.no_hit_seqs,
+                    workflow.out.unchanged_families,
+                    // HMM header lines, without the run-dependent DATE
+                    workflow.out.hmm.collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
+                    workflow.out.seed_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    workflow.out.full_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
+                    file(workflow.out.updated_family_reps[0][1]).name,
+                    path(workflow.out.updated_family_reps[0][1]).readLines().size()
+                ).match()}
+            )
+        }
+    }
+
+    test("fasta.gz - hmm only") {
+        // Gzipped input, no existing MSAs: the input alone is decompressed and searched
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa.gz', checkIfExists: true),
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_hmms.tar.gz', checkIfExists: true),
+                    [],
+                    []
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.out.no_hit_seqs,
+                    workflow.out.unchanged_families,
+                    // HMM header lines, without the run-dependent DATE
+                    workflow.out.hmm.collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
+                    workflow.out.seed_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    workflow.out.full_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
+                    file(workflow.out.updated_family_reps[0][1]).name,
+                    path(workflow.out.updated_family_reps[0][1]).readLines().size()
+                ).match()}
+            )
+        }
+    }
+
+    test("fasta - no hits") {
+        // No family is hit: every existing family is left unchanged and listed with "no hits",
+        // and all input sequences flow back to family creation
+        when {
+            workflow {
+                """
+                def fasta = file('no_hits.faa')
+                fasta.text = '>junk_1\\nWWWWWWWWWWWWWWWWWWWW\\n>junk_2\\nCCCCCCCCCCCCCCCCCCCC\\n'
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    fasta,
+                    file(params.pipelines_testdata_base_path + 'test_data/v3/existing_hmms.tar.gz', checkIfExists: true),
+                    [],
+                    []
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert path(workflow.out.no_hit_seqs[0][1]).linesGzip.count { line -> line.startsWith('>') } == 2 },
+                { assert workflow.out.unchanged_families == [[[id: 'test_update'], ['existing_fam_1', 'existing_fam_2', 'existing_fam_3', 'existing_fam_4', 'existing_fam_zero_hits'].collect { family -> [family, 'no hits'] }]] },
+                { assert workflow.out.hmm.size() == 5 },
+                { assert workflow.out.seed_msa.size() == 0 && workflow.out.full_msa.size() == 0 }
+            )
+        }
+    }
+
+    test("msa named after hmm file, not NAME - fails") {
+        // fam_a.hmm holds family fam_b: families are named by NAME, so fam_a.aln has no family
+        when {
+            workflow {
+                """
+                def hmm = file('bad_hmms/hmm/fam_a.hmm')
+                hmm.parent.mkdirs()
+                hmm.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_b\\nLENG  1\\n//\\n'
+                def archive = file('bad_hmms.tar.gz')
+                ['tar', '-czf', archive.toString(), '-C', file('bad_hmms').toString(), 'hmm'].execute().waitFor()
+                def msa = file('bad_msas/full_msa/fam_a.aln')
+                msa.parent.mkdirs()
+                msa.text = '>s1\\nMK\\n'
+                ['tar', '-czf', file('bad_msas.tar.gz').toString(), '-C', file('bad_msas').toString(), 'full_msa'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    archive,
+                    [],
+                    file('bad_msas.tar.gz')
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("without an existing HMM of the same name: fam_a") } }
+            )
+        }
+    }
+
+    test("hmm duplicate NAMEs - fail") {
+        // fam_a.hmm and fam_a.hmm.gz give the same family twice
+        when {
+            workflow {
+                """
+                def f1 = file('dup_hmms/hmm/fam_a.hmm')
+                f1.parent.mkdirs()
+                f1.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                ['gzip', '-k', file('dup_hmms/hmm/fam_a.hmm').toString()].execute().waitFor()
+                ['tar', '-czf', file('dup_hmms.tar.gz').toString(), '-C', file('dup_hmms').toString(), 'hmm'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('dup_hmms.tar.gz'),
+                    [],
+                    []
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("existing HMM NAME 'fam_a' is given more than once") } }
+            )
+        }
+    }
+
+    test("hmm names like created families - fail") {
+        // test_update_1 could be created for sample test_update; test_update_ and test_update_x1 could not
+        when {
+            workflow {
+                """
+                def f2 = file('colliding_hmms/hmm/test_update_.hmm')
+                f2.parent.mkdirs()
+                f2.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  test_update_\\nLENG  1\\n//\\n'
+                def f6 = file('colliding_hmms/hmm/test_update_x1.hmm')
+                f6.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  test_update_x1\\nLENG  1\\n//\\n'
+                def f7 = file('colliding_hmms/hmm/test_update_1.hmm')
+                f7.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  test_update_1\\nLENG  1\\n//\\n'
+                ['tar', '-czf', file('colliding_hmms.tar.gz').toString(), '-C', file('colliding_hmms').toString(), 'hmm'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('colliding_hmms.tar.gz'),
+                    [],
+                    []
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("Existing families test_update_1 are named like families created for sample 'test_update'") } }
+            )
+        }
+    }
+
+    test("full msa without hmm - fails") {
+        // other.aln names no existing HMM, so it could never be passed through with its family
+        when {
+            workflow {
+                """
+                def f3 = file('one_hmm/hmm/fam_a.hmm')
+                f3.parent.mkdirs()
+                f3.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                ['tar', '-czf', file('one_hmm.tar.gz').toString(), '-C', file('one_hmm').toString(), 'hmm'].execute().waitFor()
+                def f4 = file('stray_msas/full_msa/fam_a.aln')
+                f4.parent.mkdirs()
+                f4.text = '>s1\\nMK\\n'
+                def f5 = file('stray_msas/full_msa/other.aln')
+                f5.text = '>s2\\nMK\\n'
+                ['tar', '-czf', file('stray_msas.tar.gz').toString(), '-C', file('stray_msas').toString(), 'full_msa'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('one_hmm.tar.gz'),
+                    [],
+                    file('stray_msas.tar.gz')
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("without an existing HMM of the same name: other") } }
+            )
+        }
+    }
+
+    test("seed msa without hmm - fails") {
+        // the seed folder is validated like the full one: other.aln names no existing HMM
+        when {
+            workflow {
+                """
+                def f3 = file('one_hmm/hmm/fam_a.hmm')
+                f3.parent.mkdirs()
+                f3.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                ['tar', '-czf', file('one_hmm.tar.gz').toString(), '-C', file('one_hmm').toString(), 'hmm'].execute().waitFor()
+                def f4 = file('stray_seeds/seed_msa/fam_a.aln')
+                f4.parent.mkdirs()
+                f4.text = '>s1\\nMK\\n'
+                def f5 = file('stray_seeds/seed_msa/other.aln')
+                f5.text = '>s2\\nMK\\n'
+                ['tar', '-czf', file('stray_seeds.tar.gz').toString(), '-C', file('stray_seeds').toString(), 'seed_msa'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('one_hmm.tar.gz'),
+                    file('stray_seeds.tar.gz'),
+                    []
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("without an existing HMM of the same name: other") } }
+            )
+        }
+    }
+
+    test("duplicate full msas - fail") {
+        // fam_a.aln and fam_a.aln.gz give the same family's full MSA twice
+        when {
+            workflow {
+                """
+                def f3 = file('one_hmm/hmm/fam_a.hmm')
+                f3.parent.mkdirs()
+                f3.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                ['tar', '-czf', file('one_hmm.tar.gz').toString(), '-C', file('one_hmm').toString(), 'hmm'].execute().waitFor()
+                def f4 = file('stray_msas/full_msa/fam_a.aln')
+                f4.parent.mkdirs()
+                f4.text = '>s1\\nMK\\n'
+                ['gzip', '-k', f4.toString()].execute().waitFor()
+                ['tar', '-czf', file('stray_msas.tar.gz').toString(), '-C', file('stray_msas').toString(), 'full_msa'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('one_hmm.tar.gz'),
+                    [],
+                    file('stray_msas.tar.gz')
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("fam_a each given by more than one file") } }
             )
         }
     }

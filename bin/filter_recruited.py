@@ -121,6 +121,18 @@ def validate_and_parse_hit_name(hit: str) -> tuple[str, int, int]:
     return sequence_name, env_from, env_to
 
 
+def slice_name(name: str, start: int, end: int) -> str:
+    """
+    Name a slice `name/start-end`. A name that already holds a `/s-e` range is itself a slice,
+    so the new range is given in its parent's coordinates: `seq/10-200` [3, 180] -> `seq/12-189`.
+    """
+    match = re.match(r"^(.*)/(\d+)-(\d+)$", name)
+    if match:
+        offset = int(match.group(2)) - 1
+        return f"{match.group(1)}/{start + offset}-{end + offset}"
+    return f"{name}/{start}-{end}"
+
+
 def extract_fasta_subset(filtered_sequences: list[str], fasta: str, out_fasta: str) -> None:
     """
     Write a gzipped FASTA of sequences cropped to their hit envelope coordinates.
@@ -140,6 +152,7 @@ def extract_fasta_subset(filtered_sequences: list[str], fasta: str, out_fasta: s
         with open_func(fasta, "rt") as in_fasta:
             fasta_dict = {record.id: str(record.seq) for record in SeqIO.parse(in_fasta, "fasta")}
 
+        written = set()
         with gzip.open(out_fasta, "wt") as out_file:
             for filtered_sequence in filtered_sequences:
                 try:
@@ -155,7 +168,13 @@ def extract_fasta_subset(filtered_sequences: list[str], fasta: str, out_fasta: s
                     if len(extracted_seq) == len(original_record):
                         new_id = sequence_name  # Omit range if full-length
                     else:
-                        new_id = f"{sequence_name}/{env_from}-{env_to}"
+                        new_id = slice_name(sequence_name, env_from, env_to)
+
+                    # Overlapping slices of one protein can give the same parent-coordinate
+                    # name, which means the same residues: keep one
+                    if new_id in written:
+                        continue
+                    written.add(new_id)
 
                     out_file.write(f">{new_id}\n{extracted_seq}\n")
                 except KeyError:

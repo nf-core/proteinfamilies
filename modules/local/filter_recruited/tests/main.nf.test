@@ -30,6 +30,60 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - hmmsearch - fasta - sliced input names") {
+        // p is already a slice (p/101-110), so its hit [3, 8] is named in p's parent coordinates;
+        // q is hit full-length, so it keeps its name
+        when {
+            process {
+                """
+                def fasta = file('edge.faa')
+                fasta.text = '>p/101-110\\nACDEFGHIKL\\n>q\\nMNPQRSTVWY\\n>r\\nAAAAAAAAAA\\n'
+                def domtbl = file('edge.domtbl.gz')
+                domtbl.withOutputStream { os -> new java.util.zip.GZIPOutputStream(os).withWriter { w -> w << [
+                    'p/101-110 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 3 8 3 8 0.99 -',
+                    'q - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 1 10 1 10 0.99 -'
+                ].join('\\n') + '\\n' } }
+                input[0] = channel.of([ [ id: 'edge' ], domtbl, fasta ])
+                input[1] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fasta[0][1]).linesGzip == ['>p/103-108', 'DEFGHI', '>q', 'MNPQRSTVWY'] }
+            )
+        }
+    }
+
+    test("proteinfamilies - hmmsearch - fasta - overlapping slices") {
+        // s/1-10 and s/6-15 are overlapping slices of one protein, both hit on their shared
+        // residues 6-10: both give s/6-10, written once
+        when {
+            process {
+                """
+                def fasta = file('overlap.faa')
+                fasta.text = '>s/1-10\\nACDEFGHIKL\\n>s/6-15\\nGHIKLMNPQR\\n'
+                def domtbl = file('overlap.domtbl.gz')
+                domtbl.withOutputStream { os -> new java.util.zip.GZIPOutputStream(os).withWriter { w -> w << [
+                    's/1-10 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 6 10 6 10 0.99 -',
+                    's/6-15 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 1 5 1 5 0.99 -'
+                ].join('\\n') + '\\n' } }
+                input[0] = channel.of([ [ id: 'overlap' ], domtbl, fasta ])
+                input[1] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.fasta[0][1]).linesGzip == ['>s/6-10', 'GHIKL'] }
+            )
+        }
+    }
+
     test("proteinfamilies - hmmsearch - fasta - stub") {
 
         options "-stub"

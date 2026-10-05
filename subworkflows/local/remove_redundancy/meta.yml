@@ -100,14 +100,22 @@ input:
       minimum: 0.0
       maximum: 1.0
 output:
-  - versions:
+  - seed_msa:
       type: file
       description: |
-        Versions file containing the software versions used in the workflow.
+        Seed MSAs of the families kept after family redundancy removal, including merged families
   - fasta:
       type: file
       description: |
         Redundancy-filtered FASTA files after family and/or sequence redundancy removal
+  - full_msa:
+      type: file
+      description: |
+        Full MSAs of the kept families, matching their FASTA files
+  - hmm:
+      type: file
+      description: |
+        HMMs of the kept families
 authors:
   - "@vagkaratzas"
 maintainers:

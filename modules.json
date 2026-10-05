@@ -112,6 +112,11 @@
                         "git_sha": "d07a945f421a4a91ce4e5a22db63e0e7f8741607",
                         "installed_by": ["faa_seqfu_seqkit"]
                     },
+                    "tar": {
+                        "branch": "master",
+                        "git_sha": "03cb040e9ed50a0e9c1e8cdbffc5f7cba6ecb3ca",
+                        "installed_by": ["modules"]
+                    },
                     "untar": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",

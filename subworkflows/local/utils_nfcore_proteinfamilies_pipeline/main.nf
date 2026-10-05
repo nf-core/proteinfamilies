@@ -280,30 +280,43 @@ def fileStem(file) {
 }
 
 //
-// Validate that an HMM folder and an MSA folder contain the same number of files with matching
-// base names. Aborts early if they diverge — a mismatch would cause silent key-join failures
-// in the per-family combine steps inside UPDATE_FAMILIES.
+// Validate a sample's existing HMMs (one <NAME>.hmm.gz per model, from SPLIT_HMMS, which already
+// rejects duplicate NAMEs): no NAME may look like a name this run can create for the sample.
+// Created and merged families are named `<id>_<digit>...`, so an existing family named that way
+// (e.g. from a previous run with the same id) would collide with a new one in the HMM library
+// and the archives.
 //
-def validateMatchingFolders(channel1, channel2) {
-    // Fetch the contents of the channels
-    channel1
-        .join(channel2)
-        .map { _meta, folder1, folder2 ->
-            def files1 = folder1.listFiles()
-            def files2 = folder2.listFiles()
-
-            // Check if the number of files matches
-            if (files1.size() != files2.size()) {
-                error("[nf-core/proteinfamilies] ERROR: Folder mismatch: ${folder1} has ${files1.size()} files, but ${folder2} has ${files2.size()} files.")
+def validateHmmNames(ch_hmm_folders) {
+    ch_hmm_folders
+        .map { meta, folder ->
+            def prefix = meta.id + '_'
+            def colliding = folder.listFiles().collect { hmm -> fileStem(hmm) }.findAll { stem ->
+                stem.length() > prefix.length() && stem.startsWith(prefix) && stem[prefix.length()] in ('0'..'9')
+            }.sort()
+            if (colliding) {
+                error("[nf-core/proteinfamilies] ERROR: Existing families ${colliding.join(', ')} are named like families created for sample '${meta.id}' ('${prefix}<number>...'). Use a new id for this update run (e.g. '${meta.id}_r2').")
             }
+        }
+}
 
-            // Extract base filenames (without extensions) and sort
-            def baseNames1 = files1.collect { f -> fileStem(f) }.sort()
-            def baseNames2 = files2.collect { f -> fileStem(f) }.sort()
-
-            // Check if base filenames match one to one
-            if (baseNames1 != baseNames2) {
-                error("[nf-core/proteinfamilies] ERROR: Filename mismatch: Expected matching files in ${folder1} and ${folder2}. Base filenames do not match.")
+//
+// Validate that every file of an existing MSA folder (seed or full) is named after one of the
+// sample's existing HMMs, at most once. MSAs are matched to families by file stem, so an unmatched
+// file could never be passed through with its family.
+//
+def validateMsaStems(ch_hmm_folders, ch_msa_folders) {
+    ch_hmm_folders
+        .join(ch_msa_folders)
+        .map { _meta, hmm_folder, msa_folder ->
+            def families = hmm_folder.listFiles().collect { hmm -> fileStem(hmm) } as Set
+            def stems = msa_folder.listFiles().collect { msa -> fileStem(msa) }
+            def duplicates = stems.countBy { stem -> stem }.findAll { _stem, count -> count > 1 }.keySet().sort()
+            if (duplicates) {
+                error("[nf-core/proteinfamilies] ERROR: Duplicate MSAs in ${msa_folder}: ${duplicates.join(', ')} each given by more than one file.")
             }
-    }
+            def unmatched = stems.findAll { stem -> !(stem in families) }.sort()
+            if (unmatched) {
+                error("[nf-core/proteinfamilies] ERROR: MSAs in ${msa_folder} without an existing HMM of the same name: ${unmatched.join(', ')}. MSA files must be named after their family's HMM file.")
+            }
+        }
 }

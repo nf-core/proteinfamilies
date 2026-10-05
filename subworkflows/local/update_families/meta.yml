@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "update_families"
-description: Update HMMs and full MSAs of existing families with new sequences through homology search, clustering, alignment, and model building
+description: Update existing families with new sequences (and the members of their existing full MSAs) through homology search, then rebuild each family like a newly created one (new seed MSA, HMM and full MSA)
 keywords:
   - update
   - families
@@ -15,20 +15,25 @@ keywords:
 components:
   - untar
   - find/concatenate
+  - gunzip
+  - pool_existing_members
   - hmmer/hmmsearch
-  - branch_hits_fasta
-  - seqkit/seq
+  - split_family_hits
   - mmseqs_fasta_cluster
   - remove_redundant_seqs
-  - align_sequences
-  - hmmer/hmmbuild
+  - generate_families
+  - hmmer/hmmalign
+  - hhsuite/reformat
+  - extract_unassigned_seqs
   - extract_family_members
   - extract_family_reps
 input:
   - ch_samplesheet_for_update:
       type: file
       description: |
-        CSV file with the following columns; meta, sequences, existing_hmms_to_update, existing_msas_to_update
+        Channel with the following elements; meta, sequences, existing_hmms, existing_seed_msas, existing_full_msas.
+        The MSA archives are optional ([]); their files are named after the HMM files. Full MSA members are
+        searched again; seed MSAs are never searched, only passed through.
   - hmmsearch_query_length_threshold:
       type: number
       description: |
@@ -52,16 +57,49 @@ input:
   - skip_seed_msa_trimming:
       type: boolean
       description: |
-        Skip trimming of the re-aligned family MSAs with ClipKIT
+        Skip trimming of the new seed MSAs with ClipKIT
+  - hmmsearch_write_target:
+      type: boolean
+      description: |
+        Write target sequences in the recruiting hmmsearch output
+  - hmmsearch_write_domain:
+      type: boolean
+      description: |
+        Write domain information in the recruiting hmmsearch output
+  - skip_additional_sequence_recruiting:
+      type: boolean
+      description: |
+        Skip recruiting the full MSA with the new HMM; the new seed MSA is then also the full MSA
+  - skip_update_refinement:
+      type: boolean
+      description: |
+        Keep the existing HMMs, which align their hits into the new full MSAs; provided seed MSAs pass through unchanged
 output:
-  - versions:
+  - seed_msa:
       type: file
       description: |
-        Versions file containing the software versions used in the workflow
+        New seed MSA per rebuilt family; the provided seed MSA of every other family
+  - full_msa:
+      type: file
+      description: |
+        New full MSA (aligned FASTA) per returned family; the provided full MSA of every unchanged family
+  - fasta:
+      type: file
+      description: |
+        Sequences of each returned family's full MSA
+  - hmm:
+      type: file
+      description: |
+        New HMM per rebuilt family; the existing HMM of every other family
+  - unchanged_families:
+      type: list
+      description: |
+        [family, reason] of each existing family the update did not return (left unchanged), per sample;
+        reason "no hits" or "no recruits" (the rebuilt HMM recruited nothing)
   - no_hit_seqs:
       type: file
       description: |
-        FASTA file with sequences without hits, to go through the base family generation workflow
+        Gzipped FASTA of the input sequences in no returned family, to go through the base family generation workflow
   - updated_family_reps:
       type: file
       description: |

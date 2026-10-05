@@ -1,0 +1,67 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "pool_existing_members"
+description: Pool the degapped members of existing family MSAs with a sample's input sequences, dropping members the input already holds.
+keywords:
+  - msa
+  - update
+  - fasta
+tools:
+  - "pool_existing_members":
+      description: "Pool existing family MSA members with input sequences."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/pool_existing_members/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/pool_existing_members/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/pool_existing_members/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - fasta:
+        type: file
+        description: Input sequences in FASTA format, plain or gzipped
+        pattern: "*.{fa,fasta,faa,fas}{,.gz}"
+    - msas:
+        type: file
+        description: Existing family MSAs (Stockholm or aligned FASTA, plain or gzipped), or folders of them
+        pattern: "*"
+output:
+  fasta:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}.fasta":
+          type: file
+          description: Uncompressed input sequences followed by the degapped MSA members whose region does not lie inside an input sequence of the same protein or inside another member
+          pattern: "*.fasta"
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

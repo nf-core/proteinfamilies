@@ -4,13 +4,18 @@
     "title": "nf-core/proteinfamilies pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
+    "uniqueEntries": ["id"],
     "items": {
         "type": "object",
+        "additionalProperties": {
+            "not": {},
+            "errorMessage": "Unknown samplesheet column: allowed columns are id, fasta, existing_hmms, existing_seed_msas and existing_full_msas"
+        },
         "properties": {
-            "sample": {
+            "id": {
                 "type": "string",
                 "pattern": "^[a-zA-Z0-9._-]+$",
-                "errorMessage": "Sample name must be provided and can only contain letters, digits, dots, underscores and dashes",
+                "errorMessage": "Sample id must be provided and can only contain letters, digits, dots, underscores and dashes",
                 "meta": ["id"]
             },
             "fasta": {
@@ -20,21 +25,35 @@
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.(fa|fasta|faa|fas)(\\.gz)?$",
                 "errorMessage": "Fasta file for amino acid sequences must be provided, cannot contain spaces and must have extension '.fa', '.fasta', '.faa', '.fas', '.fa.gz', '.fasta.gz', '.faa.gz' or '.fas.gz'"
             },
-            "existing_hmms_to_update": {
+            "existing_hmms": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
-                "description": "Gzipped tarball file containing existing protein family Hidden Markov Models (HMMs). These models will be used to 'fish' new sequences from the input and then be updated accordingly. Example: 'example.tar.gz'"
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.(tar\\.gz|hmm|hmm\\.gz|lib|lib\\.gz)$",
+                "errorMessage": "Existing family HMMs must be a '.tar.gz' archive of HMM files or one HMM library ('.hmm', '.hmm.gz', '.lib' or '.lib.gz') without spaces in its path",
+                "description": "Existing family HMMs: a gzipped tarball of HMM files, or one HMM library such as this pipeline's '<id>.lib.gz' (plain or gzipped files, one or more models each). Each model is a family named by its HMM NAME, and NAMEs must be unique. A sample with this column goes through the update path. Example: 'existing_hmms.tar.gz'"
             },
-            "existing_msas_to_update": {
+            "existing_seed_msas": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
-                "description": "Tarball file containing Multiple Sequence Alignments (MSAs) for the families to be updated. These alignments are essential for the update process and should match the Hidden Markov Model (HMM) filenames one by one. Example: 'example.tar.gz'"
+                "errorMessage": "Existing seed MSAs must be a '.tar.gz' archive without spaces in its path, and need 'existing_hmms'",
+                "description": "Gzipped tarball of existing family seed MSAs (aligned FASTA, as this pipeline writes them; passed through unchanged unless the family is rebuilt), each named after its family's HMM NAME (as file name stem; not every HMM needs one). Requires 'existing_hmms'. Example: 'existing_seed_msas.tar.gz'"
+            },
+            "existing_full_msas": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
+                "errorMessage": "Existing full MSAs must be a '.tar.gz' archive without spaces in its path, and need 'existing_hmms'",
+                "description": "Gzipped tarball of existing family full MSAs (aligned FASTA, as this pipeline writes them, or Stockholm), each named after its family's HMM NAME (as file name stem; not every HMM needs one). Their members are pooled with the input sequences and searched again with the existing HMMs; members without hits are dropped and never create new families. Requires 'existing_hmms'. Example: 'existing_full_msas.tar.gz'"
             }
         },
-        "required": ["sample", "fasta"]
+        "required": ["id", "fasta"],
+        "dependentRequired": {
+            "existing_seed_msas": ["existing_hmms"],
+            "existing_full_msas": ["existing_hmms"]
+        }
     }
 }
