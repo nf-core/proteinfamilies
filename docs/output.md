@@ -368,6 +368,8 @@ The converged records indicate which of the families optimized their model withi
     - `<samplename>/`
       - `pooled_components.txt`: comma separated clusters of similar family ids
       - `<merged_id>.fas`: (optional) merged seed alignment of each pooled component
+  - `merged_families/`
+    - `<samplename>_merged_families.tsv`: each merged family (`merged_family`) with the comma separated families it replaces (`members`); written for samples with merges. With `--family_generation_algorithm iterative`, the families built from a merge are named `<merged_family>_<n>`
   - `skipped_ids/`
     - `<samplename>.txt`: (optional) concatenated redundant and similar (single) family ids that are filtered out
 

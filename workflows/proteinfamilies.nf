@@ -150,6 +150,12 @@ workflow PROTEINFAMILIES {
         params.merged_family_name
     )
 
+    // Each merged family with the families it replaced, listed per sample (published in main.nf)
+    ch_merged_families = REMOVE_REDUNDANCY.out.merged_families
+        .collectFile { meta, merges ->
+            [ "${meta.id}_merged_families.tsv", "merged_family\tmembers\n" + merges.sort { merge -> merge[0] }.collect { merged_id, members -> "${merged_id}\t${members}\n" }.join() ]
+        }
+
     // Collect all final HMMs per sample and concatenate into a .lib.gz library
     ch_hmm_for_library = finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_hmm, REMOVE_REDUNDANCY.out.hmm )
 
@@ -242,6 +248,7 @@ workflow PROTEINFAMILIES {
     emit:
     family_reps             = EXTRACT_FAMILY_REPS.out.fasta
     passed_through_families = ch_passed_through_families
+    merged_families         = ch_merged_families
     multiqc_report          = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
 }
 

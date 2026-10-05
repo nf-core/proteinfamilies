@@ -98,8 +98,9 @@ workflow MERGE_FAMILIES {
     }
 
     emit:
-    seed_msa = ch_families.seed_msa
-    full_msa = ch_families.full_msa
-    fasta    = ch_families.fasta
-    hmm      = ch_families.hmm
+    seed_msa        = ch_families.seed_msa
+    full_msa        = ch_families.full_msa
+    fasta           = ch_families.fasta
+    hmm             = ch_families.hmm
+    merged_families = ch_pooled_components.map { meta, components -> [[id: meta.id], [meta.merged_id, components]] }.groupTuple() // [meta, [[merged_id, 'member,...'], ...]]
 }

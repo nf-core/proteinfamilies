@@ -92,7 +92,8 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert workflow.out.full_msa.collect { meta, msa -> [meta.merged_id, meta.pool, file(msa).name] } == [['fam_x', 'update', 'fam_x.sto.gz']] }
+                { assert workflow.out.full_msa.collect { meta, msa -> [meta.merged_id, meta.pool, file(msa).name] } == [['fam_x', 'update', 'fam_x.sto.gz']] },
+                { assert workflow.out.merged_families == [[[id: 'mgnifams_test'], [['fam_x', 'fam_x,mgnifams_test_1']]]] }
             )
         }
     }

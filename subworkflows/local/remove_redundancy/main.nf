@@ -59,6 +59,7 @@ workflow REMOVE_REDUNDANCY {
     ch_merged_full_msa = channel.empty()
     ch_merged_fasta    = channel.empty()
     ch_merged_hmm      = channel.empty()
+    ch_merged_families = channel.empty()
     ch_output_hmm      = channel.empty()
 
     // FAMILY REDUNDANCY REMOVAL MECHANISM
@@ -131,6 +132,7 @@ workflow REMOVE_REDUNDANCY {
             ch_merged_full_msa = MERGE_FAMILIES.out.full_msa
             ch_merged_fasta    = MERGE_FAMILIES.out.fasta
             ch_merged_hmm      = MERGE_FAMILIES.out.hmm
+            ch_merged_families = MERGE_FAMILIES.out.merged_families
         }
 
         // if --skip_family_redundancy_removal true, redundant_ids is returned empty by the script
@@ -224,10 +226,11 @@ workflow REMOVE_REDUNDANCY {
     }
 
     emit:
-    seed_msa = seed_msa
-    fasta    = fasta
-    full_msa = full_msa
-    hmm      = ch_output_hmm
+    seed_msa        = seed_msa
+    fasta           = fasta
+    full_msa        = full_msa
+    hmm             = ch_output_hmm
+    merged_families = ch_merged_families // [meta, [[merged_id, 'member,...'], ...]], samples with merges only
 }
 
 // One [[id], [files]] per sample
