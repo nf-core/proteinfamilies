@@ -352,7 +352,7 @@ The converged records indicate which of the families optimized their model withi
 - `remove_redundancy/`
   - `<samplename>/`
     - `redundant_fam_ids.txt`: redundant family identifiers that are being dropped
-    - `similar_fam_ids.txt`: similar family identifiers that are being dropped (their merged versions will be used instead)
+    - `similar_fam_ids.txt`: identifiers of families in similar pairs, the candidates for merging
     - `similarities.csv`: CSV file containing pairwise family similarities above user-defined threshold
   - `hmmer/`
     - `concatenated/`
@@ -382,7 +382,8 @@ Updated families (samples with `existing_hmms`) go through these steps together 
 An updated family is never flagged: a created family redundant with it is, and two redundant updated families are both kept. With `--skip_updated_family_redundancy_removal`, updated families bypass the redundancy check.
 With `--skip_updated_family_merging`, updated families are left out of merging. Families without a seed MSA (updated with `--skip_update_refinement` and no `existing_seed_msas` file) are never merged, as merging rebuilds a family from its seed MSA.
 A merged family recruits from the sequences its families were built from: the update pool (input sequences plus existing full MSA members) when it holds an updated family, otherwise the sequences the created families came from.
-A merged family holding updated families keeps the name of the first of them (alphabetically), so it keeps its identity across updates; with `--merged_family_name new` (and always with `--family_generation_algorithm iterative`) it is named like other merges, after the sample and its created families' numbers, followed by the names of its updated families.
+A merge holds at most one updated family: two updated families are never pooled together, and when created families link several of them, those updated families are left out and the created families are pooled among themselves. Pooled families are replaced by their merged family; similar families left out of every pool are kept.
+A merged family holding an updated family keeps its name, so it keeps its identity across updates; with `--merged_family_name new` (and always with `--family_generation_algorithm iterative`) it is named like other merges, after the sample and its created families' numbers, followed by the updated family's name.
 If `--skip_family_merging` is set to `false`, and if `hmmsearch_family_similarity_length_threshold` is correctly set
 lower than `hmmsearch_family_redundancy_length_threshold` (or `skip_family_redundancy_removal` is set to `true`), then similar family seed alignments can be merged
 and go through the `generate_families` subworkflow once more.

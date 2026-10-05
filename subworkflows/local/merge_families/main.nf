@@ -6,8 +6,8 @@
     encodes which original families were combined (e.g., 'sample_1_7' from 'sample_1'
     and 'sample_7'); for very large pools it collapses to a stable hash so the
     resulting output filename stays within the filesystem's name-length limit. With
-    merged_family_name 'existing', a merge holding updated families takes the first of
-    their names instead.
+    merged_family_name 'existing', a merge holding an updated family (at most one, see
+    POOL_SIMILAR_COMPONENTS) takes its name instead.
 */
 
 include { POOL_SIMILAR_COMPONENTS       } from '../../../modules/local/pool_similar_components/main'
@@ -19,7 +19,7 @@ include { GENERATE_FAMILIES_ITERATIVELY } from '../../../subworkflows/local/gene
 
 workflow MERGE_FAMILIES {
     take:
-    similarities                        // tuple val(meta), path(txt)
+    similarities                        // tuple val(meta), path(csv), val(updated_families)
     seed_msa                            // tuple val(meta), path(aln)
     sequences                           // tuple val(meta), path(fasta), meta [id, pool: 'create' or 'update']
     family_generation_algorithm         // string ["standard", "iterative"]
@@ -53,7 +53,7 @@ workflow MERGE_FAMILIES {
             def newId = readableId.length() <= 200
                 ? readableId
                 : "${meta.id}_${suffixes.size()}fams_${suffixes.join('_').md5().take(10)}"
-            // A merge holding updated families keeps the first of their names (standard algorithm
+            // A merge holding an updated family (at most one) keeps its name (standard algorithm
             // only: mgnifam names every family it builds `<prefix>_<n>`)
             def updated = (components - created).sort()
             def merged_id = merged_family_name == 'existing' && family_generation_algorithm == 'standard' && updated
@@ -102,5 +102,6 @@ workflow MERGE_FAMILIES {
     full_msa        = ch_families.full_msa
     fasta           = ch_families.fasta
     hmm             = ch_families.hmm
+    pooled_ids      = POOL_SIMILAR_COMPONENTS.out.pooled_ids
     merged_families = ch_pooled_components.map { meta, components -> [[id: meta.id], [meta.merged_id, components]] }.groupTuple() // [meta, [[merged_id, 'member,...'], ...]]
 }

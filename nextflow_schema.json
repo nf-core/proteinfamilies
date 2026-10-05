@@ -457,7 +457,7 @@
                     "enum": ["existing", "new"],
                     "description": "Name of a merged family that holds updated families.",
                     "fa_icon": "fas fa-tag",
-                    "help_text": "`existing` keeps the name of the merged updated family (the first alphabetically, if several), so the family keeps its identity across updates. `new` names the merged family like any other merge, after the sample and its families. Applies to `--family_generation_algorithm standard`; the iterative algorithm always uses `new`."
+                    "help_text": "`existing` keeps the name of the merged updated family (a merge holds at most one), so the family keeps its identity across updates. `new` names the merged family like any other merge, after the sample and its families. Applies to `--family_generation_algorithm standard`; the iterative algorithm always uses `new`."
                 },
                 "hmmsearch_family_redundancy_length_threshold": {
                     "type": "number",

@@ -60,6 +60,7 @@ workflow REMOVE_REDUNDANCY {
     ch_merged_fasta    = channel.empty()
     ch_merged_hmm      = channel.empty()
     ch_merged_families = channel.empty()
+    ch_pooled_ids      = channel.empty()
     ch_output_hmm      = channel.empty()
 
     // FAMILY REDUNDANCY REMOVAL MECHANISM
@@ -115,7 +116,7 @@ workflow REMOVE_REDUNDANCY {
                 .mix(update_pool.map { meta, faa -> [[id: meta.id, pool: 'update'], faa] })
 
             MERGE_FAMILIES (
-                IDENTIFY_REDUNDANT_FAMS.out.similarities,
+                IDENTIFY_REDUNDANT_FAMS.out.similarities.join(ch_family_roles.map { meta, updated, _seedless -> [meta, updated] }),
                 ch_seed_msa,
                 ch_merge_sequences,
                 family_generation_algorithm,
@@ -133,15 +134,14 @@ workflow REMOVE_REDUNDANCY {
             ch_merged_fasta    = MERGE_FAMILIES.out.fasta
             ch_merged_hmm      = MERGE_FAMILIES.out.hmm
             ch_merged_families = MERGE_FAMILIES.out.merged_families
+            ch_pooled_ids      = MERGE_FAMILIES.out.pooled_ids
         }
 
         // if --skip_family_redundancy_removal true, redundant_ids is returned empty by the script
         ch_skip_ids = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids
-        // will only remove similar families (e.g., _1 and _7) if merging them (i.e., will keep _1_7)
-        if (!skip_family_merging) {
-            ch_skip_ids = ch_skip_ids.concat( IDENTIFY_REDUNDANT_FAMS.out.similar_ids )
-        }
-        ch_skip_ids = ch_skip_ids.groupTuple(by: 0)
+        // similar families are only removed once pooled into a merge (e.g., _1 and _7 replaced by
+        // _1_7); a similar family left out of every pool (e.g. a second updated one) stays
+        ch_skip_ids = ch_skip_ids.concat( ch_pooled_ids ).groupTuple(by: 0)
 
         FIND_CONCATENATE_SKIP_IDS( ch_skip_ids )
 

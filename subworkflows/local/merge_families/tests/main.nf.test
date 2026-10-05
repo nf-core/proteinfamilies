@@ -16,7 +16,8 @@ nextflow_workflow {
 
                 input[0] = [
                     [ id: 'mgnifams_test' ],
-                    similarities_file
+                    similarities_file,
+                    []
                 ]
                 input[1] = channel.of([
                     [ id: 'mgnifams_test' ],
@@ -65,7 +66,7 @@ nextflow_workflow {
                 def updated_seed = file('fam_x.aln')
                 file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).copyTo(updated_seed)
 
-                input[0] = [ [ id: 'mgnifams_test' ], similarities_file ]
+                input[0] = [ [ id: 'mgnifams_test' ], similarities_file, [ 'fam_x' ] ]
                 input[1] = channel.of([
                     [ id: 'mgnifams_test' ],
                     [
@@ -108,7 +109,7 @@ nextflow_workflow {
                 def updated_seed = file('fam_x.aln')
                 file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).copyTo(updated_seed)
 
-                input[0] = [ [ id: 'mgnifams_test' ], similarities_file ]
+                input[0] = [ [ id: 'mgnifams_test' ], similarities_file, [ 'fam_x' ] ]
                 input[1] = channel.of([
                     [ id: 'mgnifams_test' ],
                     [
@@ -169,7 +170,7 @@ nextflow_workflow {
                 def similarities_file = file('similarities_large_pool.csv')
                 similarities_file.text = "family_1,family_2,similarity_score\\n" + rows + "\\n"
 
-                input[0] = [ [ id: 'mgnifams_test' ], similarities_file ]
+                input[0] = [ [ id: 'mgnifams_test' ], similarities_file, [] ]
                 input[1] = channel.of([ [ id: 'mgnifams_test' ], seedFiles ])
                 input[2] = channel.of([
                     [ id: 'mgnifams_test', pool: 'create' ],
@@ -240,7 +241,7 @@ nextflow_workflow {
                 def similarities_input = samples.collect { sample ->
                     def f = file("similarities_\${sample}.csv")
                     f.text = "family_1,family_2,similarity_score\\n\${sample}_1,\${sample}_2,0.94\\n"
-                    [ [ id: sample ], f ]
+                    [ [ id: sample ], f, [] ]
                 }
 
                 input[0] = channel.fromList(similarities_input)
@@ -310,7 +311,7 @@ nextflow_workflow {
                 def similarities_file = file('similarities_multiple_pools.csv')
                 similarities_file.text = "family_1,family_2,similarity_score\\ntest_1,test_2,0.94\\ntest_3,test_5,0.94\\n"
 
-                input[0] = [ [ id: 'test' ], similarities_file ]
+                input[0] = [ [ id: 'test' ], similarities_file, [] ]
                 input[1] = channel.of([ [ id: 'test' ], seedFiles ])
                 input[2] = channel.of([
                     [ id: 'test', pool: 'create' ],
