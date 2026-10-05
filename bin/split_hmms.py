@@ -24,27 +24,32 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def lines(stream: io.BufferedReader) -> Iterator[str]:
+def lines(stream: io.BufferedReader, source: str) -> Iterator[str]:
     """Text lines of a stream, decompressed if it is gzipped (by magic bytes, not extension)."""
     data = gzip.GzipFile(fileobj=stream) if stream.peek(2)[:2] == b"\x1f\x8b" else stream
-    for line in data:
-        yield line.decode()
+    try:
+        for line in data:
+            yield line.decode()
+    except (UnicodeDecodeError, gzip.BadGzipFile, EOFError):
+        sys.exit(f"ERROR: {source} is not a plain or gzipped text HMM file.")
 
 
-def input_lines(path: Path) -> Iterator[str]:
-    """Lines of every HMM file in the input: each file member of a .tar.gz, or the library itself."""
+def input_files(path: Path) -> Iterator[tuple[str, Iterator[str]]]:
+    """(source, lines) of every HMM file in the input: each file member of a .tar.gz, or the library itself."""
     if path.name.endswith(".tar.gz"):
         with tarfile.open(path, "r|gz") as tar:
             for member in tar:
-                if member.isfile():
-                    yield from lines(tar.extractfile(member))
+                # macOS tar adds AppleDouble `._<file>` metadata members, which are not HMMs
+                if member.isfile() and not Path(member.name).name.startswith("._"):
+                    source = f"{path.name}:{member.name}"
+                    yield source, lines(tar.extractfile(member), source)
     else:
         with path.open("rb") as handle:
-            yield from lines(handle)
+            yield path.name, lines(handle, path.name)
 
 
-def models(text: Iterator[str]) -> Iterator[tuple[str, list[str]]]:
-    """(NAME, lines) of each model, ending at its `//` line."""
+def models(text: Iterator[str], source: str) -> Iterator[tuple[str, list[str]]]:
+    """(NAME, lines) of each model of one file, ending at its `//` line."""
     model: list[str] = []
     name = None
     for line in text:
@@ -53,26 +58,27 @@ def models(text: Iterator[str]) -> Iterator[tuple[str, list[str]]]:
             name = line.split()[1]
         elif line.rstrip() == "//":
             if name is None:
-                sys.exit("ERROR: an existing HMM has no NAME line.")
+                sys.exit(f"ERROR: an existing HMM in {source} has no NAME line.")
             yield name, model
             model, name = [], None
     if any(line.strip() for line in model):
-        sys.exit(f"ERROR: existing HMM {name or '(no NAME)'} is truncated: no closing '//' line.")
+        sys.exit(f"ERROR: existing HMM {name or '(no NAME)'} in {source} is truncated or not an HMM: no closing '//' line.")
 
 
 def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     args.outdir.mkdir(parents=True, exist_ok=True)
-    seen = set()
-    for name, model in models(input_lines(args.input)):
-        if "/" in name:
-            sys.exit(f"ERROR: existing HMM NAME '{name}' contains '/'.")
-        if name in seen:
-            sys.exit(f"ERROR: existing HMM NAME '{name}' is given more than once.")
-        seen.add(name)
-        # mtime=0: identical models give identical files across runs
-        with gzip.GzipFile(args.outdir / f"{name}.hmm.gz", "wb", mtime=0) as out:
-            out.write("".join(model).encode())
+    seen: dict[str, str] = {}  # NAME -> source
+    for source, text in input_files(args.input):
+        for name, model in models(text, source):
+            if "/" in name:
+                sys.exit(f"ERROR: existing HMM NAME '{name}' in {source} contains '/'.")
+            if name in seen:
+                sys.exit(f"ERROR: existing HMM NAME '{name}' is given more than once ({seen[name]}, {source}).")
+            seen[name] = source
+            # mtime=0: identical models give identical files across runs
+            with gzip.GzipFile(args.outdir / f"{name}.hmm.gz", "wb", mtime=0) as out:
+                out.write("".join(model).encode())
     if not seen:
         sys.exit(f"ERROR: no HMMs found in {args.input}.")
 

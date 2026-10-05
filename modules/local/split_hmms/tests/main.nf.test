@@ -65,6 +65,52 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - tar.gz with macOS metadata - hmms") {
+        // macOS tar adds AppleDouble `._<file>` members, which are skipped
+        when {
+            process {
+                """
+                def hmm = file('apple/hmm/fam_a.hmm')
+                hmm.parent.mkdirs()
+                hmm.text = 'HMMER3/f [3.4]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                file('apple/hmm/._fam_a.hmm').bytes = java.util.Base64.getDecoder().decode('AAUWB//+') // binary, not UTF-8
+                ['tar', '-czf', file('apple.tar.gz').toString(), '-C', file('apple').toString(), 'hmm'].execute().waitFor()
+                input[0] = channel.of([ [ id: 'apple' ], file('apple.tar.gz') ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("proteinfamilies - tar.gz with a non-HMM member - fails") {
+        // the error names the member at fault
+        when {
+            process {
+                """
+                def hmm = file('readme/hmm/fam_a.hmm')
+                hmm.parent.mkdirs()
+                hmm.text = 'HMMER3/f [3.4]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                file('readme/hmm/README').text = 'these are my families\\n'
+                ['tar', '-czf', file('readme.tar.gz').toString(), '-C', file('readme').toString(), 'hmm'].execute().waitFor()
+                input[0] = channel.of([ [ id: 'readme' ], file('readme.tar.gz') ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("in readme.tar.gz:hmm/README is truncated or not an HMM") }
+            )
+        }
+    }
+
     test("proteinfamilies - tar.gz - hmms - stub") {
 
         options "-stub"

@@ -99,6 +99,51 @@
             "nextflow": "26.04.6"
         }
     },
+    "proteinfamilies - tar.gz with macOS metadata - hmms": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "apple"
+                        },
+                        [
+                            "fam_a.hmm.gz:md5,37a5539534cae3510460671da50be741"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "hmms": [
+                    [
+                        {
+                            "id": "apple"
+                        },
+                        [
+                            "fam_a.hmm.gz:md5,37a5539534cae3510460671da50be741"
+                        ]
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-05T13:53:12.704846566",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "proteinfamilies - tar.gz - hmms - stub": {
         "content": [
             {
