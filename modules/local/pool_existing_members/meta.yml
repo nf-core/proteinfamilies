@@ -38,7 +38,7 @@ output:
             e.g. `[ id:'sample1' ]`
       - "${prefix}.fasta":
           type: file
-          description: Uncompressed input sequences followed by the degapped MSA members whose sequence (name without `/start-end`) is not in the input
+          description: Uncompressed input sequences followed by the degapped MSA members whose region does not lie inside an input sequence of the same protein or inside another member
           pattern: "*.fasta"
   versions_python:
     - - ${task.process}:
