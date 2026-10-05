@@ -152,6 +152,7 @@ def extract_fasta_subset(filtered_sequences: list[str], fasta: str, out_fasta: s
         with open_func(fasta, "rt") as in_fasta:
             fasta_dict = {record.id: str(record.seq) for record in SeqIO.parse(in_fasta, "fasta")}
 
+        written = set()
         with gzip.open(out_fasta, "wt") as out_file:
             for filtered_sequence in filtered_sequences:
                 try:
@@ -168,6 +169,12 @@ def extract_fasta_subset(filtered_sequences: list[str], fasta: str, out_fasta: s
                         new_id = sequence_name  # Omit range if full-length
                     else:
                         new_id = slice_name(sequence_name, env_from, env_to)
+
+                    # Overlapping slices of one protein can give the same parent-coordinate
+                    # name, which means the same residues: keep one
+                    if new_id in written:
+                        continue
+                    written.add(new_id)
 
                     out_file.write(f">{new_id}\n{extracted_seq}\n")
                 except KeyError:

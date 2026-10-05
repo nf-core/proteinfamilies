@@ -62,6 +62,34 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - fasta - overlapping slices") {
+        // s/1-10 and s/6-15 are overlapping slices of one protein, both hit on their shared
+        // residues 6-10: both give s/6-10, written once
+        when {
+            process {
+                """
+                def fasta = file('overlap.faa')
+                fasta.text = '>s/1-10\\nACDEFGHIKL\\n>s/6-15\\nGHIKLMNPQR\\n'
+                def domtbl = file('overlap.domtbl')
+                domtbl.text = [
+                    's/1-10 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 6 10 6 10 0.99 -',
+                    's/6-15 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 1 5 1 5 0.99 -'
+                ].join('\\n') + '\\n'
+                input[0] = channel.of([ [ id: 'overlap' ], fasta ])
+                input[1] = channel.of([ [ id: 'overlap' ], domtbl ])
+                input[2] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.hits[0][1]).readLines() == ['>s/6-10 fam1', 'GHIKL'] }
+            )
+        }
+    }
+
     test("proteinfamilies - fasta - stub") {
 
         options "-stub"

@@ -184,6 +184,7 @@ def write_family_fastas(
 
     for family, hits in results.items():
         family_records = []
+        written = set()
 
         for hit in sorted(hits):  # sets iterate in a per-run order
             try:
@@ -200,6 +201,12 @@ def write_family_fastas(
                     new_id = sequence_name  # Omit range if full-length
                 else:
                     new_id = slice_name(sequence_name, env_from, env_to)
+
+                # Overlapping slices of one protein can give the same parent-coordinate name,
+                # which means the same residues: keep one
+                if new_id in written:
+                    continue
+                written.add(new_id)
 
                 # Create a new SeqRecord for the extracted range
                 new_record = SeqRecord(
