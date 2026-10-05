@@ -52,6 +52,7 @@ workflow REMOVE_REDUNDANCY {
     hmmsearch_write_domain                       // boolean
     skip_additional_sequence_recruiting          // boolean
     hmmsearch_query_length_threshold             // number [0.0, 1.0]
+    merged_family_name                           // string ["existing", "new"]
 
     main:
     ch_merged_seed_msa = channel.empty()
@@ -63,15 +64,12 @@ workflow REMOVE_REDUNDANCY {
     // FAMILY REDUNDANCY REMOVAL MECHANISM
     // Block runs if either feature is enabled — both share the same HMM-search infrastructure.
     if (!skip_family_redundancy_removal || !skip_family_merging) {
-        ch_fasta = fasta
-            .map { meta, faa -> [[id: meta.id], faa] }
-            .groupTuple(by: 0)
+        ch_fasta    = perSample(fasta)
+        ch_hmm      = perSample(hmm)
+        ch_seed_msa = perSample(seed_msa)
+        ch_full_msa = perSample(full_msa)
 
         EXTRACT_FAMILY_REPS( ch_fasta )
-
-        ch_hmm = hmm
-            .map { meta, model -> [[id: meta.id], model] }
-            .groupTuple(by: 0)
 
         FIND_CONCATENATE_HMMS( ch_hmm )
 
@@ -108,10 +106,6 @@ workflow REMOVE_REDUNDANCY {
             hmmsearch_family_similarity_length_threshold
         )
 
-        ch_seed_msa = seed_msa
-            .map { meta, fas -> [[id: meta.id], fas] }
-            .groupTuple(by: 0)
-
         if (!skip_family_merging) {
             // A merge recruits from the sequences its families were built from: created families
             // from `sequences`, updated ones from their sample's update pool
@@ -129,34 +123,15 @@ workflow REMOVE_REDUNDANCY {
                 hmmsearch_write_target,
                 hmmsearch_write_domain,
                 skip_additional_sequence_recruiting,
-                hmmsearch_query_length_threshold
+                hmmsearch_query_length_threshold,
+                merged_family_name
             )
 
             ch_merged_seed_msa = MERGE_FAMILIES.out.seed_msa
             ch_merged_full_msa = MERGE_FAMILIES.out.full_msa
             ch_merged_fasta    = MERGE_FAMILIES.out.fasta
             ch_merged_hmm      = MERGE_FAMILIES.out.hmm
-
-            ch_seed_msa = seed_msa
-                .mix(ch_merged_seed_msa)
-                .map { meta, fas -> [[id: meta.id], fas] }
-                .groupTuple(by: 0)
-
-            ch_hmm = hmm
-                .mix(ch_merged_hmm)
-                .map { meta, model -> [[id: meta.id], model] }
-                .groupTuple(by: 0)
         }
-
-        ch_fasta = fasta
-            .mix(ch_merged_fasta)
-            .map { meta, fas -> [[id: meta.id], fas] }
-            .groupTuple(by: 0)
-
-        ch_full_msa = full_msa
-            .mix(ch_merged_full_msa)
-            .map { meta, fas -> [[id: meta.id], fas] }
-            .groupTuple(by: 0)
 
         // if --skip_family_redundancy_removal true, redundant_ids is returned empty by the script
         ch_skip_ids = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids
@@ -168,25 +143,38 @@ workflow REMOVE_REDUNDANCY {
 
         FIND_CONCATENATE_SKIP_IDS( ch_skip_ids )
 
-        // Join to ensure in sync
+        // Join to ensure in sync. Merged families are kept as they are, next to the filtered
+        // originals: a merge may take the name of an updated family it replaces. A sample whose
+        // families have no seed MSA (updated without refinement) has no seed MSAs to filter.
         ch_input_for_fam_removal = FIND_CONCATENATE_SKIP_IDS.out.file_out
             .join(ch_fasta)
             .join(ch_hmm)
-            .join(ch_seed_msa)
             .join(ch_full_msa)
-            .multiMap { meta, ids, seq, model, seed, full ->
+            .join(ch_seed_msa, remainder: true)
+            .join(perSample(ch_merged_fasta), remainder: true)
+            .join(perSample(ch_merged_hmm), remainder: true)
+            .join(perSample(ch_merged_seed_msa), remainder: true)
+            .join(perSample(ch_merged_full_msa), remainder: true)
+            .multiMap { meta, ids, seq, model, full, seed, merged_seq, merged_model, merged_seed, merged_full ->
                 ids: [meta, ids]
-                seq: [meta, seq]
-                model: [meta, model]
-                seed: [meta, seed]
-                full: [meta, full]
+                seq: [meta, seq, merged_seq ?: []]
+                model: [meta, model, merged_model ?: []]
+                seed: [meta, seed ?: [], merged_seed ?: []]
+                full: [meta, full, merged_full ?: []]
             }
 
         FILTER_NON_REDUNDANT_HMM( ch_input_for_fam_removal.model, ch_input_for_fam_removal.ids )
         ch_output_hmm = FILTER_NON_REDUNDANT_HMM.out.filtered
             .transpose()   // unpack [meta, [f1,f2,...]] → individual [meta, file] tuples
 
-        FILTER_NON_REDUNDANT_SEED_MSA( ch_input_for_fam_removal.seed, ch_input_for_fam_removal.ids )
+        ch_seeds_for_removal = ch_input_for_fam_removal.seed
+            .join(ch_input_for_fam_removal.ids)
+            .filter { _meta, seed, merged_seed, _ids -> seed || merged_seed }
+            .multiMap { meta, seed, merged_seed, ids ->
+                seed: [meta, seed, merged_seed]
+                ids: [meta, ids]
+            }
+        FILTER_NON_REDUNDANT_SEED_MSA( ch_seeds_for_removal.seed, ch_seeds_for_removal.ids )
         seed_msa = FILTER_NON_REDUNDANT_SEED_MSA.out.filtered
             .transpose()
 
@@ -240,4 +228,11 @@ workflow REMOVE_REDUNDANCY {
     fasta    = fasta
     full_msa = full_msa
     hmm      = ch_output_hmm
+}
+
+// One [[id], [files]] per sample
+def perSample(ch_files) {
+    ch_files
+        .map { meta, file -> [[id: meta.id], file] }
+        .groupTuple(by: 0)
 }

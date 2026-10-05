@@ -83,6 +83,7 @@ nextflow_workflow {
                 input[16] = true       // hmmsearch_write_domain
                 input[17] = false      // skip_additional_sequence_recruiting
                 input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[19] = "existing" // merged_family_name
                 """
             }
         }
@@ -177,6 +178,7 @@ nextflow_workflow {
                 input[16] = true       // hmmsearch_write_domain
                 input[17] = false      // skip_additional_sequence_recruiting
                 input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[19] = "existing" // merged_family_name
                 """
             }
         }
@@ -271,6 +273,7 @@ nextflow_workflow {
                 input[16] = true       // hmmsearch_write_domain
                 input[17] = false      // skip_additional_sequence_recruiting
                 input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[19] = "existing" // merged_family_name
                 """
             }
         }
@@ -365,6 +368,7 @@ nextflow_workflow {
                 input[16] = true       // hmmsearch_write_domain
                 input[17] = false      // skip_additional_sequence_recruiting
                 input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[19] = "existing" // merged_family_name
                 """
             }
         }
@@ -459,6 +463,7 @@ nextflow_workflow {
                 input[16] = true       // hmmsearch_write_domain
                 input[17] = false      // skip_additional_sequence_recruiting
                 input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[19] = "existing" // merged_family_name
                 """
             }
         }
@@ -553,6 +558,7 @@ nextflow_workflow {
                 input[16] = true       // hmmsearch_write_domain
                 input[17] = false      // skip_additional_sequence_recruiting
                 input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[19] = "existing" // merged_family_name
                 """
             }
         }
@@ -647,6 +653,7 @@ nextflow_workflow {
                 input[16] = true       // hmmsearch_write_domain
                 input[17] = true       // skip_additional_sequence_recruiting
                 input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[19] = "existing" // merged_family_name
                 """
             }
         }
@@ -743,6 +750,7 @@ nextflow_workflow {
                 input[16] = true       // hmmsearch_write_domain
                 input[17] = false      // skip_additional_sequence_recruiting
                 input[18] = 0.9        // hmmsearch_query_length_threshold
+                input[19] = "existing" // merged_family_name
                 """
             }
         }

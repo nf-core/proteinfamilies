@@ -8,7 +8,7 @@ process FILTER_NON_REDUNDANT_FAMS {
         'community.wave.seqera.io/library/python:3.13.1--d00663700fcc8bcf' }"
 
     input:
-    tuple val(meta) , path(files, stageAs: "input_folder/*")
+    tuple val(meta) , path(files, stageAs: "input_folder/*"), path(kept, stageAs: "kept/*")
     tuple val(meta2), path(redundant_ids)
 
     output:
@@ -20,18 +20,20 @@ process FILTER_NON_REDUNDANT_FAMS {
 
     script:
     // Created and updated families' MSAs may differ in format (e.g. aligned FASTA and Stockholm)
-    def extensions = (files instanceof List ? files : [files]).collect { file -> file.extension }.unique().sort()
+    def extensions = ([files] + [kept]).flatten().collect { file -> file.extension }.unique().sort()
     pattern = extensions.size() == 1 ? "*.${extensions[0]}" : "*.{${extensions.join(',')}}"
     """
     filter_non_redundant_fams.py \\
         --input_folder input_folder  \\
+        --kept_folder kept \\
         --redundant_ids ${redundant_ids}
     """
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    pattern = "*.${files[0].extension}"
+    def extension = [files].flatten()[0].extension
+    pattern = "*.${extension}"
     """
-    touch ${prefix}_1.${files[0].extension}
+    touch ${prefix}_1.${extension}
     """
 }

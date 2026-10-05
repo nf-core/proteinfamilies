@@ -62,6 +62,11 @@ input:
         Query length threshold for hmmsearch sequence recruitment for full alignments (between 0.0 and 1.0)
       minimum: 0.0
       maximum: 1.0
+  - merged_family_name:
+      type: string
+      description: |
+        Name of a merged family holding updated families: "existing" keeps the first of their names (standard algorithm), "new" names it after the sample and its families
+      enum: ["existing", "new"]
 output:
   - versions:
       type: file

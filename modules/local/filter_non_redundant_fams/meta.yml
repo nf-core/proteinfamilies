@@ -25,6 +25,10 @@ input:
         type: file
         description: A list of files (can be anything in any format --fasta,alns,hmms) that will be staged as a directory.
         pattern: "*.*"
+    - kept:
+        type: file
+        description: Files copied without filtering (merged families), which may share a filtered family's name
+        pattern: "*.*"
   - - meta2:
         type: map
         description: |

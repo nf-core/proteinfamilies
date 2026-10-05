@@ -451,6 +451,14 @@
                     "fa_icon": "fas fa-question-circle",
                     "help_text": "By default, updated families can be merged with similar families of their sample (created or updated), like created families. With this flag, updated families are left out of merging. Families without a seed MSA are never merged. Has no effect when `--skip_family_merging` is set."
                 },
+                "merged_family_name": {
+                    "type": "string",
+                    "default": "existing",
+                    "enum": ["existing", "new"],
+                    "description": "Name of a merged family that holds updated families.",
+                    "fa_icon": "fas fa-tag",
+                    "help_text": "`existing` keeps the name of the merged updated family (the first alphabetically, if several), so the family keeps its identity across updates. `new` names the merged family like any other merge, after the sample and its families. Applies to `--family_generation_algorithm standard`; the iterative algorithm always uses `new`."
+                },
                 "hmmsearch_family_redundancy_length_threshold": {
                     "type": "number",
                     "default": 1.0,

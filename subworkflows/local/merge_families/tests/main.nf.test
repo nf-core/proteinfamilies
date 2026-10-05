@@ -36,6 +36,7 @@ nextflow_workflow {
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
                 input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
                 """
             }
         }
@@ -53,9 +54,9 @@ nextflow_workflow {
         }
     }
 
-    test("pool with an updated family - recruits from the update pool") {
+    test("pool with an updated family - existing name") {
         // 'fam_x' is an updated family (not named '<id>_<digit>...'): the merge recruits from the
-        // update pool only, and the merged name lists created numbers before updated names
+        // update pool only, and keeps the updated family's name
         when {
             workflow {
                 """
@@ -83,6 +84,49 @@ nextflow_workflow {
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
                 input[9] = 0.9        // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.full_msa.collect { meta, msa -> [meta.merged_id, meta.pool, file(msa).name] } == [['fam_x', 'update', 'fam_x.sto.gz']] }
+            )
+        }
+    }
+
+    test("pool with an updated family - new name") {
+        // With merged_family_name 'new', the merged name lists created numbers before updated names
+        when {
+            workflow {
+                """
+                def similarities_file = file('similarities_updated.csv')
+                similarities_file.text = "family_1,family_2,similarity_score\\nmgnifams_test_1,fam_x,0.94\\n"
+                def updated_seed = file('fam_x.aln')
+                file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).copyTo(updated_seed)
+
+                input[0] = [ [ id: 'mgnifams_test' ], similarities_file ]
+                input[1] = channel.of([
+                    [ id: 'mgnifams_test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        updated_seed
+                    ]
+                ])
+                input[2] = channel.of([
+                    [ id: 'mgnifams_test', pool: 'update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = 0.9        // hmmsearch_query_length_threshold
+                input[10] = "new"      // merged_family_name
                 """
             }
         }
@@ -137,6 +181,7 @@ nextflow_workflow {
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
                 input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
                 """
             }
         }
@@ -207,6 +252,7 @@ nextflow_workflow {
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
                 input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
                 """
             }
         }
@@ -276,6 +322,7 @@ nextflow_workflow {
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
                 input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
                 """
             }
         }

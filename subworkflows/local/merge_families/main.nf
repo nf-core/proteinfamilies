@@ -5,7 +5,9 @@
     seed, then rebuilds final family models via GENERATE_FAMILIES. The merged_id
     encodes which original families were combined (e.g., 'sample_1_7' from 'sample_1'
     and 'sample_7'); for very large pools it collapses to a stable hash so the
-    resulting output filename stays within the filesystem's name-length limit.
+    resulting output filename stays within the filesystem's name-length limit. With
+    merged_family_name 'existing', a merge holding updated families takes the first of
+    their names instead.
 */
 
 include { POOL_SIMILAR_COMPONENTS       } from '../../../modules/local/pool_similar_components/main'
@@ -27,6 +29,7 @@ workflow MERGE_FAMILIES {
     hmmsearch_write_domain              // boolean
     skip_additional_sequence_recruiting // boolean
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
+    merged_family_name                  // string ["existing", "new"]
 
     main:
 
@@ -47,12 +50,18 @@ workflow MERGE_FAMILIES {
             // merged_id becomes the output-file prefix for every merged-family process, so it
             // must fit the filesystem's 255-byte name limit. Large pools (dozens of families)
             // would overflow it; in that case fall back to a short, stable hash of the members.
-            def merged_id = readableId.length() <= 200
+            def newId = readableId.length() <= 200
                 ? readableId
                 : "${meta.id}_${suffixes.size()}fams_${suffixes.join('_').md5().take(10)}"
+            // A merge holding updated families keeps the first of their names (standard algorithm
+            // only: mgnifam names every family it builds `<prefix>_<n>`)
+            def updated = (components - created).sort()
+            def merged_id = merged_family_name == 'existing' && family_generation_algorithm == 'standard' && updated
+                ? updated[0]
+                : newId
             // Keep original id, add new field merged_id, and the pool to recruit from: a merge
             // holding an updated family recruits from its sample's update pool
-            def newMeta = meta + [merged_id: merged_id, pool: created.size() < components.size() ? 'update' : 'create']
+            def newMeta = meta + [merged_id: merged_id, pool: updated ? 'update' : 'create']
             return [newMeta, components.join(',')]
         }
 
