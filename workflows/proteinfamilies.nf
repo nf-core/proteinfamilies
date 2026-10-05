@@ -64,10 +64,10 @@ workflow PROTEINFAMILIES {
         }
 
     // Existing HMMs route a sample to the update path (MSAs without HMMs fail schema validation).
-    // ?.size() is Groovy's null-safe operator: absent samplesheet columns yield null (falsy).
+    // Absent samplesheet columns yield [], given ones a file path.
     ch_branch_result = ch_samplesheet_updated
         .branch { _meta, _updated_fasta, existing_hmms, _existing_seed_msas, _existing_full_msas ->
-            to_update: existing_hmms?.size()
+            to_update: existing_hmms != []
             to_create: true
         }
 
