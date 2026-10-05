@@ -29,9 +29,9 @@
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
-                "errorMessage": "Existing family HMMs must be a '.tar.gz' archive without spaces in its path",
-                "description": "Gzipped tarball of existing family HMMs, one file per family named after its HMM NAME. A sample with this column goes through the update path. Example: 'existing_hmms.tar.gz'"
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.(tar\\.gz|hmm|hmm\\.gz|lib|lib\\.gz)$",
+                "errorMessage": "Existing family HMMs must be a '.tar.gz' archive of HMM files or one HMM library ('.hmm', '.hmm.gz', '.lib' or '.lib.gz') without spaces in its path",
+                "description": "Existing family HMMs: a gzipped tarball of HMM files, or one HMM library such as this pipeline's '<id>.lib.gz' (plain or gzipped files, one or more models each). Each model is a family named by its HMM NAME, and NAMEs must be unique. A sample with this column goes through the update path. Example: 'existing_hmms.tar.gz'"
             },
             "existing_seed_msas": {
                 "type": "string",
@@ -39,7 +39,7 @@
                 "exists": true,
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
                 "errorMessage": "Existing seed MSAs must be a '.tar.gz' archive without spaces in its path, and need 'existing_hmms'",
-                "description": "Gzipped tarball of existing family seed MSAs (aligned FASTA, as this pipeline writes them; passed through unchanged unless the family is rebuilt), each named after its family's HMM file (same file name stem; not every HMM needs one). Requires 'existing_hmms'. Example: 'existing_seed_msas.tar.gz'"
+                "description": "Gzipped tarball of existing family seed MSAs (aligned FASTA, as this pipeline writes them; passed through unchanged unless the family is rebuilt), each named after its family's HMM NAME (as file name stem; not every HMM needs one). Requires 'existing_hmms'. Example: 'existing_seed_msas.tar.gz'"
             },
             "existing_full_msas": {
                 "type": "string",
@@ -47,7 +47,7 @@
                 "exists": true,
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.tar\\.gz$",
                 "errorMessage": "Existing full MSAs must be a '.tar.gz' archive without spaces in its path, and need 'existing_hmms'",
-                "description": "Gzipped tarball of existing family full MSAs (aligned FASTA, as this pipeline writes them, or Stockholm), each named after its family's HMM file (same file name stem; not every HMM needs one). Their members are pooled with the input sequences and searched again with the existing HMMs; members without hits are dropped and never create new families. Requires 'existing_hmms'. Example: 'existing_full_msas.tar.gz'"
+                "description": "Gzipped tarball of existing family full MSAs (aligned FASTA, as this pipeline writes them, or Stockholm), each named after its family's HMM NAME (as file name stem; not every HMM needs one). Their members are pooled with the input sequences and searched again with the existing HMMs; members without hits are dropped and never create new families. Requires 'existing_hmms'. Example: 'existing_full_msas.tar.gz'"
             }
         },
         "required": ["id", "fasta"],

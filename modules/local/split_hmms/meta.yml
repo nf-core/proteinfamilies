@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "split_hmms"
+description: Split existing family HMMs, given as a .tar.gz archive of HMM files or as one HMM library, into one gzipped file per model named after its NAME.
+keywords:
+  - hmm
+  - families
+  - update
+tools:
+  - "split_hmms":
+      description: "Split existing family HMMs, given as a .tar.gz archive of HMM files or as one HMM library, into one gzipped file per model named after its NAME."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/split_hmms/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/split_hmms/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/split_hmms/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - hmms:
+        type: file
+        description: Gzipped tarball of HMM files, or one HMM library; plain or gzipped files, one or more models each
+        pattern: "*.{tar.gz,hmm,hmm.gz,lib,lib.gz}"
+output:
+  hmms:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "${prefix}":
+          type: directory
+          description: Folder with one `<NAME>.hmm.gz` file per model
+          pattern: "*_hmms"
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

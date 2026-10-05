@@ -280,32 +280,17 @@ def fileStem(file) {
 }
 
 //
-// Validate a sample's existing HMMs: each is NAMEd after its file stem, stems are unique, and no
-// stem looks like a name this run can create for the sample. hmmsearch reports hits by HMM NAME
-// while MSAs are matched to families by file stem, so a mismatch would silently detach a family's
-// hits from its MSAs inside UPDATE_FAMILIES. Created and merged families are named
-// `<id>_<digit>...`, so an existing family named that way (e.g. from a previous run with the same
-// id) would collide with a new one in the HMM library and the archives.
+// Validate a sample's existing HMMs (one <NAME>.hmm.gz per model, from SPLIT_HMMS, which already
+// rejects duplicate NAMEs): no NAME may look like a name this run can create for the sample.
+// Created and merged families are named `<id>_<digit>...`, so an existing family named that way
+// (e.g. from a previous run with the same id) would collide with a new one in the HMM library
+// and the archives.
 //
 def validateHmmNames(ch_hmm_folders) {
     ch_hmm_folders
         .map { meta, folder ->
-            def stems = folder.listFiles().collect { hmm ->
-                def stream = hmm.name.endsWith('.gz') ? new java.util.zip.GZIPInputStream(hmm.newInputStream()) : hmm.newInputStream()
-                def name = stream.withReader { reader ->
-                    reader.readLines().find { line -> line.startsWith('NAME') }?.tokenize()?.getAt(1)
-                }
-                if (name != fileStem(hmm)) {
-                    error("[nf-core/proteinfamilies] ERROR: HMM NAME mismatch: ${hmm.name} holds NAME '${name}', but existing HMMs must be NAMEd after their file name ('${fileStem(hmm)}').")
-                }
-                fileStem(hmm)
-            }
-            def duplicates = stems.countBy { stem -> stem }.findAll { _stem, count -> count > 1 }.keySet().sort()
-            if (duplicates) {
-                error("[nf-core/proteinfamilies] ERROR: Duplicate existing HMMs in ${folder}: ${duplicates.join(', ')} each given by more than one file.")
-            }
             def prefix = meta.id + '_'
-            def colliding = stems.findAll { stem ->
+            def colliding = folder.listFiles().collect { hmm -> fileStem(hmm) }.findAll { stem ->
                 stem.length() > prefix.length() && stem.startsWith(prefix) && stem[prefix.length()] in ('0'..'9')
             }.sort()
             if (colliding) {

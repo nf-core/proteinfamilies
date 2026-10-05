@@ -40,7 +40,7 @@ Removing redundancy:
 
 Updating families:
 
-- [untar](#untar) to decompress tarballs of existing HMMs and MSAs
+- [untar](#untar) to decompress tarballs of existing MSAs
 - [Pool existing members](#pool-existing-members) to pool the members of existing full MSAs with the input sequences
 - [hmmer](#hmmer-for-updating-families) to match the pooled sequences to existing families with hmmsearch
 - [MMseqs2](#mmseqs2-for-updating-families) to strictly cluster the hits of each family to update
@@ -478,9 +478,6 @@ If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (i
 <summary>Output files</summary>
 
 - `untar/`
-  - `hmm/`
-    - `<samplename>/`
-      - `<family_id>.{hmm.gz,hmm}`: (optional) decompressed input HMM tarball
   - `msa/`
     - `<samplename>/`
       - `<family_id>.*`: (optional) decompressed input seed or full MSA tarball

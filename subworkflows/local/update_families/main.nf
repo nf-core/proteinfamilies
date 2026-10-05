@@ -18,7 +18,7 @@
     family holds are emitted as no_hit_seqs for downstream de-novo family creation.
 */
 
-include { UNTAR as UNTAR_HMM            } from '../../../modules/nf-core/untar/main'
+include { SPLIT_HMMS                     } from '../../../modules/local/split_hmms/main'
 include { UNTAR as UNTAR_SEED_MSA       } from '../../../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_FULL_MSA       } from '../../../modules/nf-core/untar/main'
 include { validateHmmNames              } from '../../../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
@@ -61,20 +61,21 @@ workflow UPDATE_FAMILIES {
             full_msa: [ meta, existing_full_msas ]
         }
 
-    UNTAR_HMM( ch_input_for_untar.hmm )
+    // One <NAME>.hmm.gz per model, from an archive or a library
+    SPLIT_HMMS( ch_input_for_untar.hmm )
     UNTAR_SEED_MSA( ch_input_for_untar.seed_msa.filter { _meta, archive -> archive } )
     UNTAR_FULL_MSA( ch_input_for_untar.full_msa.filter { _meta, archive -> archive } )
 
-    // Families are matched by HMM NAME (hmmsearch) and by file stem (MSAs): both must agree
-    validateHmmNames( UNTAR_HMM.out.untar )
-    validateMsaStems( UNTAR_HMM.out.untar, UNTAR_SEED_MSA.out.untar )
-    validateMsaStems( UNTAR_HMM.out.untar, UNTAR_FULL_MSA.out.untar )
+    // Families are named by HMM NAME; MSAs are matched to them by file stem
+    validateHmmNames( SPLIT_HMMS.out.hmms )
+    validateMsaStems( SPLIT_HMMS.out.hmms, UNTAR_SEED_MSA.out.untar )
+    validateMsaStems( SPLIT_HMMS.out.hmms, UNTAR_FULL_MSA.out.untar )
 
     // Squeeze the HMMs into a single file
-    CAT_HMM( UNTAR_HMM.out.untar.map { meta, folder -> [meta, file("${folder.toUriString()}/*", checkIfExists: true)] } )
+    CAT_HMM( SPLIT_HMMS.out.hmms.map { meta, folder -> [meta, file("${folder.toUriString()}/*", checkIfExists: true)] } )
 
     // Provided family files, [id, family] meta
-    ch_existing_hmm      = familyFiles( UNTAR_HMM.out.untar )
+    ch_existing_hmm      = familyFiles( SPLIT_HMMS.out.hmms )
     ch_existing_seed_msa = familyFiles( UNTAR_SEED_MSA.out.untar )
     ch_existing_full_msa = familyFiles( UNTAR_FULL_MSA.out.untar )
 
@@ -194,7 +195,7 @@ workflow UPDATE_FAMILIES {
         .filter { _meta, default_reason, _reason -> default_reason }
         .map { meta, default_reason, reason -> [[id: meta.id], [meta.family, reason ?: default_reason]] }
         .groupTuple()
-    ch_unchanged_families = UNTAR_HMM.out.untar
+    ch_unchanged_families = SPLIT_HMMS.out.hmms
         .join(ch_unchanged_families, remainder: true)
         .map { meta, _folder, unchanged -> [meta, (unchanged ?: []).sort { family_reason -> family_reason[0] }] }
 

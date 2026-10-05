@@ -78,8 +78,8 @@ CONTROL_REP1,input/mgnifams_input_small.faa,,,
 ```
 
 Each row contains a fasta file with amino acid sequences (gzipped or uncompressed).
-Optionally, a row may contain tarball archives (tar.gz) of existing families' HMMs, and optionally their seed and/or full MSAs, in order to be updated.
-Each HMM's `NAME` must match its file name without extensions (case-sensitive), and each seed or full MSA file must be named after an HMM file (same base filename, not the extension).
+Optionally, a row may contain existing families' HMMs (a tar.gz archive, or one HMM library such as a previous run's `<id>.lib.gz`), and optionally tar.gz archives of their seed and/or full MSAs, in order to be updated.
+Each HMM `NAME` is a family (unique, case-sensitive), and each seed or full MSA file must be named after one (same base filename, not the extension).
 Hit families will be updated, while input fasta sequences in no updated family will create new families (members of existing full MSAs never do).
 Every run also archives each sample's final families under `archives/<id>/`, in the same tar.gz shape, so they can be updated again later.
 
