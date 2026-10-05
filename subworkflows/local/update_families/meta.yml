@@ -82,7 +82,7 @@ output:
   - full_msa:
       type: file
       description: |
-        New full MSA (aligned FASTA) per returned family; the provided full MSA of every unchanged family
+        New full MSA (aligned FASTA) per returned family; the provided full MSA of every passed-through family
   - fasta:
       type: file
       description: |
@@ -91,10 +91,10 @@ output:
       type: file
       description: |
         New HMM per rebuilt family; the existing HMM of every other family
-  - unchanged_families:
+  - passed_through_families:
       type: list
       description: |
-        [family, reason] of each existing family the update did not return (left unchanged), per sample;
+        [family, reason] of each existing family the update did not return (passed through), per sample;
         reason "no hits" or "no recruits" (the rebuilt HMM recruited nothing)
   - no_hit_seqs:
       type: file

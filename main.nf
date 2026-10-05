@@ -45,9 +45,9 @@ workflow NFCORE_PROTEINFAMILIES {
         params.outdir,
     )
     emit:
-    family_reps        = PROTEINFAMILIES.out.family_reps
-    unchanged_families = PROTEINFAMILIES.out.unchanged_families
-    multiqc_report     = PROTEINFAMILIES.out.multiqc_report // channel: /path/to/multiqc_report.html
+    family_reps             = PROTEINFAMILIES.out.family_reps
+    passed_through_families = PROTEINFAMILIES.out.passed_through_families
+    multiqc_report          = PROTEINFAMILIES.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,12 +102,12 @@ workflow {
     publish:
     proteinfold_samplesheet      = protein_reps_samplesheet
     proteinannotator_samplesheet = protein_reps_samplesheet
-    unchanged_families           = NFCORE_PROTEINFAMILIES.out.unchanged_families
+    passed_through_families      = NFCORE_PROTEINFAMILIES.out.passed_through_families
 }
 
 output {
-    unchanged_families {
-        path 'update_families/unchanged_families'
+    passed_through_families {
+        path 'update_families/passed_through_families'
         mode params.publish_dir_mode
     }
 

@@ -13,7 +13,7 @@
     they never go to de-novo family creation. Stockholm full MSAs are reformatted to aligned FASTA.
 
     FINALISE (engine-agnostic): every provided HMM, seed or full MSA passes through unless the
-    engine built a new one, so families the engine did not return are left unchanged and listed
+    engine built a new one, so families the engine did not return pass through and are listed
     with a reason. Only input FASTA sequences (never pooled full-MSA members) that no returned
     family holds are emitted as no_hit_seqs for downstream de-novo family creation.
 */
@@ -186,8 +186,8 @@ workflow UPDATE_FAMILIES {
     ch_hmm      = passThrough(ch_existing_hmm, ch_engine_hmm)
     ch_fasta    = ch_engine_fasta
 
-    // Existing families the engine did not return, left unchanged, listed per sample
-    ch_unchanged_families = ch_existing_hmm
+    // Existing families the engine did not return pass through, listed per sample
+    ch_passed_through_families = ch_existing_hmm
         .join(ch_engine_full_msa, remainder: true)
         .filter { _meta, hmm, full_msa -> hmm && !full_msa }
         .map { meta, _hmm, _full_msa -> [meta, 'no hits'] }
@@ -195,9 +195,9 @@ workflow UPDATE_FAMILIES {
         .filter { _meta, default_reason, _reason -> default_reason }
         .map { meta, default_reason, reason -> [[id: meta.id], [meta.family, reason ?: default_reason]] }
         .groupTuple()
-    ch_unchanged_families = SPLIT_HMMS.out.hmms
-        .join(ch_unchanged_families, remainder: true)
-        .map { meta, _folder, unchanged -> [meta, (unchanged ?: []).sort { family_reason -> family_reason[0] }] }
+    ch_passed_through_families = SPLIT_HMMS.out.hmms
+        .join(ch_passed_through_families, remainder: true)
+        .map { meta, _folder, passed_through -> [meta, (passed_through ?: []).sort { family_reason -> family_reason[0] }] }
 
     // Strip family from meta and group by sample ID so EXTRACT_FAMILY_MEMBERS/REPS
     // receive all families for a sample together.
@@ -218,13 +218,13 @@ workflow UPDATE_FAMILIES {
     ch_updated_family_reps = ch_updated_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     emit:
-    seed_msa            = ch_seed_msa
-    full_msa            = ch_full_msa
-    fasta               = ch_fasta
-    hmm                 = ch_hmm
-    unchanged_families  = ch_unchanged_families // [meta, [[family, reason], ...]], [] if every family was returned
-    no_hit_seqs         = EXTRACT_UNASSIGNED_SEQS.out.fasta
-    updated_family_reps = ch_updated_family_reps
+    seed_msa                = ch_seed_msa
+    full_msa                = ch_full_msa
+    fasta                   = ch_fasta
+    hmm                     = ch_hmm
+    passed_through_families = ch_passed_through_families // [meta, [[family, reason], ...]], [] if every family was returned
+    no_hit_seqs             = EXTRACT_UNASSIGNED_SEQS.out.fasta
+    updated_family_reps     = ch_updated_family_reps
 }
 
 // One [[id, family], file] per file of each sample's folder

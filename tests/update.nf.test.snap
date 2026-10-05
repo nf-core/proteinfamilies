@@ -572,6 +572,10 @@
                 "update_families/hmm/raw/hmmer_hmmbuild/update_hmm_seed_gz/existing_fam_2.hmm.gz",
                 "update_families/hmm/raw/hmmer_hmmbuild/update_hmm_seed_gz/existing_fam_3.hmm.gz",
                 "update_families/hmm/raw/hmmer_hmmbuild/update_hmm_seed_gz/existing_fam_4.hmm.gz",
+                "update_families/passed_through_families",
+                "update_families/passed_through_families/update_hmm_only_passed_through_existing_families.tsv",
+                "update_families/passed_through_families/update_hmm_seed_full_passed_through_existing_families.tsv",
+                "update_families/passed_through_families/update_hmm_seed_gz_passed_through_existing_families.tsv",
                 "update_families/seed_msa",
                 "update_families/seed_msa/raw",
                 "update_families/seed_msa/raw/famsa_align",
@@ -607,11 +611,7 @@
                 "update_families/seed_msa/raw/trimmed/update_hmm_seed_gz/existing_fam_1.aln",
                 "update_families/seed_msa/raw/trimmed/update_hmm_seed_gz/existing_fam_2.aln",
                 "update_families/seed_msa/raw/trimmed/update_hmm_seed_gz/existing_fam_3.aln",
-                "update_families/seed_msa/raw/trimmed/update_hmm_seed_gz/existing_fam_4.aln",
-                "update_families/unchanged_families",
-                "update_families/unchanged_families/update_hmm_only_unchanged_existing_families.tsv",
-                "update_families/unchanged_families/update_hmm_seed_full_unchanged_existing_families.tsv",
-                "update_families/unchanged_families/update_hmm_seed_gz_unchanged_existing_families.tsv"
+                "update_families/seed_msa/raw/trimmed/update_hmm_seed_gz/existing_fam_4.aln"
             ],
             [
                 "create_only.tsv:md5,f47a58606da673b7cea2efe991b0f8aa",
@@ -797,6 +797,9 @@
                 "existing_fam_2.sto.gz:md5,b68d050fb17f5d206cdcb81ab2ef8356",
                 "existing_fam_3.sto.gz:md5,1718c5b8a207e5e7d37f2a83c6f41cf4",
                 "existing_fam_4.sto.gz:md5,5f1d888e0c0a7dec237d1a0595a4adfe",
+                "update_hmm_only_passed_through_existing_families.tsv:md5,919b67773a2f3ba80861a2aa7e7e2fda",
+                "update_hmm_seed_full_passed_through_existing_families.tsv:md5,ea8f6f94940e6a23a3b92ddc9687f70f",
+                "update_hmm_seed_gz_passed_through_existing_families.tsv:md5,919b67773a2f3ba80861a2aa7e7e2fda",
                 "existing_fam_1.aln:md5,9ec970375a86d386f0df22bf0928b3cd",
                 "existing_fam_2.aln:md5,a5e0fde10f8190bda71da84f725409ab",
                 "existing_fam_3.aln:md5,5cedcf191baa6639e5057f4c15ddbe5a",
@@ -822,10 +825,7 @@
                 "existing_fam_1.aln:md5,afe634738366a09e503511062fb1256e",
                 "existing_fam_2.aln:md5,397aa3816bae0502b2de776a85fc6389",
                 "existing_fam_3.aln:md5,74799c2cebbf168cf528802fbd12b266",
-                "existing_fam_4.aln:md5,47c637cd659b13ec04e6611a2aaa0ce4",
-                "update_hmm_only_unchanged_existing_families.tsv:md5,919b67773a2f3ba80861a2aa7e7e2fda",
-                "update_hmm_seed_full_unchanged_existing_families.tsv:md5,ea8f6f94940e6a23a3b92ddc9687f70f",
-                "update_hmm_seed_gz_unchanged_existing_families.tsv:md5,919b67773a2f3ba80861a2aa7e7e2fda"
+                "existing_fam_4.aln:md5,47c637cd659b13ec04e6611a2aaa0ce4"
             ],
             [
                 "create_only_full_msas.tar.gz: create_only_1.aln=f51fd1f5c8b4314f0faac1d749410d50, create_only_2.aln=303c6051b9cb6bdd3237562182189fe6, create_only_3.aln=ac351c5273cef6550cb2e399ec778b0b, create_only_5.aln=a49bdbb102e5d36a401558b84010c0f4, create_only_7.aln=a3fdfe5bca17bef9a86fd8cbe58b77bf",
@@ -842,7 +842,7 @@
                 "update_hmm_seed_gz_seed_msas.tar.gz: existing_fam_1.aln=19ef12d2251f66492a50ab7bfd428e35, existing_fam_2.aln=526669b6b629bb4da3e08f222620b6b8, existing_fam_3.aln=05e5228b02aa884d514dc0a0ad2199ca, existing_fam_4.aln=4d73311e929e415aad24217545c333f6, existing_fam_zero_hits.aln=dc8a37fd9e29fe0d988cbb9e9cbc6a27, update_hmm_seed_gz_1.aln=a19a1dd17d357003f701ded33b83cbf6, update_hmm_seed_gz_2.aln=188e8baba37fe14a7c3e88182c5bdf80, update_hmm_seed_gz_4.aln=68adbd055b9ddca190001b020f306ad5, update_hmm_seed_gz_6.aln=3c45fc423ada4c3131fe5aca1241131d"
             ]
         ],
-        "timestamp": "2026-10-05T12:56:41.206259076",
+        "timestamp": "2026-10-05T15:05:05.291670494",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
