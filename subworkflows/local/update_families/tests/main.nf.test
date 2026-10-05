@@ -36,9 +36,10 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
                     workflow.out.unchanged_families,
-                    workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
-                    workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
-                    workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
+                    // HMM header lines, without the run-dependent DATE
+                    workflow.out.hmm.collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
+                    workflow.out.seed_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    workflow.out.full_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
                     workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
                     file(workflow.out.updated_family_reps[0][1]).name,
                     path(workflow.out.updated_family_reps[0][1]).readLines().size()
@@ -78,9 +79,10 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
                     workflow.out.unchanged_families,
-                    workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
-                    workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
-                    workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
+                    // HMM header lines, without the run-dependent DATE
+                    workflow.out.hmm.collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
+                    workflow.out.seed_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    workflow.out.full_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
                     workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
                     file(workflow.out.updated_family_reps[0][1]).name,
                     path(workflow.out.updated_family_reps[0][1]).readLines().size()
@@ -120,9 +122,10 @@ nextflow_workflow {
                 { assert snapshot(
                     workflow.out.no_hit_seqs,
                     workflow.out.unchanged_families,
-                    workflow.out.hmm.collect { _meta, model -> file(model).name }.sort(),
-                    workflow.out.seed_msa.collect { _meta, msa -> file(msa).name }.sort(),
-                    workflow.out.full_msa.collect { _meta, msa -> file(msa).name }.sort(),
+                    // HMM header lines, without the run-dependent DATE
+                    workflow.out.hmm.collect { _meta, model -> "${file(model).name}: " + path(model.toString()).linesGzip.findAll { line -> line ==~ /^(NAME|LENG|NSEQ|CKSUM) .*/ }.join('; ') }.sort(),
+                    workflow.out.seed_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
+                    workflow.out.full_msa.collect { _meta, msa -> "${file(msa).name}: " + (msa.toString().endsWith('.gz') ? path(msa.toString()).linesGzip : path(msa.toString()).readLines()).join('\n').md5() }.sort(),
                     workflow.out.fasta.collect { meta, faa -> "${meta.family}: ${(faa.endsWith('.gz') ? path(faa).linesGzip : path(faa).readLines()).count { line -> line.startsWith('>') }}" }.sort(),
                     file(workflow.out.updated_family_reps[0][1]).name,
                     path(workflow.out.updated_family_reps[0][1]).readLines().size()
@@ -170,8 +173,8 @@ nextflow_workflow {
         }
     }
 
-    test("hmm NAME mismatch - fails") {
-        // fam_a.hmm is NAMEd fam_b: its hits would never meet its MSAs, so validation stops the run
+    test("msa named after hmm file, not NAME - fails") {
+        // fam_a.hmm holds family fam_b: families are named by NAME, so fam_a.aln has no family
         when {
             workflow {
                 """
@@ -180,12 +183,16 @@ nextflow_workflow {
                 hmm.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_b\\nLENG  1\\n//\\n'
                 def archive = file('bad_hmms.tar.gz')
                 ['tar', '-czf', archive.toString(), '-C', file('bad_hmms').toString(), 'hmm'].execute().waitFor()
+                def msa = file('bad_msas/full_msa/fam_a.aln')
+                msa.parent.mkdirs()
+                msa.text = '>s1\\nMK\\n'
+                ['tar', '-czf', file('bad_msas.tar.gz').toString(), '-C', file('bad_msas').toString(), 'full_msa'].execute().waitFor()
                 input[0] = channel.of([
                     [ id: 'test_update' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
                     archive,
                     [],
-                    []
+                    file('bad_msas.tar.gz')
                 ])
                 input[1] = 0.9        // hmmsearch_query_length_threshold
                 input[2] = false      // skip_sequence_redundancy_removal
@@ -203,12 +210,12 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.failed },
-                { assert workflow.stdout.any { line -> line.contains("fam_a.hmm holds NAME 'fam_b'") } }
+                { assert workflow.stdout.any { line -> line.contains("without an existing HMM of the same name: fam_a") } }
             )
         }
     }
 
-    test("hmm duplicate stems - fail") {
+    test("hmm duplicate NAMEs - fail") {
         // fam_a.hmm and fam_a.hmm.gz give the same family twice
         when {
             workflow {
@@ -241,7 +248,7 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.failed },
-                { assert workflow.stdout.any { line -> line.contains("fam_a each given by more than one file") } }
+                { assert workflow.stdout.any { line -> line.contains("existing HMM NAME 'fam_a' is given more than once") } }
             )
         }
     }
@@ -326,6 +333,91 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.failed },
                 { assert workflow.stdout.any { line -> line.contains("without an existing HMM of the same name: other") } }
+            )
+        }
+    }
+
+    test("seed msa without hmm - fails") {
+        // the seed folder is validated like the full one: other.aln names no existing HMM
+        when {
+            workflow {
+                """
+                def f3 = file('one_hmm/hmm/fam_a.hmm')
+                f3.parent.mkdirs()
+                f3.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                ['tar', '-czf', file('one_hmm.tar.gz').toString(), '-C', file('one_hmm').toString(), 'hmm'].execute().waitFor()
+                def f4 = file('stray_seeds/seed_msa/fam_a.aln')
+                f4.parent.mkdirs()
+                f4.text = '>s1\\nMK\\n'
+                def f5 = file('stray_seeds/seed_msa/other.aln')
+                f5.text = '>s2\\nMK\\n'
+                ['tar', '-czf', file('stray_seeds.tar.gz').toString(), '-C', file('stray_seeds').toString(), 'seed_msa'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('one_hmm.tar.gz'),
+                    file('stray_seeds.tar.gz'),
+                    []
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("without an existing HMM of the same name: other") } }
+            )
+        }
+    }
+
+    test("duplicate full msas - fail") {
+        // fam_a.aln and fam_a.aln.gz give the same family's full MSA twice
+        when {
+            workflow {
+                """
+                def f3 = file('one_hmm/hmm/fam_a.hmm')
+                f3.parent.mkdirs()
+                f3.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
+                ['tar', '-czf', file('one_hmm.tar.gz').toString(), '-C', file('one_hmm').toString(), 'hmm'].execute().waitFor()
+                def f4 = file('stray_msas/full_msa/fam_a.aln')
+                f4.parent.mkdirs()
+                f4.text = '>s1\\nMK\\n'
+                ['gzip', '-k', f4.toString()].execute().waitFor()
+                ['tar', '-czf', file('stray_msas.tar.gz').toString(), '-C', file('stray_msas').toString(), 'full_msa'].execute().waitFor()
+                input[0] = channel.of([
+                    [ id: 'test_update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
+                    file('one_hmm.tar.gz'),
+                    [],
+                    file('stray_msas.tar.gz')
+                ])
+                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[2] = false      // skip_sequence_redundancy_removal
+                input[3] = "linclust" // clustering_tool
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = false      // skip_update_refinement
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { line -> line.contains("fam_a each given by more than one file") } }
             )
         }
     }
