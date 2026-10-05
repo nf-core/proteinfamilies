@@ -4,8 +4,13 @@
     "title": "nf-core/proteinfamilies pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "array",
+    "uniqueEntries": ["id"],
     "items": {
         "type": "object",
+        "additionalProperties": {
+            "not": {},
+            "errorMessage": "Unknown samplesheet column: allowed columns are id, fasta, existing_hmms, existing_seed_msas and existing_full_msas"
+        },
         "properties": {
             "id": {
                 "type": "string",
