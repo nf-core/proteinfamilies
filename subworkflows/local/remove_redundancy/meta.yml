@@ -45,14 +45,16 @@ input:
       type: file
       description: |
         HMM files of created and updated families, meta [id, family]
-  - skip_family_redundancy_removal:
-      type: boolean
+  - family_redundancy_removal:
+      type: string
       description: |
-        Skip family-level redundancy removal step
-  - skip_family_merging:
-      type: boolean
+        Families checked for family-level redundancy: all, created_only (updated families bypass the check) or none
+      enum: ["all", "created_only", "none"]
+  - family_merging:
+      type: string
       description: |
-        Skip merging of similar families
+        Families that can be merged with similar families: all, created_only (updated families left out) or none
+      enum: ["all", "created_only", "none"]
   - hmmsearch_family_redundancy_length_threshold:
       type: number
       description: |

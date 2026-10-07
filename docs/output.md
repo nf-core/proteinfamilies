@@ -281,8 +281,8 @@ Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; wh
 
 The `hmm/raw` folder contains all originally created family HMMs, under a subfolder named after the tool that built them
 (`hmmer_hmmbuild/` for the standard algorithm, `mgnifam/` for the iterative one), as with the seed and full MSA outputs. These models will be used downstream to recruit additional sequences in families, to compute
-full MSAs if `--skip_additional_sequence_recruiting` is set to `false`, and/or to remove among-family redundancies if `--skip_family_redundancy_removal` is set to `false`.
-When `--skip_family_redundancy_removal` is set to `false`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
+full MSAs if `--skip_additional_sequence_recruiting` is set to `false`, and/or to remove among-family redundancies unless `--family_redundancy_removal none` is set.
+Unless both `--family_redundancy_removal` and `--family_merging` are set to `none`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
 The `hmm/library` will contain a compiled and gzipped single HMM library file per sample.
 The HMMs (raw or filtered) can also be used in the `update_families` execution mode of the pipeline,
 optionally along with the families' full MSAs, to recruit sequences from a new input fasta file into the families, rebuilding their seed MSA, HMM and full MSA.
@@ -375,17 +375,17 @@ The converged records indicate which of the families optimized their model withi
 
 </details>
 
-If one of `--skip_family_redundancy_removal` or `--skip_family_merging` is set to `false`, the `hmmer/hmmsearch` module is used
+Unless both `--family_redundancy_removal` and `--family_merging` are set to `none`, the `hmmer/hmmsearch` module is used
 to identify family representative sequences that are identical or similar (respectively) to other family HMMs.
 In case of redundancy, the smaller sized families are flagged for removal.
 Updated families (samples with `existing_hmms`) go through these steps together with the sample's created families and keep their names (the existing HMM `NAME`) in every output from here on, next to the created `<samplename>_*` families.
-An updated family is never flagged: a created family redundant with it is, and two redundant updated families are both kept. With `--skip_updated_family_redundancy_removal`, updated families bypass the redundancy check.
-With `--skip_updated_family_merging`, updated families are left out of merging. Families without a seed MSA (updated with `--skip_update_refinement` and no `existing_seed_msas` file) are never merged, as merging rebuilds a family from its seed MSA.
+An updated family is never flagged: a created family redundant with it is, and two redundant updated families are both kept. With `--family_redundancy_removal created_only`, updated families bypass the redundancy check.
+With `--family_merging created_only`, updated families are left out of merging. Families without a seed MSA (updated with `--skip_update_refinement` and no `existing_seed_msas` file) are never merged, as merging rebuilds a family from its seed MSA.
 A merged family recruits from the sequences its families were built from: the update pool (input sequences plus existing full MSA members) when it holds an updated family, otherwise the sequences the created families came from.
 A merge holds at most one updated family: two updated families are never pooled together, and when created families link several of them, those updated families are left out and the created families are pooled among themselves. Pooled families are replaced by their merged family; similar families left out of every pool are kept.
 A merged family holding an updated family keeps its name, so it keeps its identity across updates; with `--merged_family_name new` (and always with `--family_generation_algorithm iterative`) it is named like other merges, after the sample and its created families' numbers, followed by the updated family's name.
-If `--skip_family_merging` is set to `false`, and if `hmmsearch_family_similarity_length_threshold` is correctly set
-lower than `hmmsearch_family_redundancy_length_threshold` (or `skip_family_redundancy_removal` is set to `true`), then similar family seed alignments can be merged
+Unless `--family_merging none` is set, and if `hmmsearch_family_similarity_length_threshold` is correctly set
+lower than `hmmsearch_family_redundancy_length_threshold` (or `--family_redundancy_removal none` is set), then similar family seed alignments can be merged
 and go through the `generate_families` subworkflow once more.
 Most `remove_redundancy` outputs are optional folders that contain intermediate pipeline results, and therefore are not saved in the output results by default.
 
@@ -477,7 +477,7 @@ If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be cre
 
 </details>
 
-If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (if `--skip_family_redundancy_removal` is set to `true`) or the filtered (if `--skip_family_redundancy_removal` is set to `false`) full `.sto` MSAs (recruited with hmmalign, for created and updated families) will be reformatted to `.fas`.
+If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (if both `--family_redundancy_removal` and `--family_merging` are set to `none`) or the filtered (otherwise) full `.sto` MSAs (recruited with hmmalign, for created and updated families) will be reformatted to `.fas`.
 
 [HH-suite3](https://github.com/soedinglab/hh-suite) is an open-source software package for sensitive protein sequence searching based on the pairwise alignment of hidden Markov models (HMMs).
 

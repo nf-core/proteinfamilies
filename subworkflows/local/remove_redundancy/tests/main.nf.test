@@ -70,8 +70,8 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
-                input[6]  = false      // skip_family_redundancy_removal
-                input[7]  = false      // skip_family_merging
+                input[6]  = 'all'      // family_redundancy_removal
+                input[7]  = 'all'      // family_merging
                 input[8]  = 0.1        // hmmsearch_family_redundancy_length_threshold
                 input[9]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[10] = false      // skip_sequence_redundancy_removal
@@ -99,7 +99,7 @@ nextflow_workflow {
         }
     }
 
-    test("faa - skip_family_merging") {
+    test("faa - family_merging none") {
 
         when {
             workflow {
@@ -165,8 +165,8 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
-                input[6]  = false      // skip_family_redundancy_removal
-                input[7]  = true       // skip_family_merging
+                input[6]  = 'all'      // family_redundancy_removal
+                input[7]  = 'none'     // family_merging
                 input[8]  = 0.1        // hmmsearch_family_redundancy_length_threshold
                 input[9]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[10] = false      // skip_sequence_redundancy_removal
@@ -260,8 +260,8 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
-                input[6]  = false      // skip_family_redundancy_removal
-                input[7]  = false      // skip_family_merging
+                input[6]  = 'all'      // family_redundancy_removal
+                input[7]  = 'all'      // family_merging
                 input[8]  = 0.1        // hmmsearch_family_redundancy_length_threshold
                 input[9]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[10] = true       // skip_sequence_redundancy_removal
@@ -289,7 +289,7 @@ nextflow_workflow {
         }
     }
 
-    test("faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal") {
+    test("faa - skip_sequence_redundancy_removal - family_redundancy_removal none") {
 
         when {
             workflow {
@@ -355,8 +355,8 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
-                input[6]  = true       // skip_family_redundancy_removal
-                input[7]  = false      // skip_family_merging
+                input[6]  = 'none'     // family_redundancy_removal
+                input[7]  = 'all'      // family_merging
                 input[8]  = 0.1        // hmmsearch_family_redundancy_length_threshold
                 input[9]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[10] = true       // skip_sequence_redundancy_removal
@@ -384,7 +384,7 @@ nextflow_workflow {
         }
     }
 
-    test("faa - skip_sequence_redundancy_removal - skip_family_merging") {
+    test("faa - skip_sequence_redundancy_removal - family_merging none") {
 
         when {
             workflow {
@@ -450,8 +450,8 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
-                input[6]  = false      // skip_family_redundancy_removal
-                input[7]  = true       // skip_family_merging
+                input[6]  = 'all'      // family_redundancy_removal
+                input[7]  = 'none'     // family_merging
                 input[8]  = 0.1        // hmmsearch_family_redundancy_length_threshold
                 input[9]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[10] = true       // skip_sequence_redundancy_removal
@@ -479,7 +479,7 @@ nextflow_workflow {
         }
     }
 
-    test("faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal - skip_family_merging") {
+    test("faa - skip_sequence_redundancy_removal - family_redundancy_removal none - family_merging none") {
 
         when {
             workflow {
@@ -545,8 +545,8 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
-                input[6]  = true       // skip_family_redundancy_removal
-                input[7]  = true       // skip_family_merging
+                input[6]  = 'none'     // family_redundancy_removal
+                input[7]  = 'none'     // family_merging
                 input[8]  = 0.1        // hmmsearch_family_redundancy_length_threshold
                 input[9]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[10] = true       // skip_sequence_redundancy_removal
@@ -640,8 +640,8 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
-                input[6]  = true       // skip_family_redundancy_removal
-                input[7]  = true       // skip_family_merging
+                input[6]  = 'none'     // family_redundancy_removal
+                input[7]  = 'none'     // family_merging
                 input[8]  = 0.1        // hmmsearch_family_redundancy_length_threshold
                 input[9]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[10] = true       // skip_sequence_redundancy_removal
@@ -737,8 +737,8 @@ nextflow_workflow {
                         file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_3.hmm.gz', checkIfExists: true)
                     ]
                 )
-                input[6]  = false      // skip_family_redundancy_removal
-                input[7]  = false      // skip_family_merging
+                input[6]  = 'all'      // family_redundancy_removal
+                input[7]  = 'all'      // family_merging
                 input[8]  = 0.1        // hmmsearch_family_redundancy_length_threshold
                 input[9]  = 0.9        // hmmsearch_family_similarity_length_threshold
                 input[10] = false      // skip_sequence_redundancy_removal

@@ -64,11 +64,11 @@ nextflow_process {
         }
     }
 
-    test("proteinfamilies - family redundancy - skip updated family redundancy removal") {
+    test("proteinfamilies - family redundancy - family_redundancy_removal created_only") {
         // The pair of the updated 6 with 5 is skipped, so both stay; 7 is still redundant with 1
         when {
             params {
-                skip_updated_family_redundancy_removal = true
+                family_redundancy_removal = 'created_only'
             }
             process {
                 """
@@ -124,11 +124,11 @@ nextflow_process {
         }
     }
 
-    test("proteinfamilies - family similarity - skip updated family merging") {
+    test("proteinfamilies - family similarity - family_merging created_only") {
         // Every hit is similar, none redundant: pairs with the updated 7 are left out
         when {
             params {
-                skip_updated_family_merging = true
+                family_merging = 'created_only'
             }
             process {
                 """

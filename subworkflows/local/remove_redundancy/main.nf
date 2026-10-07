@@ -39,8 +39,8 @@ workflow REMOVE_REDUNDANCY {
     full_msa                                     // tuple val(meta), path({sto.gz,aln,fas}), meta [id, family]
     fasta                                        // tuple val(meta), path(faa.gz), meta [id, family]
     hmm                                          // tuple val(meta), path(hmm.gz), meta [id, family]
-    skip_family_redundancy_removal               // boolean
-    skip_family_merging                          // boolean
+    family_redundancy_removal                    // string ["all", "created_only", "none"]
+    family_merging                               // string ["all", "created_only", "none"]
     hmmsearch_family_redundancy_length_threshold // number [0.0, 1.0]
     hmmsearch_family_similarity_length_threshold // number [0.0, 1.0]
     skip_sequence_redundancy_removal             // boolean
@@ -65,7 +65,7 @@ workflow REMOVE_REDUNDANCY {
 
     // FAMILY REDUNDANCY REMOVAL MECHANISM
     // Block runs if either feature is enabled — both share the same HMM-search infrastructure.
-    if (!skip_family_redundancy_removal || !skip_family_merging) {
+    if (family_redundancy_removal != 'none' || family_merging != 'none') {
         ch_fasta    = perSample(fasta)
         ch_hmm      = perSample(hmm)
         ch_seed_msa = perSample(seed_msa)
@@ -108,7 +108,7 @@ workflow REMOVE_REDUNDANCY {
             hmmsearch_family_similarity_length_threshold
         )
 
-        if (!skip_family_merging) {
+        if (family_merging != 'none') {
             // A merge recruits from the sequences its families were built from: created families
             // from `sequences`, updated ones from their sample's update pool
             ch_merge_sequences = sequences
@@ -137,7 +137,7 @@ workflow REMOVE_REDUNDANCY {
             ch_pooled_ids      = MERGE_FAMILIES.out.pooled_ids
         }
 
-        // if --skip_family_redundancy_removal true, redundant_ids is returned empty by the script
+        // with --family_redundancy_removal none, redundant_ids is returned empty by the script
         ch_skip_ids = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids
         // similar families are only removed once pooled into a merge (e.g., _1 and _7 replaced by
         // _1_7); a similar family left out of every pool (e.g. a second updated one) stays
@@ -216,7 +216,7 @@ workflow REMOVE_REDUNDANCY {
             stockholm: msa.name.endsWith('.sto.gz')
             fasta: true
         }
-        if (!skip_family_redundancy_removal || !skip_family_merging) {
+        if (family_redundancy_removal != 'none' || family_merging != 'none') {
             ch_reformatted = HHSUITE_REFORMAT_FILTERED( ch_full_msa_format.stockholm, "sto", "fas" ).msa
         } else { // did not go through filtering processes
             ch_reformatted = HHSUITE_REFORMAT_RAW( ch_full_msa_format.stockholm, "sto", "fas" ).msa

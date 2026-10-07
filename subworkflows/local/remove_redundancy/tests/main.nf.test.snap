@@ -1,5 +1,5 @@
 {
-    "faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal - skip_family_merging": {
+    "faa - skip_sequence_redundancy_removal - family_redundancy_removal none - family_merging none": {
         "content": [
             [
                 [
@@ -136,7 +136,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "faa - skip_sequence_redundancy_removal - skip_family_merging": {
+    "faa - skip_sequence_redundancy_removal - family_merging none": {
         "content": [
             [
                 [
@@ -259,7 +259,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "faa - skip_sequence_redundancy_removal - skip_family_redundancy_removal": {
+    "faa - skip_sequence_redundancy_removal - family_redundancy_removal none": {
         "content": [
             [
                 [
@@ -300,7 +300,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "faa - skip_family_merging": {
+    "faa - family_merging none": {
         "content": [
             [
                 [

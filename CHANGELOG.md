@@ -9,8 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#202](https://github.com/nf-core/proteinfamilies/pull/202)
   - Updated families go through redundancy removal together with the sample's created families: an updated family is never removed (a created family redundant with it is, two redundant updated families are both kept), and it can merge with similar families, recruiting from the update pool. Families without a seed MSA are never merged. (by @vagkaratzas)
-  - Added `--skip_updated_family_redundancy_removal` (default `false`): updated families bypass the family redundancy check, so created families may duplicate them. (by @vagkaratzas)
-  - Added `--skip_updated_family_merging` (default `false`): updated families are left out of family merging. (by @vagkaratzas)
+  - Added `--family_redundancy_removal` and `--family_merging` (`all` by default, `created_only` or `none`): `created_only` leaves updated families out of the family redundancy check (created families may then duplicate them) or out of merging. (by @vagkaratzas)
   - Merged families are listed with the families they replace in `remove_redundancy/merged_families/<id>_merged_families.tsv`. (by @vagkaratzas)
   - Added `--merged_family_name` (`existing` by default, or `new`): a merged family holding an updated family keeps its name, so it keeps its identity across updates (standard algorithm). A merge holds at most one updated family, so existing families are never merged together. (by @vagkaratzas)
   - Passed-through families with a provided full MSA get its degapped members as their family FASTA (written by `POOL_EXISTING_MEMBERS`), so they are listed in the family members and representatives. (by @vagkaratzas)
@@ -21,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#202](https://github.com/nf-core/proteinfamilies/pull/202) - **Breaking:** `--skip_family_redundancy_removal` and `--skip_family_merging` are replaced by `--family_redundancy_removal none` and `--family_merging none`. (by @vagkaratzas)
 - [#202](https://github.com/nf-core/proteinfamilies/pull/202) - **Breaking:** updated families' final files are published with the created families' (e.g. `hmm/filtered/`, `full_msa/filtered/`), and their family representatives in `family_reps/<id>/`; `update_families/family_reps/` and `update_families/full_msa/raw/hhsuite_reformat/` are removed. `FILTER_NON_REDUNDANT_FAMS` keeps files of every format it is given. (by @vagkaratzas)
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198) - **Breaking:** samplesheet v3 and update rework (standard engine).
   - Samplesheet columns are now `id,fasta,existing_hmms,existing_seed_msas,existing_full_msas` (was `sample,fasta,existing_hmms_to_update,existing_msas_to_update`). Existing HMMs alone route a sample to the update path; both MSA archives are optional, and MSAs without HMMs fail validation. (by @vagkaratzas)
