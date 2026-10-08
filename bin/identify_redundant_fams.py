@@ -318,7 +318,6 @@ def process_family_similarity(
         pairwise_similarities_file (str): Output CSV for similar non-redundant pairs.
         skip_family_redundancy_removal (bool): Whether to suppress redundant-family output.
         updated_ids (set[str]): Updated (existing) family IDs, never marked redundant.
-        skip_updated_family_redundancy_removal (bool): Whether to skip pairs with an updated family.
         unmergeable_ids (set[str]): Families that must not be paired for merging.
         skip_updated_family_redundancy_removal (bool): Whether to skip pairs with an updated family.
     """

@@ -109,7 +109,7 @@ def build_pools(similarities_csv: str, threshold: float, updated_ids: set[str] =
 
     # Extract connected components (each is a pool). A component still linking several updated
     # families (through created ones) drops them, and its created families are pooled again.
-    # ponytail: created families are not assigned to their most similar updated family
+    # created families are not assigned to their most similar updated family
     pools = []
     for component in nx.connected_components(G):
         if len(component & updated_ids) > 1:
