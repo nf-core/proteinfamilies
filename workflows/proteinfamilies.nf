@@ -17,9 +17,9 @@ include { CALCULATE_CLUSTER_DISTRIBUTION                   } from '../modules/lo
 include { CHUNK_AND_GENERATE_FAMILIES                      } from '../subworkflows/local/chunk_and_generate_families'
 include { REMOVE_REDUNDANCY                                } from '../subworkflows/local/remove_redundancy'
 include { FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY } from '../modules/nf-core/find/concatenate'
-include { TAR as TAR_HMMS                                  } from '../modules/nf-core/tar/main'
 include { TAR as TAR_SEED_MSAS                             } from '../modules/nf-core/tar/main'
 include { TAR as TAR_FULL_MSAS                             } from '../modules/nf-core/tar/main'
+include { TAR as TAR_FASTA                                 } from '../modules/nf-core/tar/main'
 include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
@@ -155,9 +155,8 @@ workflow PROTEINFAMILIES {
 
     FIND_CONCATENATE_HMM_LIBRARY( ch_hmm_for_library )
 
-    // Archive each sample's final families in the shape of the samplesheet's existing_* columns,
-    // so they can be updated in a later run
-    TAR_HMMS( ch_hmm_for_library, '.gz' )
+    // Archive each sample's final families in the shape of the samplesheet's existing_* columns
+    // (the library above is their existing_hmms), so they can be updated in a later run
     TAR_SEED_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_seed_msa, REMOVE_REDUNDANCY.out.seed_msa ), '.gz' )
     TAR_FULL_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_full_msa, REMOVE_REDUNDANCY.out.full_msa ), '.gz' )
 
@@ -171,6 +170,8 @@ workflow PROTEINFAMILIES {
 
     // Post-processing
     ch_fasta = finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_fasta, REMOVE_REDUNDANCY.out.fasta )
+
+    TAR_FASTA( ch_fasta, '.gz' )
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta )
 

@@ -101,40 +101,29 @@ workflow {
         }
 
     publish:
-    proteinfold_samplesheet      = protein_reps_samplesheet
-    proteinannotator_samplesheet = protein_reps_samplesheet
+    family_reps                  = protein_reps_samplesheet
     passed_through_families      = NFCORE_PROTEINFAMILIES.out.passed_through_families
     merged_families              = NFCORE_PROTEINFAMILIES.out.merged_families
 }
 
 output {
+    // Per-sample reports are named <id>_<report>.tsv, so the sample folder comes from the file name
     passed_through_families {
-        path 'update_families/passed_through_families'
+        path { report -> "families/${report.name - '_passed_through_existing_families.tsv'}/" }
         mode params.publish_dir_mode
     }
 
     merged_families {
-        path 'remove_redundancy/merged_families'
+        path { report -> "families/${report.name - '_merged_families.tsv'}/" }
         mode params.publish_dir_mode
     }
 
-    proteinfold_samplesheet {
-        path { sample -> "proteinfold/${sample.id}/" }
+    // Input samplesheet for nf-core/proteinfold and nf-core/proteinannotator
+    family_reps {
+        path { sample -> "families/${sample.id}/" }
         mode params.publish_dir_mode
-        enabled !params.skip_proteinfold_samplesheet
         index {
-            path 'proteinfold/samplesheet.csv'
-            header true
-            sep ','
-        }
-    }
-
-    proteinannotator_samplesheet {
-        path { sample -> "proteinannotator/${sample.id}/" }
-        mode params.publish_dir_mode
-        enabled !params.skip_proteinannotator_samplesheet
-        index {
-            path 'proteinannotator/samplesheet.csv'
+            path 'families/samplesheet.csv'
             header true
             sep ','
         }

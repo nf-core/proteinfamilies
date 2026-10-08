@@ -6,6 +6,43 @@ This document describes the output produced by the pipeline. Most of the plots a
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
+## Output layout
+
+Final results are published at the same paths whatever the parameters; files of the intermediate steps are published under `intermediates/` only with `--save_intermediates`.
+
+```
+<outdir>/
+├── qc/<samplename>/            SeqFu statistics before/after preprocessing, preprocessed input FASTA, duplicate log
+├── clustering/<samplename>/    initial cluster membership TSV, cluster size distribution
+├── families/
+│   ├── samplesheet.csv         id,fasta of each sample's family representatives (input for nf-core/proteinfold and nf-core/proteinannotator)
+│   └── <samplename>/           the sample's final families (created, updated and passed through)
+│       ├── <samplename>.lib.gz                HMM library
+│       ├── <samplename>_seed_msas.tar.gz      seed MSAs
+│       ├── <samplename>_full_msas.tar.gz      full MSAs (aligned FASTA)
+│       ├── <samplename>_fasta.tar.gz          member sequences (FASTA)
+│       ├── <samplename>_members.tsv           family members
+│       ├── <samplename>_reps.faa              family representatives
+│       ├── <samplename>_meta_mqc.csv          family metadata for MultiQC
+│       ├── <samplename>_merged_families.tsv
+│       ├── <samplename>_passed_through_existing_families.tsv
+│       └── redundancy/                        redundant and similar family ids, similarities, merge pools
+├── phylogeny/<samplename>/     family trees (with --run_phylogenetic_inference)
+├── intermediates/              intermediate files (with --save_intermediates)
+├── multiqc/
+└── pipeline_info/
+```
+
+A file is published when it has content, so some are absent for some samples:
+
+- `<samplename>.lib.gz` needs at least one final family (every final family has an HMM). It is absent only for a sample with no final families (e.g. every cluster below `--clustering_min_cluster_size` and no families to update).
+- `<samplename>_full_msas.tar.gz` needs at least one final family with a full MSA; `<samplename>_seed_msas.tar.gz` at least one with a seed MSA.
+- `<samplename>_fasta.tar.gz`, `<samplename>_members.tsv`, `<samplename>_reps.faa` and `<samplename>_meta_mqc.csv` need at least one final family with a FASTA (that is, with a full MSA). A sample whose only final families are HMM-only pass-throughs gets the library only and is not listed in `families/samplesheet.csv`.
+- `<samplename>_merged_families.tsv` is written only when a merge happened, `<samplename>_passed_through_existing_families.tsv` only for samples with families to update.
+- `redundancy/redundant_fam_ids.txt` and `redundancy/similar_fam_ids.txt` are written unless both `--family_redundancy_removal` and `--family_merging` are `none` (they may be empty); `redundancy/similarities.csv` only when similar family pairs are found; `redundancy/pooled_components.txt` when similar families are pooled for merging (it may be empty when every pool is dropped).
+
+The archives and the library have the shape of the samplesheet's `existing_hmms`, `existing_seed_msas` and `existing_full_msas` columns, so a later run can update these families with new sequences (see [Updating existing families](usage.md#updating-existing-families)). To browse an archive, extract it with `tar -xzf <archive>`.
+
 ## Pipeline overview
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
@@ -53,15 +90,13 @@ Phylogenetic tree inference:
 
 Reporting:
 
-- [Archives of final families](#archives-of-final-families) to update the families in a later run
-- [Extract family representatives](#extract-family-representatives) to produce the final metadata file along with a fasta of all family representative sequences (can be used downstream for structural prediction).
+- [Final families](#final-families): HMM library and archives of each sample's final families, ready to update them in a later run, with their members, representatives and redundancy reports
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
 Downstream pipelines:
 
-- [nf-core/proteinfold](#nf-coreproteinfold) downstream samplesheet generation from final family representative sequences
-- [nf-core/proteinannotator](#nf-coreproteinannotator) downstream samplesheet generation from final family representative sequences
+- [Downstream samplesheet](#downstream-samplesheet) of the final family representative sequences, as input for nf-core/proteinfold and nf-core/proteinannotator
 
 ### SeqFu
 
@@ -89,7 +124,8 @@ The `seqfu` module is used for statistics generation of input amino acid sequenc
 
 - `qc/`
   - `<samplename>/`
-    - `<samplename>.<suffix>`: Updated preprocessed input fasta file
+    - `<samplename>.fasta`: preprocessed input sequences, the curated set the families are built from (not written with `--skip_preprocessing`)
+- `intermediates/qc/<samplename>/`: (optional) intermediate files of the preprocessing steps
 
 </details>
 
@@ -102,21 +138,18 @@ The `seqkit` module is used for initial preprocessing of the input amino acid se
 <details markdown="1">
 <summary>Output files</summary>
 
-- `mmseqs/`
-  - `initial_clustering/`
-    - `mmseqs_createtsv/`
-      - `<samplename>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
-    - `mmseqs_createdb/`
-      - `<samplename>/`
-        - `*`: (optional) mmseqs format db of fasta sequences. Can be turned on with --save_mmseqs_db
-    - `mmseqs_linclust/`
-      - `<samplename>/`
-        - `*`: (optional) mmseqs format clustered db. Can be turned on with --save_mmseqs_clustering
-    - `mmseqs_cluster/`
-      - `<samplename>/`
-        - `*`: (optional) mmseqs format clustered db. Can be turned on with --save_mmseqs_clustering
+- `clustering/`
+  - `<samplename>/`
+    - `<samplename>.tsv`: tab-separated table containing 2 columns; the first one with the cluster representative sequences, and the second with the cluster members
     - `<samplename>_clustering_distribution_mqc.csv`: CSV file with initial clustering metadata, from each sample, to print with MultiQC (column headers: Id,Cluster Size,Number of Clusters)
-- `fasta/`
+- `intermediates/mmseqs/initial_clustering/`
+  - `mmseqs_createdb/`
+    - `*`: (optional) mmseqs format db of fasta sequences
+  - `mmseqs_linclust/`
+    - `*`: (optional) mmseqs format clustered db
+  - `mmseqs_cluster/`
+    - `*`: (optional) mmseqs format clustered db
+- `intermediates/fasta/`
   - `mmseqs_initial_clustering_filtered/`
     - `<samplename>/`
       - `chunked_fasta/`
@@ -124,10 +157,10 @@ The `seqkit` module is used for initial preprocessing of the input amino acid se
 
 </details>
 
-The `mmseqs_createtsv/<samplename>.tsv` contains the mmseqs clustering of sequences, which will then be filtered by size and split into chunks for further parallel processing.
-The optionally saved `chunked_fasta` folder contains these fasta files of sequences for each cluster.
+The `clustering/<samplename>/<samplename>.tsv` contains the mmseqs clustering of sequences, which will then be filtered by size and split into chunks for further parallel processing.
+The `chunked_fasta` intermediate folder contains these fasta files of sequences for each cluster.
 These per cluster fasta files act as input to produce downstream families in the next steps of the pipeline.
-The original mmseqs db and the clustered mmseqs db can be optional saved to the output folder, but they won't be further utilised in this pipeline.
+The original mmseqs db and the clustered mmseqs db are intermediates, not further utilised in this pipeline.
 
 [MMseqs2](https://github.com/soedinglab/MMseqs2) clusters amino acid fasta files via either the 'cluster' or the 'linclust' algorithms.
 
@@ -136,7 +169,7 @@ The original mmseqs db and the clustered mmseqs db can be optional saved to the 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `seed_msa/`
+- `intermediates/seed_msa/`
   - `raw/`
     - `famsa_align/`
       - `<samplename>/`
@@ -144,7 +177,7 @@ The original mmseqs db and the clustered mmseqs db can be optional saved to the 
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.*`: filtered seed alignments after family redundancy removal
-- `remove_redundancy/`
+- `intermediates/remove_redundancy/`
   - `merge_families/`
     - `seed_msa/`
       - `raw/`
@@ -164,7 +197,7 @@ These MSA files only contain the original sequences of each cluster as calculate
 <details markdown="1">
 <summary>Output files</summary>
 
-- `seed_msa/`
+- `intermediates/seed_msa/`
   - `raw/`
     - `mafft_align/`
       - `<samplename>/`
@@ -172,7 +205,7 @@ These MSA files only contain the original sequences of each cluster as calculate
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.*`: filtered seed alignments after family redundancy removal
-- `remove_redundancy/`
+- `intermediates/remove_redundancy/`
   - `merge_families/`
     - `seed_msa/`
       - `raw/`
@@ -192,7 +225,7 @@ These MSA files only contain the original sequences of each cluster as calculate
 <details markdown="1">
 <summary>Output files</summary>
 
-- `seed_msa/`
+- `intermediates/seed_msa/`
   - `raw/`
     - `trimmed/`
       - `<samplename>/`
@@ -200,7 +233,7 @@ These MSA files only contain the original sequences of each cluster as calculate
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.*`: filtered seed alignments after family redundancy removal
-- `remove_redundancy/`
+- `intermediates/remove_redundancy/`
   - `merge_families/`
     - `seed_msa/`
       - `raw/`
@@ -213,7 +246,7 @@ These MSA files only contain the original sequences of each cluster as calculate
 If the `--skip_seed_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--seed_msa_trimming_max_gap_fraction` parameter,
 gaps (above that threshold, across all aligned sequences) are either removed only at the ends of the MSA if `seed_msa_trimming_ends_only` is set to `true`, or throughout the alignment otherwise.
 Each trimmed row that lost residues is then renamed `<sequence>/<start>-<end>` (shifting an existing range) to the residues it still holds; rows that lost none keep their name, and rows left without residues are dropped.
-Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; when `--skip_recruiting` is set, the trimmed seed MSA also serves as the full MSA and the family FASTA holds its rows.
+Results are stored in the `intermediates/seed_msa/raw` folder. Full MSAs are never trimmed; when `--skip_recruiting` is set, the trimmed seed MSA also serves as the full MSA and the family FASTA holds its rows.
 
 [ClipKIT](https://github.com/JLSteenwyk/ClipKIT) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 
@@ -222,23 +255,21 @@ Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; wh
 <details markdown="1">
 <summary>Output files</summary>
 
-- `hmmer/`
+- `intermediates/hmmer/`
   - `hmmsearch/`
     - `<samplename>/`
-      - `<samplename>_*.domtbl.gz`: (optional) hmmsearch results along parameters info. Can be turned on with `--save_hmmsearch_results`
-      - `<samplename>_*.txt.gz`: (optional) hmmsearch execution log. Can be turned on with `--save_hmmsearch_results`
-- `hmm/`
+      - `<samplename>_*.domtbl.gz`: (optional) hmmsearch results along parameters info
+      - `<samplename>_*.txt.gz`: (optional) hmmsearch execution log
+- `intermediates/hmm/`
   - `filtered/`
     - `<samplename>/`
       - `<samplename>_*.hmm.gz`: filtered non-redundant compressed hmm model for the family
-  - `library/`
-    - `<samplename>.lib.gz`: compressed compiled families HMM library model for the sample
   - `raw/`
     - `hmmer_hmmbuild/`
       - `<samplename>/`
         - `<samplename>_*.hmm.gz`: compressed hmm model for the family
         - `<samplename>_*.hmmbuild.txt`: (optional) hmmbuild execution log
-- `full_msa/`
+- `intermediates/full_msa/`
   - `raw/`
     - `hmmer_hmmalign/`
       - `<samplename>/`
@@ -247,20 +278,20 @@ Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; wh
     - `hmmsearch/`
       - `<samplename>/`
         - `<samplename>_*.*`: filtered full alignments after family redundancy removal
-- `fasta/`
+- `intermediates/fasta/`
   - `hmmsearch_filtered_recruited/`
     - `<samplename>/`
       - `<samplename>_*.fasta.gz`: (optional) filtered fasta sequences after hmmsearch and applied thresholds
   - `non_redundant_family_filtered/`
     - `<samplename>/`
       - `<samplename>_*.fasta.gz`: (optional) filtered full alignment sequences after family redundancy removal in fasta format
-- `remove_redundancy/`
+- `intermediates/remove_redundancy/`
   - `merge_families/`
     - `hmmer/`
       - `hmmsearch/`
         - `<samplename>/`
-          - `<samplename>_*.domtbl.gz`: (optional) hmmsearch results along parameters info. Can be turned on with `--save_hmmsearch_results`
-          - `<samplename>_*.txt.gz`: (optional) hmmsearch execution log. Can be turned on with `--save_hmmsearch_results`
+          - `<samplename>_*.domtbl.gz`: (optional) hmmsearch results along parameters info
+          - `<samplename>_*.txt.gz`: (optional) hmmsearch execution log
     - `hmm/`
       - `raw/`
         - `hmmer_hmmbuild/`
@@ -279,13 +310,12 @@ Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; wh
 
 </details>
 
-The `hmm/raw` folder contains all originally created family HMMs, under a subfolder named after the tool that built them
+The `intermediates/hmm/raw` folder contains all originally created family HMMs, under a subfolder named after the tool that built them
 (`hmmer_hmmbuild/` for the standard algorithm, `mgnifam/` for the iterative one), as with the seed and full MSA outputs. These models will be used downstream to recruit additional sequences in families, to compute
 full MSAs if `--skip_recruiting` is set to `false`, and/or to remove among-family redundancies unless `--family_redundancy_removal none` is set.
-Unless both `--family_redundancy_removal` and `--family_merging` are set to `none`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
-The `hmm/library` will contain a compiled and gzipped single HMM library file per sample.
-The HMMs (raw or filtered) can also be used in the `update_families` execution mode of the pipeline,
-optionally along with the families' full MSAs, to recruit sequences from a new input fasta file into the families, rebuilding their seed MSA, HMM and full MSA.
+Unless both `--family_redundancy_removal` and `--family_merging` are set to `none`, the `intermediates/hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
+The final HMMs of each sample are in its HMM library (see [Final families](#final-families)), which can be given as `existing_hmms`,
+optionally along with the families' seed and full MSA archives, to recruit sequences from a new input fasta file into the families, rebuilding their seed MSA, HMM and full MSA.
 
 [hmmer](https://github.com/EddyRivasLab/hmmer) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 
@@ -296,26 +326,26 @@ Only produced when `--family_generation_algorithm iterative` is set, in place of
 <details markdown="1">
 <summary>Output files</summary>
 
-- `seed_msa/`
+- `intermediates/seed_msa/`
   - `raw/`
     - `mgnifam/`
       - `<samplename>/`
         - `<samplename>_*.fas.gz`: compressed family seed MSA, reformatted from Stockholm to aligned fasta
-- `full_msa/`
+- `intermediates/full_msa/`
   - `raw/`
     - `mgnifam/`
       - `<samplename>/`
         - `<samplename>_*.sto.gz`: compressed family full MSA, including the recruited members (before checking for redundancy)
-- `hmm/`
+- `intermediates/hmm/`
   - `raw/`
     - `mgnifam/`
       - `<samplename>/`
         - `<samplename>_*.hmm.gz`: compressed hmm model for the family
-- `fasta/`
+- `intermediates/fasta/`
   - `mgnifam_family_members/`
     - `<samplename>/`
-      - `<samplename>_*.fasta.gz`: (optional) family member sequences, taken from the full MSA with the gaps removed. Can be turned on with `--save_hmmsearch_filtered_fasta`
-- `generate_families_iteratively/`
+      - `<samplename>_*.fasta.gz`: (optional) family member sequences, taken from the full MSA with the gaps removed
+- `intermediates/generate_families_iteratively/`
   - `<samplename>/`
     - `<samplename>_*/`: one directory per cluster chunk
       - `<samplename>_*_families.tsv`: (optional) roster of the families generated from the cluster chunk
@@ -328,11 +358,9 @@ Only produced when `--family_generation_algorithm iterative` is set, in place of
       - `<samplename>_*_mgnifam_stats.json`: (optional) MultiQC-ready run summary: family counts, discard reasons, and histograms of seed and full MSA size, model length and representative length
       - `rf/`
         - `<samplename>_*.txt`: (optional) per-family reference annotation (RF) line, marking the match-state columns of the seed alignment
-- `remove_redundancy/`
+- `intermediates/remove_redundancy/`
   - `merge_families/`
     - `hmm/raw/mgnifam/`, `full_msa/raw/mgnifam/`, `generate_families_iteratively/`: the same outputs for the families rebuilt after merging
-
-All files under `generate_families_iteratively/` require `--save_iterative_family_metadata`.
 
 </details>
 
@@ -349,11 +377,15 @@ The converged records indicate which of the families optimized their model withi
 <details markdown="1">
 <summary>Output files</summary>
 
-- `remove_redundancy/`
+- `families/`
   - `<samplename>/`
-    - `redundant_fam_ids.txt`: redundant family identifiers that are being dropped
-    - `similar_fam_ids.txt`: identifiers of families in similar pairs, the candidates for merging
-    - `similarities.csv`: CSV file containing pairwise family similarities above user-defined threshold
+    - `redundancy/`
+      - `redundant_fam_ids.txt`: redundant family identifiers that are being dropped
+      - `similar_fam_ids.txt`: identifiers of families in similar pairs, the candidates for merging
+      - `similarities.csv`: CSV file containing pairwise family similarities above user-defined threshold
+      - `pooled_components.txt`: comma separated clusters of similar family ids, each merged into one family
+    - `<samplename>_merged_families.tsv`: each merged family (`merged_family`) with the comma separated families it replaces (`members`); written for samples with merges. With `--family_generation_algorithm iterative`, the families built from a merge are named `<merged_family>_<n>`
+- `intermediates/remove_redundancy/`
   - `hmmer/`
     - `concatenated/`
       - `<samplename>.hmm.gz`: (optional) concatenated compressed hmm model for all families in a given sample (pre redundancy removal)
@@ -366,10 +398,7 @@ The converged records indicate which of the families optimized their model withi
       - `<samplename>_reps.faa`: (optional) fasta file of all family representative sequences (one sequence per family)
   - `merge_families/`
     - `<samplename>/`
-      - `pooled_components.txt`: comma separated clusters of similar family ids
       - `<merged_id>.fas`: (optional) merged seed alignment of each pooled component
-  - `merged_families/`
-    - `<samplename>_merged_families.tsv`: each merged family (`merged_family`) with the comma separated families it replaces (`members`); written for samples with merges. With `--family_generation_algorithm iterative`, the families built from a merge are named `<merged_family>_<n>`
   - `skipped_ids/`
     - `<samplename>.txt`: (optional) concatenated redundant and similar (single) family ids that are filtered out
 
@@ -387,7 +416,7 @@ A merged family holding an updated family keeps its name, so it keeps its identi
 Unless `--family_merging none` is set, and if `family_similarity_min_model_coverage` is correctly set
 lower than `family_redundancy_min_model_coverage` (or `--family_redundancy_removal none` is set), then similar family seed alignments can be merged
 and go through the `generate_families` subworkflow once more.
-Most `remove_redundancy` outputs are optional folders that contain intermediate pipeline results, and therefore are not saved in the output results by default.
+The `remove_redundancy` folders hold intermediate results, published under `intermediates/` with `--save_intermediates`.
 
 [hmmer](https://github.com/EddyRivasLab/hmmer) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 
@@ -396,7 +425,7 @@ Most `remove_redundancy` outputs are optional folders that contain intermediate 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `mmseqs/`
+- `intermediates/mmseqs/`
   - `redundancy_clustering/`
     - `mmseqs_createtsv/`
       - `<samplename>/`
@@ -410,7 +439,7 @@ Most `remove_redundancy` outputs are optional folders that contain intermediate 
     - `mmseqs_cluster/`
       - `<samplename>/`
         - `*`: (optional) mmseqs format clustered db
-- `fasta/`
+- `intermediates/fasta/`
   - `non_redundant_sequences_filtered/`
     - `<samplename>/`
       - `<samplename>_reps.faa`: (optional) fasta file of all family representative sequences (one sequence per family)
@@ -429,7 +458,7 @@ before recalculating the family MSAs.
 <details markdown="1">
 <summary>Output files</summary>
 
-- `full_msa/`
+- `intermediates/full_msa/`
   - `filtered/`
     - `famsa_align/`
       - `<samplename>/`
@@ -438,7 +467,7 @@ before recalculating the family MSAs.
 </details>
 
 If `--skip_sequence_redundancy_removal` is set to `false`, then the full MSAs will be recalculated after in-family sequence redundancy is removed.
-If the `--alignment_tool` is `famsa`, then this `famsa_align` folder will be created, containing the final full MSA files.
+If the `--alignment_tool` is `famsa`, then this `famsa_align` intermediate folder holds the re-aligned full MSA files, which go into the sample's full MSA archive (see [Final families](#final-families)).
 
 [FAMSA](https://github.com/refresh-bio/FAMSA) is a progressive algorithm for large-scale multiple sequence alignments.
 
@@ -447,7 +476,7 @@ If the `--alignment_tool` is `famsa`, then this `famsa_align` folder will be cre
 <details markdown="1">
 <summary>Output files</summary>
 
-- `full_msa/`
+- `intermediates/full_msa/`
   - `filtered/`
     - `mafft_align/`
       - `<samplename>/`
@@ -456,7 +485,7 @@ If the `--alignment_tool` is `famsa`, then this `famsa_align` folder will be cre
 </details>
 
 If `--skip_sequence_redundancy_removal` is set to `false`, then the full MSAs will be recalculated after in-family sequence redundancy is removed.
-If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be created, containing the final full MSA files.
+If the `--alignment_tool` is `mafft`, then this `mafft_align` intermediate folder holds the re-aligned full MSA files, which go into the sample's full MSA archive (see [Final families](#final-families)).
 
 [mafft](https://github.com/GSLBiotech/mafft) is a fast but not very sensitive multiple sequence alignment tool.
 
@@ -465,7 +494,7 @@ If the `--alignment_tool` is `mafft`, then this `mafft_align` folder will be cre
 <details markdown="1">
 <summary>Output files</summary>
 
-- `full_msa/`
+- `intermediates/full_msa/`
   - `filtered/`
     - `hhsuite_reformat/`
       - `<samplename>/`
@@ -486,7 +515,7 @@ If `--skip_sequence_redundancy_removal` is set to `true`, then either the raw (i
 <details markdown="1">
 <summary>Output files</summary>
 
-- `untar/`
+- `intermediates/untar/`
   - `msa/`
     - `<samplename>/`
       - `<family_id>.*`: (optional) decompressed input seed or full MSA tarball
@@ -504,7 +533,7 @@ Pooled members that no family hits again are dropped; only input sequences witho
 <details markdown="1">
 <summary>Output files</summary>
 
-- `update_families/`
+- `intermediates/update_families/`
   - `hmmer/`
     - `concatenated/`
       - `<samplename>.hmm.gz`: (optional) concatenated compressed HMM models for all families in a given sample, to be used as input for hmmsearch, to determine which families will be updated with new sequences
@@ -516,14 +545,15 @@ Pooled members that no family hits again are dropped; only input sequences witho
       - `<family_id>.fasta`: (optional) hit sequences for each existing family, cut to the hit envelope
   - `unassigned/`
     - `<samplename>_unassigned.fasta.gz`: (optional) input sequences in no updated family, which will be passed to normal execution mode to create new families
-  - `passed_through_families/`
+- `families/`
+  - `<samplename>/`
     - `<samplename>_passed_through_existing_families.tsv`: existing families passed through as given, with the reason (`no hits`, or `no recruits` when the rebuilt HMM recruited nothing); header only if every family was updated
 
 </details>
 
 The `update_families` execution mode is run for samples with `existing_hmms` in the input samplesheet.
 The `hmmer/hmmsearch` module is used to match the pooled sequences against the existing family models.
-Families with hits are rebuilt (see [Rebuilding updated families](#rebuilding-updated-families)); families without hits, or whose rebuilt HMM recruits nothing, pass through as given (existing HMM into the sample's HMM library, existing seed and full MSA) and are listed in `passed_through_families/`. An input sequence is unassigned unless an updated family holds a member cut from it, so sequences only the rebuilt HMMs recruit stay in their family instead of also creating new ones.
+Families with hits are rebuilt (see [Rebuilding updated families](#rebuilding-updated-families)); families without hits, or whose rebuilt HMM recruits nothing, pass through as given (existing HMM into the sample's HMM library, existing seed and full MSA) and are listed in `families/<samplename>/<samplename>_passed_through_existing_families.tsv`. An input sequence is unassigned unless an updated family holds a member cut from it, so sequences only the rebuilt HMMs recruit stay in their family instead of also creating new ones.
 
 [hmmer](https://github.com/EddyRivasLab/hmmer) is a suite of tools for searching sequence databases for homologs with profile hidden Markov models.
 
@@ -532,7 +562,7 @@ Families with hits are rebuilt (see [Rebuilding updated families](#rebuilding-up
 <details markdown="1">
 <summary>Output files</summary>
 
-- `mmseqs/`
+- `intermediates/mmseqs/`
   - `update_families/`
     - `mmseqs_createtsv/`
       - `<samplename>/`
@@ -561,7 +591,7 @@ If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs suite stri
 <details markdown="1">
 <summary>Output files</summary>
 
-- `update_families/`
+- `intermediates/update_families/`
   - `seed_msa/`
     - `raw/`
       - `famsa_align/` or `mafft_align/`
@@ -578,11 +608,11 @@ If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs suite stri
   - `hmmer/`
     - `hmmsearch/`
       - `<samplename>/`
-        - `<family_id>.domtbl.gz`: (optional) recruiting hmmsearch results of the new HMM against the pool. Can be turned on with `--save_hmmsearch_results`
+        - `<family_id>.domtbl.gz`: (optional) recruiting hmmsearch results of the new HMM against the pool
   - `fasta/`
     - `hmmsearch_filtered_recruited/`
       - `<samplename>/`
-        - `<family_id>.fasta.gz`: (optional) recruited sequences of the new full MSA. Can be turned on with `--save_hmmsearch_filtered_fasta`
+        - `<family_id>.fasta.gz`: (optional) recruited sequences of the new full MSA
   - `full_msa/`
     - `raw/`
       - `hmmer_hmmalign/`
@@ -594,8 +624,8 @@ If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs suite stri
 Each updated family is rebuilt like a newly created one (see [FAMSA](#famsa-aligner), [mafft](#mafft-aligner), [ClipKIT](#clipkit) and [hmmer](#hmmer)), keeping its family name:
 its (non redundant) hits are aligned into a new seed MSA, optionally trimmed, built into a new HMM, and the new HMM recruits the family's full MSA from the same pool of input sequences and existing members.
 With `--skip_recruiting`, the new seed MSA also serves as the full MSA.
-With `--skip_update_refinement`, families are not rebuilt: the existing HMM is kept and aligns the family's hits into the new full MSA (`update_families/full_msa/raw/hmmer_hmmalign/`), and no new seed MSA or HMM is written.
-The updated families then go through [redundancy removal](#hmmer-for-redundancy-removal) with the created families, so their final seed MSAs, HMMs and full MSAs are published with them (e.g. `hmm/filtered/`, `seed_msa/filtered/`, `full_msa/filtered/`).
+With `--skip_update_refinement`, families are not rebuilt: the existing HMM is kept and aligns the family's hits into the new full MSA (`intermediates/update_families/full_msa/raw/hmmer_hmmalign/`), and no new seed MSA or HMM is written.
+The updated families then go through [redundancy removal](#hmmer-for-redundancy-removal) with the created families, so their final seed MSAs, HMMs and full MSAs are published with them (see [Final families](#final-families)).
 Hits on sequences already named `<sequence>/<start>-<end>` (e.g. pooled existing members) are named in the parent sequence's coordinates.
 
 ### CMAPLE
@@ -604,10 +634,9 @@ Hits on sequences already named `<sequence>/<start>-<end>` (e.g. pooled existing
 <summary>Output files</summary>
 
 - `phylogeny/`
-  - `cmaple/`
-    - `<samplename>/`
-      - `<family_name>.treefile`: the maximum parsimonious likelihood estimation phylogenetic tree of full MSA family sequences in Newick format.
-      - `<family_name>.log`: a log file containing detailed information about the tree reconstruction process.
+  - `<samplename>/`
+    - `<family_name>.treefile`: the maximum parsimonious likelihood estimation phylogenetic tree of full MSA family sequences in Newick format.
+    - `<family_name>.log`: a log file containing detailed information about the tree reconstruction process.
 
 </details>
 
@@ -616,41 +645,29 @@ Hits on sequences already named `<sequence>/<start>-<end>` (e.g. pooled existing
 With `--run_phylogenetic_inference`, the full MSA treefiles will be calculated for the final protein families.
 The generated treefiles can be visualized externally with any Newick phylogenetic tree viewer.
 
-### Archives of final families
+### Final families
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `archives/`
+- `families/`
+  - `samplesheet.csv`: `id,fasta` of each sample's `<samplename>_reps.faa` (see [Downstream samplesheet](#downstream-samplesheet))
   - `<samplename>/`
-    - `<samplename>_hmms.tar.gz`: the HMM of every final family of the sample (created after redundancy removal, updated, and passed through)
+    - `<samplename>.lib.gz`: compressed HMM library of every final family of the sample (created after redundancy removal, updated, and passed through)
     - `<samplename>_seed_msas.tar.gz`: their seed MSAs (families without one, e.g. updated with `--skip_update_refinement` and no provided seed, are absent)
-    - `<samplename>_full_msas.tar.gz`: their full MSAs
-
-</details>
-
-The archives have the shape of the samplesheet's `existing_hmms`, `existing_seed_msas` and `existing_full_msas` columns, so a later run can update these families with new sequences (see [Updating existing families](usage.md#updating-existing-families)).
-
-### Extract family representatives
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `family_reps/`
-  - `<samplename>/`
-    - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
+    - `<samplename>_full_msas.tar.gz`: their full MSAs (aligned FASTA)
+    - `<samplename>_fasta.tar.gz`: their member sequences (FASTA)
+    - `<samplename>_members.tsv`: 2-column TSV file with family ids and all sequence member ids
     - `<samplename>_reps.faa`: fasta file of all family representative sequences (one sequence per family)
-    - `<samplename>.tsv`: 2-column TSV file with family ids and all sequence member ids
+    - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)
+    - `<samplename>_merged_families.tsv`, `<samplename>_passed_through_existing_families.tsv`, `redundancy/`: see [hmmer for redundancy removal](#hmmer-for-redundancy-removal) and [hmmer for updating families](#hmmer-for-updating-families)
 
 </details>
 
-Every final family of a sample is included: created, updated, and passed-through families given with a full MSA (whose members are the degapped rows of that full MSA).
-
-The final report of the nf-core/proteinfamilies pipeline.
-The `*_meta_mqc.csv` file are used to report family metadata and statistics in the browser, via the MultiQC software.
-The `*_reps.faa` protein fasta file contains all family representative sequence in one place.
-This file can be further used as input in other pipelines such as `nf-core/proteinfold` for structural prediction
-or `nf-core/proteinannotator` for amino acid sequence annotation.
+Every final family of a sample is included: created, updated, and passed-through families (passed-through families given with a full MSA also have members, the degapped rows of that full MSA).
+The library and the MSA archives have the shape of the samplesheet's `existing_hmms`, `existing_seed_msas` and `existing_full_msas` columns, so a later run can update these families with new sequences (see [Updating existing families](usage.md#updating-existing-families)).
+The `*_meta_mqc.csv` file is used to report family metadata and statistics in the browser, via the MultiQC software.
+The `*_reps.faa` protein fasta file contains all family representative sequences in one place.
 
 ### MultiQC
 
@@ -687,64 +704,26 @@ This custom metadata is presented as a data table in the MultiQC report file.
 
 [Nextflow](https://docs.seqera.io/platform-cloud/reports/overview) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
 
-### nf-core/proteinfold
+### Downstream samplesheet
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `proteinfold/`
-  - `<samplename>/`
-    - `<samplename>_reps.faa`: A copy of the amino acid fasta file with all family representative sequences.
-  - `samplesheet.csv`: Downstream samplesheet to be used as the `nf-core/proteinfold` input.
+- `families/`
+  - `samplesheet.csv`: samplesheet with two columns, `id` (the sample name) and `fasta` (the path to the sample's `<samplename>_reps.faa`), to be used as the input of `nf-core/proteinfold` or `nf-core/proteinannotator`
 
 </details>
 
-[nf-core/proteinfold](https://nf-co.re/proteinfold) is a bioinformatics best-practice analysis pipeline for protein 3D structure prediction.
-The samplesheet contains two columns; `id` and `fasta`, where `id` is the sequence identifier, and `fasta` the path to the sequence file.
-
-Example samplesheet:
-
-```csv title="samplesheet.csv"
-id,fasta
-T1024,https://raw.githubusercontent.com/nf-core/test-datasets/proteinfold/testdata/sequences/T1024.fasta
-T1026,https://raw.githubusercontent.com/nf-core/test-datasets/proteinfold/testdata/sequences/T1026.fasta
-```
-
-An `nf-core/proteinfold` run command would look something like this:
+[nf-core/proteinfold](https://nf-co.re/proteinfold) is a bioinformatics best-practice analysis pipeline for protein 3D structure prediction. An `nf-core/proteinfold` run command would look something like this:
 
 ```
-nextflow run proteinfold -profile singularity,gpu --input /path/to/proteinfamilies/results/proteinfold/samplesheet.csv --outdir result --split_fasta --use_gpu true --mode alphafold2 --alphafold2_mode split_msa_prediction --alphafold2_db '/path/to/alphafold_db' --alphafold2_params_link '/path/to/alphafold_db/' --foldseek_search easysearch --foldseek_db pdb --foldseek_db_path '/path/to/foldseek/8-ef4e960/pdb/'
+nextflow run proteinfold -profile singularity,gpu --input /path/to/proteinfamilies/results/families/samplesheet.csv --outdir result --split_fasta --use_gpu true --mode alphafold2 --alphafold2_mode split_msa_prediction --alphafold2_db '/path/to/alphafold_db' --alphafold2_params_link '/path/to/alphafold_db/' --foldseek_search easysearch --foldseek_db pdb --foldseek_db_path '/path/to/foldseek/8-ef4e960/pdb/'
 ```
 
-For more information, visit the [usage page](https://nf-co.re/proteinfold/dev/docs/usage) of the `nf-core/proteinfold` pipeline.
-
-### nf-core/proteinannotator
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `proteinannotator/`
-  - `<samplename>/`
-    - `<samplename>_reps.faa`: A copy of the amino acid fasta file with all family representative sequences.
-  - `samplesheet.csv`: Downstream samplesheet to be used as the `nf-core/proteinannotator` input.
-
-</details>
-
-[nf-core/proteinannotator](https://nf-co.re/proteinannotator) is a bioinformatics pipeline that runs statistics of input protein fasta files and identifies the function of proteins based on their sequence data, using state-of-the-art protein annotation tools such as InterProScan.
-The samplesheet contains two columns; `id` and `fasta`, where `id` is the sequence identifier, and `fasta` the path to the sequence file.
-
-Example samplesheet:
-
-```csv title="samplesheet.csv"
-id,fasta
-snap25a,https://raw.githubusercontent.com/nf-core/test-datasets/kmerseek/testdata/snap25a_mxe_exon_human.fa
-snap25b,https://raw.githubusercontent.com/nf-core/test-datasets/kmerseek/testdata/snap25b_mxe_exon_human.fa
-```
-
-An `nf-core/proteinannotator` run command would look something like this:
+[nf-core/proteinannotator](https://nf-co.re/proteinannotator) is a bioinformatics pipeline that runs statistics of input protein fasta files and identifies the function of proteins based on their sequence data, using state-of-the-art protein annotation tools such as InterProScan. An `nf-core/proteinannotator` run command would look something like this:
 
 ```
-nextflow run proteinannotator -profile singularity --input /path/to/proteinfamilies/results/proteinannotator/samplesheet.csv --outdir result
+nextflow run proteinannotator -profile singularity --input /path/to/proteinfamilies/results/families/samplesheet.csv --outdir result
 ```
 
-For more information, visit the [usage page](https://nf-co.re/proteinannotator/dev/docs/usage) of the `nf-core/proteinannotator` pipeline.
+For more information, visit the usage pages of [nf-core/proteinfold](https://nf-co.re/proteinfold/dev/docs/usage) and [nf-core/proteinannotator](https://nf-co.re/proteinannotator/dev/docs/usage).

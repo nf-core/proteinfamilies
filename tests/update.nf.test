@@ -20,10 +20,10 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
             // stable_content: All files in ${params.outdir}/ with stable content
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
-            // archives/: member order and timestamps vary, so each member is checked by the md5 of its
+            // families/<id>/*.tar.gz: member order and timestamps vary, so each member is checked by the md5 of its
             // decompressed content, without the run-dependent DATE line of HMMs
-            def archive_members = file("${params.outdir}/archives").listFiles().sort().collectMany { sample ->
-                sample.listFiles().sort().collect { archive ->
+            def archive_members = file("${params.outdir}/families").listFiles().findAll { sample -> sample.isDirectory() }.sort().collectMany { sample ->
+                sample.listFiles().findAll { archive -> archive.name.endsWith('.tar.gz') }.sort().collect { archive ->
                     def members = File.createTempDir()
                     ['tar', '-xzf', archive.toString(), '-C', members.toString()].execute().waitFor()
                     "${archive.name}: " + members.listFiles().sort().collect { member ->
