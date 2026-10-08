@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#202](https://github.com/nf-core/proteinfamilies/pull/202)
-  - Updated families go through redundancy removal together with the sample's created families: an updated family is never removed (a created family redundant with it is, two redundant updated families are both kept), and it can merge with similar families, recruiting from the update pool. Families without a seed MSA are never merged. (by @vagkaratzas)
+  - Updated families go through redundancy removal together with the sample's created families: an updated family is never removed (a created family redundant with it is, two redundant updated families are both kept), and it can merge with similar families, recruiting from the update pool. With `--skip_update_refinement`, updated families are never merged, so their existing HMMs are kept. (by @vagkaratzas)
   - Added `--family_redundancy_removal` and `--family_merging` (`all` by default, `created_only` or `none`): `created_only` leaves updated families out of the family redundancy check (created families may then duplicate them) or out of merging. (by @vagkaratzas)
   - Merged families are listed with the families they replace in `remove_redundancy/merged_families/<id>_merged_families.tsv`. (by @vagkaratzas)
   - Added `--merged_family_name` (`existing` by default, or `new`): a merged family holding an updated family keeps its name, so it keeps its identity across updates (standard algorithm). A merge holds at most one updated family, so existing families are never merged together. (by @vagkaratzas)
