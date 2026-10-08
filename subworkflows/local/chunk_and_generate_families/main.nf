@@ -20,17 +20,17 @@ workflow CHUNK_AND_GENERATE_FAMILIES {
     sequences                           // tuple val(meta), path(fasta)
     clusters                            // tuple val(meta), path(tsv)
     family_generation_algorithm         // string ["standard", "iterative"]
-    cluster_size_threshold              // integer
-    clusters_per_chunk                  // integer
+    clustering_min_cluster_size         // integer
+    iterative_clusters_per_chunk        // integer
     alignment_tool                      // string ["famsa", "mafft"]
     skip_seed_msa_trimming              // boolean
-    skip_additional_sequence_recruiting // boolean
-    hmmsearch_query_length_threshold    // number [0.0, 1.0]
+    skip_recruiting                     // boolean
+    recruit_min_model_coverage          // number [0.0, 1.0]
 
     main:
     def iterative = family_generation_algorithm == 'iterative'
 
-    CHUNK_CLUSTERS( clusters, sequences, cluster_size_threshold, iterative ? 'tsv' : 'fasta', clusters_per_chunk )
+    CHUNK_CLUSTERS( clusters, sequences, clustering_min_cluster_size, iterative ? 'tsv' : 'fasta', iterative_clusters_per_chunk )
 
     // tokenize('_').last() extracts the numeric suffix from filenames like 'sample_1.faa.gz' as the chunk ID.
     ch_chunks = ( iterative ? CHUNK_CLUSTERS.out.cluster_chunks : CHUNK_CLUSTERS.out.fasta_chunks )
@@ -48,8 +48,8 @@ workflow CHUNK_AND_GENERATE_FAMILIES {
             ch_chunks,
             alignment_tool,
             skip_seed_msa_trimming,
-            skip_additional_sequence_recruiting,
-            hmmsearch_query_length_threshold
+            skip_recruiting,
+            recruit_min_model_coverage
         )
         ch_families = GENERATE_FAMILIES.out
     }

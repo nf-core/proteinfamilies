@@ -82,12 +82,12 @@ workflow PROTEINFAMILIES {
 
     UPDATE_FAMILIES (
         ch_samplesheet_for_update,
-        params.hmmsearch_query_length_threshold,
+        params.recruit_min_model_coverage,
         params.skip_sequence_redundancy_removal,
         params.clustering_tool,
         params.alignment_tool,
         params.skip_seed_msa_trimming,
-        params.skip_additional_sequence_recruiting,
+        params.skip_recruiting,
         params.skip_update_refinement
     )
 
@@ -114,12 +114,12 @@ workflow PROTEINFAMILIES {
         MMSEQS_FASTA_CLUSTER.out.seqs,
         MMSEQS_FASTA_CLUSTER.out.clusters,
         params.family_generation_algorithm,
-        params.cluster_size_threshold,
-        params.clusters_per_chunk,
+        params.clustering_min_cluster_size,
+        params.iterative_clusters_per_chunk,
         params.alignment_tool,
         params.skip_seed_msa_trimming,
-        params.skip_additional_sequence_recruiting,
-        params.hmmsearch_query_length_threshold
+        params.skip_recruiting,
+        params.recruit_min_model_coverage
     )
 
     // Created and updated families, keyed [id, family] by file stem
@@ -132,15 +132,15 @@ workflow PROTEINFAMILIES {
         familyFiles( CHUNK_AND_GENERATE_FAMILIES.out.hmm ).mix( UPDATE_FAMILIES.out.hmm ),
         params.family_redundancy_removal,
         params.family_merging,
-        params.hmmsearch_family_redundancy_length_threshold,
-        params.hmmsearch_family_similarity_length_threshold,
+        params.family_redundancy_min_model_coverage,
+        params.family_similarity_min_model_coverage,
         params.skip_sequence_redundancy_removal,
         params.clustering_tool,
         params.family_generation_algorithm,
         params.alignment_tool,
         params.skip_seed_msa_trimming,
-        params.skip_additional_sequence_recruiting,
-        params.hmmsearch_query_length_threshold,
+        params.skip_recruiting,
+        params.recruit_min_model_coverage,
         params.merged_family_name
     )
 

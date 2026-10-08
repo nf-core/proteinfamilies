@@ -17,12 +17,12 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/v3/existing_seed_msas.tar.gz', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'test_data/v3/existing_full_msas.tar.gz', checkIfExists: true)
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = false      // skip_update_refinement
                 """
             }
@@ -56,12 +56,12 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/v3/existing_seed_msas.tar.gz', checkIfExists: true),
                     file(params.pipelines_testdata_base_path + 'test_data/v3/existing_full_msas.tar.gz', checkIfExists: true)
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = true       // skip_update_refinement
                 """
             }
@@ -95,12 +95,12 @@ nextflow_workflow {
                     [],
                     []
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = false      // skip_update_refinement
                 """
             }
@@ -141,12 +141,12 @@ nextflow_workflow {
                     [],
                     file('no_hits_full_msas.tar.gz', checkIfExists: true)
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = false      // skip_update_refinement
                 """
             }
@@ -185,12 +185,12 @@ nextflow_workflow {
                     [],
                     file('bad_msas.tar.gz')
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = false      // skip_update_refinement
                 """
             }
@@ -221,12 +221,12 @@ nextflow_workflow {
                     [],
                     []
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = false      // skip_update_refinement
                 """
             }
@@ -260,12 +260,12 @@ nextflow_workflow {
                     [],
                     []
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = false      // skip_update_refinement
                 """
             }
@@ -301,12 +301,12 @@ nextflow_workflow {
                     [],
                     file('stray_msas.tar.gz')
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = false      // skip_update_refinement
                 """
             }
@@ -342,12 +342,12 @@ nextflow_workflow {
                     file('stray_seeds.tar.gz'),
                     []
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = false      // skip_update_refinement
                 """
             }
@@ -382,12 +382,12 @@ nextflow_workflow {
                     [],
                     file('stray_msas.tar.gz')
                 ])
-                input[1] = 0.9        // hmmsearch_query_length_threshold
+                input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_additional_sequence_recruiting
+                input[6] = false      // skip_recruiting
                 input[7] = false      // skip_update_refinement
                 """
             }

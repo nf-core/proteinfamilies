@@ -41,15 +41,15 @@ workflow REMOVE_REDUNDANCY {
     hmm                                          // tuple val(meta), path(hmm.gz), meta [id, family]
     family_redundancy_removal                    // string ["all", "created_only", "none"]
     family_merging                               // string ["all", "created_only", "none"]
-    hmmsearch_family_redundancy_length_threshold // number [0.0, 1.0]
-    hmmsearch_family_similarity_length_threshold // number [0.0, 1.0]
+    family_redundancy_min_model_coverage         // number [0.0, 1.0]
+    family_similarity_min_model_coverage         // number [0.0, 1.0]
     skip_sequence_redundancy_removal             // boolean
     clustering_tool                              // string ["linclust", "cluster"]
     family_generation_algorithm                  // string ["standard", "iterative"]
     alignment_tool                               // string ["famsa", "mafft"]
     skip_seed_msa_trimming                       // boolean
-    skip_additional_sequence_recruiting          // boolean
-    hmmsearch_query_length_threshold             // number [0.0, 1.0]
+    skip_recruiting                              // boolean
+    recruit_min_model_coverage                   // number [0.0, 1.0]
     merged_family_name                           // string ["existing", "new"]
 
     main:
@@ -99,8 +99,8 @@ workflow REMOVE_REDUNDANCY {
             ch_input_for_redundant_fam_identification.map,
             ch_input_for_redundant_fam_identification.domtbl,
             ch_input_for_redundant_fam_identification.updated,
-            hmmsearch_family_redundancy_length_threshold,
-            hmmsearch_family_similarity_length_threshold
+            family_redundancy_min_model_coverage,
+            family_similarity_min_model_coverage
         )
 
         if (family_merging != 'none') {
@@ -117,8 +117,8 @@ workflow REMOVE_REDUNDANCY {
                 family_generation_algorithm,
                 alignment_tool,
                 skip_seed_msa_trimming,
-                skip_additional_sequence_recruiting,
-                hmmsearch_query_length_threshold,
+                skip_recruiting,
+                recruit_min_model_coverage,
                 merged_family_name
             )
 

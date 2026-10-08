@@ -39,12 +39,12 @@ include { EXTRACT_UNASSIGNED_SEQS       } from '../../../modules/local/extract_u
 workflow UPDATE_FAMILIES {
     take:
     ch_samplesheet_for_update           // channel: [meta, sequences, existing_hmms, existing_seed_msas, existing_full_msas]; MSAs may be []
-    hmmsearch_query_length_threshold    // number [0.0, 1.0]
+    recruit_min_model_coverage          // number [0.0, 1.0]
     skip_sequence_redundancy_removal    // boolean
     clustering_tool                     // string ["linclust", "cluster"]
     alignment_tool                      // string ["famsa", "mafft"]
     skip_seed_msa_trimming              // boolean
-    skip_additional_sequence_recruiting // boolean
+    skip_recruiting                     // boolean
     skip_update_refinement              // boolean: keep the existing HMMs, only rebuild the full MSAs
 
     main:
@@ -113,7 +113,7 @@ workflow UPDATE_FAMILIES {
             fasta: [ meta, pool ]
         }
 
-    SPLIT_FAMILY_HITS ( ch_input_for_split_hits.fasta, ch_input_for_split_hits.domtbl, hmmsearch_query_length_threshold )
+    SPLIT_FAMILY_HITS ( ch_input_for_split_hits.fasta, ch_input_for_split_hits.domtbl, recruit_min_model_coverage )
 
     // [id, family] meta, as for created families' chunks
     ch_hits = SPLIT_FAMILY_HITS.out.hits
@@ -151,8 +151,8 @@ workflow UPDATE_FAMILIES {
             ch_fasta,
             alignment_tool,
             skip_seed_msa_trimming,
-            skip_additional_sequence_recruiting,
-            hmmsearch_query_length_threshold
+            skip_recruiting,
+            recruit_min_model_coverage
         )
 
         // A family whose new HMM recruits nothing has no full MSA, so it is not returned

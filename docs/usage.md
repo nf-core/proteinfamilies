@@ -44,7 +44,7 @@ Each model in `existing_hmms` is an existing family, identified by its `NAME` (c
 > HMM and MSA archives written by nf-core/proteinfamilies already follow these rules and can be used as they are.
 
 The input sequences, together with the members of any `existing_full_msas` (gaps removed; a member `seq/<start>-<end>` is skipped if its region lies inside an input sequence of the same protein `seq`, where a name without a range is the whole protein, or inside another member; partial overlaps are kept), are searched against the existing HMMs.
-Each family's hits are then rebuilt like a newly created family: optionally made non-redundant, aligned and trimmed into a new seed MSA, built into a new HMM, and used to recruit the new full MSA from the same pool (the new seed MSA serves as the full MSA with `--skip_additional_sequence_recruiting`).
+Each family's hits are then rebuilt like a newly created family: optionally made non-redundant, aligned and trimmed into a new seed MSA, built into a new HMM, and used to recruit the new full MSA from the same pool (the new seed MSA serves as the full MSA with `--skip_recruiting`).
 With `--skip_update_refinement`, the existing HMMs are kept instead: each one aligns its hits into the new full MSA (hmmalign), and its `existing_seed_msas` file, if given, passes through unchanged. Seed MSAs are never searched, so sequences only found in a seed MSA must also be in the `fasta` or in a full MSA to stay in their family.
 Families without any hit, or whose rebuilt HMM recruits nothing, pass through as given (their existing HMM, seed and full MSA) and are listed with the reason in `update_families/passed_through_families/<id>_passed_through_existing_families.tsv`.
 Input sequences that end up in no updated family go to family creation (a sample without any hit sends all of them); members of existing full MSAs that no family holds anymore are dropped and never create new families.
@@ -69,6 +69,21 @@ Other parameters removed or renamed in v3 (a v2 command line with an old name st
 | v2                                                     | v3                                                                                   |
 | ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
 | `--hmmsearch_write_target`, `--hmmsearch_write_domain` | Removed: the per-domain table is always written, the per-target table was never used |
+| `--cluster_seq_identity`                               | `--clustering_min_seq_identity`                                                      |
+| `--cluster_coverage`                                   | `--clustering_min_coverage`                                                          |
+| `--cluster_cov_mode`                                   | `--clustering_cov_mode`                                                              |
+| `--cluster_size_threshold`                             | `--clustering_min_cluster_size`                                                      |
+| `--clusters_per_chunk`                                 | `--iterative_clusters_per_chunk`                                                     |
+| `--trim_ends_only`                                     | `--seed_msa_trimming_ends_only`                                                      |
+| `--gap_threshold`                                      | `--seed_msa_trimming_max_gap_fraction`                                               |
+| `--skip_additional_sequence_recruiting`                | `--skip_recruiting`                                                                  |
+| `--hmmsearch_evalue_cutoff`                            | `--search_evalue_cutoff`                                                             |
+| `--hmmsearch_query_length_threshold`                   | `--recruit_min_model_coverage`                                                       |
+| `--hmmsearch_family_redundancy_length_threshold`       | `--family_redundancy_min_model_coverage`                                             |
+| `--hmmsearch_family_similarity_length_threshold`       | `--family_similarity_min_model_coverage`                                             |
+| `--cluster_seq_identity_for_redundancy`                | `--seq_redundancy_min_seq_identity`                                                  |
+| `--cluster_coverage_for_redundancy`                    | `--seq_redundancy_min_coverage`                                                      |
+| `--cluster_cov_mode_for_redundancy`                    | `--seq_redundancy_cov_mode`                                                          |
 
 ## Parameter specifications
 
@@ -78,18 +93,18 @@ Here we provide guidance regarding some parameter choices.
   The `cluster` option is slower but more sensitive, and is recommended where there are sufficient compute resources available and a more sensitive search is called for.
   It tends to produce fewer and larger clusters than `linclust`.
   The `linclust` option is less sensitive, but extremely fast for clustering larger datasets.
-- `cluster_cov_mode` [0, 1, 2]: The default bidirectional value for coverage mode (`cluster_cov_mode` = 0) automatically sets the MMseqs2 clustering mode to greedy cluster set.
+- `clustering_cov_mode` [0, 1, 2]: The default bidirectional value for coverage mode (`clustering_cov_mode` = 0) automatically sets the MMseqs2 clustering mode to greedy cluster set.
   However, users can opt to override this parameter either indirectly, by changing the coverage mode, or directly, by setting the `--cluster-mode` argument in the modules configuration file.
 - `alignment_tool` ["famsa", "mafft"]: Multiple Sequence Alignment (MSA) options.
   The `famsa` option is generally recommended as the best time-memory-accuracy combination.
   The `mafft` option offers various alignment strategies, but in general is slower and less sensitive than `famsa`.
-- `trim_ends_only`: Flag to either clip seed MSA gaps throughout the alignment, or only at the ends.
+- `seed_msa_trimming_ends_only`: Flag to either clip seed MSA gaps throughout the alignment, or only at the ends.
   Only used if `skip_seed_msa_trimming` is off. Full MSAs are never trimmed.
-  The pipeline authors strongly recommend keeping `trim_ends_only` on (default): gaps inside the sequences may still carry evolutionary significance, and only end trimming keeps row coordinates correct.
+  The pipeline authors strongly recommend keeping `seed_msa_trimming_ends_only` on (default): gaps inside the sequences may still carry evolutionary significance, and only end trimming keeps row coordinates correct.
 
 > [!WARNING]
 > Trimmed MSA rows that lost residues are renamed `<sequence>/<start>-<end>` to the residues they still hold, recalculated from the residues removed at the alignment ends; rows that lost none keep their name.
-> With `--trim_ends_only false`, residues removed from interior columns are **not** reflected, so a row's range spans more residues than the row contains and no longer maps back to its exact source residues.
+> With `--seed_msa_trimming_ends_only false`, residues removed from interior columns are **not** reflected, so a row's range spans more residues than the row contains and no longer maps back to its exact source residues.
 > Only turn it off if you need interior trimming and do not rely on row coordinates downstream.
 
 ## Family generation algorithms
@@ -102,7 +117,7 @@ Each cluster is chunked into its own FASTA file and processed by a chain of tool
 
 ### `iterative`
 
-Whole chunks of clusters, `clusters_per_chunk` at a time, are handed to [mgnifam](https://github.com/vagkaratzas/mgnifam), which builds a family from each cluster by looping: build an HMM, recruit members from the sequence pool, realign the expanded membership, and repeat up to three times or, until the family converges or the cluster is discarded. A single task therefore emits many families.
+Whole chunks of clusters, `iterative_clusters_per_chunk` at a time, are handed to [mgnifam](https://github.com/vagkaratzas/mgnifam), which builds a family from each cluster by looping: build an HMM, recruit members from the sequence pool, realign the expanded membership, and repeat up to three times or, until the family converges or the cluster is discarded. A single task therefore emits many families.
 
 mgnifam performs each step in-process with its own libraries rather than by calling the pipeline's tools:
 
@@ -114,32 +129,32 @@ mgnifam performs each step in-process with its own libraries rather than by call
 
 Because of that, the parameters below are honoured only by the `standard` algorithm. They are ignored when the `iterative` path creates or merges families, which always behaves as stated:
 
-| Parameter                             | Behaviour of the `iterative` algorithm                                        |
-| ------------------------------------- | ----------------------------------------------------------------------------- |
-| `alignment_tool`                      | Always FAMSA, through pyfamsa                                                 |
-| `skip_seed_msa_trimming`              | Trimming is always applied, through pytrimal                                  |
-| `trim_ends_only`                      | ClipKIT is not used; pytrimal trims by column gap occupancy (`gap_threshold`) |
-| `skip_additional_sequence_recruiting` | Recruitment is always performed, and repeated until convergence               |
-| `save_hmmsearch_results`              | Searching is in-process, so no hmmsearch report files exist                   |
+| Parameter                     | Behaviour of the `iterative` algorithm                                                             |
+| ----------------------------- | -------------------------------------------------------------------------------------------------- |
+| `alignment_tool`              | Always FAMSA, through pyfamsa                                                                      |
+| `skip_seed_msa_trimming`      | Trimming is always applied, through pytrimal                                                       |
+| `seed_msa_trimming_ends_only` | ClipKIT is not used; pytrimal trims by column gap occupancy (`seed_msa_trimming_max_gap_fraction`) |
+| `skip_recruiting`             | Recruitment is always performed, and repeated until convergence                                    |
+| `save_hmmsearch_results`      | Searching is in-process, so no hmmsearch report files exist                                        |
 
 > [!NOTE]
-> Updating existing families (samplesheet entries with existing HMMs) always runs the `standard` update path, whichever algorithm is selected, so the `standard` parameters above (e.g. `alignment_tool`, `skip_seed_msa_trimming`, `trim_ends_only`, `gap_threshold`, `skip_additional_sequence_recruiting`) apply to updated families.
+> Updating existing families (samplesheet entries with existing HMMs) always runs the `standard` update path, whichever algorithm is selected, so the `standard` parameters above (e.g. `alignment_tool`, `skip_seed_msa_trimming`, `seed_msa_trimming_ends_only`, `seed_msa_trimming_max_gap_fraction`, `skip_recruiting`) apply to updated families.
 
 The parameters both algorithms share are mapped onto their mgnifam equivalents:
 
-| Parameter                             | mgnifam option                    |
-| ------------------------------------- | --------------------------------- |
-| `cluster_size_threshold`              | applied while chunking clusters   |
-| `min_seq_length`                      | `--discard_min_rep_length`        |
-| `max_seq_length`                      | `--discard_max_rep_length`        |
-| `cluster_seq_identity_for_redundancy` | `--max_seq_identity`              |
-| `gap_threshold`                       | `--max_gap_occupancy`             |
-| `hmmsearch_evalue_cutoff`             | `--recruit_evalue_cutoff`         |
-| `hmmsearch_query_length_threshold`    | `--recruit_hit_length_percentage` |
+| Parameter                            | mgnifam option                    |
+| ------------------------------------ | --------------------------------- |
+| `clustering_min_cluster_size`        | applied while chunking clusters   |
+| `min_seq_length`                     | `--discard_min_rep_length`        |
+| `max_seq_length`                     | `--discard_max_rep_length`        |
+| `seq_redundancy_min_seq_identity`    | `--max_seq_identity`              |
+| `seed_msa_trimming_max_gap_fraction` | `--max_gap_occupancy`             |
+| `search_evalue_cutoff`               | `--recruit_evalue_cutoff`         |
+| `recruit_min_model_coverage`         | `--recruit_hit_length_percentage` |
 
 mgnifam's remaining options (`--discard_min_starting_membership`, `--max_seed_seqs`, `--batch_size`, `--prefetch_targets`) keep their tool defaults and can be set through `ext.args`, as described in [Custom Tool Arguments](#custom-tool-arguments).
 
-`clusters_per_chunk` (default 1000) trades parallelism against scheduling overhead: smaller chunks give more tasks, better load balancing and finer-grained `-resume`, at the cost of more per-task startup. Set `save_iterative_family_metadata` to publish mgnifam's family roster, metadata, converged, successful and discarded records, its per-family HMM consensus match states (rf), representative sequence fasta, and its log.
+`iterative_clusters_per_chunk` (default 1000) trades parallelism against scheduling overhead: smaller chunks give more tasks, better load balancing and finer-grained `-resume`, at the cost of more per-task startup. Set `save_iterative_family_metadata` to publish mgnifam's family roster, metadata, converged, successful and discarded records, its per-family HMM consensus match states (rf), representative sequence fasta, and its log.
 
 ## Running the pipeline
 

@@ -35,11 +35,11 @@ input:
       type: boolean
       description: |
         Skip trimming of seed multiple sequence alignments with ClipKIT
-  - skip_additional_sequence_recruiting:
+  - skip_recruiting:
       type: boolean
       description: |
         Skip additional sequence recruiting step using hmmsearch
-  - hmmsearch_query_length_threshold:
+  - recruit_min_model_coverage:
       type: number
       description: |
         Query length threshold for hmmsearch additional sequence filtering (between 0.0 and 1.0)

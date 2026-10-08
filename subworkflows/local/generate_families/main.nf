@@ -5,7 +5,7 @@
       ch_fasta   — individual cluster chunks, each aligned into a seed MSA
       sequences  — the full per-sample sequence pool, searched with each cluster HMM to
                    recruit additional members beyond the initial cluster (unless
-                   skip_additional_sequence_recruiting is true, in which case the seed
+                   skip_recruiting is true, in which case the seed
                    MSA doubles as the final full MSA and its rows become the family fasta).
 */
 
@@ -21,8 +21,8 @@ workflow GENERATE_FAMILIES {
     ch_fasta                            // tuple val(meta), path(fasta)
     alignment_tool                      // string ["famsa", "mafft"]
     skip_seed_msa_trimming              // boolean
-    skip_additional_sequence_recruiting // boolean
-    hmmsearch_query_length_threshold    // number [0.0, 1.0]
+    skip_recruiting                     // boolean
+    recruit_min_model_coverage          // number [0.0, 1.0]
 
     main:
     ch_seed_msa = channel.empty()
@@ -43,7 +43,7 @@ workflow GENERATE_FAMILIES {
         .combine(sequences, by: 0)
         .map { _id, meta, hmm, seqs -> [ meta, hmm, seqs, false, false, true ] }
 
-    if (!skip_additional_sequence_recruiting) {
+    if (!skip_recruiting) {
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
 
         // Combine with same id to ensure in sync
@@ -52,7 +52,7 @@ workflow GENERATE_FAMILIES {
             .combine(sequences, by: 0)
             .map { _id, meta, domtbl, seqs -> [ meta, domtbl, seqs ] }
 
-        FILTER_RECRUITED( ch_input_for_filter_recruited, hmmsearch_query_length_threshold )
+        FILTER_RECRUITED( ch_input_for_filter_recruited, recruit_min_model_coverage )
         ch_fasta = FILTER_RECRUITED.out.fasta
 
         // Join to ensure in sync

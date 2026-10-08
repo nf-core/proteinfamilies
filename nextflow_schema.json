@@ -252,7 +252,7 @@
                     "enum": ["linclust", "cluster"],
                     "fa_icon": "fas fa-tools"
                 },
-                "cluster_seq_identity": {
+                "clustering_min_seq_identity": {
                     "type": "number",
                     "default": 0.3,
                     "minimum": 0.0,
@@ -261,16 +261,16 @@
                     "help_text": "Minimum sequence identity required for clustering. Metagenomics protein families include diverse sequences, so using the mmseqs default identity (0.9) would oversplit them. A default value of 0.3 allows grouping more distant homologs while still maintaining meaningful functional relationships (https://doi.org/10.1093/protein/12.2.85).",
                     "fa_icon": "fas fa-percentage"
                 },
-                "cluster_coverage": {
+                "clustering_min_coverage": {
                     "type": "number",
                     "default": 0.5,
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "mmseqs parameter for minimum sequence coverage ratio",
-                    "help_text": "Minimum sequence length coverage required for clustering. Similarly to the cluster_seq_identity parameter, a lower value (i.e., 0.5) than the mmseqs default (i.e., 0.8) enables the generation of protein families that are composed of more distant homologs.",
+                    "help_text": "Minimum sequence length coverage required for clustering. Similarly to the clustering_min_seq_identity parameter, a lower value (i.e., 0.5) than the mmseqs default (i.e., 0.8) enables the generation of protein families that are composed of more distant homologs.",
                     "fa_icon": "fas fa-percentage"
                 },
-                "cluster_cov_mode": {
+                "clustering_cov_mode": {
                     "type": "integer",
                     "default": 0,
                     "description": "mmseqs parameter for coverage mode: 0 for both, 1 for target and 2 for query sequence",
@@ -283,7 +283,7 @@
                     "help_text": "Specify to save the mmseqs formatted result clustering.",
                     "fa_icon": "fas fa-save"
                 },
-                "cluster_size_threshold": {
+                "clustering_min_cluster_size": {
                     "type": "integer",
                     "default": 25,
                     "description": "Minimum clustering chunk size threshold to create seed Multiple Sequence Alignments upon.",
@@ -312,7 +312,7 @@
                     "fa_icon": "fas fa-code-branch",
                     "enum": ["standard", "iterative"]
                 },
-                "clusters_per_chunk": {
+                "iterative_clusters_per_chunk": {
                     "type": "integer",
                     "default": 1000,
                     "description": "Number of clusters handed to each family generation task by the 'iterative' algorithm.",
@@ -353,14 +353,14 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
-                "trim_ends_only": {
+                "seed_msa_trimming_ends_only": {
                     "type": "boolean",
                     "default": true,
                     "description": "Choose if ClipKIT should only clip gaps at the ends of the MSAs.",
                     "help_text": "By default, ClipKIT clips gaps over the specified threshold, both at the ends and throughout the length of the MSA. This flag restricts clipping to the ends. The pipeline authors strongly recommend keeping this on: trimmed rows get their `name/start-end` coordinates recalculated from the residues removed at the alignment ends, so with interior trimming the range no longer matches the residues a row holds.",
                     "fa_icon": "fas fa-cut"
                 },
-                "gap_threshold": {
+                "seed_msa_trimming_max_gap_fraction": {
                     "type": "number",
                     "default": 0.5,
                     "minimum": 0.0,
@@ -368,14 +368,14 @@
                     "description": "Multiple Sequence Alignment (MSA) positions with gappiness greater than this threshold will be trimmed",
                     "fa_icon": "fas fa-filter"
                 },
-                "skip_additional_sequence_recruiting": {
+                "skip_recruiting": {
                     "type": "boolean",
                     "description": "Skip recruitment of additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) into the full alignment",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true,
-                    "help_text": "If this is set to false, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the hmmsearch_query_length_threshold), resulting in bigger but better described families"
+                    "help_text": "If this is set to false, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the recruit_min_model_coverage), resulting in bigger but better described families"
                 },
-                "hmmsearch_evalue_cutoff": {
+                "search_evalue_cutoff": {
                     "type": "number",
                     "default": 0.001,
                     "description": "hmmsearch e-value cutoff threshold for reported results",
@@ -387,7 +387,7 @@
                     "help_text": "Specify to save the .domtbl.gz and .tbl.gz files generated by running hmmsearch on the family model against the input set of sequences.",
                     "fa_icon": "fas fa-save"
                 },
-                "hmmsearch_query_length_threshold": {
+                "recruit_min_model_coverage": {
                     "type": "number",
                     "default": 0.9,
                     "minimum": 0.0,
@@ -424,7 +424,7 @@
                     "enum": ["all", "created_only", "none"],
                     "description": "Which families can be merged with similar (but not redundant) families.",
                     "fa_icon": "fas fa-object-group",
-                    "help_text": "Similarity is set by `--hmmsearch_family_similarity_length_threshold`. `all` (default): created and updated families can be merged. A merge pool holds at most one updated family: two updated families are never merged together, and a pool that links several updated families (directly or through created families) leaves them unmerged and merges only its created families. `created_only`: updated families are left out of merging. `none`: no family is merged. With `--skip_update_refinement`, updated families are never merged (as with `created_only`), since a merge rebuilds the family's HMM."
+                    "help_text": "Similarity is set by `--family_similarity_min_model_coverage`. `all` (default): created and updated families can be merged. A merge pool holds at most one updated family: two updated families are never merged together, and a pool that links several updated families (directly or through created families) leaves them unmerged and merges only its created families. `created_only`: updated families are left out of merging. `none`: no family is merged. With `--skip_update_refinement`, updated families are never merged (as with `created_only`), since a merge rebuilds the family's HMM."
                 },
                 "merged_family_name": {
                     "type": "string",
@@ -434,7 +434,7 @@
                     "fa_icon": "fas fa-tag",
                     "help_text": "`existing` keeps the name of the merged updated family (a merge holds at most one), so the family keeps its identity across updates. `new` names the merged family like any other merge, after the sample and its families. Applies to `--family_generation_algorithm standard`; the iterative algorithm always uses `new`."
                 },
-                "hmmsearch_family_redundancy_length_threshold": {
+                "family_redundancy_min_model_coverage": {
                     "type": "number",
                     "default": 1.0,
                     "minimum": 0.0,
@@ -442,13 +442,13 @@
                     "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal",
                     "fa_icon": "fas fa-percentage"
                 },
-                "hmmsearch_family_similarity_length_threshold": {
+                "family_similarity_min_model_coverage": {
                     "type": "number",
                     "default": 0.9,
                     "minimum": 0.0,
                     "maximum": 1.0,
                     "description": "hmmsearch minimum length percentage of hit env vs query length, to flag and report similar families (and to optionally merge)",
-                    "help_text": "Must be below the hmmsearch_family_redundancy_length_threshold to be valid.",
+                    "help_text": "Must be below the family_redundancy_min_model_coverage to be valid.",
                     "fa_icon": "fas fa-percentage"
                 },
                 "save_non_redundant_fams_fasta": {
@@ -464,7 +464,7 @@
                     "hidden": true,
                     "help_text": "Highly similar sequences within the same family should be removed, while making sure that the protein family diversity is still well captured."
                 },
-                "cluster_seq_identity_for_redundancy": {
+                "seq_redundancy_min_seq_identity": {
                     "type": "number",
                     "default": 0.9,
                     "minimum": 0.0,
@@ -473,7 +473,7 @@
                     "help_text": "Need to be quite high, to make sure that the diversity is still well captured, while highly similar sequences are removed",
                     "fa_icon": "fas fa-percentage"
                 },
-                "cluster_coverage_for_redundancy": {
+                "seq_redundancy_min_coverage": {
                     "type": "number",
                     "default": 0.9,
                     "minimum": 0.0,
@@ -482,7 +482,7 @@
                     "help_text": "Need to be quite high, to make sure that the diversity is still well captured, well highly similar sequences are removed",
                     "fa_icon": "fas fa-percentage"
                 },
-                "cluster_cov_mode_for_redundancy": {
+                "seq_redundancy_cov_mode": {
                     "type": "integer",
                     "default": 0,
                     "description": "mmseqs parameter for coverage mode: 0 for both, 1 for target and 2 for query sequence",

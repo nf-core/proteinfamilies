@@ -210,10 +210,10 @@ These MSA files only contain the original sequences of each cluster as calculate
 
 </details>
 
-If the `--skip_seed_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--gap_threshold` parameter,
-gaps (above that threshold, across all aligned sequences) are either removed only at the ends of the MSA if `trim_ends_only` is set to `true`, or throughout the alignment otherwise.
+If the `--skip_seed_msa_trimming` parameter was set to `false`, then `clipkit` runs, and according to the `--seed_msa_trimming_max_gap_fraction` parameter,
+gaps (above that threshold, across all aligned sequences) are either removed only at the ends of the MSA if `seed_msa_trimming_ends_only` is set to `true`, or throughout the alignment otherwise.
 Each trimmed row that lost residues is then renamed `<sequence>/<start>-<end>` (shifting an existing range) to the residues it still holds; rows that lost none keep their name, and rows left without residues are dropped.
-Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; when `--skip_additional_sequence_recruiting` is set, the trimmed seed MSA also serves as the full MSA and the family FASTA holds its rows.
+Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; when `--skip_recruiting` is set, the trimmed seed MSA also serves as the full MSA and the family FASTA holds its rows.
 
 [ClipKIT](https://github.com/JLSteenwyk/ClipKIT) is a fast and flexible alignment trimming tool that keeps phylogenetically informative sites and removes others.
 
@@ -281,7 +281,7 @@ Results are stored in the `seed_msa/raw` folder. Full MSAs are never trimmed; wh
 
 The `hmm/raw` folder contains all originally created family HMMs, under a subfolder named after the tool that built them
 (`hmmer_hmmbuild/` for the standard algorithm, `mgnifam/` for the iterative one), as with the seed and full MSA outputs. These models will be used downstream to recruit additional sequences in families, to compute
-full MSAs if `--skip_additional_sequence_recruiting` is set to `false`, and/or to remove among-family redundancies unless `--family_redundancy_removal none` is set.
+full MSAs if `--skip_recruiting` is set to `false`, and/or to remove among-family redundancies unless `--family_redundancy_removal none` is set.
 Unless both `--family_redundancy_removal` and `--family_merging` are set to `none`, the `hmm/filtered` folder will also be produced with the filtered subset of the original raw HMMs.
 The `hmm/library` will contain a compiled and gzipped single HMM library file per sample.
 The HMMs (raw or filtered) can also be used in the `update_families` execution mode of the pipeline,
@@ -384,8 +384,8 @@ With `--family_merging created_only`, updated families are left out of merging. 
 A merged family recruits from the sequences its families were built from: the update pool (input sequences plus existing full MSA members) when it holds an updated family, otherwise the sequences the created families came from.
 A merge holds at most one updated family: two updated families are never pooled together, and when created families link several of them, those updated families are left out and the created families are pooled among themselves. Pooled families are replaced by their merged family; similar families left out of every pool are kept.
 A merged family holding an updated family keeps its name, so it keeps its identity across updates; with `--merged_family_name new` (and always with `--family_generation_algorithm iterative`) it is named like other merges, after the sample and its created families' numbers, followed by the updated family's name.
-Unless `--family_merging none` is set, and if `hmmsearch_family_similarity_length_threshold` is correctly set
-lower than `hmmsearch_family_redundancy_length_threshold` (or `--family_redundancy_removal none` is set), then similar family seed alignments can be merged
+Unless `--family_merging none` is set, and if `family_similarity_min_model_coverage` is correctly set
+lower than `family_redundancy_min_model_coverage` (or `--family_redundancy_removal none` is set), then similar family seed alignments can be merged
 and go through the `generate_families` subworkflow once more.
 Most `remove_redundancy` outputs are optional folders that contain intermediate pipeline results, and therefore are not saved in the output results by default.
 
@@ -418,8 +418,8 @@ Most `remove_redundancy` outputs are optional folders that contain intermediate 
 </details>
 
 If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs clustering subworkflow will be executed
-to very strictly cluster (`--cluster_seq_identity_for_redundancy` = 0.97, `cluster_coverage_for_redundancy` = 0.97,
-`cluster_cov_mode_for_redundancy` = 0 -meaning both strands) in-family sequences, keeping only cluster representatives
+to very strictly cluster (`--seq_redundancy_min_seq_identity` = 0.97, `seq_redundancy_min_coverage` = 0.97,
+`seq_redundancy_cov_mode` = 0 -meaning both strands) in-family sequences, keeping only cluster representatives
 before recalculating the family MSAs.
 
 [MMseqs2](https://github.com/soedinglab/MMseqs2) clusters amino acid fasta files via either the 'cluster' or the 'linclust' algorithms.
@@ -593,7 +593,7 @@ If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs suite stri
 
 Each updated family is rebuilt like a newly created one (see [FAMSA](#famsa-aligner), [mafft](#mafft-aligner), [ClipKIT](#clipkit) and [hmmer](#hmmer)), keeping its family name:
 its (non redundant) hits are aligned into a new seed MSA, optionally trimmed, built into a new HMM, and the new HMM recruits the family's full MSA from the same pool of input sequences and existing members.
-With `--skip_additional_sequence_recruiting`, the new seed MSA also serves as the full MSA.
+With `--skip_recruiting`, the new seed MSA also serves as the full MSA.
 With `--skip_update_refinement`, families are not rebuilt: the existing HMM is kept and aligns the family's hits into the new full MSA (`update_families/full_msa/raw/hmmer_hmmalign/`), and no new seed MSA or HMM is written.
 The updated families then go through [redundancy removal](#hmmer-for-redundancy-removal) with the created families, so their final seed MSAs, HMMs and full MSAs are published with them (e.g. `hmm/filtered/`, `seed_msa/filtered/`, `full_msa/filtered/`).
 Hits on sequences already named `<sequence>/<start>-<end>` (e.g. pooled existing members) are named in the parent sequence's coordinates.
