@@ -37,7 +37,7 @@ Input sequences named `<sequence>/<start>-<end>` (Pfam convention) are treated a
 
 ### Updating existing families
 
-Each model in `existing_hmms` is an existing family, identified by its `NAME` (case-sensitive); HMM files may hold one or more models, and their file names do not matter. Seed and full MSAs must be named after that `NAME`, without extensions (e.g. `fam_1.aln` for `NAME  fam_1`). Not every family needs an MSA, but every MSA file needs a family.
+Each model in `existing_hmms` is an existing family, identified by its `NAME` (case-sensitive; letters, digits, `.`, `_` and `-` only, as in Pfam); HMM files may hold one or more models, and their file names do not matter. Seed and full MSAs must be named after that `NAME`, without extensions (e.g. `fam_1.aln` for `NAME  fam_1`). Not every family needs an MSA, but every MSA file needs a family.
 
 > [!WARNING]
 > hmmsearch reports hits by HMM `NAME`, while MSAs are matched to their family by file name. The pipeline stops if two models share a `NAME`, if two MSA files give the same family, or if an MSA file is not named after an existing HMM `NAME`. It also stops if an existing family is named like the families this run creates for the sample (`<id>_<number>...`, e.g. after a previous run with the same `id`): use a new `id` for the update run, such as `<id>_r2`.
