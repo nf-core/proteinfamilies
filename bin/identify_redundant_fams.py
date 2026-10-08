@@ -6,6 +6,10 @@
 Identifies redundant and similar protein families from an all-vs-all hmmsearch of family
 representatives. Redundant families (fully contained by another) are flagged for removal;
 similar families (partial overlap) are paired for potential merging.
+
+Updated (existing) families are never flagged: a family redundant with an updated one is,
+and two updated families are kept both. Unmergeable families (e.g. without a seed MSA) are
+left out of the similar pairs.
 """
 
 import sys
@@ -38,6 +42,16 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         help="If set, skip filtering of similar families above redundancy threshold.",
     )
     parser.add_argument(
+        "--skip_updated_family_redundancy_removal",
+        action="store_true",
+        help="If set, pairs with an updated family are left out of the redundancy check.",
+    )
+    parser.add_argument(
+        "--skip_updated_family_merging",
+        action="store_true",
+        help="If set, updated families are left out of the similar pairs, so they are never merged.",
+    )
+    parser.add_argument(
         "-r",
         "--redundancy_length_threshold",
         default=1.0,
@@ -67,6 +81,18 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         metavar="FILE",
         type=str,
         help="Output file for IDs of families appearing in similarities.csv.",
+    )
+    parser.add_argument(
+        "--updated_ids",
+        metavar="FILE",
+        type=str,
+        help="Text file with one updated (existing) family ID per line; these are never flagged as redundant.",
+    )
+    parser.add_argument(
+        "--unmergeable_ids",
+        metavar="FILE",
+        type=str,
+        help="Text file with one family ID per line that must not be paired for merging.",
     )
     parser.add_argument(
         "--pairwise_similarities_file",
@@ -141,23 +167,43 @@ def filter_and_label_similar(
     return redundant_df, similar_df
 
 
+def read_ids(filepath: str | None) -> set[str]:
+    """
+    Args:
+        filepath (str | None): Text file with one family ID per line, or None.
+
+    Returns:
+        set[str]: The non-empty IDs, empty if no file is given.
+    """
+    if not filepath:
+        return set()
+    with open(filepath) as f:
+        return set(line.strip() for line in f if line.strip())
+
+
 def process_redundant(
     redundant_df: pd.DataFrame,
     family_to_size: dict[str, int],
     redundant_ids_file: str,
     skip_family_redundancy_removal: bool,
+    updated_ids: set[str],
+    skip_updated_family_redundancy_removal: bool = False,
 ) -> set[str]:
     """
-    Determine which family to discard for each redundant pair: the smaller one is marked
-    redundant. For equal-sized pairs, the alphabetically later name is chosen — this
-    ensures deterministic, collision-free deduplication without marking both directions.
-    Returns the set of redundant family names.
+    Determine which family to discard for each redundant pair. An updated family is never
+    discarded: against a created family the created one is, and two updated families are both
+    kept; with skip_updated_family_redundancy_removal, pairs with an updated family are skipped.
+    Otherwise the smaller one is marked redundant. For equal-sized pairs, the
+    alphabetically later name is chosen — this ensures deterministic, collision-free
+    deduplication without marking both directions. Returns the set of redundant family names.
 
     Args:
         redundant_df (pandas.DataFrame): Redundant candidate hits.
         family_to_size (dict[str, int]): Mapping from family ID to family size.
         redundant_ids_file (str): Output path for redundant family IDs.
         skip_family_redundancy_removal (bool): Whether to suppress redundant-family output.
+        updated_ids (set[str]): Updated (existing) family IDs, never marked redundant.
+        skip_updated_family_redundancy_removal (bool): Whether to skip pairs with an updated family.
 
     Returns:
         set[str]: Family IDs selected for removal.
@@ -177,7 +223,14 @@ def process_redundant(
         query_size = int(row["query size"])
         target_size = int(row["target size"])
 
-        if query_size < target_size:
+        if query in updated_ids or target in updated_ids:
+            if skip_updated_family_redundancy_removal:
+                continue
+            if query not in updated_ids:
+                redundant_fam_names.add(query)
+            elif target not in updated_ids:
+                redundant_fam_names.add(target)
+        elif query_size < target_size:
             redundant_fam_names.add(query)
         elif target_size < query_size:
             redundant_fam_names.add(target)
@@ -196,9 +249,10 @@ def process_similar(
     redundant_fam_names: set[str],
     pairwise_similarities_file: str,
     similar_ids_file: str,
+    unmergeable_ids: set[str],
 ) -> None:
     """
-    Write pairwise similarity pairs (excluding already-redundant families) to CSV, and
+    Write pairwise similarity pairs (excluding already-redundant and unmergeable families) to CSV, and
     the set of all family IDs that appear in at least one similarity pair to a text file.
     Returns early without writing if no similar pairs remain.
 
@@ -207,6 +261,7 @@ def process_similar(
         redundant_fam_names (set[str]): Families already marked redundant.
         pairwise_similarities_file (str): Output CSV for surviving pairwise similarities.
         similar_ids_file (str): Output path for family IDs that appear in similarities.
+        unmergeable_ids (set[str]): Families that must not be paired for merging.
 
     Returns:
         None: Outputs are written for their side effects only.
@@ -214,10 +269,11 @@ def process_similar(
     if similar_df.empty:
         return
 
-    # remove any similarity rows involving families already marked redundant
+    # remove any similarity rows involving families already marked redundant, or unmergeable
+    excluded = redundant_fam_names | unmergeable_ids
     similar_df = similar_df[
-        ~similar_df["query name"].isin(redundant_fam_names)
-        & ~similar_df["target name"].isin(redundant_fam_names)
+        ~similar_df["query name"].isin(excluded)
+        & ~similar_df["target name"].isin(excluded)
     ]
 
     if similar_df.empty:
@@ -245,6 +301,9 @@ def process_family_similarity(
     similar_ids_file: str,
     pairwise_similarities_file: str,
     skip_family_redundancy_removal: bool,
+    updated_ids: set[str],
+    unmergeable_ids: set[str],
+    skip_updated_family_redundancy_removal: bool = False,
 ) -> None:
     """
     Classify family relationships as redundant or similar from hmmsearch hits.
@@ -258,6 +317,9 @@ def process_family_similarity(
         similar_ids_file (str): Output path for family IDs in similarity relationships.
         pairwise_similarities_file (str): Output CSV for similar non-redundant pairs.
         skip_family_redundancy_removal (bool): Whether to suppress redundant-family output.
+        updated_ids (set[str]): Updated (existing) family IDs, never marked redundant.
+        unmergeable_ids (set[str]): Families that must not be paired for merging.
+        skip_updated_family_redundancy_removal (bool): Whether to skip pairs with an updated family.
     """
     mapping_df = pd.read_csv(
         mapping, comment="#", usecols=["Family Id", "Size", "Representative Id"]
@@ -283,9 +345,9 @@ def process_family_similarity(
 
     redundant_df, similar_df = filter_and_label_similar(domtbl_df, redundancy_length_threshold, similarity_length_threshold, skip_family_redundancy_removal)
 
-    redundant_fam_names = process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_family_redundancy_removal)
+    redundant_fam_names = process_redundant(redundant_df, family_to_size, redundant_ids_file, skip_family_redundancy_removal, updated_ids, skip_updated_family_redundancy_removal)
 
-    process_similar(similar_df, redundant_fam_names, pairwise_similarities_file, similar_ids_file)
+    process_similar(similar_df, redundant_fam_names, pairwise_similarities_file, similar_ids_file, unmergeable_ids)
 
 
 def main(args: Sequence[str] | None = None) -> None:
@@ -304,7 +366,11 @@ def main(args: Sequence[str] | None = None) -> None:
         args.redundant_ids_file,
         args.similar_ids_file,
         args.pairwise_similarities_file,
-        args.skip_family_redundancy_removal
+        args.skip_family_redundancy_removal,
+        read_ids(args.updated_ids),
+        # updated families are unmergeable too when their merging is skipped
+        read_ids(args.unmergeable_ids) | (read_ids(args.updated_ids) if args.skip_updated_family_merging else set()),
+        args.skip_updated_family_redundancy_removal
     )
 
 

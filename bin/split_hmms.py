@@ -11,6 +11,7 @@ pass an update unchanged are gzipped like rebuilt and created ones.
 import argparse
 import gzip
 import io
+import re
 import sys
 import tarfile
 from collections.abc import Iterator, Sequence
@@ -71,8 +72,9 @@ def main(args: Sequence[str] | None = None) -> None:
     seen: dict[str, str] = {}  # NAME -> source
     for source, text in input_files(args.input):
         for name, model in models(text, source):
-            if "/" in name:
-                sys.exit(f"ERROR: existing HMM NAME '{name}' in {source} contains '/'.")
+            # names become file names and shell arguments in later processes
+            if not re.fullmatch(r"[A-Za-z0-9._-]+", name):
+                sys.exit(f"ERROR: existing HMM NAME '{name}' in {source} may only contain letters, digits, '.', '_' and '-'.")
             if name in seen:
                 sys.exit(f"ERROR: existing HMM NAME '{name}' is given more than once ({seen[name]}, {source}).")
             seen[name] = source

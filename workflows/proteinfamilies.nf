@@ -8,6 +8,7 @@ include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
+include { fileStem               } from '../subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 
 include { FAA_SEQFU_SEQKIT                                 } from '../subworkflows/nf-core/faa_seqfu_seqkit/main'
 include { UPDATE_FAMILIES                                  } from '../subworkflows/local/update_families'
@@ -32,7 +33,9 @@ include { EXTRACT_FAMILY_REPS                              } from '../modules/lo
 // Two-path pipeline: samples providing existing HMMs go through UPDATE_FAMILIES to recruit
 // new sequences into those families; all other samples take the de-novo path
 // (cluster → align → HMM build). Sequences not assigned to any existing family during the
-// update path are forwarded to the de-novo path so nothing is discarded.
+// update path are forwarded to the de-novo path so nothing is discarded. Updated and created
+// families then go through redundancy removal together; families the update did not return
+// pass through as given.
 workflow PROTEINFAMILIES {
     take:
     ch_samplesheet // channel: samplesheet read in from --input
@@ -46,7 +49,6 @@ workflow PROTEINFAMILIES {
     def ch_multiqc_files = channel.empty()
     ch_samplesheet_for_create = channel.empty()
     ch_samplesheet_for_update = channel.empty()
-    ch_family_reps            = channel.empty()
 
     ch_input_for_qc = ch_samplesheet
         .map { meta, fasta, _existing_hmms, _existing_seed_msas, _existing_full_msas ->
@@ -91,12 +93,11 @@ workflow PROTEINFAMILIES {
         params.skip_update_refinement
     )
 
-    ch_family_reps = ch_family_reps.mix( UPDATE_FAMILIES.out.updated_family_reps )
-    // Existing families the update did not return, left unchanged, listed per sample with the
+    // Existing families the update did not return pass through, listed per sample with the
     // reason (published in main.nf)
-    ch_unchanged_families = UPDATE_FAMILIES.out.unchanged_families
+    ch_passed_through_families = UPDATE_FAMILIES.out.passed_through_families
         .collectFile { meta, families ->
-            [ "${meta.id}_unchanged_existing_families.tsv", "family\treason\n" + families.collect { family, reason -> "${family}\t${reason}\n" }.join() ]
+            [ "${meta.id}_passed_through_existing_families.tsv", "family\treason\n" + families.collect { family, reason -> "${family}\t${reason}\n" }.join() ]
         }
 
     // Sequences not assigned to any existing family during update feed the de-novo creation path.
@@ -125,14 +126,16 @@ workflow PROTEINFAMILIES {
         params.hmmsearch_query_length_threshold
     )
 
+    // Created and updated families, keyed [id, family] by file stem
     REMOVE_REDUNDANCY (
         ch_samplesheet_for_create,
-        CHUNK_AND_GENERATE_FAMILIES.out.seed_msa,
-        CHUNK_AND_GENERATE_FAMILIES.out.full_msa,
-        CHUNK_AND_GENERATE_FAMILIES.out.fasta,
-        CHUNK_AND_GENERATE_FAMILIES.out.hmm,
-        params.skip_family_redundancy_removal,
-        params.skip_family_merging,
+        UPDATE_FAMILIES.out.pool,
+        familyFiles( CHUNK_AND_GENERATE_FAMILIES.out.seed_msa ).mix( UPDATE_FAMILIES.out.seed_msa ),
+        familyFiles( CHUNK_AND_GENERATE_FAMILIES.out.full_msa ).mix( UPDATE_FAMILIES.out.full_msa ),
+        familyFiles( CHUNK_AND_GENERATE_FAMILIES.out.fasta ).mix( UPDATE_FAMILIES.out.fasta ),
+        familyFiles( CHUNK_AND_GENERATE_FAMILIES.out.hmm ).mix( UPDATE_FAMILIES.out.hmm ),
+        params.family_redundancy_removal,
+        params.family_merging,
         params.hmmsearch_family_redundancy_length_threshold,
         params.hmmsearch_family_similarity_length_threshold,
         params.skip_sequence_redundancy_removal,
@@ -143,19 +146,26 @@ workflow PROTEINFAMILIES {
         params.hmmsearch_write_target,
         params.hmmsearch_write_domain,
         params.skip_additional_sequence_recruiting,
-        params.hmmsearch_query_length_threshold
+        params.hmmsearch_query_length_threshold,
+        params.merged_family_name
     )
 
+    // Each merged family with the families it replaced, listed per sample (published in main.nf)
+    ch_merged_families = REMOVE_REDUNDANCY.out.merged_families
+        .collectFile { meta, merges ->
+            [ "${meta.id}_merged_families.tsv", "merged_family\tmembers\n" + merges.sort { merge -> merge[0] }.collect { merged_id, members -> "${merged_id}\t${members}\n" }.join() ]
+        }
+
     // Collect all final HMMs per sample and concatenate into a .lib.gz library
-    ch_hmm_for_library = finalFilesPerSample( UPDATE_FAMILIES.out.hmm, REMOVE_REDUNDANCY.out.hmm )
+    ch_hmm_for_library = finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_hmm, REMOVE_REDUNDANCY.out.hmm )
 
     FIND_CONCATENATE_HMM_LIBRARY( ch_hmm_for_library )
 
     // Archive each sample's final families in the shape of the samplesheet's existing_* columns,
     // so they can be updated in a later run
     TAR_HMMS( ch_hmm_for_library, '.gz' )
-    TAR_SEED_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.seed_msa, REMOVE_REDUNDANCY.out.seed_msa ), '.gz' )
-    TAR_FULL_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.full_msa, REMOVE_REDUNDANCY.out.full_msa ), '.gz' )
+    TAR_SEED_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_seed_msa, REMOVE_REDUNDANCY.out.seed_msa ), '.gz' )
+    TAR_FULL_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_full_msa, REMOVE_REDUNDANCY.out.full_msa ), '.gz' )
 
     // Infer Phylogenetic relations of full MSAs
     if (!params.skip_phylogenetic_inference) {
@@ -166,14 +176,11 @@ workflow PROTEINFAMILIES {
     }
 
     // Post-processing
-    ch_fasta = REMOVE_REDUNDANCY.out.fasta
-        .map { meta, aln -> [ [id: meta.id], aln ] }
-        .groupTuple(by: 0)
+    ch_fasta = finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_fasta, REMOVE_REDUNDANCY.out.fasta )
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta )
 
     EXTRACT_FAMILY_REPS( ch_fasta )
-    ch_family_reps = ch_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
 
     //
     // Collate and save software versions
@@ -222,7 +229,7 @@ workflow PROTEINFAMILIES {
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
     ch_multiqc_files = ch_multiqc_files.mix(FAA_SEQFU_SEQKIT.out.multiqc_files.collect { file -> file[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect { file -> file[1] }.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_family_reps.collect { file -> file[1] }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(EXTRACT_FAMILY_REPS.out.map.collect { file -> file[1] }.ifEmpty([]))
     MULTIQC(
         ch_multiqc_files.flatten().collect().map { files ->
             [
@@ -239,17 +246,24 @@ workflow PROTEINFAMILIES {
     )
 
     emit:
-    family_reps        = EXTRACT_FAMILY_REPS.out.fasta
-    unchanged_families = ch_unchanged_families
-    multiqc_report     = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
+    family_reps             = EXTRACT_FAMILY_REPS.out.fasta
+    passed_through_families = ch_passed_through_families
+    merged_families         = ch_merged_families
+    multiqc_report          = MULTIQC.out.report.map { _meta, report -> report } // channel: /path/to/multiqc_report.html
 }
 
-// Updated and created family files of each sample, grouped under a chunk/family-free [id] meta
-def finalFilesPerSample(ch_updated, ch_created) {
-    ch_updated
-        .mix(ch_created)
+// Passed-through and redundancy-removed family files of each sample, grouped under a
+// family-free [id] meta
+def finalFilesPerSample(ch_passed_through, ch_families) {
+    ch_passed_through
+        .mix(ch_families)
         .map { meta, file -> [ [id: meta.id], file ] }
         .groupTuple()
+}
+
+// [id, family] meta from a family file's stem, as updated families have
+def familyFiles(ch_files) {
+    ch_files.map { meta, file -> [ [id: meta.id, family: fileStem(file)], file ] }
 }
 
 /*

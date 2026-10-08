@@ -12,6 +12,7 @@ nextflow_process {
                 input[0] = [
                     [ id:'test' ], // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/modules/similarities.csv', checkIfExists: true),
+                    []
                 ]
                 """
             }
@@ -28,6 +29,28 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - csv - updated families") {
+        // At most one updated family per pool: A and B are never linked, and the pool they
+        // still share through s_1 drops them, pooling s_1 with s_2 only; D and E leave s_6 alone
+        when {
+            process {
+                """
+                def similarities = file('similarities_updated.csv')
+                similarities.text = 'family_1,family_2,similarity_score\\nA,B,0.95\\nA,s_1,0.95\\ns_1,B,0.95\\ns_1,s_2,0.95\\ns_3,C,0.95\\nD,s_6,0.95\\ns_6,E,0.95\\n'
+                input[0] = [ [ id:'test' ], similarities, [ 'A', 'B', 'C', 'D', 'E' ] ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.pooled_components[0][1]).readLines() == [ 'C,s_3', 's_1,s_2' ] },
+                { assert path(process.out.pooled_ids[0][1]).readLines() == [ 'C', 's_1', 's_2', 's_3' ] }
+            )
+        }
+    }
+
     test("proteinfamilies - csv - stub") {
 
         options "-stub"
@@ -38,6 +61,7 @@ nextflow_process {
                 input[0] = [
                     [ id:'test' ], // meta map
                     file(params.pipelines_testdata_base_path + 'test_data/modules/similarities.csv', checkIfExists: true),
+                    []
                 ]
                 """
             }

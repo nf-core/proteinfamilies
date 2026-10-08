@@ -15,18 +15,19 @@ nextflow_workflow {
                 similarities_file.text = similarities_content
 
                 input[0] = [
-                    [ id: 'test' ],
-                    similarities_file
+                    [ id: 'mgnifams_test' ],
+                    similarities_file,
+                    []
                 ]
                 input[1] = channel.of([
-                    [ id: 'test' ],
+                    [ id: 'mgnifams_test' ],
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
                     ]
                 ])
                 input[2] = channel.of([
-                    [ id: 'test' ],
+                    [ id: 'mgnifams_test', pool: 'create' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
                 input[3] = "standard" // family_generation_algorithm
@@ -36,6 +37,7 @@ nextflow_workflow {
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
                 input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
                 """
             }
         }
@@ -49,6 +51,92 @@ nextflow_workflow {
                     workflow.out.full_msa,
                     workflow.out.fasta
                 ).match()}
+            )
+        }
+    }
+
+    test("pool with an updated family - existing name") {
+        // 'fam_x' is an updated family (not named '<id>_<digit>...'): the merge recruits from the
+        // update pool only, and keeps the updated family's name
+        when {
+            workflow {
+                """
+                def similarities_file = file('similarities_updated.csv')
+                similarities_file.text = "family_1,family_2,similarity_score\\nmgnifams_test_1,fam_x,0.94\\n"
+                def updated_seed = file('fam_x.aln')
+                file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).copyTo(updated_seed)
+
+                input[0] = [ [ id: 'mgnifams_test' ], similarities_file, [ 'fam_x' ] ]
+                input[1] = channel.of([
+                    [ id: 'mgnifams_test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        updated_seed
+                    ]
+                ])
+                input[2] = channel.of([
+                    [ id: 'mgnifams_test', pool: 'update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = 0.9        // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.full_msa.collect { meta, msa -> [meta.merged_id, meta.pool, file(msa).name] } == [['fam_x', 'update', 'fam_x.sto.gz']] },
+                { assert workflow.out.merged_families == [[[id: 'mgnifams_test'], [['fam_x', 'fam_x,mgnifams_test_1']]]] }
+            )
+        }
+    }
+
+    test("pool with an updated family - new name") {
+        // With merged_family_name 'new', the merged name lists created numbers before updated names
+        when {
+            workflow {
+                """
+                def similarities_file = file('similarities_updated.csv')
+                similarities_file.text = "family_1,family_2,similarity_score\\nmgnifams_test_1,fam_x,0.94\\n"
+                def updated_seed = file('fam_x.aln')
+                file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).copyTo(updated_seed)
+
+                input[0] = [ [ id: 'mgnifams_test' ], similarities_file, [ 'fam_x' ] ]
+                input[1] = channel.of([
+                    [ id: 'mgnifams_test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        updated_seed
+                    ]
+                ])
+                input[2] = channel.of([
+                    [ id: 'mgnifams_test', pool: 'update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // hmmsearch_write_target
+                input[7] = true       // hmmsearch_write_domain
+                input[8] = false      // skip_additional_sequence_recruiting
+                input[9] = 0.9        // hmmsearch_query_length_threshold
+                input[10] = "new"      // merged_family_name
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.full_msa.collect { meta, msa -> [meta.merged_id, meta.pool, file(msa).name] } == [['mgnifams_test_1_fam_x', 'update', 'mgnifams_test_1_fam_x.sto.gz']] }
             )
         }
     }
@@ -82,10 +170,10 @@ nextflow_workflow {
                 def similarities_file = file('similarities_large_pool.csv')
                 similarities_file.text = "family_1,family_2,similarity_score\\n" + rows + "\\n"
 
-                input[0] = [ [ id: 'test' ], similarities_file ]
-                input[1] = channel.of([ [ id: 'test' ], seedFiles ])
+                input[0] = [ [ id: 'mgnifams_test' ], similarities_file, [] ]
+                input[1] = channel.of([ [ id: 'mgnifams_test' ], seedFiles ])
                 input[2] = channel.of([
-                    [ id: 'test' ],
+                    [ id: 'mgnifams_test', pool: 'create' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
                 input[3] = "standard" // family_generation_algorithm
@@ -95,6 +183,7 @@ nextflow_workflow {
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
                 input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
                 """
             }
         }
@@ -107,7 +196,7 @@ nextflow_workflow {
                 { assert snapshot(
                     // merged_id collapsed to the bounded hash form instead of a 200+ char name
                     merged_name,
-                    merged_name ==~ /test_\d+fams_[0-9a-f]{10}\.hmm.gz/,
+                    merged_name ==~ /mgnifams_test_\d+fams_[0-9a-f]{10}\.hmm.gz/,
                     merged_name.length() < 200,
                     workflow.out.seed_msa,
                     workflow.out.full_msa,
@@ -152,12 +241,12 @@ nextflow_workflow {
                 def similarities_input = samples.collect { sample ->
                     def f = file("similarities_\${sample}.csv")
                     f.text = "family_1,family_2,similarity_score\\n\${sample}_1,\${sample}_2,0.94\\n"
-                    [ [ id: sample ], f ]
+                    [ [ id: sample ], f, [] ]
                 }
 
                 input[0] = channel.fromList(similarities_input)
                 input[1] = channel.fromList(seed_input)
-                input[2] = channel.fromList(samples.collect { sample -> [ [ id: sample ], sequences ] })
+                input[2] = channel.fromList(samples.collect { sample -> [ [ id: sample, pool: 'create' ], sequences ] })
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
@@ -165,6 +254,7 @@ nextflow_workflow {
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
                 input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
                 """
             }
         }
@@ -221,10 +311,10 @@ nextflow_workflow {
                 def similarities_file = file('similarities_multiple_pools.csv')
                 similarities_file.text = "family_1,family_2,similarity_score\\ntest_1,test_2,0.94\\ntest_3,test_5,0.94\\n"
 
-                input[0] = [ [ id: 'test' ], similarities_file ]
+                input[0] = [ [ id: 'test' ], similarities_file, [] ]
                 input[1] = channel.of([ [ id: 'test' ], seedFiles ])
                 input[2] = channel.of([
-                    [ id: 'test' ],
+                    [ id: 'test', pool: 'create' ],
                     file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
                 ])
                 input[3] = "standard" // family_generation_algorithm
@@ -234,6 +324,7 @@ nextflow_workflow {
                 input[7] = true       // hmmsearch_write_domain
                 input[8] = false      // skip_additional_sequence_recruiting
                 input[9] = 0.9       // hmmsearch_query_length_threshold
+                input[10] = "existing" // merged_family_name
                 """
             }
         }

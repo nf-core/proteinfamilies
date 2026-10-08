@@ -65,6 +65,26 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - NAME with a quote - fails") {
+
+        when {
+            process {
+                """
+                def library = file('quote.hmm')
+                library.text = "HMMER3/f [3.4]\\nNAME  O'Brien\\n//\\n"
+                input[0] = channel.of([ [ id: 'quote' ], library ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                { assert process.errorReport.contains("existing HMM NAME 'O'Brien' in quote.hmm may only contain letters, digits, '.', '_' and '-'") }
+            )
+        }
+    }
+
     test("proteinfamilies - tar.gz with macOS metadata - hmms") {
         // macOS tar adds AppleDouble `._<file>` members, which are skipped
         when {

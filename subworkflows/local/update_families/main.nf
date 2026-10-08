@@ -10,12 +10,13 @@
     full MSA from the pool. With skip_update_refinement, the existing HMMs only align their hits
     into new full MSAs. An engine returns a family by emitting its full MSA, plus a new HMM, seed
     MSA and family FASTA where it built them. Pooled full-MSA members without hits are dropped,
-    they never go to de-novo family creation. Stockholm full MSAs are reformatted to aligned FASTA.
+    they never go to de-novo family creation.
 
-    FINALISE (engine-agnostic): every provided HMM, seed or full MSA passes through unless the
-    engine built a new one, so families the engine did not return are left unchanged and listed
-    with a reason. Only input FASTA sequences (never pooled full-MSA members) that no returned
-    family holds are emitted as no_hit_seqs for downstream de-novo family creation.
+    FINALISE (engine-agnostic): returned families are emitted with the engine's files, plus the
+    provided seed and HMM where the engine kept them, for redundancy removal next to created
+    families. Every other family passes through as given (its full MSA's degapped members as the
+    family FASTA) and is listed with a reason. Only input FASTA sequences (never pooled full-MSA
+    members) that no returned family holds are emitted as no_hit_seqs for de-novo creation.
 */
 
 include { SPLIT_HMMS                     } from '../../../modules/local/split_hmms/main'
@@ -33,10 +34,7 @@ include { MMSEQS_FASTA_CLUSTER          } from '../../../subworkflows/nf-core/mm
 include { REMOVE_REDUNDANT_SEQS         } from '../../../modules/local/remove_redundant_seqs/main'
 include { GENERATE_FAMILIES             } from '../../../subworkflows/local/generate_families'
 include { HMMER_HMMALIGN                } from '../../../modules/nf-core/hmmer/hmmalign/main'
-include { HHSUITE_REFORMAT              } from '../../../modules/nf-core/hhsuite/reformat/main'
 include { EXTRACT_UNASSIGNED_SEQS       } from '../../../modules/local/extract_unassigned_seqs/main'
-include { EXTRACT_FAMILY_MEMBERS        } from '../../../modules/local/extract_family_members/main'
-include { EXTRACT_FAMILY_REPS           } from '../../../modules/local/extract_family_reps/main'
 
 workflow UPDATE_FAMILIES {
     take:
@@ -52,8 +50,6 @@ workflow UPDATE_FAMILIES {
     skip_update_refinement              // boolean: keep the existing HMMs, only rebuild the full MSAs
 
     main:
-    ch_updated_family_reps = channel.empty()
-
     ch_input_for_untar = ch_samplesheet_for_update
         .multiMap { meta, _fasta, existing_hmms, existing_seed_msas, existing_full_msas ->
             hmm: [ meta, existing_hmms ]
@@ -86,6 +82,8 @@ workflow UPDATE_FAMILIES {
         .map { meta, fasta, _existing_hmms, _existing_seed_msas, _existing_full_msas -> [meta, fasta] }
 
     POOL_EXISTING_MEMBERS( ch_input_fasta.join(UNTAR_FULL_MSA.out.untar) )
+    // The degapped members of each existing full MSA, the FASTA of a family that passes through
+    ch_existing_fasta = familyFiles( POOL_EXISTING_MEMBERS.out.members )
 
     ch_branched_sequences = ch_input_fasta
         .join(UNTAR_FULL_MSA.out.untar, remainder: true)
@@ -167,12 +165,6 @@ workflow UPDATE_FAMILIES {
         ch_engine_hmm      = GENERATE_FAMILIES.out.hmm.join(ch_engine_full_msa).map { meta, hmm, _full -> [meta, hmm] }
         ch_engine_fasta    = GENERATE_FAMILIES.out.fasta
     }
-    // hmmalign full MSAs (Stockholm) become FASTA, as created families' do in REMOVE_REDUNDANCY.
-    // ponytail: done here until UPDATE_FAMILIES runs REMOVE_REDUNDANCY itself
-    if (skip_update_refinement || !skip_additional_sequence_recruiting) {
-        HHSUITE_REFORMAT( ch_engine_full_msa, "sto", "fas" )
-        ch_engine_full_msa = HHSUITE_REFORMAT.out.msa
-    }
     // Families with hits that the engine did not return
     ch_engine_reasons = ch_hits
         .join(ch_engine_full_msa, remainder: true)
@@ -181,13 +173,13 @@ workflow UPDATE_FAMILIES {
     // END ENGINE
 
     // FINALISE
-    ch_seed_msa = passThrough(ch_existing_seed_msa, ch_engine_seed_msa)
-    ch_full_msa = passThrough(ch_existing_full_msa, ch_engine_full_msa)
-    ch_hmm      = passThrough(ch_existing_hmm, ch_engine_hmm)
-    ch_fasta    = ch_engine_fasta
+    ch_seed_msa = byReturned(passThrough(ch_existing_seed_msa, ch_engine_seed_msa), ch_engine_full_msa)
+    ch_full_msa = byReturned(passThrough(ch_existing_full_msa, ch_engine_full_msa), ch_engine_full_msa)
+    ch_hmm      = byReturned(passThrough(ch_existing_hmm, ch_engine_hmm), ch_engine_full_msa)
+    ch_fasta    = byReturned(passThrough(ch_existing_fasta, ch_engine_fasta), ch_engine_full_msa)
 
-    // Existing families the engine did not return, left unchanged, listed per sample
-    ch_unchanged_families = ch_existing_hmm
+    // Existing families the engine did not return pass through, listed per sample
+    ch_passed_through_families = ch_existing_hmm
         .join(ch_engine_full_msa, remainder: true)
         .filter { _meta, hmm, full_msa -> hmm && !full_msa }
         .map { meta, _hmm, _full_msa -> [meta, 'no hits'] }
@@ -195,36 +187,29 @@ workflow UPDATE_FAMILIES {
         .filter { _meta, default_reason, _reason -> default_reason }
         .map { meta, default_reason, reason -> [[id: meta.id], [meta.family, reason ?: default_reason]] }
         .groupTuple()
-    ch_unchanged_families = SPLIT_HMMS.out.hmms
-        .join(ch_unchanged_families, remainder: true)
-        .map { meta, _folder, unchanged -> [meta, (unchanged ?: []).sort { family_reason -> family_reason[0] }] }
-
-    // Strip family from meta and group by sample ID so EXTRACT_FAMILY_MEMBERS/REPS
-    // receive all families for a sample together.
-    ch_fasta_per_sample = ch_fasta
-        .map { meta, faa -> [ [id: meta.id], faa ] }
-        .groupTuple(by: 0)
+    ch_passed_through_families = SPLIT_HMMS.out.hmms
+        .join(ch_passed_through_families, remainder: true)
+        .map { meta, _folder, passed_through -> [meta, (passed_through ?: []).sort { family_reason -> family_reason[0] }] }
 
     // Input sequences not in any returned family go to family creation
     EXTRACT_UNASSIGNED_SEQS(
         ch_input_fasta
-            .join(ch_fasta_per_sample, remainder: true)
+            .join(ch_fasta.returned.map { meta, faa -> [ [id: meta.id], faa ] }.groupTuple(by: 0), remainder: true)
             .map { meta, fasta, family_fastas -> [meta, fasta, family_fastas ?: []] }
     )
 
-    EXTRACT_FAMILY_MEMBERS( ch_fasta_per_sample )
-
-    EXTRACT_FAMILY_REPS( ch_fasta_per_sample )
-    ch_updated_family_reps = ch_updated_family_reps.mix( EXTRACT_FAMILY_REPS.out.map )
-
     emit:
-    seed_msa            = ch_seed_msa
-    full_msa            = ch_full_msa
-    fasta               = ch_fasta
-    hmm                 = ch_hmm
-    unchanged_families  = ch_unchanged_families // [meta, [[family, reason], ...]], [] if every family was returned
-    no_hit_seqs         = EXTRACT_UNASSIGNED_SEQS.out.fasta
-    updated_family_reps = ch_updated_family_reps
+    seed_msa                = ch_seed_msa.returned
+    full_msa                = ch_full_msa.returned
+    fasta                   = ch_fasta.returned
+    hmm                     = ch_hmm.returned
+    passed_through_seed_msa = ch_seed_msa.passed_through
+    passed_through_full_msa = ch_full_msa.passed_through
+    passed_through_fasta    = ch_fasta.passed_through
+    passed_through_hmm      = ch_hmm.passed_through
+    passed_through_families = ch_passed_through_families // [meta, [[family, reason], ...]], [] if every family was returned
+    no_hit_seqs             = EXTRACT_UNASSIGNED_SEQS.out.fasta
+    pool                    = ch_pool
 }
 
 // One [[id, family], file] per file of each sample's folder
@@ -240,4 +225,17 @@ def passThrough(ch_existing_files, ch_engine_files) {
             .filter { _meta, existing, engine -> existing && !engine }
             .map { meta, existing, _engine -> [meta, existing] }
     )
+}
+
+// A family's files, branched by whether the engine returned the family (emitted its full MSA)
+def byReturned(ch_files, ch_engine_full_msa) {
+    ch_files
+        .join(ch_engine_full_msa.map { meta, _full_msa -> [meta, true] }, remainder: true)
+        .filter { _meta, file, _returned -> file }
+        .branch { meta, file, returned ->
+            returned: returned
+                return [meta, file]
+            passed_through: true
+                return [meta, file]
+        }
 }

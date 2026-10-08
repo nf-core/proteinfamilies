@@ -8,10 +8,11 @@ process POOL_SIMILAR_COMPONENTS {
         'community.wave.seqera.io/library/networkx_pandas_python:ab2ee9a9e2c80a69' }"
 
     input:
-    tuple val(meta), path(similarities)
+    tuple val(meta), path(similarities), val(updated_families)
 
     output:
     tuple val(meta), path("pooled_components.txt"), emit: pooled_components
+    tuple val(meta), path("pooled_fam_ids.txt")   , emit: pooled_ids
     tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
     tuple val("${task.process}"), val('pandas'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('pandas'))\""), emit: versions_pandas, topic: versions
     tuple val("${task.process}"), val('networkx'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('networkx'))\""), emit: versions_networkx, topic: versions
@@ -20,14 +21,20 @@ process POOL_SIMILAR_COMPONENTS {
     task.ext.when == null || task.ext.when
 
     script:
+    // printf is a shell builtin, so long family lists are not bound by the argument length limit
     """
+    printf '%s\\n' ${updated_families.collect { family -> "'${family}'" }.join(' ')} > updated_fam_ids.txt
+
     pool_similar_components.py \\
         --input_csv ${similarities} \\
-        --out_file pooled_components.txt
+        --updated_ids updated_fam_ids.txt \\
+        --out_file pooled_components.txt \\
+        --out_ids pooled_fam_ids.txt
     """
 
     stub:
     """
     touch pooled_components.txt
+    touch pooled_fam_ids.txt
     """
 }

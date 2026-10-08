@@ -25,6 +25,10 @@ input:
         type: file
         description: A list of files (can be anything in any format --fasta,alns,hmms) that will be staged as a directory.
         pattern: "*.*"
+    - kept:
+        type: file
+        description: Files copied without filtering (merged families), which may share a filtered family's name
+        pattern: "*.*"
   - - meta2:
         type: map
         description: |
@@ -41,10 +45,10 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1', single_end:false ]`
-    - .${extension}:
+    - ${pattern}:
         type: file
-        description: the family files that passed the redundancy checks
-        pattern: "*.${extension}"
+        description: the family files that passed the redundancy checks, with every extension of the input files
+        pattern: "*.*"
   versions_python:
     - - ${task.process}:
           type: string

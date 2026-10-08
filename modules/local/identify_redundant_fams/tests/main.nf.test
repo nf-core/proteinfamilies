@@ -17,8 +17,9 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = 0.95
-                input[3] = 0.9
+                input[2] = channel.of([ [ id: 'roles' ], [], [] ])
+                input[3] = 0.95
+                input[4] = 0.9
                 """
             }
         }
@@ -30,6 +31,126 @@ nextflow_process {
                     process.out.redundant_ids,
                     process.out.findAll { key, val -> key.startsWith("versions") }
                     ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - family redundancy - updated families") {
+        // Updated families are never redundant: 5 goes instead of the updated 6, and the
+        // updated 1 and 7 are both kept
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'mqc' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_meta_mqc.csv', checkIfExists: true),
+                ])
+                input[1] = channel.of([
+                    [ id: 'domtbl' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
+                ])
+                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_1', 'mgnifams_test_6', 'mgnifams_test_7' ], [] ])
+                input[3] = 0.95
+                input[4] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.redundant_ids[0][1]).readLines() == [ 'mgnifams_test_5' ] }
+            )
+        }
+    }
+
+    test("proteinfamilies - family redundancy - family_redundancy_removal created_only") {
+        // The pair of the updated 6 with 5 is skipped, so both stay; 7 is still redundant with 1
+        when {
+            params {
+                family_redundancy_removal = 'created_only'
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'mqc' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_meta_mqc.csv', checkIfExists: true),
+                ])
+                input[1] = channel.of([
+                    [ id: 'domtbl' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
+                ])
+                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_6' ], [] ])
+                input[3] = 0.95
+                input[4] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.redundant_ids[0][1]).readLines() == [ 'mgnifams_test_7' ] }
+            )
+        }
+    }
+
+    test("proteinfamilies - family similarity - unmergeable families") {
+        // Every hit is similar, none redundant: pairs with the unmergeable 7 are left out
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'mqc' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_meta_mqc.csv', checkIfExists: true),
+                ])
+                input[1] = channel.of([
+                    [ id: 'domtbl' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
+                ])
+                input[2] = channel.of([ [ id: 'roles' ], [], [ 'mgnifams_test_7' ] ])
+                input[3] = 1.01
+                input[4] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.redundant_ids[0][1]).readLines() == [] },
+                { assert path(process.out.similar_ids[0][1]).readLines() == [ 'mgnifams_test_5', 'mgnifams_test_6' ] }
+            )
+        }
+    }
+
+    test("proteinfamilies - family similarity - family_merging created_only") {
+        // Every hit is similar, none redundant: pairs with the updated 7 are left out
+        when {
+            params {
+                family_merging = 'created_only'
+            }
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'mqc' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_meta_mqc.csv', checkIfExists: true),
+                ])
+                input[1] = channel.of([
+                    [ id: 'domtbl' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
+                ])
+                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_7' ], [] ])
+                input[3] = 1.01
+                input[4] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.similar_ids[0][1]).readLines() == [ 'mgnifams_test_5', 'mgnifams_test_6' ] }
             )
         }
     }
@@ -49,8 +170,9 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = 0.95
-                input[3] = 0.9
+                input[2] = channel.of([ [ id: 'roles' ], [], [] ])
+                input[3] = 0.95
+                input[4] = 0.9
                 """
             }
         }

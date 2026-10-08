@@ -14,7 +14,8 @@ copy) or in another kept member of it, so exact and nested duplicates collapse, 
 overlaps and separate regions (e.g. two domains) are kept.
 
 Writes the uncompressed pool (HMMER cannot search a gzip stream): the input sequences
-first, then the kept members.
+first, then the kept members. Optionally also writes every member of each MSA, degapped, as
+`<family>.fasta.gz`: the FASTA of a family that passes the update as given.
 """
 
 import sys
@@ -56,6 +57,12 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         type=str,
         help="Output pool of input sequences and kept MSA members, in FASTA format.",
     )
+    parser.add_argument(
+        "--out_members",
+        metavar="DIR",
+        type=Path,
+        help="Optional output folder for each MSA's degapped members, as <family>.fasta.gz.",
+    )
     return parser.parse_args(args)
 
 
@@ -92,7 +99,7 @@ def msa_rows(text: str) -> Iterator[tuple[str, str]]:
             yield header.split(maxsplit=1)[0], seq.replace("\n", "").replace("\r", "")
 
 
-def pool_members(fasta: str, msas: Sequence[str], out_fasta: str) -> None:
+def pool_members(fasta: str, msas: Sequence[str], out_fasta: str, out_members: Path | None = None) -> None:
     files = []
     for msa in map(Path, msas):
         files.extend(sorted(p for p in msa.iterdir() if p.is_file()) if msa.is_dir() else [msa])
@@ -115,13 +122,17 @@ def pool_members(fasta: str, msas: Sequence[str], out_fasta: str) -> None:
         order = 0
         for path in files:
             with open_text(path) as f:
-                rows = list(msa_rows(f.read()))
-            for name, seq in rows:
-                residues = seq.translate(GAPS).upper()
-                if residues:
-                    protein, start, end = region(name)
-                    members.setdefault(protein, []).append((start, end, order, name, residues))
-                    order += 1
+                rows = [(name, seq.translate(GAPS).upper()) for name, seq in msa_rows(f.read())]
+            rows = [(name, residues) for name, residues in rows if residues]
+            for name, residues in rows:
+                protein, start, end = region(name)
+                members.setdefault(protein, []).append((start, end, order, name, residues))
+                order += 1
+            if out_members:
+                family = Path(path.name.removesuffix(".gz")).stem
+                # mtime=0: identical members give identical files across runs
+                with gzip.GzipFile(out_members / f"{family}.fasta.gz", "wb", mtime=0) as out_family:
+                    out_family.write("".join(f">{name}\n{residues}\n" for name, residues in rows).encode())
 
         kept = []
         for protein, group in members.items():
@@ -139,7 +150,9 @@ def pool_members(fasta: str, msas: Sequence[str], out_fasta: str) -> None:
 
 def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
-    pool_members(args.fasta, args.msas, args.out_fasta)
+    if args.out_members:
+        args.out_members.mkdir(parents=True, exist_ok=True)
+    pool_members(args.fasta, args.msas, args.out_fasta, args.out_members)
 
 
 if __name__ == "__main__":

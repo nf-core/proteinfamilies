@@ -25,31 +25,36 @@ components:
 input:
   - sequences:
       type: file
-      description: Input sequences file that might be used for any merged-family re-generation
+      description: Sequences the created families were built from; merges of created families recruit from them
+  - update_pool:
+      type: file
+      description: Update samples' searched pool (input sequences plus existing full MSA members); merges holding an updated family recruit from it
   - seed_msa:
       type: file
       description: |
-        Seed MSA files along with their meta IDs and chunk number
+        Seed MSA files of created and updated families, meta [id, family] (family = file stem)
   - full_msa:
       type: file
       description: |
-        Full MSA files along with their meta IDs and chunk number
+        Full MSA files of created and updated families, meta [id, family]
   - fasta:
       type: file
       description: |
-        FASTA files along with their meta IDs and chunk number
+        FASTA files of created and updated families, meta [id, family]
   - hmm:
       type: file
       description: |
-        HMM files along with their meta IDs and chunk number
-  - skip_family_redundancy_removal:
-      type: boolean
+        HMM files of created and updated families, meta [id, family]
+  - family_redundancy_removal:
+      type: string
       description: |
-        Skip family-level redundancy removal step
-  - skip_family_merging:
-      type: boolean
+        Families checked for family-level redundancy: all, created_only (updated families bypass the check) or none
+      enum: ["all", "created_only", "none"]
+  - family_merging:
+      type: string
       description: |
-        Skip merging of similar families
+        Families that can be merged with similar families: all, created_only (updated families left out) or none
+      enum: ["all", "created_only", "none"]
   - hmmsearch_family_redundancy_length_threshold:
       type: number
       description: |
@@ -99,6 +104,11 @@ input:
         Query length threshold for hmmsearch during merged family additional sequence recruiting (between 0.0 and 1.0)
       minimum: 0.0
       maximum: 1.0
+  - merged_family_name:
+      type: string
+      description: |
+        Name of a merged family holding updated families: "existing" keeps its name (standard algorithm; a merge holds at most one), "new" names it after the sample and its families
+      enum: ["existing", "new"]
 output:
   - seed_msa:
       type: file
