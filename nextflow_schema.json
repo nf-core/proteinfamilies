@@ -206,9 +206,10 @@
             }
         },
         "quality_check_params": {
-            "title": "Quality check parameters",
+            "title": "Preprocessing parameters",
             "type": "object",
-            "description": "Use these parameters to control the flow of the quality check subworkflow execution.",
+            "description": "Use these parameters to control the quality check and preprocessing of the input sequences.",
+            "fa_icon": "fas fa-filter",
             "properties": {
                 "skip_preprocessing": {
                     "type": "boolean",
@@ -238,13 +239,13 @@
                     "help_text": "`name` (default): sequences with the same identifier are duplicates. `sequence`: sequences with the same amino acid sequence are duplicates, whatever their names.",
                     "fa_icon": "fas fa-clone"
                 }
-            },
-            "fa_icon": "fas fa-filter"
+            }
         },
         "clustering_params": {
             "title": "Clustering parameters",
             "type": "object",
-            "description": "Use these parameters to control the flow of the clustering subworkflow execution.",
+            "description": "Use these parameters to control the initial clustering of the input sequences.",
+            "fa_icon": "fas fa-object-group",
             "properties": {
                 "clustering_tool": {
                     "type": "string",
@@ -286,13 +287,13 @@
                     "help_text": "This is an initial filter for the mmseqs clustering results. The lower the threshold, the more families will be generated. Additional sequences may be later recruited in the families.",
                     "fa_icon": "fas fa-filter"
                 }
-            },
-            "fa_icon": "fas fa-object-group"
+            }
         },
         "family_generation_params": {
             "title": "Family generation parameters",
             "type": "object",
-            "description": "Use these parameters to choose and control the family generation algorithm.",
+            "description": "Use these parameters to choose and control the family generation algorithm, and the update of existing families.",
+            "fa_icon": "fas fa-sitemap",
             "properties": {
                 "family_generation_algorithm": {
                     "type": "string",
@@ -309,20 +310,6 @@
                     "help_text": "Only used when family_generation_algorithm is 'iterative', which generates many families per task. Smaller chunks parallelise better and resume at a finer granularity, at the cost of more tasks. The 'standard' algorithm always processes a single cluster per task.",
                     "fa_icon": "fas fa-layer-group"
                 },
-                "skip_update_refinement": {
-                    "type": "boolean",
-                    "description": "Keep the existing HMMs of updated families, only rebuilding their full MSAs.",
-                    "help_text": "By default, each updated family is rebuilt from its hits like a newly created family: new seed MSA, new HMM, and a full MSA recruited with the new HMM. With this flag, the existing HMM is kept and aligns its hits (from the input sequences and the members of any existing full MSAs) into the new full MSA with hmmalign; a provided seed MSA passes through unchanged, otherwise the family has no seed MSA. Updated families are then never merged with similar families (as with `--family_merging created_only`), since a merge would rebuild their HMM.",
-                    "fa_icon": "fas fa-lock"
-                }
-            },
-            "fa_icon": "fas fa-sitemap"
-        },
-        "alignment_params": {
-            "title": "Alignment parameters",
-            "type": "object",
-            "description": "Use these parameters to control the Multiple Sequence Alignment subworkflow execution.",
-            "properties": {
                 "alignment_tool": {
                     "type": "string",
                     "description": "Choose alignment tool. FAMSA is recommended as best time-memory-accuracy combination option.",
@@ -331,6 +318,20 @@
                     "fa_icon": "fas fa-align-left",
                     "default": "famsa"
                 },
+                "skip_update_refinement": {
+                    "type": "boolean",
+                    "description": "Keep the existing HMMs of updated families, only rebuilding their full MSAs.",
+                    "help_text": "By default, each updated family is rebuilt from its hits like a newly created family: new seed MSA, new HMM, and a full MSA recruited with the new HMM. With this flag, the existing HMM is kept and aligns its hits (from the input sequences and the members of any existing full MSAs) into the new full MSA with hmmalign; a provided seed MSA passes through unchanged, otherwise the family has no seed MSA. Updated families are then never merged with similar families (as with `--family_merging created_only`), since a merge would rebuild their HMM.",
+                    "fa_icon": "fas fa-lock"
+                }
+            }
+        },
+        "seed_msa_trimming_params": {
+            "title": "Seed MSA trimming parameters",
+            "type": "object",
+            "description": "Use these parameters to control the trimming of the seed multiple sequence alignments.",
+            "fa_icon": "fas fa-cut",
+            "properties": {
                 "skip_seed_msa_trimming": {
                     "type": "boolean",
                     "description": "Skip trimming gappy positions from seed Multiple Sequence Alignments (MSAs). Full MSAs are never trimmed.",
@@ -351,7 +352,15 @@
                     "maximum": 1.0,
                     "description": "Multiple Sequence Alignment (MSA) positions with gappiness greater than this threshold will be trimmed",
                     "fa_icon": "fas fa-filter"
-                },
+                }
+            }
+        },
+        "recruiting_params": {
+            "title": "Recruiting and search parameters",
+            "type": "object",
+            "description": "Use these parameters to control the HMM searches and the recruitment of additional sequences into the families.",
+            "fa_icon": "fas fa-search",
+            "properties": {
                 "skip_recruiting": {
                     "type": "boolean",
                     "description": "Skip recruitment of additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) into the full alignment",
@@ -374,13 +383,13 @@
                     "help_text": "This length threshold should be quite high to make sure that small, fragmented sequences are not recruited in the family models",
                     "fa_icon": "fas fa-percentage"
                 }
-            },
-            "fa_icon": "fas fa-align-left"
+            }
         },
-        "redundancy_params": {
-            "title": "Redundancy removal parameters",
+        "family_redundancy_params": {
+            "title": "Family redundancy parameters",
             "type": "object",
-            "description": "Use these parameters to control the redundancy removal subworkflow execution.",
+            "description": "Use these parameters to control the removal of redundant families and the merging of similar families.",
+            "fa_icon": "fas fa-compress-alt",
             "properties": {
                 "family_redundancy_removal": {
                     "type": "string",
@@ -422,7 +431,15 @@
                     "description": "hmmsearch minimum length percentage of hit env vs query length, to flag and report similar families (and to optionally merge)",
                     "help_text": "Must be below the family_redundancy_min_model_coverage to be valid.",
                     "fa_icon": "fas fa-percentage"
-                },
+                }
+            }
+        },
+        "seq_redundancy_params": {
+            "title": "Sequence redundancy parameters",
+            "type": "object",
+            "description": "Use these parameters to control the removal of redundant sequences within each family.",
+            "fa_icon": "fas fa-compress",
+            "properties": {
                 "skip_sequence_redundancy_removal": {
                     "type": "boolean",
                     "description": "Skip removal of inside-family redundancy of sequences via mmseqs clustering.",
@@ -455,13 +472,13 @@
                     "help_text": "Defined by the number of aligned residue pairs divided by 0: the maximum of the length of query/centre and target/non-centre sequences, 1: the length of the target/non-centre sequence, 2: the length of the query/centre",
                     "fa_icon": "fas fa-sliders-h"
                 }
-            },
-            "fa_icon": "fas fa-compress-alt"
+            }
         },
         "phylogeny_params": {
             "title": "Parameters for phylogenetic inference of full alignment sequences",
             "type": "object",
             "description": "Use these parameters to enable the phylogenetic tree construction of the final full MSAs.",
+            "fa_icon": "fas fa-project-diagram",
             "properties": {
                 "run_phylogenetic_inference": {
                     "type": "boolean",
@@ -469,8 +486,7 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 }
-            },
-            "fa_icon": "fas fa-project-diagram"
+            }
         }
     },
     "allOf": [
@@ -493,10 +509,16 @@
             "$ref": "#/$defs/family_generation_params"
         },
         {
-            "$ref": "#/$defs/alignment_params"
+            "$ref": "#/$defs/seed_msa_trimming_params"
         },
         {
-            "$ref": "#/$defs/redundancy_params"
+            "$ref": "#/$defs/recruiting_params"
+        },
+        {
+            "$ref": "#/$defs/family_redundancy_params"
+        },
+        {
+            "$ref": "#/$defs/seq_redundancy_params"
         },
         {
             "$ref": "#/$defs/phylogeny_params"
