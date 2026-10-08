@@ -42,9 +42,6 @@ input:
     - updated_families:
         type: list
         description: Updated (existing) family IDs; never flagged as redundant, a created family redundant with one is
-    - unmergeable_families:
-        type: list
-        description: Family IDs left out of the similar pairs (e.g. families without a seed MSA)
   - - redundancy_length_threshold:
         type: float
         description: The minimum HMM query hit length percentage to consider for redundancy.

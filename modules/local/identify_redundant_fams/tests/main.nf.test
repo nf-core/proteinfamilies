@@ -17,7 +17,7 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = channel.of([ [ id: 'roles' ], [], [] ])
+                input[2] = channel.of([ [ id: 'roles' ], [] ])
                 input[3] = 0.95
                 input[4] = 0.9
                 """
@@ -49,7 +49,7 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_1', 'mgnifams_test_6', 'mgnifams_test_7' ], [] ])
+                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_1', 'mgnifams_test_6', 'mgnifams_test_7' ] ])
                 input[3] = 0.95
                 input[4] = 0.9
                 """
@@ -80,7 +80,7 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_6' ], [] ])
+                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_6' ] ])
                 input[3] = 0.95
                 input[4] = 0.9
                 """
@@ -91,35 +91,6 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert path(process.out.redundant_ids[0][1]).readLines() == [ 'mgnifams_test_7' ] }
-            )
-        }
-    }
-
-    test("proteinfamilies - family similarity - unmergeable families") {
-        // Every hit is similar, none redundant: pairs with the unmergeable 7 are left out
-        when {
-            process {
-                """
-                input[0] = channel.of([
-                    [ id: 'mqc' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_meta_mqc.csv', checkIfExists: true),
-                ])
-                input[1] = channel.of([
-                    [ id: 'domtbl' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
-                ])
-                input[2] = channel.of([ [ id: 'roles' ], [], [ 'mgnifams_test_7' ] ])
-                input[3] = 1.01
-                input[4] = 0.9
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success },
-                { assert path(process.out.redundant_ids[0][1]).readLines() == [] },
-                { assert path(process.out.similar_ids[0][1]).readLines() == [ 'mgnifams_test_5', 'mgnifams_test_6' ] }
             )
         }
     }
@@ -140,7 +111,7 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_7' ], [] ])
+                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_7' ] ])
                 input[3] = 1.01
                 input[4] = 0.9
                 """
@@ -171,7 +142,7 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_7' ], [] ])
+                input[2] = channel.of([ [ id: 'roles' ], [ 'mgnifams_test_7' ] ])
                 input[3] = 1.01
                 input[4] = 0.9
                 """
@@ -201,7 +172,7 @@ nextflow_process {
                     [ id: 'domtbl' ],
                     file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true),
                 ])
-                input[2] = channel.of([ [ id: 'roles' ], [], [] ])
+                input[2] = channel.of([ [ id: 'roles' ], [] ])
                 input[3] = 0.95
                 input[4] = 0.9
                 """
