@@ -447,8 +447,8 @@ The `remove_redundancy` folders hold intermediate results, published under `inte
 </details>
 
 If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs clustering subworkflow will be executed
-to very strictly cluster (`--seq_redundancy_min_seq_identity` = 0.97, `seq_redundancy_min_coverage` = 0.97,
-`seq_redundancy_cov_mode` = 0 -meaning both strands) in-family sequences, keeping only cluster representatives
+to strictly cluster in-family sequences (by default `--seq_redundancy_min_seq_identity 0.9`, `--seq_redundancy_min_coverage 0.9`
+and `--seq_redundancy_cov_mode 0`, i.e. coverage of both the query and the target sequence), keeping only cluster representatives
 before recalculating the family MSAs.
 
 [MMseqs2](https://github.com/soedinglab/MMseqs2) clusters amino acid fasta files via either the 'cluster' or the 'linclust' algorithms.
