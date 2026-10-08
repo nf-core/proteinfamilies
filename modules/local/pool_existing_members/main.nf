@@ -12,6 +12,7 @@ process POOL_EXISTING_MEMBERS {
 
     output:
     tuple val(meta), path("${prefix}.fasta"), emit: fasta
+    tuple val(meta), path("${prefix}_members"), emit: members
     tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
 
     when:
@@ -23,12 +24,15 @@ process POOL_EXISTING_MEMBERS {
     pool_existing_members.py \\
         --fasta ${fasta} \\
         --msas ${msas} \\
-        --out_fasta ${prefix}.fasta
+        --out_fasta ${prefix}.fasta \\
+        --out_members ${prefix}_members
     """
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}_pool"
     """
     touch ${prefix}.fasta
+    mkdir ${prefix}_members
+    echo "" | gzip > ${prefix}_members/placeholder.fasta.gz
     """
 }

@@ -34,11 +34,11 @@
                 "existing_fam_zero_hits.aln: dc8a37fd9e29fe0d988cbb9e9cbc6a27"
             ],
             [
-                "existing_fam_1.fas.gz: e60d57c1594589ba660631d0a6e5c4df",
-                "existing_fam_2.fas.gz: 99eb5205fd4a5ead399ece1406d33ded",
-                "existing_fam_3.fas.gz: ce1c81f1c87785e3e49dae4bace2ab41",
-                "existing_fam_4.fas.gz: 5488c8d7c8f332cbd7a7bb55a7d032c7",
-                "existing_fam_zero_hits.fas.gz: 84c6480d3988359b8045d7a1c353f5e2"
+                "existing_fam_1.sto.gz: df57e04b998433ba0b4019cb497769c4",
+                "existing_fam_2.sto.gz: dd8d5307549ae4549a37d954d7fe280e",
+                "existing_fam_3.sto.gz: df0c6f067cf9cdeeb9cbc4e82b5a9ee7",
+                "existing_fam_4.sto.gz: d125e9bb4004f3f6c3aca3994cdd1742",
+                "existing_fam_zero_hits.sto.gz: 720bfa8f8ebfb9d2e3df0573a08bf925"
             ],
             [
                 "existing_fam_1: 62",
@@ -46,11 +46,9 @@
                 "existing_fam_3: 15",
                 "existing_fam_4: 27",
                 "existing_fam_zero_hits: 10"
-            ],
-            "test_update_meta_mqc.csv",
-            11
+            ]
         ],
-        "timestamp": "2026-10-05T12:46:23.21987206",
+        "timestamp": "2026-10-05T15:52:22.616616944",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -91,11 +89,11 @@
                 "existing_fam_zero_hits.aln: 5b95acffcd6141546c3cd938a97a739a"
             ],
             [
-                "existing_fam_1.fas.gz: 4f45e5dad11bf184d60f829a5eaa4550",
-                "existing_fam_2.fas.gz: 424c3ad334cda84641976b311df3a659",
-                "existing_fam_3.fas.gz: e841a447719397b066a568c96468f903",
-                "existing_fam_4.fas.gz: 705cb7e9df45afefba4c3f2ff3a710fb",
-                "existing_fam_zero_hits.fas.gz: 4ac728a4d7b65e84af6c6f93259bf41d"
+                "existing_fam_1.sto.gz: 1c7626df88279b4e49bd67a1aa392829",
+                "existing_fam_2.sto.gz: 10b93315e41cffd27e1008935492071f",
+                "existing_fam_3.sto.gz: 996e3efaa8e9de91bfb2e2396eea882d",
+                "existing_fam_4.sto.gz: 4ea96ceb49f0a7089311128c85524130",
+                "existing_fam_zero_hits.sto.gz: 85f25686f16da2d55a78e5784d07b460"
             ],
             [
                 "existing_fam_1: 62",
@@ -103,11 +101,9 @@
                 "existing_fam_3: 16",
                 "existing_fam_4: 57",
                 "existing_fam_zero_hits: 10"
-            ],
-            "test_update_meta_mqc.csv",
-            11
+            ]
         ],
-        "timestamp": "2026-10-05T12:46:09.737780153",
+        "timestamp": "2026-10-05T15:52:02.154454382",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -150,21 +146,19 @@
                 "existing_fam_4.aln: 56e7a0c27513e42507e315bbbbdf042d"
             ],
             [
-                "existing_fam_1.fas.gz: 8c5b75e8429023bc4dae4e1c3421357f",
-                "existing_fam_2.fas.gz: 424c3ad334cda84641976b311df3a659",
-                "existing_fam_3.fas.gz: e841a447719397b066a568c96468f903",
-                "existing_fam_4.fas.gz: 705cb7e9df45afefba4c3f2ff3a710fb"
+                "existing_fam_1.sto.gz: 7bcbe4820db067f4ce455af31ceba2a2",
+                "existing_fam_2.sto.gz: 10b93315e41cffd27e1008935492071f",
+                "existing_fam_3.sto.gz: 996e3efaa8e9de91bfb2e2396eea882d",
+                "existing_fam_4.sto.gz: 4ea96ceb49f0a7089311128c85524130"
             ],
             [
                 "existing_fam_1: 31",
                 "existing_fam_2: 6",
                 "existing_fam_3: 16",
                 "existing_fam_4: 57"
-            ],
-            "test_update_meta_mqc.csv",
-            10
+            ]
         ],
-        "timestamp": "2026-10-05T12:46:54.038564224",
+        "timestamp": "2026-10-05T15:52:59.739226277",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

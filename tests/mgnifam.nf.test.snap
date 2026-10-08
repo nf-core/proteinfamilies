@@ -304,6 +304,8 @@
                 "remove_redundancy/merge_families/hmm/raw/mgnifam",
                 "remove_redundancy/merge_families/mgnifams_test",
                 "remove_redundancy/merge_families/mgnifams_test/pooled_components.txt",
+                "remove_redundancy/merged_families",
+                "remove_redundancy/merged_families/mgnifams_test_merged_families.tsv",
                 "remove_redundancy/mgnifams_test",
                 "remove_redundancy/mgnifams_test/redundant_fam_ids.txt",
                 "remove_redundancy/mgnifams_test/similar_fam_ids.txt",
@@ -397,6 +399,7 @@
                 "mgnifams_test_2_2_4_1_reps.fasta.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "mgnifams_test_2_2_4_1_successful.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "pooled_components.txt:md5,b12ee8db1dc04246360eaad3848b675c",
+                "mgnifams_test_merged_families.tsv:md5,3a802c12671535196717555160788709",
                 "redundant_fam_ids.txt:md5,444cadb003e2ce4d974563ba7af49606",
                 "similar_fam_ids.txt:md5,a3cc7ed9bdb6bc8718523e029295e0cb",
                 "similarities.csv:md5,ec9af5bc0997d84591a271f621ae12a7",
@@ -418,7 +421,7 @@
                 "mgnifams_test_seed_msas.tar.gz: mgnifams_test_1_1.fas.gz, mgnifams_test_1_2.fas.gz, mgnifams_test_2_1.fas.gz, mgnifams_test_3_1.fas.gz"
             ]
         ],
-        "timestamp": "2026-10-03T10:09:00.439257494",
+        "timestamp": "2026-10-05T17:38:45.633243144",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

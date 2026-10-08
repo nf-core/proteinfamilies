@@ -29,6 +29,9 @@ input:
         pattern: "*.csv"
         ontologies:
           - edam: "http://edamontology.org/format_3752" # CSV
+    - updated_families:
+        type: list
+        description: Updated (existing) family ids; a pool holds at most one
 output:
   pooled_components:
     - - meta:
@@ -40,6 +43,18 @@ output:
           type: file
           description: Text file containing pooled similar components
           pattern: "pooled_components.txt"
+          ontologies:
+            - edam: "http://edamontology.org/format_2330" # Textual format
+  pooled_ids:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "pooled_fam_ids.txt":
+          type: file
+          description: Every pooled family id, one per line (the families the merges replace)
+          pattern: "pooled_fam_ids.txt"
           ontologies:
             - edam: "http://edamontology.org/format_2330" # Textual format
   versions_python:

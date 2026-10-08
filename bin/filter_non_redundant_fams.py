@@ -25,6 +25,13 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         help="All family files (hmm, seed_msa, full_msa or fasta folder).",
     )
     parser.add_argument(
+        "-k",
+        "--kept_folder",
+        metavar="FOLDER",
+        type=str,
+        help="Optional folder of family files copied without filtering (e.g. merged families).",
+    )
+    parser.add_argument(
         "-r",
         "--redundant_ids",
         required=True,
@@ -69,7 +76,11 @@ def main(args: Sequence[str] | None = None) -> None:
     args = parse_args(args)
     redundant_ids = read_redundant_ids(args.redundant_ids)
 
-    filter_files(args.input_folder, redundant_ids)
+    if os.path.isdir(args.input_folder):  # absent when only kept files are given
+        filter_files(args.input_folder, redundant_ids)
+    # Kept files may share a filtered family's name (a merge named after a family it replaces)
+    if args.kept_folder and os.path.isdir(args.kept_folder):
+        filter_files(args.kept_folder, set())
 
 
 if __name__ == "__main__":

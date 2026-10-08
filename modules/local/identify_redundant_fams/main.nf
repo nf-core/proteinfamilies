@@ -10,6 +10,7 @@ process IDENTIFY_REDUNDANT_FAMS {
     input:
     tuple val(meta) , path(mapping)
     tuple val(meta2), path(domtbl)
+    tuple val(meta3), val(updated_families), val(unmergeable_families)
     val(redundancy_length_threshold)
     val(similarity_length_threshold)
 
@@ -25,7 +26,11 @@ process IDENTIFY_REDUNDANT_FAMS {
 
     script:
     def args = task.ext.args ?: ''
+    // printf is a shell builtin, so long family lists are not bound by the argument length limit
     """
+    printf '%s\\n' ${updated_families.collect { family -> "'${family}'" }.join(' ')} > updated_fam_ids.txt
+    printf '%s\\n' ${unmergeable_families.collect { family -> "'${family}'" }.join(' ')} > unmergeable_fam_ids.txt
+
     identify_redundant_fams.py \\
         --mapping ${mapping} \\
         --domtbl ${domtbl} \\
@@ -33,6 +38,8 @@ process IDENTIFY_REDUNDANT_FAMS {
         --similarity_length_threshold ${similarity_length_threshold} \\
         --redundant_ids_file redundant_fam_ids.txt \\
         --similar_ids_file similar_fam_ids.txt \\
+        --updated_ids updated_fam_ids.txt \\
+        --unmergeable_ids unmergeable_fam_ids.txt \\
         --pairwise_similarities_file similarities.csv \\
         ${args}
     """

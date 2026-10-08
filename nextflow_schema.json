@@ -322,7 +322,7 @@
                 "skip_update_refinement": {
                     "type": "boolean",
                     "description": "Keep the existing HMMs of updated families, only rebuilding their full MSAs.",
-                    "help_text": "By default, each updated family is rebuilt from its hits like a newly created family: new seed MSA, new HMM, and a full MSA recruited with the new HMM. With this flag, the existing HMM is kept and aligns its hits (from the input sequences and the members of any existing full MSAs) into the new full MSA with hmmalign; a provided seed MSA passes through unchanged, otherwise the family has no seed MSA.",
+                    "help_text": "By default, each updated family is rebuilt from its hits like a newly created family: new seed MSA, new HMM, and a full MSA recruited with the new HMM. With this flag, the existing HMM is kept and aligns its hits (from the input sequences and the members of any existing full MSAs) into the new full MSA with hmmalign; a provided seed MSA passes through unchanged, otherwise the family has no seed MSA. Updated families are then never merged with similar families (as with `--family_merging created_only`), since a merge would rebuild their HMM.",
                     "fa_icon": "fas fa-lock"
                 },
                 "save_iterative_family_metadata": {
@@ -425,19 +425,29 @@
             "type": "object",
             "description": "Use these parameters to control the redundancy removal subworkflow execution.",
             "properties": {
-                "skip_family_redundancy_removal": {
-                    "type": "boolean",
-                    "description": "Skip removal of between-family redundancy via hmmsearch sequence to family model matching.",
-                    "fa_icon": "fas fa-question-circle",
-                    "hidden": true,
-                    "help_text": "Suggested to keep false, so that redundant families are not further processed, for better resource management and to avoid duplication."
+                "family_redundancy_removal": {
+                    "type": "string",
+                    "default": "all",
+                    "enum": ["all", "created_only", "none"],
+                    "description": "Which families take part in the removal of between-family redundancy (hmmsearch of family representatives against family models).",
+                    "fa_icon": "fas fa-filter",
+                    "help_text": "`all` (default): created and updated families are checked. An updated family is never removed: a created family redundant with it is, and two redundant updated families are both kept. `created_only`: updated families bypass the check, so created families may duplicate them. `none`: no family is removed for redundancy. Suggested to keep `all`, so that redundant families are not further processed, for better resource management and to avoid duplication."
                 },
-                "skip_family_merging": {
-                    "type": "boolean",
-                    "description": "Flag to skip merging of similar families.",
-                    "fa_icon": "fas fa-question-circle",
-                    "hidden": true,
-                    "help_text": "If false, similar families (but not redundant!) will be merged, depending on the hmmsearch_family_similarity_length_threshold parameter."
+                "family_merging": {
+                    "type": "string",
+                    "default": "all",
+                    "enum": ["all", "created_only", "none"],
+                    "description": "Which families can be merged with similar (but not redundant) families.",
+                    "fa_icon": "fas fa-object-group",
+                    "help_text": "Similarity is set by `--hmmsearch_family_similarity_length_threshold`. `all` (default): created and updated families can be merged. A merge pool holds at most one updated family: two updated families are never merged together, and a pool that links several updated families (directly or through created families) leaves them unmerged and merges only its created families. `created_only`: updated families are left out of merging. `none`: no family is merged. With `--skip_update_refinement`, updated families are never merged (as with `created_only`), since a merge rebuilds the family's HMM."
+                },
+                "merged_family_name": {
+                    "type": "string",
+                    "default": "existing",
+                    "enum": ["existing", "new"],
+                    "description": "Name of a merged family that holds updated families.",
+                    "fa_icon": "fas fa-tag",
+                    "help_text": "`existing` keeps the name of the merged updated family (a merge holds at most one), so the family keeps its identity across updates. `new` names the merged family like any other merge, after the sample and its families. Applies to `--family_generation_algorithm standard`; the iterative algorithm always uses `new`."
                 },
                 "hmmsearch_family_redundancy_length_threshold": {
                     "type": "number",

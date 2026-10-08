@@ -8,27 +8,31 @@ process FILTER_NON_REDUNDANT_FAMS {
         'community.wave.seqera.io/library/python:3.13.1--d00663700fcc8bcf' }"
 
     input:
-    tuple val(meta) , path(files, stageAs: "input_folder/*")
+    tuple val(meta) , path(files, stageAs: "input_folder/*"), path(kept, stageAs: "kept/*")
     tuple val(meta2), path(redundant_ids)
 
     output:
-    tuple val(meta), path("*.${extension}"), emit: filtered
+    tuple val(meta), path(pattern), emit: filtered
     tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    extension = files instanceof List ? files[0].extension : files.extension
+    // Created and updated families' MSAs may differ in format (e.g. aligned FASTA and Stockholm)
+    def extensions = ([files] + [kept]).flatten().collect { file -> file.extension }.unique().sort()
+    pattern = extensions.size() == 1 ? "*.${extensions[0]}" : "*.{${extensions.join(',')}}"
     """
     filter_non_redundant_fams.py \\
         --input_folder input_folder  \\
+        --kept_folder kept \\
         --redundant_ids ${redundant_ids}
     """
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    extension = files[0].extension
+    def extension = [files].flatten()[0].extension
+    pattern = "*.${extension}"
     """
     touch ${prefix}_1.${extension}
     """

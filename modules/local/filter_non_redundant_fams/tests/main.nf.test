@@ -14,7 +14,8 @@ nextflow_process {
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
-                    ]
+                    ],
+                    []
                 ])
                 input[1] = channel.of([
                     [ id: 'redundant_ids' ],
@@ -48,7 +49,7 @@ nextflow_process {
                 def redundant_ids = file('redundant_ids_dotted.txt')
                 redundant_ids.text = 'run.v2_2\\n'
 
-                input[0] = channel.of([ [ id: 'aln' ], seeds ])
+                input[0] = channel.of([ [ id: 'aln' ], seeds, [] ])
                 input[1] = channel.of([ [ id: 'redundant_ids' ], redundant_ids ])
                 """
             }
@@ -58,6 +59,67 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert process.out.filtered.collectMany { _meta, filtered -> [filtered].flatten().collect { f -> file(f).name } } == ['run.v2_1.aln'] }
+            )
+        }
+    }
+
+    test("proteinfamilies - nonredundant - mixed formats") {
+        // Created and updated families' full MSAs can differ in format: every format is kept
+        when {
+            process {
+                """
+                def fas = file('fam_a.fas')
+                fas.text = '>s1\\nMK-V\\n'
+                def sto = file('fam_b.sto.gz')
+                sto.bytes = new java.io.ByteArrayOutputStream().withCloseable { bytes ->
+                    new java.util.zip.GZIPOutputStream(bytes).withCloseable { gz -> gz.write('# STOCKHOLM 1.0\\ns2 MKV\\n//\\n'.bytes) }
+                    bytes.toByteArray()
+                }
+                def redundant = file('fam_c.fas')
+                redundant.text = '>s3\\nMKV\\n'
+                def redundant_ids = file('redundant_ids_mixed.txt')
+                redundant_ids.text = 'fam_c\\n'
+
+                input[0] = channel.of([ [ id: 'mixed' ], [ fas, sto, redundant ], [] ])
+                input[1] = channel.of([ [ id: 'redundant_ids' ], redundant_ids ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.filtered.collectMany { _meta, filtered -> [filtered].flatten().collect { f -> file(f).name } }.sort() == ['fam_a.fas', 'fam_b.sto.gz'] }
+            )
+        }
+    }
+
+    test("proteinfamilies - nonredundant - kept merged family named like a filtered one") {
+        // fam_a is merged away, and the merge took its name: the merged file is kept as it is
+        when {
+            process {
+                """
+                def original = file('fam_a.fas')
+                original.text = '>s1\\nMKV\\n'
+                def other = file('fam_b.fas')
+                other.text = '>s2\\nMKV\\n'
+                def merged_dir = file('merged')
+                merged_dir.mkdirs()
+                def merged = merged_dir.resolve('fam_a.fas')
+                merged.text = '>s1\\nMKV\\n>s3\\nMKV\\n'
+                def redundant_ids = file('redundant_ids_kept.txt')
+                redundant_ids.text = 'fam_a\\n'
+
+                input[0] = channel.of([ [ id: 'kept' ], [ original, other ], [ merged ] ])
+                input[1] = channel.of([ [ id: 'redundant_ids' ], redundant_ids ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.filtered.collectMany { _meta, filtered -> [filtered].flatten().collect { f -> "${file(f).name}: ${path(f.toString()).readLines().size()}" } }.sort() == ['fam_a.fas: 4', 'fam_b.fas: 2'] }
             )
         }
     }
@@ -74,7 +136,8 @@ nextflow_process {
                     [
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
                         file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
-                    ]
+                    ],
+                    []
                 ])
                 input[1] = channel.of([
                     [ id: 'redundant_ids' ],

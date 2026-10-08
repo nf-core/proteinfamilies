@@ -280,21 +280,27 @@ def fileStem(file) {
 }
 
 //
+// Whether a family name is one this run creates for the sample: created and merged families are
+// named `<id>_<digit>...`. Existing families never are (validateHmmNames), so any other name in a
+// sample's families is an updated family.
+//
+def isCreatedFamily(id, family) {
+    def prefix = id + '_'
+    return family.length() > prefix.length() && family.startsWith(prefix) && family[prefix.length()] in ('0'..'9')
+}
+
+//
 // Validate a sample's existing HMMs (one <NAME>.hmm.gz per model, from SPLIT_HMMS, which already
-// rejects duplicate NAMEs): no NAME may look like a name this run can create for the sample.
-// Created and merged families are named `<id>_<digit>...`, so an existing family named that way
-// (e.g. from a previous run with the same id) would collide with a new one in the HMM library
-// and the archives.
+// rejects duplicate NAMEs): no NAME may look like a name this run can create for the sample
+// (isCreatedFamily). An existing family named that way (e.g. from a previous run with the same id)
+// would collide with a new one in the HMM library and the archives, and be taken for a created one.
 //
 def validateHmmNames(ch_hmm_folders) {
     ch_hmm_folders
         .map { meta, folder ->
-            def prefix = meta.id + '_'
-            def colliding = folder.listFiles().collect { hmm -> fileStem(hmm) }.findAll { stem ->
-                stem.length() > prefix.length() && stem.startsWith(prefix) && stem[prefix.length()] in ('0'..'9')
-            }.sort()
+            def colliding = folder.listFiles().collect { hmm -> fileStem(hmm) }.findAll { stem -> isCreatedFamily(meta.id, stem) }.sort()
             if (colliding) {
-                error("[nf-core/proteinfamilies] ERROR: Existing families ${colliding.join(', ')} are named like families created for sample '${meta.id}' ('${prefix}<number>...'). Use a new id for this update run (e.g. '${meta.id}_r2').")
+                error("[nf-core/proteinfamilies] ERROR: Existing families ${colliding.join(', ')} are named like families created for sample '${meta.id}' ('${meta.id}_<number>...'). Use a new id for this update run (e.g. '${meta.id}_r2').")
             }
         }
 }

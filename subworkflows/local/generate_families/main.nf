@@ -37,10 +37,11 @@ workflow GENERATE_FAMILIES {
     HMMER_HMMBUILD( ch_seed_msa, [] )
     ch_hmm = HMMER_HMMBUILD.out.hmm
 
-    // Combine on a chunk-free [id] key so each cluster's HMM matches the full sample sequence
-    // pool; the original meta rides along as an extra element and the key is dropped after.
+    // Combine on a chunk-free [id] key (plus the pool, for merged families) so each cluster's HMM
+    // matches the sample sequence pool; the original meta rides along as an extra element and
+    // the key is dropped after.
     ch_input_for_hmmsearch = ch_hmm
-        .map { meta, hmm -> [ [id: meta.id], meta, hmm ] }
+        .map { meta, hmm -> [ meta.subMap('id', 'pool'), meta, hmm ] }
         .combine(sequences, by: 0)
         .map { _id, meta, hmm, seqs -> [ meta, hmm, seqs, false, hmmsearch_write_target, hmmsearch_write_domain ] }
 
@@ -49,7 +50,7 @@ workflow GENERATE_FAMILIES {
 
         // Combine with same id to ensure in sync
         ch_input_for_filter_recruited = HMMER_HMMSEARCH.out.domain_summary
-            .map { meta, domtbl -> [ [id: meta.id], meta, domtbl ] }
+            .map { meta, domtbl -> [ meta.subMap('id', 'pool'), meta, domtbl ] }
             .combine(sequences, by: 0)
             .map { _id, meta, domtbl, seqs -> [ meta, domtbl, seqs ] }
 
