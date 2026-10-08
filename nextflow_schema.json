@@ -506,10 +506,9 @@
             "type": "object",
             "description": "Use these parameters to enable the phylogenetic tree construction of the final full MSAs.",
             "properties": {
-                "skip_phylogenetic_inference": {
+                "run_phylogenetic_inference": {
                     "type": "boolean",
-                    "description": "Skip the phylogenetic inference with the cmaple tool.",
-                    "default": true,
+                    "description": "Infer a phylogenetic tree of each final family's full MSA with CMAPLE.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 }

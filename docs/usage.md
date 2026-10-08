@@ -85,6 +85,7 @@ Other parameters removed or renamed in v3 (a v2 command line with an old name st
 | `--cluster_coverage_for_redundancy`                    | `--seq_redundancy_min_coverage`                                                      |
 | `--cluster_cov_mode_for_redundancy`                    | `--seq_redundancy_cov_mode`                                                          |
 | `--remove_duplicates_on_sequence`                      | `--deduplicate_by sequence` (default `name`)                                         |
+| `--skip_phylogenetic_inference false`                  | `--run_phylogenetic_inference` (off by default, as before)                           |
 
 ## Parameter specifications
 

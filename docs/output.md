@@ -613,7 +613,7 @@ Hits on sequences already named `<sequence>/<start>-<end>` (e.g. pooled existing
 
 [CMAPLE](https://github.com/iqtree/cmaple) MAximum Parsimonious Likelihood Estimation in C/C++.
 
-If the `--skip_phylogenetic_inference` is set to `false`, the full MSA treefiles will be calculated for the final protein families.
+With `--run_phylogenetic_inference`, the full MSA treefiles will be calculated for the final protein families.
 The generated treefiles can be visualized externally with any Newick phylogenetic tree viewer.
 
 ### Archives of final families

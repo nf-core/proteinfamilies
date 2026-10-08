@@ -162,7 +162,7 @@ workflow PROTEINFAMILIES {
     TAR_FULL_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_full_msa, REMOVE_REDUNDANCY.out.full_msa ), '.gz' )
 
     // Infer Phylogenetic relations of full MSAs
-    if (!params.skip_phylogenetic_inference) {
+    if (params.run_phylogenetic_inference) {
         CMAPLE (
             REMOVE_REDUNDANCY.out.full_msa
                 .map { meta, file -> [ meta, file, [] ] }
