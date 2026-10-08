@@ -47,14 +47,6 @@ input:
       type: boolean
       description: |
         Skip trimming of multiple sequence alignments with ClipKIT. Standard algorithm only.
-  - hmmsearch_write_target:
-      type: boolean
-      description: |
-        Write target sequences in hmmsearch output. Standard algorithm only.
-  - hmmsearch_write_domain:
-      type: boolean
-      description: |
-        Write domain information in hmmsearch output. Standard algorithm only.
   - skip_additional_sequence_recruiting:
       type: boolean
       description: |

@@ -375,21 +375,6 @@
                     "hidden": true,
                     "help_text": "If this is set to false, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the hmmsearch_query_length_threshold), resulting in bigger but better described families"
                 },
-                "hmmsearch_write_target": {
-                    "type": "boolean",
-                    "description": "Boolean whether to generate target results file of hmmsearch",
-                    "fa_icon": "fas fa-check-square",
-                    "hidden": true,
-                    "help_text": "Specify to calculate the hmmsearch tabular (space-delimited) summary of per-target output (*.tbl.gz)."
-                },
-                "hmmsearch_write_domain": {
-                    "type": "boolean",
-                    "description": "Boolean whether to generate domain results file of hmmsearch",
-                    "default": true,
-                    "fa_icon": "fas fa-check-square",
-                    "hidden": true,
-                    "help_text": "Specify to calculate the hmmsearch tabular (space-delimited) summary of per-domain output (*.domtbl.gz)."
-                },
                 "hmmsearch_evalue_cutoff": {
                     "type": "number",
                     "default": 0.001,

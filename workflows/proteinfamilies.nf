@@ -87,8 +87,6 @@ workflow PROTEINFAMILIES {
         params.clustering_tool,
         params.alignment_tool,
         params.skip_seed_msa_trimming,
-        params.hmmsearch_write_target,
-        params.hmmsearch_write_domain,
         params.skip_additional_sequence_recruiting,
         params.skip_update_refinement
     )
@@ -120,8 +118,6 @@ workflow PROTEINFAMILIES {
         params.clusters_per_chunk,
         params.alignment_tool,
         params.skip_seed_msa_trimming,
-        params.hmmsearch_write_target,
-        params.hmmsearch_write_domain,
         params.skip_additional_sequence_recruiting,
         params.hmmsearch_query_length_threshold
     )
@@ -143,8 +139,6 @@ workflow PROTEINFAMILIES {
         params.family_generation_algorithm,
         params.alignment_tool,
         params.skip_seed_msa_trimming,
-        params.hmmsearch_write_target,
-        params.hmmsearch_write_domain,
         params.skip_additional_sequence_recruiting,
         params.hmmsearch_query_length_threshold,
         params.merged_family_name

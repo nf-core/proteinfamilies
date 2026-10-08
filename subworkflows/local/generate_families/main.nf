@@ -21,8 +21,6 @@ workflow GENERATE_FAMILIES {
     ch_fasta                            // tuple val(meta), path(fasta)
     alignment_tool                      // string ["famsa", "mafft"]
     skip_seed_msa_trimming              // boolean
-    hmmsearch_write_target              // boolean
-    hmmsearch_write_domain              // boolean
     skip_additional_sequence_recruiting // boolean
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
@@ -43,7 +41,7 @@ workflow GENERATE_FAMILIES {
     ch_input_for_hmmsearch = ch_hmm
         .map { meta, hmm -> [ meta.subMap('id', 'pool'), meta, hmm ] }
         .combine(sequences, by: 0)
-        .map { _id, meta, hmm, seqs -> [ meta, hmm, seqs, false, hmmsearch_write_target, hmmsearch_write_domain ] }
+        .map { _id, meta, hmm, seqs -> [ meta, hmm, seqs, false, false, true ] }
 
     if (!skip_additional_sequence_recruiting) {
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )

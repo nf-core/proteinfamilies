@@ -44,8 +44,6 @@ workflow UPDATE_FAMILIES {
     clustering_tool                     // string ["linclust", "cluster"]
     alignment_tool                      // string ["famsa", "mafft"]
     skip_seed_msa_trimming              // boolean
-    hmmsearch_write_target              // boolean
-    hmmsearch_write_domain              // boolean
     skip_additional_sequence_recruiting // boolean
     skip_update_refinement              // boolean: keep the existing HMMs, only rebuild the full MSAs
 
@@ -153,8 +151,6 @@ workflow UPDATE_FAMILIES {
             ch_fasta,
             alignment_tool,
             skip_seed_msa_trimming,
-            hmmsearch_write_target,
-            hmmsearch_write_domain,
             skip_additional_sequence_recruiting,
             hmmsearch_query_length_threshold
         )

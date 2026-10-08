@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#205](https://github.com/nf-core/proteinfamilies/pull/205) - **Breaking:** parameters and outputs cleanup (old → new table in `docs/usage.md`).
+  - Removed `--hmmsearch_write_target` and `--hmmsearch_write_domain`: the per-domain table is always needed, the per-target table was never used. (by @vagkaratzas)
 - [#202](https://github.com/nf-core/proteinfamilies/pull/202) - **Breaking:** `--skip_family_redundancy_removal` and `--skip_family_merging` are replaced by `--family_redundancy_removal none` and `--family_merging none`. (by @vagkaratzas)
 - [#202](https://github.com/nf-core/proteinfamilies/pull/202) - **Breaking:** updated families' final files are published with the created families' (e.g. `hmm/filtered/`, `full_msa/filtered/`), and their family representatives in `family_reps/<id>/`; `update_families/family_reps/` and `update_families/full_msa/raw/hhsuite_reformat/` are removed. `FILTER_NON_REDUNDANT_FAMS` keeps files of every format it is given. (by @vagkaratzas)
 - [#202](https://github.com/nf-core/proteinfamilies/pull/202) - Existing HMM `NAME`s may only contain letters, digits, `.`, `_` and `-`, as they become file names and shell arguments; `SPLIT_HMMS` stops the pipeline otherwise (it only rejected `/` before). (by @vagkaratzas)

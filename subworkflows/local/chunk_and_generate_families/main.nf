@@ -24,8 +24,6 @@ workflow CHUNK_AND_GENERATE_FAMILIES {
     clusters_per_chunk                  // integer
     alignment_tool                      // string ["famsa", "mafft"]
     skip_seed_msa_trimming              // boolean
-    hmmsearch_write_target              // boolean
-    hmmsearch_write_domain              // boolean
     skip_additional_sequence_recruiting // boolean
     hmmsearch_query_length_threshold    // number [0.0, 1.0]
 
@@ -50,8 +48,6 @@ workflow CHUNK_AND_GENERATE_FAMILIES {
             ch_chunks,
             alignment_tool,
             skip_seed_msa_trimming,
-            hmmsearch_write_target,
-            hmmsearch_write_domain,
             skip_additional_sequence_recruiting,
             hmmsearch_query_length_threshold
         )

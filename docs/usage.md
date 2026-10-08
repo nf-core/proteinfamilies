@@ -64,6 +64,12 @@ s1_r2,new_sequences.faa.gz,results/archives/s1/s1_hmms.tar.gz,results/archives/s
 - **Parameters:** `--skip_msa_trimming` is now `--skip_seed_msa_trimming`; `--clipkit_out_format`, `--save_update_families_pre_clipped_fasta` and `--save_update_families_clipped_fasta` are removed (updated families use the same `save_*` parameters as created ones); `--skip_update_refinement` is new.
 - **Outputs:** `clipkit/` folders are now `trimmed/` (FASTA `.aln`). Updated families are published like created ones under `update_families/{seed_msa,hmm,full_msa}/raw/<tool>/<id>/` instead of `update_families/full_msa/<tool>/` and `update_families/fasta/`, then go through redundancy removal with the created families, so their final files sit next to them (e.g. `hmm/filtered/<id>/`, `full_msa/filtered/<tool>/<id>/`). Family representatives of all final families are in `family_reps/<id>/` (no more `update_families/family_reps/`). Existing families the update did not return pass through and are listed in `update_families/passed_through_families/`, and every sample's final families are archived under `archives/<id>/` for later updates.
 
+Other parameters removed or renamed in v3 (a v2 command line with an old name stops with an unknown-parameter error):
+
+| v2                                                     | v3                                                                                   |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `--hmmsearch_write_target`, `--hmmsearch_write_domain` | Removed: the per-domain table is always written, the per-target table was never used |
+
 ## Parameter specifications
 
 Here we provide guidance regarding some parameter choices.
@@ -108,13 +114,13 @@ mgnifam performs each step in-process with its own libraries rather than by call
 
 Because of that, the parameters below are honoured only by the `standard` algorithm. They are ignored when the `iterative` path creates or merges families, which always behaves as stated:
 
-| Parameter                                                                    | Behaviour of the `iterative` algorithm                                        |
-| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `alignment_tool`                                                             | Always FAMSA, through pyfamsa                                                 |
-| `skip_seed_msa_trimming`                                                     | Trimming is always applied, through pytrimal                                  |
-| `trim_ends_only`                                                             | ClipKIT is not used; pytrimal trims by column gap occupancy (`gap_threshold`) |
-| `skip_additional_sequence_recruiting`                                        | Recruitment is always performed, and repeated until convergence               |
-| `hmmsearch_write_target`, `hmmsearch_write_domain`, `save_hmmsearch_results` | Searching is in-process, so no hmmsearch report files exist                   |
+| Parameter                             | Behaviour of the `iterative` algorithm                                        |
+| ------------------------------------- | ----------------------------------------------------------------------------- |
+| `alignment_tool`                      | Always FAMSA, through pyfamsa                                                 |
+| `skip_seed_msa_trimming`              | Trimming is always applied, through pytrimal                                  |
+| `trim_ends_only`                      | ClipKIT is not used; pytrimal trims by column gap occupancy (`gap_threshold`) |
+| `skip_additional_sequence_recruiting` | Recruitment is always performed, and repeated until convergence               |
+| `save_hmmsearch_results`              | Searching is in-process, so no hmmsearch report files exist                   |
 
 > [!NOTE]
 > Updating existing families (samplesheet entries with existing HMMs) always runs the `standard` update path, whichever algorithm is selected, so the `standard` parameters above (e.g. `alignment_tool`, `skip_seed_msa_trimming`, `trim_ends_only`, `gap_threshold`, `skip_additional_sequence_recruiting`) apply to updated families.

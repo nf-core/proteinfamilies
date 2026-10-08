@@ -55,14 +55,6 @@ input:
       type: boolean
       description: |
         Skip trimming of the new seed MSAs with ClipKIT
-  - hmmsearch_write_target:
-      type: boolean
-      description: |
-        Write target sequences in the recruiting hmmsearch output
-  - hmmsearch_write_domain:
-      type: boolean
-      description: |
-        Write domain information in the recruiting hmmsearch output
   - skip_additional_sequence_recruiting:
       type: boolean
       description: |

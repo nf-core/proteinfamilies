@@ -33,11 +33,9 @@ nextflow_workflow {
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = 0.9       // hmmsearch_query_length_threshold
-                input[10] = "existing" // merged_family_name
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = 0.9       // hmmsearch_query_length_threshold
+                input[8]  = "existing" // merged_family_name
                 """
             }
         }
@@ -81,11 +79,9 @@ nextflow_workflow {
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = 0.9        // hmmsearch_query_length_threshold
-                input[10] = "existing" // merged_family_name
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = 0.9        // hmmsearch_query_length_threshold
+                input[8]  = "existing" // merged_family_name
                 """
             }
         }
@@ -124,11 +120,9 @@ nextflow_workflow {
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = 0.9        // hmmsearch_query_length_threshold
-                input[10] = "new"      // merged_family_name
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = 0.9        // hmmsearch_query_length_threshold
+                input[8]  = "new"      // merged_family_name
                 """
             }
         }
@@ -179,11 +173,9 @@ nextflow_workflow {
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = 0.9       // hmmsearch_query_length_threshold
-                input[10] = "existing" // merged_family_name
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = 0.9       // hmmsearch_query_length_threshold
+                input[8]  = "existing" // merged_family_name
                 """
             }
         }
@@ -250,11 +242,9 @@ nextflow_workflow {
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = 0.9       // hmmsearch_query_length_threshold
-                input[10] = "existing" // merged_family_name
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = 0.9       // hmmsearch_query_length_threshold
+                input[8]  = "existing" // merged_family_name
                 """
             }
         }
@@ -320,11 +310,9 @@ nextflow_workflow {
                 input[3] = "standard" // family_generation_algorithm
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = 0.9       // hmmsearch_query_length_threshold
-                input[10] = "existing" // merged_family_name
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = 0.9       // hmmsearch_query_length_threshold
+                input[8]  = "existing" // merged_family_name
                 """
             }
         }

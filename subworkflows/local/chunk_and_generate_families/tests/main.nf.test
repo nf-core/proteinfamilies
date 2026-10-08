@@ -22,10 +22,8 @@ nextflow_workflow {
                 input[4]  = 2          // clusters_per_chunk
                 input[5]  = "famsa"    // alignment_tool
                 input[6]  = false      // skip_seed_msa_trimming
-                input[7]  = false      // hmmsearch_write_target
-                input[8]  = true       // hmmsearch_write_domain
-                input[9] = false      // skip_additional_sequence_recruiting
-                input[10] = 0.9        // hmmsearch_query_length_threshold
+                input[7] = false      // skip_additional_sequence_recruiting
+                input[8]  = 0.9        // hmmsearch_query_length_threshold
                 """
             }
         }
@@ -62,10 +60,8 @@ nextflow_workflow {
                 input[4]  = 2           // clusters_per_chunk
                 input[5]  = "famsa"     // alignment_tool
                 input[6]  = false       // skip_seed_msa_trimming
-                input[7]  = false       // hmmsearch_write_target
-                input[8]  = true        // hmmsearch_write_domain
-                input[9] = false       // skip_additional_sequence_recruiting
-                input[10] = 0.9         // hmmsearch_query_length_threshold
+                input[7] = false       // skip_additional_sequence_recruiting
+                input[8]  = 0.9         // hmmsearch_query_length_threshold
                 """
             }
         }

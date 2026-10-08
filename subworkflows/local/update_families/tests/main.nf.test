@@ -22,10 +22,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = false      // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = false      // skip_update_refinement
                 """
             }
         }
@@ -63,10 +61,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = true       // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = true       // skip_update_refinement
                 """
             }
         }
@@ -104,10 +100,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = false      // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = false      // skip_update_refinement
                 """
             }
         }
@@ -152,10 +146,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = false      // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = false      // skip_update_refinement
                 """
             }
         }
@@ -198,10 +190,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = false      // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = false      // skip_update_refinement
                 """
             }
         }
@@ -236,10 +226,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = false      // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = false      // skip_update_refinement
                 """
             }
         }
@@ -277,10 +265,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = false      // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = false      // skip_update_refinement
                 """
             }
         }
@@ -320,10 +306,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = false      // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = false      // skip_update_refinement
                 """
             }
         }
@@ -363,10 +347,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = false      // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = false      // skip_update_refinement
                 """
             }
         }
@@ -405,10 +387,8 @@ nextflow_workflow {
                 input[3] = "linclust" // clustering_tool
                 input[4] = "famsa"    // alignment_tool
                 input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // hmmsearch_write_target
-                input[7] = true       // hmmsearch_write_domain
-                input[8] = false      // skip_additional_sequence_recruiting
-                input[9] = false      // skip_update_refinement
+                input[6] = false      // skip_additional_sequence_recruiting
+                input[7] = false      // skip_update_refinement
                 """
             }
         }
