@@ -224,10 +224,12 @@
                     "description": "The maximum allowed sequence length",
                     "help_text": "Specify the maximum length of amino acid sequences that go into clustering."
                 },
-                "remove_duplicates_on_sequence": {
-                    "type": "boolean",
-                    "description": "Remove duplicate input amino acid sequences, based on the sequence.",
-                    "help": "Instead of just removing by similar identifier, the tool also removes duplicate sequences.",
+                "deduplicate_by": {
+                    "type": "string",
+                    "default": "name",
+                    "enum": ["name", "sequence"],
+                    "description": "How duplicate input sequences are found and removed.",
+                    "help_text": "`name` (default): sequences with the same identifier are duplicates. `sequence`: sequences with the same amino acid sequence are duplicates, whatever their names.",
                     "fa_icon": "fas fa-clone"
                 }
             },
