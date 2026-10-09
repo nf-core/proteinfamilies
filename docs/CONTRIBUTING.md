@@ -201,7 +201,6 @@ New parameters follow the naming used across the pipeline, so users can guess a 
 - A policy with more than two states is one enum parameter (e.g. `--family_redundancy_removal all|created_only|none`, `--deduplicate_by name|sequence`), not several booleans that can contradict each other. List its options in a comment after its default in `nextflow.config` (e.g. `family_merging = 'all' // ['all', 'created_only', 'none']`).
 - `--save_intermediates` is the only `save_*` parameter (see below); do not add per-step `save_*` flags.
 - Keep `nextflow_schema.json` groups in pipeline order (preprocessing, clustering, family generation, seed MSA trimming, recruiting and search, family redundancy, sequence redundancy, phylogeny), and the `params` block of `nextflow.config` in the same order.
-- Renaming or removing a parameter is a breaking change: add it to the v2 → v3 table in `docs/usage.md` and to `CHANGELOG.md` (entries are listed newest pull request first).
 
 ### Outputs
 
