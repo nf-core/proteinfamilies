@@ -81,7 +81,7 @@ Each row contains a fasta file with amino acid sequences (gzipped or uncompresse
 Optionally, a row may contain existing families' HMMs (a tar.gz archive, or one HMM library such as a previous run's `<id>.lib.gz`), and optionally tar.gz archives of their seed and/or full MSAs, in order to be updated.
 Each HMM `NAME` is a family (unique, case-sensitive), and each seed or full MSA file must be named after one (same base filename, not the extension).
 Hit families will be updated, while input fasta sequences in no updated family will create new families (members of existing full MSAs never do).
-Every run also writes each sample's final families under `families/<id>/` (HMM library, seed and full MSA archives), in the same shape, so they can be updated again later.
+Every run also writes each sample's final families under `families/<id>/` (HMM library, and seed MSA, full MSA and FASTA archives); the library and the two MSA archives have the shape of the `existing_*` columns, so the families can be updated again later.
 
 Now, you can run the pipeline using:
 
