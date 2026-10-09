@@ -32,6 +32,6 @@ process SPLIT_FAMILY_HITS {
     stub:
     """
     mkdir -p hits
-    touch hits/test.fasta
+    touch hits/test.faa
     """
 }

@@ -127,7 +127,7 @@
                 "families",
                 "families/mgnifams_test",
                 "families/mgnifams_test/mgnifams_test.lib.gz",
-                "families/mgnifams_test/mgnifams_test_fasta.tar.gz",
+                "families/mgnifams_test/mgnifams_test_faa.tar.gz",
                 "families/mgnifams_test/mgnifams_test_full_msas.tar.gz",
                 "families/mgnifams_test/mgnifams_test_members.tsv",
                 "families/mgnifams_test/mgnifams_test_merged_families.tsv",
@@ -351,7 +351,7 @@
                 "pipeline_info/nf_core_proteinfamilies_software_mqc_versions.yml",
                 "qc",
                 "qc/mgnifams_test",
-                "qc/mgnifams_test/mgnifams_test.fasta",
+                "qc/mgnifams_test/mgnifams_test.faa",
                 "qc/mgnifams_test/mgnifams_test.log",
                 "qc/mgnifams_test/mgnifams_test_after.tsv",
                 "qc/mgnifams_test/mgnifams_test_after_mqc.txt",
@@ -376,12 +376,12 @@
                 "mgnifams_test_before_mqc.txt:md5,45de3e3c31c354347494309581b9ad2a"
             ],
             [
-                "mgnifams_test_fasta.tar.gz: mgnifams_test_1_1.faa, mgnifams_test_1_2.faa, mgnifams_test_2_1.faa, mgnifams_test_3_1.faa",
+                "mgnifams_test_faa.tar.gz: mgnifams_test_1_1.faa, mgnifams_test_1_2.faa, mgnifams_test_2_1.faa, mgnifams_test_3_1.faa",
                 "mgnifams_test_full_msas.tar.gz: mgnifams_test_1_1.aln, mgnifams_test_1_2.aln, mgnifams_test_2_1.aln, mgnifams_test_3_1.aln",
                 "mgnifams_test_seed_msas.tar.gz: mgnifams_test_1_1.fas.gz, mgnifams_test_1_2.fas.gz, mgnifams_test_2_1.fas.gz, mgnifams_test_3_1.fas.gz"
             ]
         ],
-        "timestamp": "2026-10-08T12:17:50.883172303",
+        "timestamp": "2026-10-09T09:57:48.538267566",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

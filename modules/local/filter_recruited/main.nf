@@ -12,7 +12,7 @@ process FILTER_RECRUITED {
     val(length_threshold)
 
     output:
-    tuple val(meta), path("${prefix}.fasta.gz"), emit: fasta, optional: true
+    tuple val(meta), path("${prefix}.faa.gz"), emit: fasta, optional: true
     tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
     tuple val("${task.process}"), val('biopython'), eval("python -c \"import importlib.metadata; print(importlib.metadata.version('biopython'))\""), emit: versions_biopython, topic: versions
 
@@ -26,12 +26,12 @@ process FILTER_RECRUITED {
         --domtbl ${domtbl} \\
         --fasta ${fa} \\
         --length_threshold ${length_threshold} \\
-        --out_fasta ${prefix}.fasta.gz
+        --out_fasta ${prefix}.faa.gz
     """
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
-    echo "" | gzip > ${prefix}.fasta.gz
+    echo "" | gzip > ${prefix}.faa.gz
     """
 }

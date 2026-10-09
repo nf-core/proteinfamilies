@@ -20,7 +20,7 @@ Final results are published at the same paths whatever the parameters; files of 
 │       ├── <samplename>.lib.gz                HMM library
 │       ├── <samplename>_seed_msas.tar.gz      seed MSAs
 │       ├── <samplename>_full_msas.tar.gz      full MSAs (aligned FASTA)
-│       ├── <samplename>_fasta.tar.gz          member sequences (FASTA)
+│       ├── <samplename>_faa.tar.gz            member sequences (FASTA)
 │       ├── <samplename>_members.tsv           family members
 │       ├── <samplename>_reps.faa              family representatives
 │       ├── <samplename>_meta_mqc.csv          family metadata for MultiQC
@@ -37,7 +37,7 @@ A file is published when it has content, so some are absent for some samples:
 
 - `<samplename>.lib.gz` needs at least one final family (every final family has an HMM). It is absent only for a sample with no final families (e.g. every cluster below `--clustering_min_cluster_size` and no families to update).
 - `<samplename>_full_msas.tar.gz` needs at least one final family with a full MSA; `<samplename>_seed_msas.tar.gz` at least one with a seed MSA.
-- `<samplename>_fasta.tar.gz`, `<samplename>_members.tsv`, `<samplename>_reps.faa` and `<samplename>_meta_mqc.csv` need at least one final family with a FASTA (that is, with a full MSA). A sample whose only final families are HMM-only pass-throughs gets the library only and is not listed in `families/samplesheet.csv`.
+- `<samplename>_faa.tar.gz`, `<samplename>_members.tsv`, `<samplename>_reps.faa` and `<samplename>_meta_mqc.csv` need at least one final family with a FASTA (that is, with a full MSA). A sample whose only final families are HMM-only pass-throughs gets the library only and is not listed in `families/samplesheet.csv`.
 - `<samplename>_merged_families.tsv` is written only when a merge happened, `<samplename>_passed_through_existing_families.tsv` only for samples with families to update.
 - `redundancy/redundant_fam_ids.txt` and `redundancy/similar_fam_ids.txt` are written unless both `--family_redundancy_removal` and `--family_merging` are `none` (they may be empty); `redundancy/similarities.csv` only when similar family pairs are found; `redundancy/pooled_components.txt` when similar families are pooled for merging (it may be empty when every pool is dropped).
 
@@ -124,7 +124,7 @@ The `seqfu` module is used for statistics generation of input amino acid sequenc
 
 - `qc/`
   - `<samplename>/`
-    - `<samplename>.fasta`: preprocessed input sequences, the curated set the families are built from (not written with `--skip_preprocessing`)
+    - `<samplename>.faa`: preprocessed input sequences, the curated set the families are built from (not written with `--skip_preprocessing`)
 - `intermediates/qc/<samplename>/`: (optional) intermediate files of the preprocessing steps
 
 </details>
@@ -281,10 +281,10 @@ Results are stored in the `intermediates/seed_msa/raw` folder. Full MSAs are nev
 - `intermediates/fasta/`
   - `hmmsearch_filtered_recruited/`
     - `<samplename>/`
-      - `<samplename>_*.fasta.gz`: (optional) filtered fasta sequences after hmmsearch and applied thresholds
+      - `<samplename>_*.faa.gz`: (optional) filtered fasta sequences after hmmsearch and applied thresholds
   - `non_redundant_family_filtered/`
     - `<samplename>/`
-      - `<samplename>_*.fasta.gz`: (optional) filtered full alignment sequences after family redundancy removal in fasta format
+      - `<samplename>_*.faa.gz`: (optional) filtered full alignment sequences after family redundancy removal in fasta format (`.fasta.gz` with `--family_generation_algorithm iterative`)
 - `intermediates/remove_redundancy/`
   - `merge_families/`
     - `hmmer/`
@@ -306,7 +306,7 @@ Results are stored in the `intermediates/seed_msa/raw` folder. Full MSAs are nev
     - `fasta/`
       - `hmmsearch_filtered_recruited/`
         - `<samplename>/`
-          - `<samplename>_*.fasta.gz`: (optional) filtered fasta sequences of merged families after hmmsearch and applied thresholds
+          - `<samplename>_*.faa.gz`: (optional) filtered fasta sequences of merged families after hmmsearch and applied thresholds
 
 </details>
 
@@ -542,9 +542,9 @@ Pooled members that no family hits again are dropped; only input sequences witho
         - `<samplename>.domtbl.gz`: (optional) hmmsearch results of the pooled sequences against existing families' HMMs
   - `split_family_hits/`
     - `hits/`
-      - `<family_id>.fasta`: (optional) hit sequences for each existing family, cut to the hit envelope
+      - `<family_id>.faa`: (optional) hit sequences for each existing family, cut to the hit envelope
   - `unassigned/`
-    - `<samplename>_unassigned.fasta.gz`: (optional) input sequences in no updated family, which will be passed to normal execution mode to create new families
+    - `<samplename>_unassigned.faa.gz`: (optional) input sequences in no updated family, which will be passed to normal execution mode to create new families
 - `families/`
   - `<samplename>/`
     - `<samplename>_passed_through_existing_families.tsv`: existing families passed through as given, with the reason (`no hits`, or `no recruits` when the rebuilt HMM recruited nothing); header only if every family was updated
@@ -612,7 +612,7 @@ If `--skip_sequence_redundancy_removal` is set to `false`, the mmseqs suite stri
   - `fasta/`
     - `hmmsearch_filtered_recruited/`
       - `<samplename>/`
-        - `<family_id>.fasta.gz`: (optional) recruited sequences of the new full MSA
+        - `<family_id>.faa.gz`: (optional) recruited sequences of the new full MSA
   - `full_msa/`
     - `raw/`
       - `hmmer_hmmalign/`
@@ -656,7 +656,7 @@ The generated treefiles can be visualized externally with any Newick phylogeneti
     - `<samplename>.lib.gz`: compressed HMM library of every final family of the sample (created after redundancy removal, updated, and passed through)
     - `<samplename>_seed_msas.tar.gz`: their seed MSAs (families without one, e.g. updated with `--skip_update_refinement` and no provided seed, are absent)
     - `<samplename>_full_msas.tar.gz`: their full MSAs (aligned FASTA)
-    - `<samplename>_fasta.tar.gz`: their member sequences (FASTA)
+    - `<samplename>_faa.tar.gz`: their member sequences (FASTA)
     - `<samplename>_members.tsv`: 2-column TSV file with family ids and all sequence member ids
     - `<samplename>_reps.faa`: fasta file of all family representative sequences (one sequence per family)
     - `<samplename>_meta_mqc.csv`: CSV file with metadata to print with MultiQC (column headers: Sample Name,Family Id,Size,Representative Length,Representative Id,Sequence)

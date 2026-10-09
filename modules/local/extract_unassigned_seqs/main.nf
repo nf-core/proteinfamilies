@@ -11,7 +11,7 @@ process EXTRACT_UNASSIGNED_SEQS {
     tuple val(meta), path(fasta), path(families, stageAs: "families/*") // families: [] if no family was updated
 
     output:
-    tuple val(meta), path("${prefix}.fasta.gz"), emit: fasta
+    tuple val(meta), path("${prefix}.faa.gz"), emit: fasta
     tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/Python //'"), emit: versions_python, topic: versions
 
     when:
@@ -24,12 +24,12 @@ process EXTRACT_UNASSIGNED_SEQS {
     extract_unassigned_seqs.py \\
         --fasta ${fasta} \\
         ${families_arg} \\
-        --out_fasta ${prefix}.fasta.gz
+        --out_fasta ${prefix}.faa.gz
     """
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}_unassigned"
     """
-    echo "" | gzip > ${prefix}.fasta.gz
+    echo "" | gzip > ${prefix}.faa.gz
     """
 }

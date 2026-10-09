@@ -7,7 +7,7 @@
                         {
                             "id": "fasta"
                         },
-                        "test.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -29,7 +29,7 @@
                         {
                             "id": "fasta"
                         },
-                        "test.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions_biopython": [
@@ -48,7 +48,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-03T09:47:37.655372223",
+        "timestamp": "2026-10-09T09:41:55.706915697",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -62,12 +62,12 @@
                         "id": "fasta"
                     },
                     [
-                        "mgnifams_test_1.fasta:md5,df53aa6a0450be4f1c73c51578ba5323",
-                        "mgnifams_test_3.fasta:md5,25bc45d9938415d996e1ff0fef235f78",
-                        "mgnifams_test_4.fasta:md5,4f8efff250f1242767d6eaab614b880f",
-                        "mgnifams_test_5.fasta:md5,666cf3c54399d0088fd5ad03eec6e575",
-                        "mgnifams_test_6.fasta:md5,c3ac1f49721a3d5faa69ec916aab29d2",
-                        "mgnifams_test_7.fasta:md5,161d18858155e5185ff3b1900d58cf48"
+                        "mgnifams_test_1.faa:md5,df53aa6a0450be4f1c73c51578ba5323",
+                        "mgnifams_test_3.faa:md5,25bc45d9938415d996e1ff0fef235f78",
+                        "mgnifams_test_4.faa:md5,4f8efff250f1242767d6eaab614b880f",
+                        "mgnifams_test_5.faa:md5,666cf3c54399d0088fd5ad03eec6e575",
+                        "mgnifams_test_6.faa:md5,c3ac1f49721a3d5faa69ec916aab29d2",
+                        "mgnifams_test_7.faa:md5,161d18858155e5185ff3b1900d58cf48"
                     ]
                 ]
             ],
@@ -88,7 +88,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-10-03T09:47:22.540970993",
+        "timestamp": "2026-10-09T09:40:50.105310068",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

@@ -40,18 +40,18 @@
                         "id": "test",
                         "chunk": "chunk_1"
                     },
-                    "test_chunk_1.fasta.gz:md5,5d14fec7a4e06606eda48f8c912323ab"
+                    "test_chunk_1.faa.gz:md5,5d14fec7a4e06606eda48f8c912323ab"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "chunk_2"
                     },
-                    "test_chunk_2.fasta.gz:md5,7ae62909eb81f92c331b2048a8ac34d3"
+                    "test_chunk_2.faa.gz:md5,7ae62909eb81f92c331b2048a8ac34d3"
                 ]
             ]
         ],
-        "timestamp": "2026-10-02T15:34:32.431363931",
+        "timestamp": "2026-10-09T09:45:01.905133478",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

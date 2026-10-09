@@ -12,9 +12,9 @@ nextflow_process {
                 """
                 def fasta = file('input.faa')
                 fasta.text = '>p desc\\nACDEFGHIKL\\n>q\\nMNPQ\\nRSTV\\n>r\\nAAAA\\n>s/1-50\\nCC\\n>t/1-50\\nWW'
-                def fam1 = file('fam1.fasta')
+                def fam1 = file('fam1.faa')
                 fam1.text = '>p/3-8 fam1\\nDEFGHI\\n>q fam1\\nMNPQRSTV\\n'
-                def fam2 = file('fam2.fasta')
+                def fam2 = file('fam2.faa')
                 fam2.text = '>s/10-20 fam2\\nC\\n>t/40-90 fam2\\nW\\n'
                 input[0] = channel.of([ [ id: 'test' ], fasta, [ fam1, fam2 ] ])
                 """

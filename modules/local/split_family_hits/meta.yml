@@ -47,7 +47,7 @@ output:
     - hits/*:
         type: file
         description: List of fasta files containing sequences that had HMM hits across families -one file per family.
-        pattern: "hits/*.fasta"
+        pattern: "hits/*.faa"
   versions_python:
     - - ${task.process}:
           type: string

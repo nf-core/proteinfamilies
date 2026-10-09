@@ -141,7 +141,7 @@
                         {
                             "id": "test_tsv"
                         },
-                        "1.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "1.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -169,7 +169,7 @@
                         {
                             "id": "test_tsv"
                         },
-                        "1.fasta:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "1.faa:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions_biopython": [
@@ -188,10 +188,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-07-28T12:14:25.524514939",
+        "timestamp": "2026-10-09T09:37:49.503933754",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.4"
+            "nextflow": "26.04.6"
         }
     }
 }

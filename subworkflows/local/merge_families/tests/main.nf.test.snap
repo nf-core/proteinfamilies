@@ -31,11 +31,11 @@
                         "merged_id": "mgnifams_test_90fams_cef0de0010",
                         "pool": "create"
                     },
-                    "mgnifams_test_90fams_cef0de0010.fasta.gz:md5,f398708f15b7e8a5e28dcb7c4f653e40"
+                    "mgnifams_test_90fams_cef0de0010.faa.gz:md5,f398708f15b7e8a5e28dcb7c4f653e40"
                 ]
             ]
         ],
-        "timestamp": "2026-10-05T15:47:59.63774822",
+        "timestamp": "2026-10-09T09:47:42.487005057",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -90,7 +90,7 @@
                         "merged_id": "test_1_2",
                         "pool": "create"
                     },
-                    "test_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                    "test_1_2.faa.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
                 ],
                 [
                     {
@@ -98,11 +98,11 @@
                         "merged_id": "test_3_5",
                         "pool": "create"
                     },
-                    "test_3_5.fasta.gz:md5,3a7a0927b59800049ba84b30600820a2"
+                    "test_3_5.faa.gz:md5,3a7a0927b59800049ba84b30600820a2"
                 ]
             ]
         ],
-        "timestamp": "2026-10-05T15:48:48.519257924",
+        "timestamp": "2026-10-09T09:48:38.503377518",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -157,7 +157,7 @@
                         "merged_id": "sampleA_1_2",
                         "pool": "create"
                     },
-                    "sampleA_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                    "sampleA_1_2.faa.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
                 ],
                 [
                     {
@@ -165,11 +165,11 @@
                         "merged_id": "sampleB_1_2",
                         "pool": "create"
                     },
-                    "sampleB_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                    "sampleB_1_2.faa.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
                 ]
             ]
         ],
-        "timestamp": "2026-10-05T15:48:24.925938989",
+        "timestamp": "2026-10-09T09:48:10.245898137",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -205,11 +205,11 @@
                         "merged_id": "mgnifams_test_1_2",
                         "pool": "create"
                     },
-                    "mgnifams_test_1_2.fasta.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                    "mgnifams_test_1_2.faa.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
                 ]
             ]
         ],
-        "timestamp": "2026-10-05T15:47:37.895652694",
+        "timestamp": "2026-10-09T09:46:22.934541268",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
