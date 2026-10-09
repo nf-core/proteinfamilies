@@ -122,7 +122,7 @@ Please also refer to the [pipeline-specific contribution guidelines](#pipeline-s
 - [ ] Define the corresponding [input channel](#channel-naming-schemes) into your new process from the expected previous process channel.
 - [ ] Install a module with nf-core/tools, or write a local module (see [default processes resource requirements](#default-processes-resource-requirements)), and add it to the target `<workflow>.nf`.
 - [ ] Define the output channel if needed. Mix the version output channel into `ch_versions` and relevant files into `ch_multiqc`.
-- [ ] Add new or updated parameters to `nextflow.config` with a [default value](#default-parameter-values).
+- [ ] Add new or updated parameters to the `params` block of `main.nf` with a type and a [default value](#default-parameter-values).
 - [ ] Add new or updated parameters and relevant help text to `nextflow_schema.json` with [nf-core/tools](#default-parameter-values).
 - [ ] Add validation for relevant parameters to the pipeline utilisation section of `utils_nfcore_\_pipeline/main.nf` subworkflow.
 - [ ] Perform local tests to validate that the new code works as expected.
@@ -145,8 +145,9 @@ Use the following naming schemes for channels to make the channel flow easier to
 
 #### Default parameter values
 
-Parameters should be initialised and defined with default values within the `params` scope in `nextflow.config`.
-They should also be documented in the pipeline JSON schema.
+Parameters should be declared with a type and default value in the `params` block of `main.nf`, so that values given on the command line are cast (e.g. `min_seq_length: Integer = 30`).
+Only parameters the config reads itself (e.g. `outdir`, `publish_dir_mode`, `save_intermediates`) get their default in the `params` scope of `nextflow.config`; booleans among them are also typed, without a default, in `main.nf`.
+Every parameter should also be documented in the pipeline JSON schema.
 
 To update `nextflow_schema.json`, run:
 
@@ -189,4 +190,21 @@ When contributing to nf-core/proteinfamilies, please keep the following pipeline
 - Keep local helper scripts in `bin/` deterministic, streaming-friendly where possible, and compatible with compressed FASTA/HMMER/MMseqs2 outputs used by the existing modules.
 - Use nf-core modules for shared tools where possible; keep pipeline-specific logic in `modules/local/` or `subworkflows/local/` with matching `meta.yml`, tests, and snapshots.
 - For changes that affect the family creation or update workflows, run at least the smallest relevant profile, such as `test_minimal`, `test`, `test_update`, or `test_merge`, before opening a pull request.
-- Check that generated family identifiers, member tables, representative sequences, HMM files, and optional downstream samplesheets remain stable or document any intentional changes clearly in the pull request.
+- Check that generated family identifiers, member tables, representative sequences, HMM libraries, family archives, and the downstream samplesheet remain stable or document any intentional changes clearly in the pull request.
+
+### Parameter naming
+
+New parameters follow the naming used across the pipeline, so users can guess a name from the step it controls:
+
+- Value parameters are named `<stage>_<attribute>`, after the pipeline stage they control, not after the tool that runs it: `clustering_*`, `iterative_*`, `seed_msa_trimming_*`, `search_*`, `recruit_*`, `family_redundancy_*`, `family_similarity_*`, `seq_redundancy_*` (e.g. `--recruit_min_model_coverage`, not `--hmmsearch_query_length_threshold`). Tools may change; the names should not have to.
+- Thresholds say which bound they set, `min_*` or `max_*` (e.g. `--clustering_min_seq_identity`, `--seed_msa_trimming_max_gap_fraction`); E-value thresholds end in `_evalue_cutoff`.
+- Steps that run by default are turned off with `skip_<step>` (default `false`); optional steps are turned on with `run_<step>` (default `false`). Avoid double negatives such as a `skip_*` parameter that defaults to `true`.
+- A policy with more than two states is one enum parameter (e.g. `--family_redundancy_removal all|created_only|none`, `--deduplicate_by name|sequence`), not several booleans that can contradict each other. List its options in a comment after its default in `main.nf` (e.g. `family_merging: String = 'all' // ['all', 'created_only', 'none']`).
+- `--save_intermediates` is the only `save_*` parameter (see below); do not add per-step `save_*` flags.
+- Keep `nextflow_schema.json` groups in pipeline order (preprocessing, clustering, family generation, seed MSA trimming, recruiting and search, family redundancy, sequence redundancy, phylogeny), and the `params` block of `main.nf` in the same order.
+
+### Outputs
+
+- Final results are published at paths that do not depend on parameters: `qc/<id>/`, `clustering/<id>/`, `families/<id>/` (HMM library, seed MSA, full MSA and FASTA archives, members, representatives, reports), `families/samplesheet.csv` and `phylogeny/<id>/`. A final file is absent only when it would have no content, and `docs/output.md` lists each case.
+- Every other file is an intermediate: publish it under `intermediates/` with `enabled: params.save_intermediates` in `conf/modules.config` (the default `publishDir` already does this for processes without their own entry).
+- Do not publish the same result twice (e.g. a loose copy of files already in an archive).

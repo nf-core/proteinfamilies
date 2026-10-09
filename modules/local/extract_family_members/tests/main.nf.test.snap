@@ -7,7 +7,7 @@
                         {
                             "id": "extract_family_members"
                         },
-                        "extract_family_members.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "extract_family_members_members.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "1": [
@@ -22,7 +22,7 @@
                         {
                             "id": "extract_family_members"
                         },
-                        "extract_family_members.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "extract_family_members_members.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "versions_python": [
@@ -34,10 +34,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:49:28.442427625",
+        "timestamp": "2026-10-08T12:25:42.555713085",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     },
     "proteinfamilies - faa": {
@@ -47,7 +47,7 @@
                     {
                         "id": "extract_family_members"
                     },
-                    "extract_family_members.tsv:md5,520d0a3dec8439ac4544b34d52bd15b3"
+                    "extract_family_members_members.tsv:md5,520d0a3dec8439ac4544b34d52bd15b3"
                 ]
             ],
             {
@@ -60,10 +60,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:49:17.65198514",
+        "timestamp": "2026-10-08T12:25:26.970544452",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

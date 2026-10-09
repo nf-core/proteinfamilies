@@ -39,10 +39,10 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1', single_end:false ]`
-    - ${prefix}.fasta.gz:
+    - ${prefix}.faa.gz:
         type: file
         description: a filtered fasta file
-        pattern: "*.fasta.gz"
+        pattern: "*.faa.gz"
   versions_python:
     - - ${task.process}:
           type: string

@@ -79,23 +79,5 @@
             "nf-test": "0.9.5",
             "nextflow": "26.04.3"
         }
-    },
-    "fasta - mafft - stub": {
-        "content": [
-            [
-                [
-                    {
-                        "id": "test_mafft_stub",
-                        "chunk": 1
-                    },
-                    "test_mafft_stub_1.fas:md5,d41d8cd98f00b204e9800998ecf8427e"
-                ]
-            ]
-        ],
-        "timestamp": "2026-06-08T16:35:38.181309817",
-        "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
-        }
     }
 }

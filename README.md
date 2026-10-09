@@ -59,9 +59,9 @@ for up to three rounds, or until the family model has converged. For more inform
 3. Rebuild each hit family like a new one, following steps 2-4 of [`Create families`](#create-families) with the `standard` algorithm (always used for updates): new seed MSA and HMM, and new full MSA recruited from the same pool, reformatted to `.fas` ([`HH-suite3`](https://github.com/soedinglab/hh-suite))
 4. Input fasta sequences that no updated family holds (including those recruited by a rebuilt HMM) continue in the [`Create families`](#create-families) paragraph above; members of existing full MSAs never do
 
-### Prepare downstream samplesheets
+### Prepare downstream samplesheet
 
-Optionally, prepare the downstream samplesheets for the `nf-core/proteinfold` and `nf-core/proteinannotator` pipelines.
+Write a samplesheet of the family representatives (`families/samplesheet.csv`), the input for the downstream `nf-core/proteinfold` and `nf-core/proteinannotator` pipelines.
 
 ## Usage
 
@@ -81,7 +81,7 @@ Each row contains a fasta file with amino acid sequences (gzipped or uncompresse
 Optionally, a row may contain existing families' HMMs (a tar.gz archive, or one HMM library such as a previous run's `<id>.lib.gz`), and optionally tar.gz archives of their seed and/or full MSAs, in order to be updated.
 Each HMM `NAME` is a family (unique, case-sensitive), and each seed or full MSA file must be named after one (same base filename, not the extension).
 Hit families will be updated, while input fasta sequences in no updated family will create new families (members of existing full MSAs never do).
-Every run also archives each sample's final families under `archives/<id>/`, in the same tar.gz shape, so they can be updated again later.
+Every run also writes each sample's final families under `families/<id>/` (HMM library, and seed MSA, full MSA and FASTA archives); the library and the two MSA archives have the shape of the `existing_*` columns, so the families can be updated again later.
 
 Now, you can run the pipeline using:
 

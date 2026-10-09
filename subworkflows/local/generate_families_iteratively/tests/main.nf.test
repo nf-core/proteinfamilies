@@ -2,6 +2,7 @@ nextflow_workflow {
 
     name "Test Subworkflow GENERATE_FAMILIES_ITERATIVELY"
     script "../main.nf"
+    config "./nextflow.config"
     workflow "GENERATE_FAMILIES_ITERATIVELY"
 
     test("clusters tsv") {

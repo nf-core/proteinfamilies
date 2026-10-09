@@ -20,16 +20,27 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
             // stable_content: All files in ${params.outdir}/ with stable content
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
-            // archives/: member order and timestamps vary, so each member is checked by the md5 of its
+            // families/<id>/*.tar.gz: member order and timestamps vary, so each member is checked by the md5 of its
             // decompressed content, without the run-dependent DATE line of HMMs
-            def archive_members = file("${params.outdir}/archives").listFiles().sort().collectMany { sample ->
-                sample.listFiles().sort().collect { archive ->
+            def archive_members = file("${params.outdir}/families").listFiles().findAll { sample -> sample.isDirectory() }.sort().collectMany { sample ->
+                sample.listFiles().findAll { archive -> archive.name.endsWith('.tar.gz') }.sort().collect { archive ->
                     def members = File.createTempDir()
                     ['tar', '-xzf', archive.toString(), '-C', members.toString()].execute().waitFor()
                     "${archive.name}: " + members.listFiles().sort().collect { member ->
                         def text = member.name.endsWith('.gz') ? new java.util.zip.GZIPInputStream(member.newInputStream()).text : member.text
                         "${member.name}=${text.readLines().findAll { line -> !line.startsWith('DATE') }.join('\n').md5()}"
                     }.join(', ')
+                }
+            }
+            // families/<id>/<id>.lib.gz: model order varies, so each model is checked by the md5 of its text without
+            // the run-dependent DATE line
+            def library_models = file("${params.outdir}/families").listFiles().findAll { sample -> sample.isDirectory() }.sort().collectMany { sample ->
+                sample.listFiles().findAll { library -> library.name.endsWith('.lib.gz') }.collect { library ->
+                    def models = new java.util.zip.GZIPInputStream(library.newInputStream()).text.split(/(?m)^\/\/\n?/).findAll { model -> model.trim() }
+                    "${library.name}: " + models.collect { model ->
+                        def lines = model.readLines()
+                        "${lines.find { line -> line.startsWith('NAME ') }.tokenize()[1]}=${lines.findAll { line -> !line.startsWith('DATE') }.join('\n').md5()}"
+                    }.sort().join(', ')
                 }
             }
             assert workflow.success
@@ -44,7 +55,8 @@ nextflow_pipeline {
                     stable_path,
                     // All files with stable contents
                     stable_content,
-                    archive_members
+                    archive_members,
+                    library_models
                 ).match() }
             )
         }

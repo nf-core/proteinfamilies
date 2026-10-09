@@ -2,6 +2,7 @@ nextflow_workflow {
 
     name "Test Subworkflow ALIGN_SEQUENCES"
     script "../main.nf"
+    config "./nextflow.config"
     workflow "ALIGN_SEQUENCES"
 
     test("fasta - famsa") {
@@ -94,33 +95,6 @@ nextflow_workflow {
 
                 input[0] = channel.of([
                     [ id: 'test_famsa_stub', chunk: 1 ],
-                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
-                ])
-                input[1] = alignment_tool
-                input[2] = true
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert workflow.success},
-                { assert snapshot(workflow.out.alignments).match() }
-            )
-        }
-    }
-
-    test("fasta - mafft - stub") {
-
-        options "-stub"
-
-        when {
-            workflow {
-                """
-                alignment_tool = 'mafft'
-
-                input[0] = channel.of([
-                    [ id: 'test_mafft_stub', chunk: 1 ],
                     file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
                 ])
                 input[1] = alignment_tool

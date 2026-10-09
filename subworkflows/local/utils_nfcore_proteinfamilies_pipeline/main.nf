@@ -195,7 +195,7 @@ def toolCitationText() {
         alignment_text,
         !params.skip_seed_msa_trimming ? clipping_text : "",
         model_text,
-        !params.skip_phylogenetic_inference ? phylogeny_text : "",
+        params.run_phylogenetic_inference ? phylogeny_text : "",
         postprocessing_text
     ].join(' ').trim()
 
@@ -231,7 +231,7 @@ def toolBibliographyText() {
         alignment_text,
         !params.skip_seed_msa_trimming ? clipping_text : "",
         model_text,
-        !params.skip_phylogenetic_inference ? phylogeny_text : "",
+        params.run_phylogenetic_inference ? phylogeny_text : "",
         postprocessing_text
     ].join(' ').trim()
 

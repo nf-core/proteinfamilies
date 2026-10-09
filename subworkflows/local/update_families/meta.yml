@@ -31,7 +31,7 @@ input:
         Channel with the following elements; meta, sequences, existing_hmms, existing_seed_msas, existing_full_msas.
         The MSA archives are optional ([]); their files are named after the HMM files. Full MSA members are
         searched again; seed MSAs are never searched, only passed through.
-  - hmmsearch_query_length_threshold:
+  - recruit_min_model_coverage:
       type: number
       description: |
         Query length threshold for hmmsearch filtering to determine sequence hits that will update existing families (between 0.0 and 1.0)
@@ -55,15 +55,7 @@ input:
       type: boolean
       description: |
         Skip trimming of the new seed MSAs with ClipKIT
-  - hmmsearch_write_target:
-      type: boolean
-      description: |
-        Write target sequences in the recruiting hmmsearch output
-  - hmmsearch_write_domain:
-      type: boolean
-      description: |
-        Write domain information in the recruiting hmmsearch output
-  - skip_additional_sequence_recruiting:
+  - skip_recruiting:
       type: boolean
       description: |
         Skip recruiting the full MSA with the new HMM; the new seed MSA is then also the full MSA

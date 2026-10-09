@@ -15,7 +15,7 @@ overlaps and separate regions (e.g. two domains) are kept.
 
 Writes the uncompressed pool (HMMER cannot search a gzip stream): the input sequences
 first, then the kept members. Optionally also writes every member of each MSA, degapped, as
-`<family>.fasta.gz`: the FASTA of a family that passes the update as given.
+`<family>.faa.gz`: the FASTA of a family that passes the update as given.
 """
 
 import sys
@@ -61,7 +61,7 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         "--out_members",
         metavar="DIR",
         type=Path,
-        help="Optional output folder for each MSA's degapped members, as <family>.fasta.gz.",
+        help="Optional output folder for each MSA's degapped members, as <family>.faa.gz.",
     )
     return parser.parse_args(args)
 
@@ -131,7 +131,7 @@ def pool_members(fasta: str, msas: Sequence[str], out_fasta: str, out_members: P
             if out_members:
                 family = Path(path.name.removesuffix(".gz")).stem
                 # mtime=0: identical members give identical files across runs
-                with gzip.GzipFile(out_members / f"{family}.fasta.gz", "wb", mtime=0) as out_family:
+                with gzip.GzipFile(out_members / f"{family}.faa.gz", "wb", mtime=0) as out_family:
                     out_family.write("".join(f">{name}\n{residues}\n" for name, residues in rows).encode())
 
         kept = []

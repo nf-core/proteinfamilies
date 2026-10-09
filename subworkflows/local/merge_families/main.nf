@@ -25,10 +25,8 @@ workflow MERGE_FAMILIES {
     family_generation_algorithm         // string ["standard", "iterative"]
     alignment_tool                      // string ["famsa", "mafft"]
     skip_seed_msa_trimming              // boolean
-    hmmsearch_write_target              // boolean
-    hmmsearch_write_domain              // boolean
-    skip_additional_sequence_recruiting // boolean
-    hmmsearch_query_length_threshold    // number [0.0, 1.0]
+    skip_recruiting                     // boolean
+    recruit_min_model_coverage          // number [0.0, 1.0]
     merged_family_name                  // string ["existing", "new"]
 
     main:
@@ -89,10 +87,8 @@ workflow MERGE_FAMILIES {
             MERGE_SEEDS.out.merged_seed_msa,
             alignment_tool,
             skip_seed_msa_trimming,
-            hmmsearch_write_target,
-            hmmsearch_write_domain,
-            skip_additional_sequence_recruiting,
-            hmmsearch_query_length_threshold
+            skip_recruiting,
+            recruit_min_model_coverage
         )
         ch_families = GENERATE_FAMILIES.out
     }

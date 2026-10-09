@@ -17,9 +17,9 @@ include { CALCULATE_CLUSTER_DISTRIBUTION                   } from '../modules/lo
 include { CHUNK_AND_GENERATE_FAMILIES                      } from '../subworkflows/local/chunk_and_generate_families'
 include { REMOVE_REDUNDANCY                                } from '../subworkflows/local/remove_redundancy'
 include { FIND_CONCATENATE as FIND_CONCATENATE_HMM_LIBRARY } from '../modules/nf-core/find/concatenate'
-include { TAR as TAR_HMMS                                  } from '../modules/nf-core/tar/main'
 include { TAR as TAR_SEED_MSAS                             } from '../modules/nf-core/tar/main'
 include { TAR as TAR_FULL_MSAS                             } from '../modules/nf-core/tar/main'
+include { TAR as TAR_FASTA                                 } from '../modules/nf-core/tar/main'
 include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
@@ -82,14 +82,12 @@ workflow PROTEINFAMILIES {
 
     UPDATE_FAMILIES (
         ch_samplesheet_for_update,
-        params.hmmsearch_query_length_threshold,
+        params.recruit_min_model_coverage,
         params.skip_sequence_redundancy_removal,
         params.clustering_tool,
         params.alignment_tool,
         params.skip_seed_msa_trimming,
-        params.hmmsearch_write_target,
-        params.hmmsearch_write_domain,
-        params.skip_additional_sequence_recruiting,
+        params.skip_recruiting,
         params.skip_update_refinement
     )
 
@@ -116,14 +114,12 @@ workflow PROTEINFAMILIES {
         MMSEQS_FASTA_CLUSTER.out.seqs,
         MMSEQS_FASTA_CLUSTER.out.clusters,
         params.family_generation_algorithm,
-        params.cluster_size_threshold,
-        params.clusters_per_chunk,
+        params.clustering_min_cluster_size,
+        params.iterative_clusters_per_chunk,
         params.alignment_tool,
         params.skip_seed_msa_trimming,
-        params.hmmsearch_write_target,
-        params.hmmsearch_write_domain,
-        params.skip_additional_sequence_recruiting,
-        params.hmmsearch_query_length_threshold
+        params.skip_recruiting,
+        params.recruit_min_model_coverage
     )
 
     // Created and updated families, keyed [id, family] by file stem
@@ -136,17 +132,15 @@ workflow PROTEINFAMILIES {
         familyFiles( CHUNK_AND_GENERATE_FAMILIES.out.hmm ).mix( UPDATE_FAMILIES.out.hmm ),
         params.family_redundancy_removal,
         params.family_merging,
-        params.hmmsearch_family_redundancy_length_threshold,
-        params.hmmsearch_family_similarity_length_threshold,
+        params.family_redundancy_min_model_coverage,
+        params.family_similarity_min_model_coverage,
         params.skip_sequence_redundancy_removal,
         params.clustering_tool,
         params.family_generation_algorithm,
         params.alignment_tool,
         params.skip_seed_msa_trimming,
-        params.hmmsearch_write_target,
-        params.hmmsearch_write_domain,
-        params.skip_additional_sequence_recruiting,
-        params.hmmsearch_query_length_threshold,
+        params.skip_recruiting,
+        params.recruit_min_model_coverage,
         params.merged_family_name
     )
 
@@ -161,14 +155,13 @@ workflow PROTEINFAMILIES {
 
     FIND_CONCATENATE_HMM_LIBRARY( ch_hmm_for_library )
 
-    // Archive each sample's final families in the shape of the samplesheet's existing_* columns,
-    // so they can be updated in a later run
-    TAR_HMMS( ch_hmm_for_library, '.gz' )
+    // Archive each sample's final families in the shape of the samplesheet's existing_* columns
+    // (the library above is their existing_hmms), so they can be updated in a later run
     TAR_SEED_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_seed_msa, REMOVE_REDUNDANCY.out.seed_msa ), '.gz' )
     TAR_FULL_MSAS( finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_full_msa, REMOVE_REDUNDANCY.out.full_msa ), '.gz' )
 
     // Infer Phylogenetic relations of full MSAs
-    if (!params.skip_phylogenetic_inference) {
+    if (params.run_phylogenetic_inference) {
         CMAPLE (
             REMOVE_REDUNDANCY.out.full_msa
                 .map { meta, file -> [ meta, file, [] ] }
@@ -177,6 +170,8 @@ workflow PROTEINFAMILIES {
 
     // Post-processing
     ch_fasta = finalFilesPerSample( UPDATE_FAMILIES.out.passed_through_fasta, REMOVE_REDUNDANCY.out.fasta )
+
+    TAR_FASTA( ch_fasta, '.gz' )
 
     EXTRACT_FAMILY_MEMBERS( ch_fasta )
 

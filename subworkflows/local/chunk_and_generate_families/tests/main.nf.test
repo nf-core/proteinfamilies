@@ -2,6 +2,7 @@ nextflow_workflow {
 
     name "Test Subworkflow CHUNK_AND_GENERATE_FAMILIES"
     script "../main.nf"
+    config "./nextflow.config"
     workflow "CHUNK_AND_GENERATE_FAMILIES"
 
     test("clusters - standard") {
@@ -18,14 +19,12 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
                 input[2]  = "standard" // family_generation_algorithm
-                input[3]  = 5          // cluster_size_threshold
-                input[4]  = 2          // clusters_per_chunk
+                input[3]  = 5          // clustering_min_cluster_size
+                input[4]  = 2          // iterative_clusters_per_chunk
                 input[5]  = "famsa"    // alignment_tool
                 input[6]  = false      // skip_seed_msa_trimming
-                input[7]  = false      // hmmsearch_write_target
-                input[8]  = true       // hmmsearch_write_domain
-                input[9] = false      // skip_additional_sequence_recruiting
-                input[10] = 0.9        // hmmsearch_query_length_threshold
+                input[7] = false      // skip_recruiting
+                input[8]  = 0.9        // recruit_min_model_coverage
                 """
             }
         }
@@ -58,14 +57,12 @@ nextflow_workflow {
                     file(params.pipelines_testdata_base_path + 'test_data/modules/clustering.tsv', checkIfExists: true)
                 ])
                 input[2]  = "iterative" // family_generation_algorithm
-                input[3]  = 5           // cluster_size_threshold
-                input[4]  = 2           // clusters_per_chunk
+                input[3]  = 5           // clustering_min_cluster_size
+                input[4]  = 2           // iterative_clusters_per_chunk
                 input[5]  = "famsa"     // alignment_tool
                 input[6]  = false       // skip_seed_msa_trimming
-                input[7]  = false       // hmmsearch_write_target
-                input[8]  = true        // hmmsearch_write_domain
-                input[9] = false       // skip_additional_sequence_recruiting
-                input[10] = 0.9         // hmmsearch_query_length_threshold
+                input[7] = false       // skip_recruiting
+                input[8]  = 0.9         // recruit_min_model_coverage
                 """
             }
         }

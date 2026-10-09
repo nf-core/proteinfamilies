@@ -2,6 +2,7 @@ nextflow_workflow {
 
     name "Test Subworkflow GENERATE_FAMILIES"
     script "../main.nf"
+    config "./nextflow.config"
     workflow "GENERATE_FAMILIES"
 
     test("fasta") {
@@ -27,10 +28,8 @@ nextflow_workflow {
                 ])
                 input[2] = "famsa"   // alignment_tool
                 input[3] = false     // skip_seed_msa_trimming
-                input[4] = false     // hmmsearch_write_target
-                input[5] = true      // hmmsearch_write_domain
-                input[6] = false     // skip_additional_sequence_recruiting
-                input[7] = 0.9       // hmmsearch_query_length_threshold
+                input[4] = false     // skip_recruiting
+                input[5] = 0.9       // recruit_min_model_coverage
                 """
             }
         }

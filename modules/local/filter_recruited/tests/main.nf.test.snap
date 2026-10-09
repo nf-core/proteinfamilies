@@ -7,7 +7,7 @@
                         "id": "filtering",
                         "chunk": 1
                     },
-                    "filtering_1.fasta.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
+                    "filtering_1.faa.gz:md5,ccf5eb969a8751fe21a8fec277f30953"
                 ]
             ],
             {
@@ -27,10 +27,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-08T11:07:55.888057511",
+        "timestamp": "2026-10-09T09:39:12.853544801",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     },
     "proteinfamilies - hmmsearch - fasta - stub": {
@@ -42,7 +42,7 @@
                             "id": "filtering",
                             "chunk": 1
                         },
-                        "filtering_1.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        "filtering_1.faa.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
                     ]
                 ],
                 "1": [
@@ -65,7 +65,7 @@
                             "id": "filtering",
                             "chunk": 1
                         },
-                        "filtering_1.fasta.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        "filtering_1.faa.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
                     ]
                 ],
                 "versions_biopython": [
@@ -84,10 +84,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-08T11:08:08.425113729",
+        "timestamp": "2026-10-09T09:39:50.07212281",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

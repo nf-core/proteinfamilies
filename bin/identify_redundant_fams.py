@@ -8,8 +8,8 @@ representatives. Redundant families (fully contained by another) are flagged for
 similar families (partial overlap) are paired for potential merging.
 
 Updated (existing) families are never flagged: a family redundant with an updated one is,
-and two updated families are kept both. Unmergeable families (e.g. without a seed MSA) are
-left out of the similar pairs.
+and two updated families are kept both. With --skip_updated_family_merging, updated families
+are left out of the similar pairs.
 """
 
 import sys
@@ -87,12 +87,6 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         metavar="FILE",
         type=str,
         help="Text file with one updated (existing) family ID per line; these are never flagged as redundant.",
-    )
-    parser.add_argument(
-        "--unmergeable_ids",
-        metavar="FILE",
-        type=str,
-        help="Text file with one family ID per line that must not be paired for merging.",
     )
     parser.add_argument(
         "--pairwise_similarities_file",
@@ -368,8 +362,8 @@ def main(args: Sequence[str] | None = None) -> None:
         args.pairwise_similarities_file,
         args.skip_family_redundancy_removal,
         read_ids(args.updated_ids),
-        # updated families are unmergeable too when their merging is skipped
-        read_ids(args.unmergeable_ids) | (read_ids(args.updated_ids) if args.skip_updated_family_merging else set()),
+        # updated families are unmergeable when their merging is skipped
+        read_ids(args.updated_ids) if args.skip_updated_family_merging else set(),
         args.skip_updated_family_redundancy_removal
     )
 

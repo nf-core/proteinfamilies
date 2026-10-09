@@ -44,7 +44,7 @@ process CHUNK_CLUSTERS {
     """
 
     stub:
-    def extension = out_format == "tsv" ? "tsv" : "fasta"
+    def extension = out_format == "tsv" ? "tsv" : "faa"
     """
     mkdir -p chunked_${out_format}
     touch chunked_${out_format}/1.${extension}

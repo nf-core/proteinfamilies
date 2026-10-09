@@ -36,10 +36,10 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. `[ id:'sample1' ]`
-      - "${prefix}.fasta":
+      - "${prefix}.faa":
           type: file
           description: Uncompressed input sequences followed by the degapped MSA members whose region does not lie inside an input sequence of the same protein or inside another member
-          pattern: "*.fasta"
+          pattern: "*.faa"
   members:
     - - meta:
           type: map
@@ -48,7 +48,7 @@ output:
             e.g. `[ id:'sample1' ]`
       - "${prefix}_members":
           type: directory
-          description: Every degapped member of each MSA, as `<family>.fasta.gz` (the FASTA of a family that passes the update as given)
+          description: Every degapped member of each MSA, as `<family>.faa.gz` (the FASTA of a family that passes the update as given)
           pattern: "*_members"
   versions_python:
     - - ${task.process}:

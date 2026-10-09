@@ -41,17 +41,15 @@ workflow REMOVE_REDUNDANCY {
     hmm                                          // tuple val(meta), path(hmm.gz), meta [id, family]
     family_redundancy_removal                    // string ["all", "created_only", "none"]
     family_merging                               // string ["all", "created_only", "none"]
-    hmmsearch_family_redundancy_length_threshold // number [0.0, 1.0]
-    hmmsearch_family_similarity_length_threshold // number [0.0, 1.0]
+    family_redundancy_min_model_coverage         // number [0.0, 1.0]
+    family_similarity_min_model_coverage         // number [0.0, 1.0]
     skip_sequence_redundancy_removal             // boolean
     clustering_tool                              // string ["linclust", "cluster"]
     family_generation_algorithm                  // string ["standard", "iterative"]
     alignment_tool                               // string ["famsa", "mafft"]
     skip_seed_msa_trimming                       // boolean
-    hmmsearch_write_target                       // boolean
-    hmmsearch_write_domain                       // boolean
-    skip_additional_sequence_recruiting          // boolean
-    hmmsearch_query_length_threshold             // number [0.0, 1.0]
+    skip_recruiting                              // boolean
+    recruit_min_model_coverage                   // number [0.0, 1.0]
     merged_family_name                           // string ["existing", "new"]
 
     main:
@@ -81,31 +79,28 @@ workflow REMOVE_REDUNDANCY {
 
         HMMER_HMMSEARCH( ch_input_for_hmmsearch )
 
-        // Per sample: the updated families, and the families without a seed MSA to merge from
-        ch_family_roles = hmm
+        // Per sample: the updated families
+        ch_updated_families = hmm
             .map { meta, model -> [[id: meta.id], fileStem(model)] }
             .groupTuple()
-            .join(seed_msa.map { meta, seed -> [[id: meta.id], fileStem(seed)] }.groupTuple(), remainder: true)
-            .map { meta, families, seeded ->
-                [meta, families.findAll { family -> !isCreatedFamily(meta.id, family) }.sort(), (families - (seeded ?: [])).sort()]
-            }
+            .map { meta, families -> [meta, families.findAll { family -> !isCreatedFamily(meta.id, family) }.sort()] }
 
         // Join to ensure in sync
         ch_input_for_redundant_fam_identification = EXTRACT_FAMILY_REPS.out.map
             .join(HMMER_HMMSEARCH.out.domain_summary)
-            .join(ch_family_roles)
-            .multiMap { meta, map, domtbl, updated, seedless ->
+            .join(ch_updated_families)
+            .multiMap { meta, map, domtbl, updated ->
                 map: [meta, map]
                 domtbl: [meta, domtbl]
-                roles: [meta, updated, seedless]
+                updated: [meta, updated]
             }
 
         IDENTIFY_REDUNDANT_FAMS (
             ch_input_for_redundant_fam_identification.map,
             ch_input_for_redundant_fam_identification.domtbl,
-            ch_input_for_redundant_fam_identification.roles,
-            hmmsearch_family_redundancy_length_threshold,
-            hmmsearch_family_similarity_length_threshold
+            ch_input_for_redundant_fam_identification.updated,
+            family_redundancy_min_model_coverage,
+            family_similarity_min_model_coverage
         )
 
         if (family_merging != 'none') {
@@ -116,16 +111,14 @@ workflow REMOVE_REDUNDANCY {
                 .mix(update_pool.map { meta, faa -> [[id: meta.id, pool: 'update'], faa] })
 
             MERGE_FAMILIES (
-                IDENTIFY_REDUNDANT_FAMS.out.similarities.join(ch_family_roles.map { meta, updated, _seedless -> [meta, updated] }),
+                IDENTIFY_REDUNDANT_FAMS.out.similarities.join(ch_updated_families),
                 ch_seed_msa,
                 ch_merge_sequences,
                 family_generation_algorithm,
                 alignment_tool,
                 skip_seed_msa_trimming,
-                hmmsearch_write_target,
-                hmmsearch_write_domain,
-                skip_additional_sequence_recruiting,
-                hmmsearch_query_length_threshold,
+                skip_recruiting,
+                recruit_min_model_coverage,
                 merged_family_name
             )
 

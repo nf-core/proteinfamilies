@@ -173,7 +173,7 @@ def write_family_fastas(
 
     Coordinates are 1-based (HMMER convention), converted to 0-based for slicing.
     If the extracted range spans the full sequence, the ID omits the /from-to suffix.
-    One file is written per family, named <family_id>.fasta.
+    One file is written per family, named <family_id>.faa.
 
     Args:
         results (dict[str, set[str]]): Passing hits grouped by family ID.
@@ -222,7 +222,7 @@ def write_family_fastas(
 
         # Write the extracted sequences to a FASTA file for the family
         if family_records:
-            family_fasta_path = os.path.join(output_dir, f"{family}.fasta")
+            family_fasta_path = os.path.join(output_dir, f"{family}.faa")
             SeqIO.write(family_records, family_fasta_path, "fasta")
             print(f"Written {len(family_records)} sequences to {family_fasta_path}")
 

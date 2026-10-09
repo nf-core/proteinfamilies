@@ -53,21 +53,21 @@
                         "id": "test",
                         "chunk": "1"
                     },
-                    "test_1.fasta.gz:md5,8c1d38553caff8358fd5f52527a69d69"
+                    "test_1.faa.gz:md5,8c1d38553caff8358fd5f52527a69d69"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "2"
                     },
-                    "test_2.fasta.gz:md5,94e09d0447ece89cf85025d7bb8fadc2"
+                    "test_2.faa.gz:md5,94e09d0447ece89cf85025d7bb8fadc2"
                 ],
                 [
                     {
                         "id": "test",
                         "chunk": "3"
                     },
-                    "test_3.fasta.gz:md5,40cd2c9c2ff618bb1d0ed29852499db8"
+                    "test_3.faa.gz:md5,40cd2c9c2ff618bb1d0ed29852499db8"
                 ]
             ],
             [
@@ -76,7 +76,7 @@
                 "test_3.hmm.gz"
             ]
         ],
-        "timestamp": "2026-10-02T15:33:53.815379171",
+        "timestamp": "2026-10-09T09:44:10.713293675",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

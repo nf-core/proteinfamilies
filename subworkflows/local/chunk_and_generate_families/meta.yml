@@ -30,11 +30,11 @@ input:
         HMM building, recruitment and realignment until each family converges or is discarded.
       enum: ["standard", "iterative"]
       default: "standard"
-  - cluster_size_threshold:
+  - clustering_min_cluster_size:
       type: integer
       description: |
         Minimum cluster size to keep; smaller clusters are discarded before chunking
-  - clusters_per_chunk:
+  - iterative_clusters_per_chunk:
       type: integer
       description: |
         Clusters per chunk in the iterative algorithm. The standard algorithm always chunks one cluster per file.
@@ -47,19 +47,11 @@ input:
       type: boolean
       description: |
         Skip trimming of multiple sequence alignments with ClipKIT. Standard algorithm only.
-  - hmmsearch_write_target:
-      type: boolean
-      description: |
-        Write target sequences in hmmsearch output. Standard algorithm only.
-  - hmmsearch_write_domain:
-      type: boolean
-      description: |
-        Write domain information in hmmsearch output. Standard algorithm only.
-  - skip_additional_sequence_recruiting:
+  - skip_recruiting:
       type: boolean
       description: |
         Skip additional sequence recruiting step using hmmsearch. Standard algorithm only.
-  - hmmsearch_query_length_threshold:
+  - recruit_min_model_coverage:
       type: number
       description: |
         Query length threshold for hmmsearch additional sequence filtering (between 0.0 and 1.0)

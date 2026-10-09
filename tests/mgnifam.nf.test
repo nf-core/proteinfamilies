@@ -20,9 +20,15 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
             // stable_content: All files in ${params.outdir}/ with stable content
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
-            // archives/: member order and timestamps vary, so their sorted member names are checked
-            def archive_members = file("${params.outdir}/archives").listFiles().sort().collectMany { sample ->
-                sample.listFiles().sort().collect { archive -> "${archive.name}: ${['tar', '-tzf', archive.toString()].execute().text.readLines().sort().join(', ')}" }
+            // families/<id>/*.tar.gz: member order and timestamps vary, so their sorted member names are checked
+            def archive_members = file("${params.outdir}/families").listFiles().findAll { sample -> sample.isDirectory() }.sort().collectMany { sample ->
+                sample.listFiles().findAll { archive -> archive.name.endsWith('.tar.gz') }.sort().collect { archive -> "${archive.name}: ${['tar', '-tzf', archive.toString()].execute().text.readLines().sort().join(', ')}" }
+            }
+            // families/<id>/<id>.lib.gz: model order and HMM DATE lines vary, so its sorted model names are checked
+            def library_models = file("${params.outdir}/families").listFiles().findAll { sample -> sample.isDirectory() }.sort().collectMany { sample ->
+                sample.listFiles().findAll { library -> library.name.endsWith('.lib.gz') }.collect { library ->
+                    "${library.name}: ${path(library.toString()).linesGzip.findAll { line -> line.startsWith('NAME ') }.collect { line -> line.tokenize()[1] }.sort().join(', ')}"
+                }
             }
             assert workflow.success
 
@@ -36,7 +42,8 @@ nextflow_pipeline {
                     stable_path,
                     // All files with stable contents
                     stable_content,
-                    archive_members
+                    archive_members,
+                    library_models
                 ).match() }
             )
         }
