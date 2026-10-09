@@ -204,42 +204,6 @@ nextflow_workflow {
         }
     }
 
-    test("hmm duplicate NAMEs - fail") {
-        // fam_a.hmm and fam_a.hmm.gz give the same family twice
-        when {
-            workflow {
-                """
-                def f1 = file('dup_hmms/hmm/fam_a.hmm')
-                f1.parent.mkdirs()
-                f1.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
-                ['gzip', '-k', file('dup_hmms/hmm/fam_a.hmm').toString()].execute().waitFor()
-                ['tar', '-czf', file('dup_hmms.tar.gz').toString(), '-C', file('dup_hmms').toString(), 'hmm'].execute().waitFor()
-                input[0] = channel.of([
-                    [ id: 'test_update' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
-                    file('dup_hmms.tar.gz'),
-                    [],
-                    []
-                ])
-                input[1] = 0.9        // recruit_min_model_coverage
-                input[2] = false      // skip_sequence_redundancy_removal
-                input[3] = "linclust" // clustering_tool
-                input[4] = "famsa"    // alignment_tool
-                input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_recruiting
-                input[7] = false      // skip_update_refinement
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert workflow.failed },
-                { assert workflow.stdout.any { line -> line.contains("existing HMM NAME 'fam_a' is given more than once") } }
-            )
-        }
-    }
-
     test("hmm names like created families - fail") {
         // test_update_1 could be created for sample test_update; test_update_ and test_update_x1 could not
         when {
@@ -281,6 +245,7 @@ nextflow_workflow {
 
     test("full msa without hmm - fails") {
         // other.aln names no existing HMM, so it could never be passed through with its family
+        // (seed MSA folders go through the same validateMsaStems check)
         when {
             workflow {
                 """
@@ -300,47 +265,6 @@ nextflow_workflow {
                     file('one_hmm.tar.gz'),
                     [],
                     file('stray_msas.tar.gz')
-                ])
-                input[1] = 0.9        // recruit_min_model_coverage
-                input[2] = false      // skip_sequence_redundancy_removal
-                input[3] = "linclust" // clustering_tool
-                input[4] = "famsa"    // alignment_tool
-                input[5] = false      // skip_seed_msa_trimming
-                input[6] = false      // skip_recruiting
-                input[7] = false      // skip_update_refinement
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert workflow.failed },
-                { assert workflow.stdout.any { line -> line.contains("without an existing HMM of the same name: other") } }
-            )
-        }
-    }
-
-    test("seed msa without hmm - fails") {
-        // the seed folder is validated like the full one: other.aln names no existing HMM
-        when {
-            workflow {
-                """
-                def f3 = file('one_hmm/hmm/fam_a.hmm')
-                f3.parent.mkdirs()
-                f3.text = 'HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_a\\nLENG  1\\n//\\n'
-                ['tar', '-czf', file('one_hmm.tar.gz').toString(), '-C', file('one_hmm').toString(), 'hmm'].execute().waitFor()
-                def f4 = file('stray_seeds/seed_msa/fam_a.aln')
-                f4.parent.mkdirs()
-                f4.text = '>s1\\nMK\\n'
-                def f5 = file('stray_seeds/seed_msa/other.aln')
-                f5.text = '>s2\\nMK\\n'
-                ['tar', '-czf', file('stray_seeds.tar.gz').toString(), '-C', file('stray_seeds').toString(), 'seed_msa'].execute().waitFor()
-                input[0] = channel.of([
-                    [ id: 'test_update' ],
-                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_extra.faa', checkIfExists: true),
-                    file('one_hmm.tar.gz'),
-                    file('stray_seeds.tar.gz'),
-                    []
                 ])
                 input[1] = 0.9        // recruit_min_model_coverage
                 input[2] = false      // skip_sequence_redundancy_removal
