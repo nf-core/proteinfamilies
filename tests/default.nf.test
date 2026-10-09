@@ -23,6 +23,12 @@ nextflow_pipeline {
             def archive_members = file("${params.outdir}/families").listFiles().findAll { sample -> sample.isDirectory() }.sort().collectMany { sample ->
                 sample.listFiles().findAll { archive -> archive.name.endsWith('.tar.gz') }.sort().collect { archive -> "${archive.name}: ${['tar', '-tzf', archive.toString()].execute().text.readLines().sort().join(', ')}" }
             }
+            // families/<id>/<id>.lib.gz: model order and HMM DATE lines vary, so its sorted model names are checked
+            def library_models = file("${params.outdir}/families").listFiles().findAll { sample -> sample.isDirectory() }.sort().collectMany { sample ->
+                sample.listFiles().findAll { library -> library.name.endsWith('.lib.gz') }.collect { library ->
+                    "${library.name}: ${path(library.toString()).linesGzip.findAll { line -> line.startsWith('NAME ') }.collect { line -> line.tokenize()[1] }.sort().join(', ')}"
+                }
+            }
             assert workflow.success
 
             assertAll(
@@ -35,7 +41,8 @@ nextflow_pipeline {
                     stable_path,
                     // All files with stable contents
                     stable_content,
-                    archive_members
+                    archive_members,
+                    library_models
                 ).match() }
             )
         }

@@ -187,9 +187,12 @@
                 "mgnifams_test_faa.tar.gz: mgnifams_test_1.faa, mgnifams_test_2.faa, mgnifams_test_3.faa, mgnifams_test_5.faa, mgnifams_test_7.faa",
                 "mgnifams_test_full_msas.tar.gz: mgnifams_test_1.aln, mgnifams_test_2.aln, mgnifams_test_3.aln, mgnifams_test_5.aln, mgnifams_test_7.aln",
                 "mgnifams_test_seed_msas.tar.gz: mgnifams_test_1.aln, mgnifams_test_2.aln, mgnifams_test_3.aln, mgnifams_test_5.aln, mgnifams_test_7.aln"
+            ],
+            [
+                "mgnifams_test.lib.gz: mgnifams_test_1, mgnifams_test_2, mgnifams_test_3, mgnifams_test_5, mgnifams_test_7"
             ]
         ],
-        "timestamp": "2026-10-09T09:56:35.960365735",
+        "timestamp": "2026-10-09T10:04:03.957675904",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
