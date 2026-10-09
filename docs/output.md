@@ -125,7 +125,6 @@ The `seqfu` module is used for statistics generation of input amino acid sequenc
 - `qc/`
   - `<samplename>/`
     - `<samplename>.faa`: preprocessed input sequences, the curated set the families are built from (not written with `--skip_preprocessing`)
-- `intermediates/qc/<samplename>/`: (optional) intermediate files of the preprocessing steps
 
 </details>
 
