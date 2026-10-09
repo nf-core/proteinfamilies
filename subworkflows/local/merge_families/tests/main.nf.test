@@ -2,6 +2,7 @@ nextflow_workflow {
 
     name "Test Subworkflow MERGE_FAMILIES"
     script "../main.nf"
+    config "./nextflow.config"
     workflow "MERGE_FAMILIES"
 
     test("fasta") {

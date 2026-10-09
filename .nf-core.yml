@@ -9,6 +9,8 @@ lint:
     - docs/images/nf-core-proteinfamilies_logo_dark.png
     - .github/workflows/branch.yml
     - .github/workflows/linting.yml
+  nextflow_config: false # TODO: remove when nf-core/tools supports typed parameters in main.nf
+  schema_params: false # TODO: remove when nf-core/tools supports typed parameters in main.nf
 nf_core_version: 4.1.0
 repository_type: pipeline
 template:

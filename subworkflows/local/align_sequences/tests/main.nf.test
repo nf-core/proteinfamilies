@@ -2,6 +2,7 @@ nextflow_workflow {
 
     name "Test Subworkflow ALIGN_SEQUENCES"
     script "../main.nf"
+    config "./nextflow.config"
     workflow "ALIGN_SEQUENCES"
 
     test("fasta - famsa") {

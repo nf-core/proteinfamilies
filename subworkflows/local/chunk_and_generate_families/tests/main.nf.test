@@ -2,6 +2,7 @@ nextflow_workflow {
 
     name "Test Subworkflow CHUNK_AND_GENERATE_FAMILIES"
     script "../main.nf"
+    config "./nextflow.config"
     workflow "CHUNK_AND_GENERATE_FAMILIES"
 
     test("clusters - standard") {

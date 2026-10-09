@@ -2,6 +2,7 @@ nextflow_workflow {
 
     name "test Subworkflow REMOVE_REDUNDANCY"
     script "../main.nf"
+    config "./nextflow.config"
     workflow "REMOVE_REDUNDANCY"
 
     test("faa - skip none") {

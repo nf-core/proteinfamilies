@@ -18,6 +18,78 @@
 include { PROTEINFAMILIES         } from './workflows/proteinfamilies'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_proteinfamilies_pipeline'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    PARAMETERS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+// Typed, so that values given on the command line are cast; parameters the config reads
+// itself (output, publishing, logging, institutional and test data options) stay in nextflow.config
+params {
+    // Input options
+    input: Path?
+
+    // Preprocessing
+    skip_preprocessing: Boolean
+    min_seq_length: Integer = 30
+    max_seq_length: Integer = 5000
+    deduplicate_by: String = 'name' // ['name', 'sequence']
+    // Clustering
+    clustering_tool: String = 'cluster' // ['linclust', 'cluster']
+    clustering_min_seq_identity: Float = 0.3
+    clustering_min_coverage: Float = 0.5
+    clustering_cov_mode: Integer = 0
+    clustering_min_cluster_size: Integer = 25
+    // Family generation
+    family_generation_algorithm: String = 'standard' // ['standard', 'iterative']
+    iterative_clusters_per_chunk: Integer = 1000
+    alignment_tool: String = 'famsa' // ['famsa', 'mafft']
+    skip_update_refinement: Boolean
+    // Seed MSA trimming
+    skip_seed_msa_trimming: Boolean
+    seed_msa_trimming_ends_only: Boolean = true
+    seed_msa_trimming_max_gap_fraction: Float = 0.5
+    // Recruiting and search
+    skip_recruiting: Boolean
+    search_evalue_cutoff: Float = 0.001
+    recruit_min_model_coverage: Float = 0.9
+    // Family redundancy
+    family_redundancy_removal: String = 'all' // ['all', 'created_only', 'none']
+    family_merging: String = 'all' // ['all', 'created_only', 'none']
+    merged_family_name: String = 'existing' // ['existing', 'new']
+    family_redundancy_min_model_coverage: Float = 1
+    family_similarity_min_model_coverage: Float = 0.9
+    // Sequence redundancy
+    skip_sequence_redundancy_removal: Boolean
+    seq_redundancy_min_seq_identity: Float = 0.9
+    seq_redundancy_min_coverage: Float = 0.9
+    seq_redundancy_cov_mode: Integer = 0
+    // Phylogeny
+    run_phylogenetic_inference: Boolean
+
+    // MultiQC options
+    multiqc_config: Path?
+    multiqc_title: String?
+    multiqc_logo: Path?
+    max_multiqc_email_size: String = '25.MB'
+    multiqc_methods_description: Path?
+
+    // Boilerplate options
+    email: String?
+    email_on_fail: String?
+    plaintext_email: Boolean
+    help_full: Boolean
+    show_hidden: Boolean
+    version: Boolean
+    validate_params: Boolean = true
+
+    // Defaults in nextflow.config, which reads them; typed here so command line values are cast
+    save_intermediates: Boolean
+    monochrome_logs: Boolean
+}
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
