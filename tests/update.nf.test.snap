@@ -1,7 +1,7 @@
 {
     "-profile test_update": {
         "content": [
-            512,
+            516,
             {
                 "CALCULATE_CLUSTER_DISTRIBUTION": {
                     "sed": 4.7
@@ -60,6 +60,9 @@
                     "coreutils": 9.4,
                     "find": "4.6.0",
                     "pigz": 2.8
+                },
+                "GENERATION_STATS_CREATE": {
+                    "python": "3.13.1"
                 },
                 "HMMER_HMMALIGN": {
                     "hmmer": 3.4
@@ -205,7 +208,11 @@
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_create_only_cluster_distribution.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_family-generation-full-msa-size-plot.txt",
+                "multiqc/multiqc_data/multiqc_family-generation-model-length-plot.txt",
+                "multiqc/multiqc_data/multiqc_family-generation-outcomes-plot.txt",
                 "multiqc/multiqc_data/multiqc_family_metadata.txt",
+                "multiqc/multiqc_data/multiqc_general_stats.txt",
                 "multiqc/multiqc_data/multiqc_seqfu_after.txt",
                 "multiqc/multiqc_data/multiqc_seqfu_before.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
@@ -216,6 +223,10 @@
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
                 "multiqc/multiqc_plots/pdf/create_only_cluster_distribution.pdf",
+                "multiqc/multiqc_plots/pdf/family-generation-full-msa-size-plot.pdf",
+                "multiqc/multiqc_plots/pdf/family-generation-model-length-plot.pdf",
+                "multiqc/multiqc_plots/pdf/family-generation-outcomes-plot-cnt.pdf",
+                "multiqc/multiqc_plots/pdf/family-generation-outcomes-plot-pct.pdf",
                 "multiqc/multiqc_plots/pdf/family_metadata.pdf",
                 "multiqc/multiqc_plots/pdf/seqfu_after.pdf",
                 "multiqc/multiqc_plots/pdf/seqfu_before.pdf",
@@ -224,6 +235,10 @@
                 "multiqc/multiqc_plots/pdf/update_hmm_seed_gz_cluster_distribution.pdf",
                 "multiqc/multiqc_plots/png",
                 "multiqc/multiqc_plots/png/create_only_cluster_distribution.png",
+                "multiqc/multiqc_plots/png/family-generation-full-msa-size-plot.png",
+                "multiqc/multiqc_plots/png/family-generation-model-length-plot.png",
+                "multiqc/multiqc_plots/png/family-generation-outcomes-plot-cnt.png",
+                "multiqc/multiqc_plots/png/family-generation-outcomes-plot-pct.png",
                 "multiqc/multiqc_plots/png/family_metadata.png",
                 "multiqc/multiqc_plots/png/seqfu_after.png",
                 "multiqc/multiqc_plots/png/seqfu_before.png",
@@ -232,6 +247,10 @@
                 "multiqc/multiqc_plots/png/update_hmm_seed_gz_cluster_distribution.png",
                 "multiqc/multiqc_plots/svg",
                 "multiqc/multiqc_plots/svg/create_only_cluster_distribution.svg",
+                "multiqc/multiqc_plots/svg/family-generation-full-msa-size-plot.svg",
+                "multiqc/multiqc_plots/svg/family-generation-model-length-plot.svg",
+                "multiqc/multiqc_plots/svg/family-generation-outcomes-plot-cnt.svg",
+                "multiqc/multiqc_plots/svg/family-generation-outcomes-plot-pct.svg",
                 "multiqc/multiqc_plots/svg/family_metadata.svg",
                 "multiqc/multiqc_plots/svg/seqfu_after.svg",
                 "multiqc/multiqc_plots/svg/seqfu_before.svg",
@@ -297,6 +316,10 @@
                 "update_hmm_seed_gz_reps.faa:md5,c0d384a6e2b1689f376b9f820111f325",
                 "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
                 "multiqc_create_only_cluster_distribution.txt:md5,9f310a12f74e4e64764f5831e5f8b02c",
+                "multiqc_family-generation-full-msa-size-plot.txt:md5,4dc1736ec0341e06935b2359aab503a4",
+                "multiqc_family-generation-model-length-plot.txt:md5,43eedd90c1105802ad0e02a1aca1b9b1",
+                "multiqc_family-generation-outcomes-plot.txt:md5,f1e27c82212abd3e515896f7bb6d5d9d",
+                "multiqc_general_stats.txt:md5,d3f8ef35e5f974498a63ee48dcfbab63",
                 "multiqc_seqfu_after.txt:md5,b073a3d11eace40955092c3cf6dff5fe",
                 "multiqc_seqfu_before.txt:md5,6867ff7303035e290498d7f00ed8f4bc",
                 "multiqc_update_hmm_only_cluster_distribution.txt:md5,3efb62c50b29e8a4d78ea84b827257cc",
@@ -336,7 +359,7 @@
                 "update_hmm_seed_gz.lib.gz: existing_fam_1=f33c561c9a74a934401aed748ce654f1, existing_fam_2=84e87c1bae8bd95ec60e7d76315f13a4, existing_fam_3=fcccb7ba7d4ce5c58b34c5520cfa1bb5, existing_fam_4=e013fc472ff12cdea0e5b10e533ed6cf, existing_fam_zero_hits=312c4f6d02fa5050f6164e47ff1871eb, update_hmm_seed_gz_1=184b0aa265af09066c77650fcfe679f2, update_hmm_seed_gz_2=d4710c4128145d99844a1ae5ddec36aa, update_hmm_seed_gz_4=9da256a3844f257ea1e8792d1a8fad3d, update_hmm_seed_gz_6=14873b12c8bfd044f5443956040d9c50"
             ]
         ],
-        "timestamp": "2026-10-11T10:21:26.624466587",
+        "timestamp": "2026-10-11T10:41:42.437393134",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

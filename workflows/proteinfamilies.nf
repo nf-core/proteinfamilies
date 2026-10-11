@@ -23,6 +23,7 @@ include { TAR as TAR_FASTA                                 } from '../modules/nf
 include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
+include { GENERATION_STATS as GENERATION_STATS_CREATE      } from '../modules/local/generation_stats/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,6 +122,32 @@ workflow PROTEINFAMILIES {
         params.skip_recruiting,
         params.recruit_min_model_coverage
     )
+
+    // Generation-stage report of the standard algorithm, mirroring the MultiQC mgnifam module that
+    // reports the iterative one: one sample per create-routed input, also when no cluster reached
+    // generation (all below clustering_min_cluster_size) or no family came out
+    if (params.family_generation_algorithm == 'standard') {
+        def ch_clusters_in = CHUNK_AND_GENERATE_FAMILIES.out.chunks
+            .map { meta, _chunk -> [ [id: meta.id], 1 ] }
+            .groupTuple()
+            .map { meta, ones -> [ meta, ones.size() ] }
+        // Successful families: their FASTA exists, while every cluster gets an HMM
+        def ch_created = CHUNK_AND_GENERATE_FAMILIES.out.fasta
+            .join( CHUNK_AND_GENERATE_FAMILIES.out.hmm )
+            .map { meta, faa, model -> [ [id: meta.id], [faa, model] ] }
+            .groupTuple()
+        GENERATION_STATS_CREATE(
+            MMSEQS_FASTA_CLUSTER.out.seqs
+                .map { meta, _seqs -> [ [id: meta.id], true ] }
+                .join( ch_clusters_in, remainder: true )
+                .join( ch_created, remainder: true )
+                .map { meta, _input, clusters_in, families ->
+                    [ meta, clusters_in ?: 0, [:], (families ?: [])*.getAt(0), (families ?: [])*.getAt(1), [] ]
+                },
+            params.skip_recruiting ? '' : 'no recruits' // a cluster whose HMM recruits nothing yields no family
+        )
+        ch_multiqc_files = ch_multiqc_files.mix( GENERATION_STATS_CREATE.out.multiqc.map { _meta, files -> files } )
+    }
 
     // Created and updated families, keyed [id, family] by file stem
     REMOVE_REDUNDANCY (

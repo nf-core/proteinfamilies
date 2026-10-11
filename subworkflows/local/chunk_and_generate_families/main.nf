@@ -62,4 +62,5 @@ workflow CHUNK_AND_GENERATE_FAMILIES {
     fasta    = ch_families.fasta
     hmm      = ch_families.hmm
     stats    = ch_stats // iterative only: per-chunk mgnifam run summaries
+    chunks   = ch_chunks // the chunks generation started from (standard: one cluster each)
 }

@@ -82,6 +82,10 @@ output:
       type: file
       description: |
         Per-chunk mgnifam run summary JSON for MultiQC; empty with the standard algorithm
+  - chunks:
+      type: file
+      description: |
+        The cluster chunks generation started from: one FASTA per cluster (standard) or one cluster TSV per chunk (iterative)
 authors:
   - "@vagkaratzas"
 maintainers:

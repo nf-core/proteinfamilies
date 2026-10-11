@@ -1,0 +1,153 @@
+{
+    "families - faa hmm - update": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test_full_msa_size_mqc.json:md5,c2d3eb5dc9efef12e323d3d210efbf86",
+                            "test_general_mqc.json:md5,4e2362353b9fea99ec38b546eb7190dd",
+                            "test_model_length_change_mqc.json:md5,f6e5650d430c4d78b75c7289a35944d2",
+                            "test_model_length_mqc.json:md5,446e6e6a34bae9442670892ed3d9675a",
+                            "test_outcomes_mqc.json:md5,921f5261209f39ac93de4d8efcd295ad"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "GENERATION_STATS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "multiqc": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test_full_msa_size_mqc.json:md5,c2d3eb5dc9efef12e323d3d210efbf86",
+                            "test_general_mqc.json:md5,4e2362353b9fea99ec38b546eb7190dd",
+                            "test_model_length_change_mqc.json:md5,f6e5650d430c4d78b75c7289a35944d2",
+                            "test_model_length_mqc.json:md5,446e6e6a34bae9442670892ed3d9675a",
+                            "test_outcomes_mqc.json:md5,921f5261209f39ac93de4d8efcd295ad"
+                        ]
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "GENERATION_STATS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-11T10:34:25.03760693",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "families - faa hmm - create - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test_general_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_outcomes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "GENERATION_STATS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "multiqc": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test_general_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e",
+                            "test_outcomes_mqc.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        ]
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "GENERATION_STATS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-11T10:34:34.692469744",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "families - faa hmm - create": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test_full_msa_size_mqc.json:md5,3cb8d5c7ed9f916b35c5418ef12c4be1",
+                            "test_general_mqc.json:md5,366f90be20e7239d0c9bfdfda51f903f",
+                            "test_model_length_mqc.json:md5,c50e6d9c633d60e07501547fb1dba8b8",
+                            "test_outcomes_mqc.json:md5,5358e66e98a114aa8c0fe911d699e908"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "GENERATION_STATS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "multiqc": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        [
+                            "test_full_msa_size_mqc.json:md5,3cb8d5c7ed9f916b35c5418ef12c4be1",
+                            "test_general_mqc.json:md5,366f90be20e7239d0c9bfdfda51f903f",
+                            "test_model_length_mqc.json:md5,c50e6d9c633d60e07501547fb1dba8b8",
+                            "test_outcomes_mqc.json:md5,5358e66e98a114aa8c0fe911d699e908"
+                        ]
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "GENERATION_STATS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-11T10:34:15.12822982",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}
