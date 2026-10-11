@@ -103,8 +103,9 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through input
     //
 
-    ch_samplesheet = channel
-        .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
+    def samplesheet_rows = samplesheetToList(input, "${projectDir}/assets/schema_input.json")
+    validateReportNames(samplesheet_rows)
+    ch_samplesheet = channel.fromList(samplesheet_rows)
 
     emit:
     samplesheet = ch_samplesheet
@@ -277,6 +278,23 @@ def methodsDescriptionText(mqc_methods_yaml) {
 //
 def fileStem(file) {
     return file.getBaseName(file.extension == 'gz' ? 2 : 1)
+}
+
+//
+// The MultiQC report shows an update-routed sample's updated families as '<id>_updated'. Another
+// sample with that id would merge into the same report sample, so stop the run. Rows are
+// [meta, fasta, existing_hmms, existing_seed_msas, existing_full_msas]; absent columns are [].
+//
+def validateReportNames(samplesheet) {
+    def ids = samplesheet.collect { row -> row[0].id } as Set
+    def clashing = samplesheet
+        .findAll { row -> row[2] != [] }
+        .collect { row -> "${row[0].id}_updated".toString() }
+        .findAll { name -> name in ids }
+        .sort()
+    if (clashing) {
+        error("[nf-core/proteinfamilies] ERROR: Sample ids ${clashing.join(', ')} clash with the names the MultiQC report gives updated families ('<id>_updated'). Rename those samples.")
+    }
 }
 
 //

@@ -109,6 +109,10 @@ output:
       type: file
       description: |
         Uncompressed FASTA the existing HMMs searched: the input sequences plus the kept existing full MSA members
+  - existing_hmm:
+      type: file
+      description: |
+        The provided HMMs, one gzipped HMM per existing family ([id, family] meta)
 authors:
   - "@vagkaratzas"
 maintainers:

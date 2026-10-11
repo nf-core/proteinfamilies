@@ -206,6 +206,7 @@ workflow UPDATE_FAMILIES {
     passed_through_families = ch_passed_through_families // [meta, [[family, reason], ...]], [] if every family was returned
     no_hit_seqs             = EXTRACT_UNASSIGNED_SEQS.out.fasta
     pool                    = ch_pool
+    existing_hmm            = ch_existing_hmm // [id, family] meta, one per provided model
 }
 
 // One [[id, family], file] per file of each sample's folder

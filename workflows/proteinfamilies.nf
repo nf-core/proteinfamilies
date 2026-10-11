@@ -24,6 +24,7 @@ include { CMAPLE                                           } from '../modules/nf
 include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
 include { GENERATION_STATS as GENERATION_STATS_CREATE      } from '../modules/local/generation_stats/main'
+include { GENERATION_STATS as GENERATION_STATS_UPDATE      } from '../modules/local/generation_stats/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,6 +99,32 @@ workflow PROTEINFAMILIES {
         .collectFile { meta, families ->
             [ "${meta.id}_passed_through_existing_families.tsv", "family\treason\n" + families.collect { family, reason -> "${family}\t${reason}\n" }.join() ]
         }
+
+    // Generation-stage report of the update (standard engine with either algorithm), one
+    // '<id>_updated' sample per update-routed input, mirroring the MultiQC mgnifam module
+    def ch_updated = UPDATE_FAMILIES.out.fasta
+        .join( UPDATE_FAMILIES.out.hmm )
+        .map { meta, faa, model -> [ [id: meta.id], [faa, model] ] }
+        .groupTuple()
+    GENERATION_STATS_UPDATE(
+        UPDATE_FAMILIES.out.existing_hmm
+            .map { meta, model -> [ [id: meta.id], model ] }
+            .groupTuple()
+            .join( UPDATE_FAMILIES.out.passed_through_families )
+            .join( ch_updated, remainder: true )
+            .map { meta, existing, passed_through, families ->
+                [
+                    meta,
+                    existing.size(),
+                    passed_through.countBy { family_reason -> family_reason[1] }, // e.g. 'no hits', 'no recruits'
+                    (families ?: [])*.getAt(0),
+                    (families ?: [])*.getAt(1),
+                    existing
+                ]
+            },
+        ''
+    )
+    ch_multiqc_files = ch_multiqc_files.mix( GENERATION_STATS_UPDATE.out.multiqc.map { _meta, files -> files } )
 
     // Sequences not assigned to any existing family during update feed the de-novo creation path.
     ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
