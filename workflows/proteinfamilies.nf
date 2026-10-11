@@ -281,6 +281,7 @@ workflow PROTEINFAMILIES {
     // Generation-stage summaries only: MERGE_FAMILIES's mgnifam re-runs would count merged families twice
     ch_multiqc_files = ch_multiqc_files.mix(CHUNK_AND_GENERATE_FAMILIES.out.stats.collect { file -> file[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(EXTRACT_FAMILY_REPS.out.map.collect { file -> file[1] }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(redundancySection(REMOVE_REDUNDANCY.out.counts).collect().ifEmpty([]))
     MULTIQC(
         ch_multiqc_files.flatten().collect().map { files ->
             [
@@ -310,6 +311,33 @@ def finalFilesPerSample(ch_passed_through, ch_families) {
         .mix(ch_families)
         .map { meta, file -> [ [id: meta.id], file ] }
         .groupTuple()
+}
+
+// One stacked bar per sample: the families entering redundancy removal split into those kept
+// (merged families included), removed as redundant, and merged away
+def redundancySection(ch_counts) {
+    ch_counts.collectFile { meta, counts ->
+        def section = [
+            id: 'family_redundancy',
+            section_name: 'Redundancy removal',
+            description: 'Families entering family redundancy removal and merging, and what became of them. Existing families passed through unchanged by an update skip this step.',
+            plot_type: 'bargraph',
+            pconfig: [ id: 'family-redundancy-plot', title: 'Redundancy removal: families', ylab: 'Families' ],
+            categories: [
+                'Final': [ name: 'Final' ],
+                'Removed as redundant': [ name: 'Removed as redundant' ],
+                'Merged away': [ name: 'Merged away' ]
+            ],
+            data: [
+                (meta.id): [
+                    'Final': counts.final_families,
+                    'Removed as redundant': counts.removed_redundant,
+                    'Merged away': counts.merged_away
+                ]
+            ]
+        ]
+        [ "${meta.id}_family_redundancy_mqc.json", groovy.json.JsonOutput.toJson(section) ]
+    }
 }
 
 // SeqFu titles every report 'SeqFu stats' and names its row after the FASTA file, so each sample

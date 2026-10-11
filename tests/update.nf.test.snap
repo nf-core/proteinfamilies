@@ -215,6 +215,7 @@
                 "multiqc/multiqc_data/multiqc_family-generation-model-length-change-plot.txt",
                 "multiqc/multiqc_data/multiqc_family-generation-model-length-plot.txt",
                 "multiqc/multiqc_data/multiqc_family-generation-outcomes-plot.txt",
+                "multiqc/multiqc_data/multiqc_family-redundancy-plot.txt",
                 "multiqc/multiqc_data/multiqc_family_metadata.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
                 "multiqc/multiqc_data/multiqc_seqfu_after.txt",
@@ -232,6 +233,8 @@
                 "multiqc/multiqc_plots/pdf/family-generation-model-length-plot.pdf",
                 "multiqc/multiqc_plots/pdf/family-generation-outcomes-plot-cnt.pdf",
                 "multiqc/multiqc_plots/pdf/family-generation-outcomes-plot-pct.pdf",
+                "multiqc/multiqc_plots/pdf/family-redundancy-plot-cnt.pdf",
+                "multiqc/multiqc_plots/pdf/family-redundancy-plot-pct.pdf",
                 "multiqc/multiqc_plots/pdf/family_metadata.pdf",
                 "multiqc/multiqc_plots/pdf/seqfu_after.pdf",
                 "multiqc/multiqc_plots/pdf/seqfu_before.pdf",
@@ -245,6 +248,8 @@
                 "multiqc/multiqc_plots/png/family-generation-model-length-plot.png",
                 "multiqc/multiqc_plots/png/family-generation-outcomes-plot-cnt.png",
                 "multiqc/multiqc_plots/png/family-generation-outcomes-plot-pct.png",
+                "multiqc/multiqc_plots/png/family-redundancy-plot-cnt.png",
+                "multiqc/multiqc_plots/png/family-redundancy-plot-pct.png",
                 "multiqc/multiqc_plots/png/family_metadata.png",
                 "multiqc/multiqc_plots/png/seqfu_after.png",
                 "multiqc/multiqc_plots/png/seqfu_before.png",
@@ -258,6 +263,8 @@
                 "multiqc/multiqc_plots/svg/family-generation-model-length-plot.svg",
                 "multiqc/multiqc_plots/svg/family-generation-outcomes-plot-cnt.svg",
                 "multiqc/multiqc_plots/svg/family-generation-outcomes-plot-pct.svg",
+                "multiqc/multiqc_plots/svg/family-redundancy-plot-cnt.svg",
+                "multiqc/multiqc_plots/svg/family-redundancy-plot-pct.svg",
                 "multiqc/multiqc_plots/svg/family_metadata.svg",
                 "multiqc/multiqc_plots/svg/seqfu_after.svg",
                 "multiqc/multiqc_plots/svg/seqfu_before.svg",
@@ -327,6 +334,7 @@
                 "multiqc_family-generation-model-length-change-plot.txt:md5,9e9005748700c71890d22380b84882fb",
                 "multiqc_family-generation-model-length-plot.txt:md5,a6abc7d50bcec1f06508a0b25c1a7184",
                 "multiqc_family-generation-outcomes-plot.txt:md5,84e6c7139a25fa961ad9e04b2f34a41c",
+                "multiqc_family-redundancy-plot.txt:md5,7f21addafdaa3026395373d0d2ca0a72",
                 "multiqc_general_stats.txt:md5,2e7de867837dbe169128e18d68e45907",
                 "multiqc_seqfu_after.txt:md5,b073a3d11eace40955092c3cf6dff5fe",
                 "multiqc_seqfu_before.txt:md5,6867ff7303035e290498d7f00ed8f4bc",
@@ -367,7 +375,7 @@
                 "update_hmm_seed_gz.lib.gz: existing_fam_1=f33c561c9a74a934401aed748ce654f1, existing_fam_2=84e87c1bae8bd95ec60e7d76315f13a4, existing_fam_3=fcccb7ba7d4ce5c58b34c5520cfa1bb5, existing_fam_4=e013fc472ff12cdea0e5b10e533ed6cf, existing_fam_zero_hits=312c4f6d02fa5050f6164e47ff1871eb, update_hmm_seed_gz_1=184b0aa265af09066c77650fcfe679f2, update_hmm_seed_gz_2=d4710c4128145d99844a1ae5ddec36aa, update_hmm_seed_gz_4=9da256a3844f257ea1e8792d1a8fad3d, update_hmm_seed_gz_6=14873b12c8bfd044f5443956040d9c50"
             ]
         ],
-        "timestamp": "2026-10-11T10:53:45.841270119",
+        "timestamp": "2026-10-11T11:01:34.518995351",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
