@@ -26,7 +26,7 @@ input:
         description: Clusters (creation) or existing models (update) that entered the algorithm
     - discards:
         type: map
-        description: Discarded family counts by reason, e.g. `['no hits': 2]`; may be empty
+        description: "Discarded family counts by reason, e.g. `['no hits': 2]`; may be empty"
     - fasta:
         type: file
         description: One member FASTA per successful family
