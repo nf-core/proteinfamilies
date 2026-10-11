@@ -63,8 +63,7 @@ workflow REMOVE_REDUNDANCY {
     ch_redundant_count = channel.empty()
     ch_pooled_count    = channel.empty()
     ch_produced_count  = channel.empty()
-    // Families entering (a family is counted by its member FASTA: a created cluster whose HMM
-    // recruited nothing still has an HMM)
+    // Families entering
     ch_generated_count = countPerSample( fasta )
 
     // FAMILY REDUNDANCY REMOVAL MECHANISM

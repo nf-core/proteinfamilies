@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#208](https://github.com/nf-core/proteinfamilies/pull/208) - A created cluster (or merged family) whose HMM recruits no sequence no longer leaves its HMM in `<id>.lib.gz` and its seed MSA in `<id>_seed_msas.tar.gz` without a family to match. (by @vagkaratzas)
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198)
   - Updated families no longer change between identical runs: `BRANCH_HITS_FASTA` wrote each family's hits in Python set order, which varies per run, so seed alignments, HMMs and full MSAs could differ. Hits are now written sorted. (by @vagkaratzas)
   - Fixed samplesheet rows with existing HMMs but no MSAs (or the reverse) being silently dropped: they matched neither the create nor the update path. (by @vagkaratzas)

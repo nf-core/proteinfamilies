@@ -47,4 +47,38 @@ nextflow_workflow {
         }
     }
 
+    test("fasta - no recruits") {
+        // A cluster whose HMM recruits nothing is no family: no seed MSA or HMM may be left behind
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of([
+                    [ id: 'test', chunk: "chunk_1" ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
+                    ]
+                ])
+                input[2] = "famsa"   // alignment_tool
+                input[3] = false     // skip_seed_msa_trimming
+                input[4] = false     // skip_recruiting
+                input[5] = 100       // recruit_min_model_coverage: no hit can pass
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.fasta.size() == 0 },
+                { assert workflow.out.full_msa.size() == 0 },
+                { assert workflow.out.seed_msa.size() == 0 },
+                { assert workflow.out.hmm.size() == 0 }
+            )
+        }
+    }
+
 }

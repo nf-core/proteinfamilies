@@ -157,8 +157,8 @@ workflow UPDATE_FAMILIES {
 
         // A family whose new HMM recruits nothing has no full MSA, so it is not returned
         ch_engine_full_msa = GENERATE_FAMILIES.out.full_msa
-        ch_engine_seed_msa = GENERATE_FAMILIES.out.seed_msa.join(ch_engine_full_msa).map { meta, seed, _full -> [meta, seed] }
-        ch_engine_hmm      = GENERATE_FAMILIES.out.hmm.join(ch_engine_full_msa).map { meta, hmm, _full -> [meta, hmm] }
+        ch_engine_seed_msa = GENERATE_FAMILIES.out.seed_msa
+        ch_engine_hmm      = GENERATE_FAMILIES.out.hmm
         ch_engine_fasta    = GENERATE_FAMILIES.out.fasta
     }
     // Families with hits that the engine did not return
