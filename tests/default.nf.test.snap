@@ -171,7 +171,7 @@
             ],
             [
                 "mgnifams_test_members.tsv:md5,84352ddab0a87d0761c2fc66214fa8b8",
-                "mgnifams_test_meta_mqc.csv:md5,0c2546252b2d7da2e647a54f26180f38",
+                "mgnifams_test_meta_mqc.csv:md5,0dc67b770e8b4ef2b4d0f0c063a3602c",
                 "mgnifams_test_reps.faa:md5,b84c601b8533b9c457804ab3804c01fe",
                 "redundant_fam_ids.txt:md5,731a5c6e1ad59766a37ef026001c11d1",
                 "similar_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -192,7 +192,7 @@
                 "mgnifams_test.lib.gz: mgnifams_test_1, mgnifams_test_2, mgnifams_test_3, mgnifams_test_5, mgnifams_test_7"
             ]
         ],
-        "timestamp": "2026-10-11T10:07:58.963241478",
+        "timestamp": "2026-10-11T10:16:23.190763901",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
