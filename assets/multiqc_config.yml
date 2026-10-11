@@ -13,3 +13,9 @@ report_section_order:
 export_plots: true
 
 disable_version_detection: true
+
+# mgnifam run summaries are <id>_<chunk>_mgnifam_stats.json: report each chunk as <id>_<chunk>
+extra_fn_clean_exts:
+  - type: regex
+    pattern: "_mgnifam$"
+    module: mgnifam

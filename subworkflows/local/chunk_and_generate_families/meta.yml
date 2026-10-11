@@ -78,6 +78,10 @@ output:
       type: file
       description: |
         HMM files containing the hidden Markov model of each family
+  - stats:
+      type: file
+      description: |
+        Per-chunk mgnifam run summary JSON for MultiQC; empty with the standard algorithm
 authors:
   - "@vagkaratzas"
 maintainers:

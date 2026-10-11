@@ -224,6 +224,8 @@ workflow PROTEINFAMILIES {
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
     ch_multiqc_files = ch_multiqc_files.mix(seqfuStageSections(FAA_SEQFU_SEQKIT.out.multiqc_files).collect().ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect { file -> file[1] }.ifEmpty([]))
+    // Generation-stage summaries only: MERGE_FAMILIES's mgnifam re-runs would count merged families twice
+    ch_multiqc_files = ch_multiqc_files.mix(CHUNK_AND_GENERATE_FAMILIES.out.stats.collect { file -> file[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(EXTRACT_FAMILY_REPS.out.map.collect { file -> file[1] }.ifEmpty([]))
     MULTIQC(
         ch_multiqc_files.flatten().collect().map { files ->

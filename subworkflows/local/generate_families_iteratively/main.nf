@@ -72,4 +72,5 @@ workflow GENERATE_FAMILIES_ITERATIVELY {
     full_msa = ch_full_msa
     fasta    = SEQKIT_SEQ_ITERATIVE_MSA_TO_FASTA.out.fastx
     hmm      = ch_hmm
+    stats    = MGNIFAM_GENERATEFAMILIES.out.stats // per-chunk run summary, for the MultiQC mgnifam module
 }
