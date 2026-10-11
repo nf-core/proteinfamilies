@@ -65,6 +65,10 @@ workflow GENERATE_FAMILIES {
 
         HMMER_HMMALIGN( ch_input_for_hmmalign.seq, ch_input_for_hmmalign.hmm )
         ch_full_msa = HMMER_HMMALIGN.out.sto
+
+        // A cluster whose HMM recruits nothing is no family: drop its seed MSA and HMM too
+        ch_seed_msa = ch_seed_msa.join(ch_fasta).map { meta, seed, _seqs -> [ meta, seed ] }
+        ch_hmm      = ch_hmm.join(ch_fasta).map { meta, model, _seqs -> [ meta, model ] }
     } else {
         // Seed MSA serves as the final full MSA when additional sequence recruiting is skipped,
         // and the fasta must hold exactly its (possibly trimmed and renamed) rows.

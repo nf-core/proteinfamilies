@@ -46,7 +46,7 @@ output:
         type: file
         description: |
           a MultiQC CSV file with all family representative sequence metadata:
-          "Sample Name","Family Id","Size","Representative Length","Representative Id","Sequence"
+          "Sample Name","Family Id","Size","Representative Length","Representative Id","Region","Sequence"
         pattern: "*_meta_mqc.csv"
   versions_python:
     - - ${task.process}:

@@ -71,7 +71,7 @@
                     {
                         "id": "extract_family_reps"
                     },
-                    "extract_family_reps_meta_mqc.csv:md5,6b35848701c69871a9b9030f42f32a5b"
+                    "extract_family_reps_meta_mqc.csv:md5,5b6b107537701fc08e19898a23fca6bb"
                 ]
             ],
             {
@@ -84,10 +84,10 @@
                 ]
             }
         ],
-        "timestamp": "2026-06-06T16:49:39.357727961",
+        "timestamp": "2026-10-11T10:14:20.185928078",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

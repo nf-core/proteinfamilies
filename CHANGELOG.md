@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#208](https://github.com/nf-core/proteinfamilies/pull/208)
+  - The family metadata table (`families/<id>/<id>_meta_mqc.csv`, MultiQC `Family Metadata`) has a `Region` column: the representative's `start-end` within its source sequence, `1-<length>` when it is a whole sequence ([#119](https://github.com/nf-core/proteinfamilies/issues/119)). (by @vagkaratzas)
+  - With `--family_generation_algorithm iterative`, mgnifam's per-chunk run summaries (`*_mgnifam_stats.json`) go to MultiQC, which reports them (family outcomes, full MSA size, model length) from MultiQC 1.36 on. Summaries of merged families' re-runs are left out, as they would count those families twice. (by @vagkaratzas)
+  - With `--family_generation_algorithm standard`, the MultiQC report gets the same sections for the created families, one sample per input under `Family generation`: Families In and % Successful in the general stats, Family outcomes (successful, or discarded as `no recruits`), Full MSA size and Model length (local module `GENERATION_STATS`). (by @vagkaratzas)
+  - Updated families (standard engine, with either algorithm) get the same sections as `<id>_updated`, plus Model length change; Family outcomes lists the existing families that passed through (`no hits`, `no recruits`). A samplesheet id equal to an update-routed sample's `<id>_updated` stops the run, as both would share one report sample. (by @vagkaratzas)
+  - New MultiQC section `Redundancy removal`: per sample, the families entering family redundancy removal and merging split into final, removed as redundant and merged away. (by @vagkaratzas)
+  - `docs/output.md` describes the MultiQC report's sections by pipeline stage; `docs/usage.md`'s v2 → v3 note lists the report changes. (by @vagkaratzas)
 - [#202](https://github.com/nf-core/proteinfamilies/pull/202)
   - Updated families go through redundancy removal together with the sample's created families: an updated family is never removed (a created family redundant with it is, two redundant updated families are both kept), and it can merge with similar families, recruiting from the update pool. With `--skip_update_refinement`, updated families are never merged, so their existing HMMs are kept. (by @vagkaratzas)
   - Added `--family_redundancy_removal` and `--family_merging` (`all` by default, `created_only` or `none`): `created_only` leaves updated families out of the family redundancy check (created families may then duplicate them) or out of merging. (by @vagkaratzas)
@@ -20,6 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#208](https://github.com/nf-core/proteinfamilies/pull/208)
+  - SeqFu stats in the MultiQC report: one section per preprocessing stage (`Before preprocessing`, `After preprocessing`) with one row per sample id, instead of one `SeqFu stats` section per sample and stage named after the FASTA file. (by @vagkaratzas)
 - [#207](https://github.com/nf-core/proteinfamilies/pull/207) - Updated the metro maps to v3.0.0: nf-core module stations only, solid lines for steps run per sample and dotted for steps run per family, updated families rejoining the clustering and family generation steps, and the new inputs and outputs. (by @vagkaratzas)
 - [#205](https://github.com/nf-core/proteinfamilies/pull/205) - **Breaking:** parameters and outputs cleanup (old → new table in `docs/usage.md`).
   - Removed `--hmmsearch_write_target` and `--hmmsearch_write_domain`: the per-domain table is always needed, the per-target table was never used. (by @vagkaratzas)
@@ -45,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#208](https://github.com/nf-core/proteinfamilies/pull/208) - A created cluster (or merged family) whose HMM recruits no sequence no longer leaves its HMM in `<id>.lib.gz` and its seed MSA in `<id>_seed_msas.tar.gz` without a family to match. (by @vagkaratzas)
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198)
   - Updated families no longer change between identical runs: `BRANCH_HITS_FASTA` wrote each family's hits in Python set order, which varies per run, so seed alignments, HMMs and full MSAs could differ. Hits are now written sorted. (by @vagkaratzas)
   - Fixed samplesheet rows with existing HMMs but no MSAs (or the reverse) being silently dropped: they matched neither the create nor the update path. (by @vagkaratzas)

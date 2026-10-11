@@ -118,6 +118,11 @@ output:
       type: file
       description: |
         HMMs of the kept families
+  - counts:
+      type: map
+      description: |
+        Per-sample family counts of the step: generated (entering), final_families, removed_redundant
+        and merged_away (pooled source families minus merged families produced)
 authors:
   - "@vagkaratzas"
 maintainers:

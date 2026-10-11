@@ -1,0 +1,80 @@
+nextflow_process {
+
+    name "Test Process GENERATION_STATS"
+    script "../main.nf"
+    process "GENERATION_STATS"
+
+    test("families - faa hmm - create") {
+        // Three clusters in, two families out: the third is a 'no recruits' discard
+        when {
+            process {
+                """
+                def faa_1 = file("fam_1.faa")
+                faa_1.text = ">a\\nMKV\\n>b\\nMKV\\n>c\\nMKV\\n"
+                def faa_2 = file("fam_2.faa")
+                faa_2.text = ">d\\nMKT\\n"
+                def hmm_1 = file("fam_1.hmm")
+                hmm_1.text = "HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_1\\nLENG  120\\n//\\n"
+                def hmm_2 = file("fam_2.hmm")
+                hmm_2.text = "HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_2\\nLENG  85\\n//\\n"
+                input[0] = channel.of([ [ id: 'test' ], 3, [:], [ faa_1, faa_2 ], [ hmm_1, hmm_2 ], [] ])
+                input[1] = 'no recruits'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("families - faa hmm - update") {
+        // Three existing models: one updated (model 110 -> 120), one without hits, one unaccounted
+        when {
+            process {
+                """
+                def faa_1 = file("fam_1.faa")
+                faa_1.text = ">a\\nMKV\\n>b\\nMKV\\n"
+                def hmm_1 = file("fam_1.hmm")
+                hmm_1.text = "HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_1\\nLENG  120\\n//\\n"
+                def existing_1 = file("existing/fam_1.hmm")
+                existing_1.parent.mkdirs()
+                existing_1.text = "HMMER3/f [3.4 | Aug 2023]\\nNAME  fam_1\\nLENG  110\\n//\\n"
+                input[0] = channel.of([ [ id: 'test' ], 3, [ 'no hits': 1 ], [ faa_1 ], [ hmm_1 ], [ existing_1 ] ])
+                input[1] = ''
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("families - faa hmm - create - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = channel.of([ [ id: 'test' ], 0, [:], [], [], [] ])
+                input[1] = 'no recruits'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

@@ -8,7 +8,7 @@
     sequence pool to recruit from.
 
     Both algorithms emit the same per-family channels, so everything downstream is unaware
-    of which one ran.
+    of which one ran. The iterative one also emits mgnifam's per-chunk run summaries for MultiQC.
 */
 
 include { CHUNK_CLUSTERS               } from '../../../modules/local/chunk_clusters/main'
@@ -39,9 +39,11 @@ workflow CHUNK_AND_GENERATE_FAMILIES {
             [ [id: meta.id, chunk: file(file_path, checkIfExists: true).baseName.tokenize('_').last()], file_path ]
         }
 
+    def ch_stats = channel.empty()
     if (iterative) {
         GENERATE_FAMILIES_ITERATIVELY( sequences, ch_chunks )
         ch_families = GENERATE_FAMILIES_ITERATIVELY.out
+        ch_stats    = GENERATE_FAMILIES_ITERATIVELY.out.stats
     } else {
         GENERATE_FAMILIES (
             sequences,
@@ -59,4 +61,6 @@ workflow CHUNK_AND_GENERATE_FAMILIES {
     full_msa = ch_families.full_msa
     fasta    = ch_families.fasta
     hmm      = ch_families.hmm
+    stats    = ch_stats // iterative only: per-chunk mgnifam run summaries
+    chunks   = ch_chunks // the chunks generation started from (standard: one cluster each)
 }
