@@ -222,7 +222,7 @@ workflow PROTEINFAMILIES {
         : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
     def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
-    ch_multiqc_files = ch_multiqc_files.mix(FAA_SEQFU_SEQKIT.out.multiqc_files.collect { file -> file[1] }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(seqfuStageSections(FAA_SEQFU_SEQKIT.out.multiqc_files).collect().ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect { file -> file[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(EXTRACT_FAMILY_REPS.out.map.collect { file -> file[1] }.ifEmpty([]))
     MULTIQC(
@@ -254,6 +254,26 @@ def finalFilesPerSample(ch_passed_through, ch_families) {
         .mix(ch_families)
         .map { meta, file -> [ [id: meta.id], file ] }
         .groupTuple()
+}
+
+// SeqFu titles every report 'SeqFu stats' and names its row after the FASTA file, so each sample
+// got its own section and stages differed only by file prefix. Rewrite each report into one
+// section per stage ('Before/After preprocessing' under 'SeqFu stats'), one row per sample id
+// (two samples may share a FASTA file name).
+def seqfuStageSections(ch_seqfu_mqc) {
+    ch_seqfu_mqc.collectFile { meta, mqc ->
+        def stage = mqc.name.endsWith('_before_mqc.txt') ? 'before' : 'after'
+        def lines = mqc.readLines().collect { line ->
+            if (line.startsWith('# section_name:')) {
+                return "# id: 'seqfu_${stage}'\n# parent_id: 'seqfu'\n# parent_name: 'SeqFu stats'\n# section_name: '${stage.capitalize()} preprocessing'"
+            }
+            if (line.startsWith('#') || line.startsWith('Sample\t') || !line) {
+                return line
+            }
+            return meta.id + line.substring(line.indexOf('\t'))
+        }
+        [ "${meta.id}_seqfu_${stage}_mqc.txt", lines.join('\n') + '\n' ]
+    }
 }
 
 // [id, family] meta from a family file's stem, as updated families have
