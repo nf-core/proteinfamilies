@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#209](https://github.com/nf-core/proteinfamilies/issues/209) - The `test` profile's 2- and 3-minute task time limits are raised to 5 minutes, the smallest `test_full` limit: on the local executor the limit includes pulling the task's container image, so tasks were killed on a cold image cache, and Nextflow before 26.10.0 then aborts the whole run.
+- [#210](https://github.com/nf-core/proteinfamilies/pull/210) - The `test` profile's 2- and 3-minute task time limits are raised to 5 minutes, the smallest `test_full` limit: on the local executor the limit includes pulling the task's container image, so tasks were killed on a cold image cache, and Nextflow before 26.10.0 then aborts the whole run ([#209](https://github.com/nf-core/proteinfamilies/issues/209)). (by @danilomonge)
 - [#198](https://github.com/nf-core/proteinfamilies/pull/198)
   - Updated families no longer change between identical runs: `BRANCH_HITS_FASTA` wrote each family's hits in Python set order, which varies per run, so seed alignments, HMMs and full MSAs could differ. Hits are now written sorted. (by @vagkaratzas)
   - Fixed samplesheet rows with existing HMMs but no MSAs (or the reverse) being silently dropped: they matched neither the create nor the update path. (by @vagkaratzas)
