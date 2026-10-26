@@ -1,0 +1,69 @@
+{
+    "proteinfamilies - nonredundant - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "aln"
+                        },
+                        "aln_1.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "FILTER_NON_REDUNDANT_FAMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "filtered": [
+                    [
+                        {
+                            "id": "aln"
+                        },
+                        "aln_1.aln:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "FILTER_NON_REDUNDANT_FAMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T16:50:12.610310222",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "proteinfamilies - nonredundant": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "aln"
+                    },
+                    "mgnifams_test_2.aln:md5,62ba4732047ba75151f735c2399973a4"
+                ]
+            ],
+            {
+                "versions_python": [
+                    [
+                        "FILTER_NON_REDUNDANT_FAMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T16:50:01.997126464",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    }
+}

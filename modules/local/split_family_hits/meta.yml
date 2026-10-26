@@ -1,0 +1,94 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "split_family_hits"
+description: Assign the searched sequences with hmmsearch hits to per-family fasta files, cut to their hit envelope.
+keywords:
+  - chunking
+  - clusters
+  - fasta
+tools:
+  - "split_family_hits":
+      description: "Assign the searched sequences with hmmsearch hits to per-family fasta files, cut to their hit envelope."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/split_family_hits/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/split_family_hits/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/split_family_hits/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - fasta:
+        type: file
+        description: Searched amino acid fasta file (e.g. input sequences pooled with existing family members), that hits are cut from.
+        pattern: "*.{fasta,faa,fa,fasta.gz,faa.gz,fa.gz}"
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - domtbl:
+        type: file
+        description: The result of hmmsearch with input sequences against existing family HMM hits.
+        pattern: "*.domtbl.gz"
+  - - length_threshold:
+        type: float
+        description: The minimum HMM query hit length percentage to consider for a family hit.
+output:
+  hits:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+    - hits/*:
+        type: file
+        description: List of fasta files containing sequences that had HMM hits across families -one file per family.
+        pattern: "hits/*.faa"
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+  versions_biopython:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - biopython:
+          type: string
+          description: The tool name
+      - 'python -c "import importlib.metadata; print(importlib.metadata.version(''biopython''))"':
+          type: eval
+          description: The expression to obtain the version of biopython
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - biopython:
+          type: string
+          description: The name of the tool
+      - 'python -c "import importlib.metadata; print(importlib.metadata.version(''biopython''))"':
+          type: eval
+          description: The expression to obtain the version of biopython
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

@@ -9,15 +9,13 @@ lint:
     - docs/images/nf-core-proteinfamilies_logo_dark.png
     - .github/workflows/branch.yml
     - .github/workflows/linting.yml
-  nextflow_config: false
-  schema_params: false
+  nextflow_config: false # TODO: remove when nf-core/tools supports typed parameters in main.nf
+  schema_params: false # TODO: remove when nf-core/tools supports typed parameters in main.nf
 nf_core_version: 4.2.1
 repository_type: pipeline
 template:
   author: Evangelos Karatzas
-  description: Generate protein family level models (Multiple Sequence Alignments
-    (MSAs), Hidden Markov Models (HMMs)) starting from a FASTA amino acid sequence
-    file.
+  description: Generate protein family level models (Multiple Sequence Alignments (MSAs), Hidden Markov Models (HMMs)) starting from a FASTA amino acid sequence file.
   force: false
   is_nfcore: true
   name: proteinfamilies

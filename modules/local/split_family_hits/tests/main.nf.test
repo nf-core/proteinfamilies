@@ -1,0 +1,121 @@
+nextflow_process {
+
+    name "Test Process SPLIT_FAMILY_HITS"
+    script "../main.nf"
+    process "SPLIT_FAMILY_HITS"
+
+    test("proteinfamilies - fasta") {
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'fasta' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of([
+                    [ id: 'domtbl' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true)
+                ])
+                input[2] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.hits,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - fasta - sliced input names") {
+        // p is already a slice (p/101-110), so its hit [3, 8] is named in p's parent coordinates;
+        // q is hit full-length, so it keeps its name; r has no hit
+        when {
+            process {
+                """
+                def fasta = file('edge.faa')
+                fasta.text = '>p/101-110\\nACDEFGHIKL\\n>q\\nMNPQRSTVWY\\n>r\\nAAAAAAAAAA\\n'
+                def domtbl = file('edge.domtbl')
+                domtbl.text = [
+                    'p/101-110 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 3 8 3 8 0.99 -',
+                    'q - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 1 10 1 10 0.99 -',
+                    'r - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 2 9 2 9 0.99 -'
+                ].join('\\n') + '\\n'
+                input[0] = channel.of([ [ id: 'edge' ], fasta ])
+                input[1] = channel.of([ [ id: 'edge' ], domtbl ])
+                input[2] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.hits[0][1]).readLines() == ['>p/103-108 fam1', 'DEFGHI', '>q fam1', 'MNPQRSTVWY', '>r/2-9 fam1', 'AAAAAAAA'] }
+            )
+        }
+    }
+
+    test("proteinfamilies - fasta - overlapping slices") {
+        // s/1-10 and s/6-15 are overlapping slices of one protein, both hit on their shared
+        // residues 6-10: both give s/6-10, written once
+        when {
+            process {
+                """
+                def fasta = file('overlap.faa')
+                fasta.text = '>s/1-10\\nACDEFGHIKL\\n>s/6-15\\nGHIKLMNPQR\\n'
+                def domtbl = file('overlap.domtbl')
+                domtbl.text = [
+                    's/1-10 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 6 10 6 10 0.99 -',
+                    's/6-15 - 10 fam1 - 5 1e-10 50.0 0.0 1 1 1e-10 1e-10 50.0 0.0 1 5 1 5 1 5 0.99 -'
+                ].join('\\n') + '\\n'
+                input[0] = channel.of([ [ id: 'overlap' ], fasta ])
+                input[1] = channel.of([ [ id: 'overlap' ], domtbl ])
+                input[2] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.hits[0][1]).readLines() == ['>s/6-10 fam1', 'GHIKL'] }
+            )
+        }
+    }
+
+    test("proteinfamilies - fasta - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'fasta' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of([
+                    [ id: 'domtbl' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test.domtbl.gz', checkIfExists: true)
+                ])
+                input[2] = 0.9
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}

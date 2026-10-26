@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "generate_families_iteratively"
+description: Generate family models and alignments from clustered sequences with mgnifam, which loops HMM building, member recruitment and realignment per cluster until each family converges or is discarded
+keywords:
+  - families
+  - alignment
+  - hmm
+  - model
+  - sequences
+  - msa
+  - recruitment
+  - iterative
+  - protein
+components:
+  - gunzip
+  - hmmer/eslsfetchindex
+  - mgnifam/generatefamilies
+  - hhsuite/reformat
+  - seqkit/seq
+input:
+  - sequences:
+      type: file
+      description: |
+        Amino acid FASTA file containing the sequence pool that family members are recruited from.
+        Gzipped input is decompressed first, as mgnifam cannot seek within a gzip stream.
+  - clusters_chunks:
+      type: file
+      description: |
+        Headerless representative<TAB>member TSV files, each holding the clusters of one chunk
+output:
+  - versions:
+      type: file
+      description: |
+        Versions file containing the software versions used in the workflow
+  - seed_msa:
+      type: file
+      description: |
+        Per-family seed MSA files, reformatted from Stockholm to aligned FASTA
+  - full_msa:
+      type: file
+      description: |
+        Per-family full MSA files in gzipped Stockholm format, including the recruited members
+  - fasta:
+      type: file
+      description: |
+        Per-family FASTA files holding the full MSA members with their gaps removed
+  - hmm:
+      type: file
+      description: |
+        HMM files containing the hidden Markov model of each family
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

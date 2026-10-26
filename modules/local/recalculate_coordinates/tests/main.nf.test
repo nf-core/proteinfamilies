@@ -1,0 +1,98 @@
+nextflow_process {
+
+    name "Test Process RECALCULATE_COORDINATES"
+    script "../main.nf"
+    process "RECALCULATE_COORDINATES"
+    config "./nextflow.config"
+
+    setup {
+        run("CLIPKIT") {
+            script "../../../nf-core/clipkit/main.nf"
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'mgnifams_test_1' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true)
+                ])
+                input[1] = 'clipkit'
+                input[2] = []
+                """
+            }
+        }
+    }
+
+    test("proteinfamilies - aln - clipkit ends only") {
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'mgnifams_test_1' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true)
+                ])
+                .join(CLIPKIT.out.log)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.alignment,
+                    process.out.fasta,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - aln - edge cases") {
+        // Columns 1-2 and 8 trimmed at the ends, so each row's residues there shift its range:
+        // plain names get one (a, b), existing ranges are shifted (c), all-gap rows are dropped (d)
+        when {
+            process {
+                """
+                def untrimmed = file('edge.aln')
+                untrimmed.text = '>a\\n--MKVLA-\\n>b desc\\n-AMKVLAQ\\n>c/10-14\\n.MK.VLA-\\n>d\\nWW------\\n'
+                def log = file('edge.clipkit.log')
+                log.text = (1..8).collect { "\${it} \${it in [1, 2, 8] ? 'trim' : 'keep'} other 0.5" }.join('\\n') + '\\n'
+
+                input[0] = channel.of([ [ id: 'edge' ], untrimmed, log ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert file(process.out.alignment[0][1]).text == ">a\nMKVLA\n>b/2-6 desc\nMKVLA\n>c/11-14\nK.VLA\n" },
+                { assert file(process.out.fasta[0][1]).text == ">a\nMKVLA\n>b/2-6 desc\nMKVLA\n>c/11-14\nKVLA\n" }
+            )
+        }
+    }
+
+    test("proteinfamilies - aln - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'mgnifams_test_1' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true)
+                ])
+                .join(CLIPKIT.out.log)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

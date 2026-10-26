@@ -1,0 +1,134 @@
+{
+    "two samples - each pool stages and merges only its own seeds": {
+        "content": [
+            [
+                "sampleA_1_2.hmm.gz",
+                "sampleA_3_5.hmm.gz",
+                "sampleB_90fams_cef0de0010.hmm.gz"
+            ],
+            [
+                [
+                    {
+                        "id": "sampleA",
+                        "merged_id": "sampleA_1_2",
+                        "pool": "create"
+                    },
+                    "sampleA_1_2.aln:md5,34b9b55c500ab37d4846e013732a0586"
+                ],
+                [
+                    {
+                        "id": "sampleA",
+                        "merged_id": "sampleA_3_5",
+                        "pool": "create"
+                    },
+                    "sampleA_3_5.aln:md5,262e2f4809eed2c7ce8bf74d8497be66"
+                ],
+                [
+                    {
+                        "id": "sampleB",
+                        "merged_id": "sampleB_90fams_cef0de0010",
+                        "pool": "create"
+                    },
+                    "sampleB_90fams_cef0de0010.aln:md5,1e212911d4fa51e7ed8fb278af7269e9"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "sampleA",
+                        "merged_id": "sampleA_1_2",
+                        "pool": "create"
+                    },
+                    "sampleA_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
+                ],
+                [
+                    {
+                        "id": "sampleA",
+                        "merged_id": "sampleA_3_5",
+                        "pool": "create"
+                    },
+                    "sampleA_3_5.sto.gz:md5,fd5058c9f8c79e135a0dd372bc7cb422"
+                ],
+                [
+                    {
+                        "id": "sampleB",
+                        "merged_id": "sampleB_90fams_cef0de0010",
+                        "pool": "create"
+                    },
+                    "sampleB_90fams_cef0de0010.sto.gz:md5,b432795e4a56a2284d2bce48066beb99"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "sampleA",
+                        "merged_id": "sampleA_1_2",
+                        "pool": "create"
+                    },
+                    "sampleA_1_2.faa.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                ],
+                [
+                    {
+                        "id": "sampleA",
+                        "merged_id": "sampleA_3_5",
+                        "pool": "create"
+                    },
+                    "sampleA_3_5.faa.gz:md5,3a7a0927b59800049ba84b30600820a2"
+                ],
+                [
+                    {
+                        "id": "sampleB",
+                        "merged_id": "sampleB_90fams_cef0de0010",
+                        "pool": "create"
+                    },
+                    "sampleB_90fams_cef0de0010.faa.gz:md5,f398708f15b7e8a5e28dcb7c4f653e40"
+                ]
+            ]
+        ],
+        "timestamp": "2026-10-09T14:50:37.134390706",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "fasta": {
+        "content": [
+            "mgnifams_test_1_2.hmm.gz",
+            [
+                [
+                    {
+                        "id": "mgnifams_test",
+                        "merged_id": "mgnifams_test_1_2",
+                        "pool": "create"
+                    },
+                    "mgnifams_test_1_2.aln:md5,0bfa39c7da46d80cdb61e7e2f3198c37"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "mgnifams_test",
+                        "merged_id": "mgnifams_test_1_2",
+                        "pool": "create"
+                    },
+                    "mgnifams_test_1_2.sto.gz:md5,e3f8714af2c2c9a2b18a8e142ff85a66"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "mgnifams_test",
+                        "merged_id": "mgnifams_test_1_2",
+                        "pool": "create"
+                    },
+                    "mgnifams_test_1_2.faa.gz:md5,bc97ed94ff93c7dc09e3163f241e649e"
+                ]
+            ]
+        ],
+        "timestamp": "2026-10-09T09:46:22.934541268",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}
