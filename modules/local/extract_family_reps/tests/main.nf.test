@@ -55,6 +55,28 @@ nextflow_process {
         }
     }
 
+    test("proteinfamilies - faa - representative region") {
+        // A sliced representative keeps its name's coordinates, a whole one spans its full length
+        when {
+            process {
+                """
+                def sliced = file("fam_1.faa")
+                sliced.text = ">seq_a/5-12\\nMK-VLLAAG\\n>seq_b\\nMKVLL\\n"
+                def whole = file("fam_2.faa")
+                whole.text = ">seq_c\\nMKTAYIAK\\n"
+                input[0] = channel.of([ [ id: 'extract_family_reps' ], [ sliced, whole ] ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.map[0][1]).readLines().findAll { l -> !l.startsWith('#') }.drop(1).collect { l -> l.tokenize(',')[5].replace('"', '') } == ['5-12', '1-8'] }
+            )
+        }
+    }
+
     test("proteinfamilies - faa - stub") {
 
         options "-stub"

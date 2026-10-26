@@ -12,6 +12,7 @@ import os
 import gzip
 import argparse
 import csv
+import re
 from concurrent.futures import ProcessPoolExecutor
 from functools import partial
 from typing import Sequence
@@ -51,6 +52,19 @@ def parse_args(args: Sequence[str] | None = None) -> argparse.Namespace:
         help="Output FASTA file with representative sequences.",
     )
     return parser.parse_args(args)
+
+
+# A representative cut from a longer sequence is named '<name>/<start>-<end>' (1-based, inclusive)
+SLICE_PATTERN = re.compile(r"/(\d+)-(\d+)$")
+
+
+def representative_region(header: str, length: int) -> str:
+    """
+    Region of the representative within its source sequence: the slice coordinates in its name,
+    or the whole sequence ('1-<length>') when it is not a slice.
+    """
+    match = SLICE_PATTERN.search(header)
+    return f"{match.group(1)}-{match.group(2)}" if match else f"1-{length}"
 
 
 def extract_data(filepath: str) -> tuple[str | None, str | None, int]:
@@ -96,7 +110,7 @@ def extract_data(filepath: str) -> tuple[str | None, str | None, int]:
 
 def process_fasta_file(
     filename: str, fasta_folder: str
-) -> tuple[str, str, int, int, str, str] | None:
+) -> tuple[str, str, int, int, str, str, str] | None:
     """
     Process a single FASTA file to extract family and representative sequence info.
 
@@ -111,6 +125,7 @@ def process_fasta_file(
             family size (int),
             representative length (int),
             representative ID (str),
+            representative region (str),
             representative sequence (str)
         ), or None if data is incomplete.
     """
@@ -126,6 +141,7 @@ def process_fasta_file(
             size,                  # Family size
             len(sequence),         # Representative Length
             header,                # Representative ID
+            representative_region(header, len(sequence)),  # Region
             sequence               # Sequence
         )
     return None
@@ -153,7 +169,7 @@ def parse_family_metadata(
         csv_out.write(
             '# id: "family_metadata"\n'
             '# section_name: "Family Metadata"\n'
-            '# description: "Family metadata table containing family ids and sizes along with representative sequences, ids and lengths."\n'
+            '# description: "Family metadata table containing family ids and sizes along with representative sequences, ids, lengths and regions (start-end within the source sequence)."\n'
             '# format: "csv"\n'
             '# plot_type: "table"\n'
         )
@@ -164,13 +180,14 @@ def parse_family_metadata(
             "Size",
             "Representative Length",
             "Representative Id",
+            "Region",
             "Sequence",
         ])
 
         for res in results:
             if res:
-                sample, fam_id, size, length, rep_id, seq = res
-                csv_writer.writerow([sample, fam_id, size, length, rep_id, seq])
+                sample, fam_id, size, length, rep_id, region, seq = res
+                csv_writer.writerow([sample, fam_id, size, length, rep_id, region, seq])
                 fasta_out.write(f">{rep_id}\n{seq}\n")
 
 

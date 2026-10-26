@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "generation_stats"
+description: Summarise the families the standard algorithm built or updated for one sample into MultiQC custom content mirroring the MultiQC mgnifam module's sections.
+keywords:
+  - multiqc
+  - protein families
+  - statistics
+tools:
+  - "generation_stats":
+      description: "Summarise the families the standard algorithm built or updated for one sample into MultiQC custom content mirroring the MultiQC mgnifam module's sections."
+      homepage: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/generation_stats/"
+      documentation: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/generation_stats/"
+      tool_dev_url: "https://github.com/nf-core/proteinfamilies/tree/dev/modules/local/generation_stats/"
+      doi: "10.5281/zenodo.14881993"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information; its id (or ext.prefix) is the report sample name
+          e.g. `[ id:'sample1' ]`
+    - families_in:
+        type: integer
+        description: Clusters (creation) or existing models (update) that entered the algorithm
+    - discards:
+        type: map
+        description: "Discarded family counts by reason, e.g. `['no hits': 2]`; may be empty"
+    - fasta:
+        type: file
+        description: One member FASTA per successful family
+        pattern: "*.{faa,faa.gz}"
+    - hmm:
+        type: file
+        description: One HMM per successful family, named like its FASTA
+        pattern: "*.{hmm,hmm.gz}"
+    - existing_hmm:
+        type: file
+        description: Update only, else empty; the existing HMMs, named like the updated families, for the model length change
+        pattern: "*.{hmm,hmm.gz}"
+  - remainder_reason:
+      type: string
+      description: Reason for every input family neither successful nor in `discards` (e.g. 'no recruits'); empty for 'Unaccounted'
+output:
+  multiqc:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - ${prefix}_*_mqc.json:
+          type: file
+          description: |
+            MultiQC custom content: general stats (Families In, % Successful) and Family outcomes,
+            plus Full MSA size and Model length histograms for samples with families, and Model
+            length change for updates
+          pattern: "*_mqc.json"
+  versions_python:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - python:
+          type: string
+          description: The tool name
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - python:
+          type: string
+          description: The name of the tool
+      - "python --version 2>&1 | sed 's/Python //'":
+          type: eval
+          description: The expression to obtain the version of python
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

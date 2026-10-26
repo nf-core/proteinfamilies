@@ -1,0 +1,48 @@
+nextflow_function {
+
+    name "Test Functions"
+    script "../main.nf"
+
+    test("validateReportNames - update id clash") {
+        // Updated families of 'a' report as 'a_updated', the id of another sample
+        function "validateReportNames"
+
+        when {
+            function {
+                """
+                input[0] = [
+                    [ [id: 'a'], 'a.faa', 'a_hmms.tar.gz', [], [] ],
+                    [ [id: 'a_updated'], 'b.faa', [], [], [] ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert function.failed },
+                { assert function.stdout.any { line -> line.contains("Sample ids a_updated clash") } }
+            )
+        }
+    }
+
+    test("validateReportNames - no update, no clash") {
+        // 'a' creates only, so 'a_updated' is a free name
+        function "validateReportNames"
+
+        when {
+            function {
+                """
+                input[0] = [
+                    [ [id: 'a'], 'a.faa', [], [], [] ],
+                    [ [id: 'a_updated'], 'b.faa', [], [], [] ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert function.success
+        }
+    }
+}

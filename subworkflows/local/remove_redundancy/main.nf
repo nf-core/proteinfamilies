@@ -60,6 +60,11 @@ workflow REMOVE_REDUNDANCY {
     ch_merged_families = channel.empty()
     ch_pooled_ids      = channel.empty()
     ch_output_hmm      = channel.empty()
+    ch_redundant_count = channel.empty()
+    ch_pooled_count    = channel.empty()
+    ch_produced_count  = channel.empty()
+    // Families entering
+    ch_generated_count = countPerSample( fasta )
 
     // FAMILY REDUNDANCY REMOVAL MECHANISM
     // Block runs if either feature is enabled — both share the same HMM-search infrastructure.
@@ -131,6 +136,13 @@ workflow REMOVE_REDUNDANCY {
         }
 
         // with --family_redundancy_removal none, redundant_ids is returned empty by the script
+        ch_redundant_count = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids
+            .map { meta, ids -> [ meta, ids.readLines().findAll { line -> line.trim() }.size() ] }
+        // Merged away = pooled source families - merged families produced: an n-way merge
+        // replaces n families by one, a merge whose new model recruits nothing loses all n
+        ch_pooled_count = ch_merged_families
+            .map { meta, merges -> [ meta, merges.sum { merge -> merge[1].tokenize(',').size() } ] }
+        ch_produced_count = countPerSample( ch_merged_fasta )
         ch_skip_ids = IDENTIFY_REDUNDANT_FAMS.out.redundant_ids
         // similar families are only removed once pooled into a merge (e.g., _1 and _7 replaced by
         // _1_7); a similar family left out of every pool (e.g. a second updated one) stays
@@ -189,6 +201,26 @@ workflow REMOVE_REDUNDANCY {
     }
     // END FAMILY REDUNDANCY REMOVAL MECHANISM
 
+    // Per sample: generated = final + removed as redundant + merged away (zeros when both
+    // family_redundancy_removal and family_merging are none)
+    ch_counts = ch_generated_count
+        .join( countPerSample( fasta ), remainder: true )
+        .join( ch_redundant_count, remainder: true )
+        .join( ch_pooled_count, remainder: true )
+        .join( ch_produced_count, remainder: true )
+        .map { meta, generated, final_count, redundant, pooled, produced ->
+            def counts = [
+                generated: generated ?: 0,
+                final_families: final_count ?: 0,
+                removed_redundant: redundant ?: 0,
+                merged_away: (pooled ?: 0) - (produced ?: 0)
+            ]
+            if (counts.generated != counts.final_families + counts.removed_redundant + counts.merged_away) {
+                log.warn("[nf-core/proteinfamilies] Family redundancy counts of ${meta.id} do not add up: ${counts}")
+            }
+            [ meta, counts ]
+        }
+
     if (!skip_sequence_redundancy_removal) {
         // SEQUENCE REDUNDANCY REMOVAL MECHANISM
         MMSEQS_FASTA_CLUSTER( fasta, clustering_tool ) // fasta channel contains all sequences of full MSA
@@ -224,6 +256,12 @@ workflow REMOVE_REDUNDANCY {
     full_msa        = full_msa
     hmm             = ch_output_hmm
     merged_families = ch_merged_families // [meta, [[merged_id, 'member,...'], ...]], samples with merges only
+    counts          = ch_counts          // [meta, [generated, final_families, removed_redundant, merged_away]], for MultiQC
+}
+
+// One [[id], number of files] per sample
+def countPerSample(ch_files) {
+    perSample(ch_files).map { meta, files -> [meta, files.size()] }
 }
 
 // One [[id], [files]] per sample

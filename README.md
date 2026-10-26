@@ -46,7 +46,7 @@ Generate input amino acid sequence statistics with ([`SeqFu`](https://github.com
 6. Optionally, from the remaining families, remove in-family redundant sequences by strictly clustering with ([`MMseqs2`](https://github.com/soedinglab/MMseqs2/)) and discarding non-cluster representatives
 7. If in-family redundancy was not removed, reformat the `.sto` full MSAs to `.fas`, for downstream analyses compatibility, with ([`HH-suite3`](https://github.com/soedinglab/hh-suite))
 8. Optionally, infer sequence phylogeny, by calculating the maximum parsimonious likelihood estimation trees for the final full MSAs with ([`CMAPLE`](https://github.com/iqtree/cmaple))
-9. Present statistics for remaining/updated family size distributions and representative sequence lengths ([`MultiQC`](http://multiqc.info/))
+9. Present family generation statistics (the same sections for both algorithms and for updates), redundancy removal counts, and the final families with their representatives ([`MultiQC`](http://multiqc.info/))
 
 The new `iterative` family generation algorithm (i.e., `mgnifam`), can now be used in place of steps 2-4.
 In a nutshell, `mgnifam` iterates through these steps to refine the protein family alignments and models,

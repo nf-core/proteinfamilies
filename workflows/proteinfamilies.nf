@@ -23,6 +23,8 @@ include { TAR as TAR_FASTA                                 } from '../modules/nf
 include { CMAPLE                                           } from '../modules/nf-core/cmaple/main'
 include { EXTRACT_FAMILY_MEMBERS                           } from '../modules/local/extract_family_members/main'
 include { EXTRACT_FAMILY_REPS                              } from '../modules/local/extract_family_reps/main'
+include { GENERATION_STATS as GENERATION_STATS_CREATE      } from '../modules/local/generation_stats/main'
+include { GENERATION_STATS as GENERATION_STATS_UPDATE      } from '../modules/local/generation_stats/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,6 +100,32 @@ workflow PROTEINFAMILIES {
             [ "${meta.id}_passed_through_existing_families.tsv", "family\treason\n" + families.collect { family, reason -> "${family}\t${reason}\n" }.join() ]
         }
 
+    // Generation-stage report of the update (standard engine with either algorithm), one
+    // '<id>_updated' sample per update-routed input, mirroring the MultiQC mgnifam module
+    def ch_updated = UPDATE_FAMILIES.out.fasta
+        .join( UPDATE_FAMILIES.out.hmm )
+        .map { meta, faa, model -> [ [id: meta.id], [faa, model] ] }
+        .groupTuple()
+    GENERATION_STATS_UPDATE(
+        UPDATE_FAMILIES.out.existing_hmm
+            .map { meta, model -> [ [id: meta.id], model ] }
+            .groupTuple()
+            .join( UPDATE_FAMILIES.out.passed_through_families )
+            .join( ch_updated, remainder: true )
+            .map { meta, existing, passed_through, families ->
+                [
+                    meta,
+                    existing.size(),
+                    passed_through.countBy { family_reason -> family_reason[1] }, // e.g. 'no hits', 'no recruits'
+                    (families ?: [])*.getAt(0),
+                    (families ?: [])*.getAt(1),
+                    existing
+                ]
+            },
+        ''
+    )
+    ch_multiqc_files = ch_multiqc_files.mix( GENERATION_STATS_UPDATE.out.multiqc.map { _meta, files -> files } )
+
     // Sequences not assigned to any existing family during update feed the de-novo creation path.
     ch_samplesheet_for_create = ch_samplesheet_for_create.mix( UPDATE_FAMILIES.out.no_hit_seqs )
 
@@ -121,6 +149,32 @@ workflow PROTEINFAMILIES {
         params.skip_recruiting,
         params.recruit_min_model_coverage
     )
+
+    // Generation-stage report of the standard algorithm, mirroring the MultiQC mgnifam module that
+    // reports the iterative one: one sample per create-routed input, also when no cluster reached
+    // generation (all below clustering_min_cluster_size) or no family came out
+    if (params.family_generation_algorithm == 'standard') {
+        def ch_clusters_in = CHUNK_AND_GENERATE_FAMILIES.out.chunks
+            .map { meta, _chunk -> [ [id: meta.id], 1 ] }
+            .groupTuple()
+            .map { meta, ones -> [ meta, ones.size() ] }
+        // Successful families: their FASTA exists, while every cluster gets an HMM
+        def ch_created = CHUNK_AND_GENERATE_FAMILIES.out.fasta
+            .join( CHUNK_AND_GENERATE_FAMILIES.out.hmm )
+            .map { meta, faa, model -> [ [id: meta.id], [faa, model] ] }
+            .groupTuple()
+        GENERATION_STATS_CREATE(
+            MMSEQS_FASTA_CLUSTER.out.seqs
+                .map { meta, _seqs -> [ [id: meta.id], true ] }
+                .join( ch_clusters_in, remainder: true )
+                .join( ch_created, remainder: true )
+                .map { meta, _input, clusters_in, families ->
+                    [ meta, clusters_in ?: 0, [:], (families ?: [])*.getAt(0), (families ?: [])*.getAt(1), [] ]
+                },
+            params.skip_recruiting ? '' : 'no recruits' // a cluster whose HMM recruits nothing yields no family
+        )
+        ch_multiqc_files = ch_multiqc_files.mix( GENERATION_STATS_CREATE.out.multiqc.map { _meta, files -> files } )
+    }
 
     // Created and updated families, keyed [id, family] by file stem
     REMOVE_REDUNDANCY (
@@ -222,9 +276,12 @@ workflow PROTEINFAMILIES {
         : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
     def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
-    ch_multiqc_files = ch_multiqc_files.mix(FAA_SEQFU_SEQKIT.out.multiqc_files.collect { file -> file[1] }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(seqfuStageSections(FAA_SEQFU_SEQKIT.out.multiqc_files).collect().ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(CALCULATE_CLUSTER_DISTRIBUTION.out.mqc.collect { file -> file[1] }.ifEmpty([]))
+    // Generation-stage summaries only: MERGE_FAMILIES's mgnifam re-runs would count merged families twice
+    ch_multiqc_files = ch_multiqc_files.mix(CHUNK_AND_GENERATE_FAMILIES.out.stats.collect { file -> file[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(EXTRACT_FAMILY_REPS.out.map.collect { file -> file[1] }.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(redundancySection(REMOVE_REDUNDANCY.out.counts).collect().ifEmpty([]))
     MULTIQC(
         ch_multiqc_files.flatten().collect().map { files ->
             [
@@ -254,6 +311,53 @@ def finalFilesPerSample(ch_passed_through, ch_families) {
         .mix(ch_families)
         .map { meta, file -> [ [id: meta.id], file ] }
         .groupTuple()
+}
+
+// One stacked bar per sample: the families entering redundancy removal split into those kept
+// (merged families included), removed as redundant, and merged away
+def redundancySection(ch_counts) {
+    ch_counts.collectFile { meta, counts ->
+        def section = [
+            id: 'family_redundancy',
+            section_name: 'Redundancy removal',
+            description: 'Families entering family redundancy removal and merging, and what became of them. Existing families passed through unchanged by an update skip this step.',
+            plot_type: 'bargraph',
+            pconfig: [ id: 'family-redundancy-plot', title: 'Redundancy removal: families', ylab: 'Families' ],
+            categories: [
+                'Final': [ name: 'Final' ],
+                'Removed as redundant': [ name: 'Removed as redundant' ],
+                'Merged away': [ name: 'Merged away' ]
+            ],
+            data: [
+                (meta.id): [
+                    'Final': counts.final_families,
+                    'Removed as redundant': counts.removed_redundant,
+                    'Merged away': counts.merged_away
+                ]
+            ]
+        ]
+        [ "${meta.id}_family_redundancy_mqc.json", groovy.json.JsonOutput.toJson(section) ]
+    }
+}
+
+// SeqFu titles every report 'SeqFu stats' and names its row after the FASTA file, so each sample
+// got its own section and stages differed only by file prefix. Rewrite each report into one
+// section per stage ('Before/After preprocessing' under 'SeqFu stats'), one row per sample id
+// (two samples may share a FASTA file name).
+def seqfuStageSections(ch_seqfu_mqc) {
+    ch_seqfu_mqc.collectFile { meta, mqc ->
+        def stage = mqc.name.endsWith('_before_mqc.txt') ? 'before' : 'after'
+        def lines = mqc.readLines().collect { line ->
+            if (line.startsWith('# section_name:')) {
+                return "# id: 'seqfu_${stage}'\n# parent_id: 'seqfu'\n# parent_name: 'SeqFu stats'\n# section_name: '${stage.capitalize()} preprocessing'"
+            }
+            if (line.startsWith('#') || line.startsWith('Sample\t') || !line) {
+                return line
+            }
+            return meta.id + line.substring(line.indexOf('\t'))
+        }
+        [ "${meta.id}_seqfu_${stage}_mqc.txt", lines.join('\n') + '\n' ]
+    }
 }
 
 // [id, family] meta from a family file's stem, as updated families have
