@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#211](https://github.com/nf-core/proteinfamilies/pull/211) - nf-core tools template update to 4.2.1. (by @vagkaratzas)
 - [#207](https://github.com/nf-core/proteinfamilies/pull/207) - Updated the metro maps to v3.0.0: nf-core module stations only, solid lines for steps run per sample and dotted for steps run per family, updated families rejoining the clustering and family generation steps, and the new inputs and outputs. (by @vagkaratzas)
 - [#205](https://github.com/nf-core/proteinfamilies/pull/205) - **Breaking:** parameters and outputs cleanup (old → new table in `docs/usage.md`).
   - Removed `--hmmsearch_write_target` and `--hmmsearch_write_domain`: the per-domain table is always needed, the per-target table was never used. (by @vagkaratzas)
