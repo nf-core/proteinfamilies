@@ -9,7 +9,9 @@ lint:
     - docs/images/nf-core-proteinfamilies_logo_dark.png
     - .github/workflows/branch.yml
     - .github/workflows/linting.yml
-nf_core_version: 4.1.0
+  nextflow_config: false
+  schema_params: false
+nf_core_version: 4.2.1
 repository_type: pipeline
 template:
   author: Evangelos Karatzas
@@ -24,4 +26,4 @@ template:
   skip_features:
     - igenomes
     - fastqc
-  version: 2.6.0dev
+  version: 3.0.0dev
