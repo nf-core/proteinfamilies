@@ -1,0 +1,114 @@
+nextflow_workflow {
+
+    name "Test Subworkflow ALIGN_SEQUENCES"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "ALIGN_SEQUENCES"
+
+    test("fasta - famsa") {
+
+        when {
+            workflow {
+                """
+                alignment_tool = 'famsa'
+
+                input[0] = channel.of([
+                    [ id: 'test_famsa', chunk: 1 ],
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
+                ])
+                input[1] = alignment_tool
+                input[2] = true
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out.alignments).match() }
+            )
+        }
+    }
+
+    test("fasta - mafft") {
+
+        when {
+            workflow {
+                """
+                alignment_tool = 'mafft'
+
+                input[0] = channel.of([
+                    [ id: 'test_mafft', chunk: 1 ],
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
+                ])
+                input[1] = alignment_tool
+                input[2] = true
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out.alignments).match() }
+            )
+        }
+    }
+
+    test("fasta - famsa - trimmed") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test_famsa_trimmed', chunk: 1 ],
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
+                ])
+                input[1] = 'famsa'
+                input[2] = false
+                """
+            }
+        }
+
+        then {
+            def msa = file(workflow.out.alignments[0][1]).readLines()
+            def fasta = file(workflow.out.sequences[0][1]).readLines()
+            assertAll(
+                { assert workflow.success},
+                // Every row carries a range and the fasta holds exactly the MSA rows, degapped
+                { assert msa.findAll { it.startsWith('>') }.any { it ==~ />.+\/\d+-\d+/ } },
+                { assert fasta.findAll { it.startsWith('>') } == msa.findAll { it.startsWith('>') } },
+                { assert fasta.findAll { !it.startsWith('>') } == msa.findAll { !it.startsWith('>') }.collect { it.replaceAll(/[-.]/, '') } },
+                { assert snapshot(workflow.out.alignments, workflow.out.sequences).match() }
+            )
+        }
+    }
+
+    test("fasta - famsa - stub") {
+
+        options "-stub"
+
+        when {
+            workflow {
+                """
+                alignment_tool = 'famsa'
+
+                input[0] = channel.of([
+                    [ id: 'test_famsa_stub', chunk: 1 ],
+                    file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
+                ])
+                input[1] = alignment_tool
+                input[2] = true
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out.alignments).match() }
+            )
+        }
+    }
+
+}

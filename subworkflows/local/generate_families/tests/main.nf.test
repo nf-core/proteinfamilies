@@ -1,0 +1,50 @@
+nextflow_workflow {
+
+    name "Test Subworkflow GENERATE_FAMILIES"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "GENERATE_FAMILIES"
+
+    test("fasta") {
+
+        when {
+            workflow {
+                """
+                input[0] = channel.of([
+                    [ id: 'test' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[1] = channel.of([
+                        [ id: 'test', chunk: "chunk_1" ],
+                        [
+                            file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_1.faa', checkIfExists: true)
+                        ]
+                    ],
+                    [
+                        [ id: 'test', chunk: "chunk_2" ],
+                        [
+                            file(params.pipelines_testdata_base_path + 'test_data/subworkflows/chunk_2.faa', checkIfExists: true)
+                        ]
+                ])
+                input[2] = "famsa"   // alignment_tool
+                input[3] = false     // skip_seed_msa_trimming
+                input[4] = false     // skip_recruiting
+                input[5] = 0.9       // recruit_min_model_coverage
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    file(workflow.out.hmm[0][1]).name,
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta
+                ).match()}
+            )
+        }
+    }
+
+}

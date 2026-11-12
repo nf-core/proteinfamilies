@@ -1,0 +1,225 @@
+nextflow_workflow {
+
+    name "Test Subworkflow MERGE_FAMILIES"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "MERGE_FAMILIES"
+
+    test("fasta") {
+
+        when {
+            workflow {
+                """
+                def similarities_content = "family_1,family_2,similarity_score\\nmgnifams_test_1,mgnifams_test_2,0.94\\n"
+
+                def similarities_file = file('similarities.csv')
+                similarities_file.text = similarities_content
+
+                input[0] = [
+                    [ id: 'mgnifams_test' ],
+                    similarities_file,
+                    []
+                ]
+                input[1] = channel.of([
+                    [ id: 'mgnifams_test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true)
+                    ]
+                ])
+                input[2] = channel.of([
+                    [ id: 'mgnifams_test', pool: 'create' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // skip_recruiting
+                input[7] = 0.9       // recruit_min_model_coverage
+                input[8]  = "existing" // merged_family_name
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    file(workflow.out.hmm[0][1]).name,
+                    workflow.out.seed_msa,
+                    workflow.out.full_msa,
+                    workflow.out.fasta
+                ).match()}
+            )
+        }
+    }
+
+    test("pool with an updated family - existing name") {
+        // 'fam_x' is an updated family (not named '<id>_<digit>...'): the merge recruits from the
+        // update pool only, and keeps the updated family's name
+        when {
+            workflow {
+                """
+                def similarities_file = file('similarities_updated.csv')
+                similarities_file.text = "family_1,family_2,similarity_score\\nmgnifams_test_1,fam_x,0.94\\n"
+                def updated_seed = file('fam_x.aln')
+                file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).copyTo(updated_seed)
+
+                input[0] = [ [ id: 'mgnifams_test' ], similarities_file, [ 'fam_x' ] ]
+                input[1] = channel.of([
+                    [ id: 'mgnifams_test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        updated_seed
+                    ]
+                ])
+                input[2] = channel.of([
+                    [ id: 'mgnifams_test', pool: 'update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // skip_recruiting
+                input[7] = 0.9        // recruit_min_model_coverage
+                input[8]  = "existing" // merged_family_name
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.full_msa.collect { meta, msa -> [meta.merged_id, meta.pool, file(msa).name] } == [['fam_x', 'update', 'fam_x.sto.gz']] },
+                { assert workflow.out.merged_families == [[[id: 'mgnifams_test'], [['fam_x', 'fam_x,mgnifams_test_1']]]] }
+            )
+        }
+    }
+
+    test("pool with an updated family - new name") {
+        // With merged_family_name 'new', the merged name lists created numbers before updated names
+        when {
+            workflow {
+                """
+                def similarities_file = file('similarities_updated.csv')
+                similarities_file.text = "family_1,family_2,similarity_score\\nmgnifams_test_1,fam_x,0.94\\n"
+                def updated_seed = file('fam_x.aln')
+                file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).copyTo(updated_seed)
+
+                input[0] = [ [ id: 'mgnifams_test' ], similarities_file, [ 'fam_x' ] ]
+                input[1] = channel.of([
+                    [ id: 'mgnifams_test' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true),
+                        updated_seed
+                    ]
+                ])
+                input[2] = channel.of([
+                    [ id: 'mgnifams_test', pool: 'update' ],
+                    file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                ])
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // skip_recruiting
+                input[7] = 0.9        // recruit_min_model_coverage
+                input[8]  = "new"      // merged_family_name
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.out.full_msa.collect { meta, msa -> [meta.merged_id, meta.pool, file(msa).name] } == [['mgnifams_test_1_fam_x', 'update', 'mgnifams_test_1_fam_x.sto.gz']] }
+            )
+        }
+    }
+
+    test("two samples - each pool stages and merges only its own seeds") {
+        // Regression tests in one run, each pool's seed headers prefixed with its family id:
+        // - #191: each MERGE_SEEDS task stages only its own pool's seeds, not the whole sample
+        //   (sampleA: pools {1, 2} and {3, 5}, 4 unpooled; gzipped 5 covers the '.fas.gz' stem)
+        // - MERGE_SEEDS got the first sample's seeds for every sample, which needs >= 2 samples
+        // - 'File name too long' in MERGE_SEEDS: sampleB chains 90 families into one pool, so
+        //   merged_id must collapse to the bounded hash form
+        when {
+            workflow {
+                """
+                def alns = [
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.aln', checkIfExists: true).text,
+                    file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.aln', checkIfExists: true).text
+                ]
+                def seed = { fam, n ->
+                    def f = file("\${fam}.aln")
+                    f.text = alns[n % 2].replaceAll(/(?m)^>/, ">\${fam}_")
+                    f
+                }
+
+                def seedsA = (1..4).collect { n -> seed.call("sampleA_\${n}", n) }
+                def gz = file('sampleA_5.fas.gz')
+                new java.util.zip.GZIPOutputStream(gz.newOutputStream()).withWriter { writer ->
+                    writer << alns[1].replaceAll(/(?m)^>/, '>sampleA_5_')
+                }
+                seedsA << gz
+                def similaritiesA = file('similarities_sampleA.csv')
+                similaritiesA.text = "family_1,family_2,similarity_score\\nsampleA_1,sampleA_2,0.94\\nsampleA_3,sampleA_5,0.94\\n"
+
+                def famsB = (1..90).collect { n -> "sampleB_\${n}" }
+                def seedsB = famsB.withIndex().collect { fam, i -> seed.call(fam, i) }
+                def similaritiesB = file('similarities_sampleB.csv')
+                similaritiesB.text = "family_1,family_2,similarity_score\\n" + (0..<89).collect { i -> "\${famsB[i]},\${famsB[i + 1]},0.94" }.join('\\n') + "\\n"
+
+                def sequences = file(params.pipelines_testdata_base_path + 'test_data/mgnifams_input_small.faa', checkIfExists: true)
+                input[0] = channel.of([ [ id: 'sampleA' ], similaritiesA, [] ], [ [ id: 'sampleB' ], similaritiesB, [] ])
+                input[1] = channel.of([ [ id: 'sampleA' ], seedsA ], [ [ id: 'sampleB' ], seedsB ])
+                input[2] = channel.of([ [ id: 'sampleA', pool: 'create' ], sequences ], [ [ id: 'sampleB', pool: 'create' ], sequences ])
+                input[3] = "standard" // family_generation_algorithm
+                input[4] = "famsa"    // alignment_tool
+                input[5] = false      // skip_seed_msa_trimming
+                input[6] = false      // skip_recruiting
+                input[7] = 0.9        // recruit_min_model_coverage
+                input[8] = "existing" // merged_family_name
+                """
+            }
+        }
+
+        then {
+            def seedsById = workflow.out.seed_msa.collectEntries { meta, msa -> [ (meta.merged_id): file(msa).text ] }
+            def idB = seedsById.keySet().find { id -> id.startsWith('sampleB') }
+            // Staged seed names per MERGE_SEEDS task, keyed by its pool
+            def stagedByPool = [:]
+            new File("${launchDir}/work").eachFileRecurse(groovy.io.FileType.FILES) { script ->
+                if (script.name == '.command.sh' && script.text.contains('merge_seeds.py')) {
+                    def pool = (script.text =~ /--list "([^"]+)"/)[0][1]
+                    stagedByPool[pool] = new File(script.parentFile, 'seed_msa').list().sort()
+                }
+            }
+            assertAll(
+                { assert workflow.success },
+                { assert seedsById.keySet() == ['sampleA_1_2', 'sampleA_3_5', idB] as Set },
+                { assert idB ==~ /sampleB_90fams_[0-9a-f]{10}/ },
+                { assert seedsById.sampleA_1_2.contains('>sampleA_1_') && seedsById.sampleA_1_2.contains('>sampleA_2_') },
+                { assert !(seedsById.sampleA_1_2 =~ />sampleA_[345]_|>sampleB_/) },
+                // '>sampleA_5_': the gzipped seed survived the filter
+                { assert seedsById.sampleA_3_5.contains('>sampleA_3_') && seedsById.sampleA_3_5.contains('>sampleA_5_') },
+                { assert !(seedsById.sampleA_3_5 =~ />sampleA_[124]_|>sampleB_/) },
+                { assert !seedsById[idB].contains('>sampleA_') },
+                // Pre-fix: every task staged all of its sample's seeds
+                { assert stagedByPool.findAll { pool, seeds -> pool.startsWith('sampleA') } == [
+                    'sampleA_1,sampleA_2': ['sampleA_1.aln', 'sampleA_2.aln'],
+                    'sampleA_3,sampleA_5': ['sampleA_3.aln', 'sampleA_5.fas.gz']
+                ] },
+                { assert stagedByPool.find { pool, seeds -> pool.startsWith('sampleB') }.value == (1..90).collect { n -> "sampleB_${n}.aln" }.sort() },
+                // Sorted: samples and pools run concurrently, so emission order is unstable
+                { assert snapshot(
+                    workflow.out.hmm.collect { meta, hmm -> file(hmm).name }.sort(),
+                    workflow.out.seed_msa.sort { entry -> entry[0].merged_id },
+                    workflow.out.full_msa.sort { entry -> entry[0].merged_id },
+                    workflow.out.fasta.sort { entry -> entry[0].merged_id }
+                ).match()}
+            )
+        }
+    }
+
+}

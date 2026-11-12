@@ -1,0 +1,115 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "update_families"
+description: Update existing families with new sequences (and the members of their existing full MSAs) through homology search, then rebuild each family like a newly created one (new seed MSA, HMM and full MSA)
+keywords:
+  - update
+  - families
+  - hmm
+  - model
+  - alignment
+  - msa
+  - clustering
+  - homology
+  - search
+  - recruitment
+components:
+  - untar
+  - find/concatenate
+  - gunzip
+  - pool_existing_members
+  - hmmer/hmmsearch
+  - split_family_hits
+  - mmseqs_fasta_cluster
+  - remove_redundant_seqs
+  - generate_families
+  - hmmer/hmmalign
+  - extract_unassigned_seqs
+input:
+  - ch_samplesheet_for_update:
+      type: file
+      description: |
+        Channel with the following elements; meta, sequences, existing_hmms, existing_seed_msas, existing_full_msas.
+        The MSA archives are optional ([]); their files are named after the HMM files. Full MSA members are
+        searched again; seed MSAs are never searched, only passed through.
+  - recruit_min_model_coverage:
+      type: number
+      description: |
+        Query length threshold for hmmsearch filtering to determine sequence hits that will update existing families (between 0.0 and 1.0)
+      minimum: 0.0
+      maximum: 1.0
+  - skip_sequence_redundancy_removal:
+      type: boolean
+      description: |
+        Skip sequence redundancy removal step using clustering
+  - clustering_tool:
+      type: string
+      description: |
+        Tool to use for sequence clustering to remove redundancy
+      enum: ["linclust", "cluster"]
+  - alignment_tool:
+      type: string
+      description: |
+        Tool to use for multiple sequence alignment
+      enum: ["famsa", "mafft"]
+  - skip_seed_msa_trimming:
+      type: boolean
+      description: |
+        Skip trimming of the new seed MSAs with ClipKIT
+  - skip_recruiting:
+      type: boolean
+      description: |
+        Skip recruiting the full MSA with the new HMM; the new seed MSA is then also the full MSA
+  - skip_update_refinement:
+      type: boolean
+      description: |
+        Keep the existing HMMs, which align their hits into the new full MSAs; provided seed MSAs pass through unchanged
+output:
+  - seed_msa:
+      type: file
+      description: |
+        Seed MSA of each returned family: new where rebuilt, else the provided one (skip_update_refinement)
+  - full_msa:
+      type: file
+      description: |
+        New full MSA of each returned family (hmmalign Stockholm, or the seed MSA without recruiting)
+  - fasta:
+      type: file
+      description: |
+        Sequences of each returned family's full MSA
+  - hmm:
+      type: file
+      description: |
+        HMM of each returned family: new where rebuilt, else the existing one (skip_update_refinement)
+  - passed_through_seed_msa:
+      type: file
+      description: |
+        Provided seed MSA of each family the update did not return
+  - passed_through_full_msa:
+      type: file
+      description: |
+        Provided full MSA of each family the update did not return
+  - passed_through_fasta:
+      type: file
+      description: |
+        Degapped members of the provided full MSA of each family the update did not return
+  - passed_through_hmm:
+      type: file
+      description: |
+        Existing HMM of each family the update did not return
+  - passed_through_families:
+      type: list
+      description: |
+        [family, reason] of each existing family the update did not return (passed through), per sample;
+        reason "no hits" or "no recruits" (the rebuilt HMM recruited nothing)
+  - no_hit_seqs:
+      type: file
+      description: |
+        Gzipped FASTA of the input sequences in no returned family, to go through the base family generation workflow
+  - pool:
+      type: file
+      description: |
+        Uncompressed FASTA the existing HMMs searched: the input sequences plus the kept existing full MSA members
+authors:
+  - "@vagkaratzas"
+maintainers:
+  - "@vagkaratzas"

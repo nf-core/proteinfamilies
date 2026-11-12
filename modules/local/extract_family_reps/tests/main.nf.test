@@ -1,0 +1,84 @@
+nextflow_process {
+
+    name "Test Process EXTRACT_FAMILY_REPS"
+    script "../main.nf"
+    process "EXTRACT_FAMILY_REPS"
+
+    test("proteinfamilies - faa") {
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'extract_family_reps' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.faa', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.fasta,
+                    process.out.map,
+                    process.out.findAll { key, val -> key.startsWith("versions") }
+                    ).match()}
+            )
+        }
+    }
+
+    test("proteinfamilies - faa - dotted family ids") {
+        // 'run.v2_1.faa' is family 'run.v2_1'; stripping two extensions made it 'run'
+        when {
+            process {
+                """
+                def faas = (1..2).collect { n ->
+                    def f = file("run.v2_\${n}.faa")
+                    file(params.pipelines_testdata_base_path + "test_data/modules/mgnifams_test_\${n}.faa", checkIfExists: true).copyTo(f)
+                    f
+                }
+                input[0] = channel.of([ [ id: 'extract_family_reps' ], faas ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.map[0][1]).readLines().findAll { l -> !l.startsWith('#') }.drop(1).collect { l -> l.tokenize(',')[1].replace('"', '') } == ['run.v2_1', 'run.v2_2'] }
+            )
+        }
+    }
+
+    test("proteinfamilies - faa - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = channel.of([
+                    [ id: 'extract_family_reps' ],
+                    [
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_1.faa', checkIfExists: true),
+                        file(params.pipelines_testdata_base_path + 'test_data/modules/mgnifams_test_2.faa', checkIfExists: true)
+                    ]
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+}

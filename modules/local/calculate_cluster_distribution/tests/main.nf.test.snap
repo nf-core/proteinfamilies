@@ -1,0 +1,69 @@
+{
+    "proteinfamilies - tsv": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test_clustering_distribution_mqc.csv:md5,53d7b52b9ff993372a1153b2ff8ac639"
+                ]
+            ],
+            {
+                "versions_sed": [
+                    [
+                        "CALCULATE_CLUSTER_DISTRIBUTION",
+                        "sed",
+                        "4.7"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T16:48:24.692386108",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    },
+    "proteinfamilies - tsv - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_clustering_distribution_mqc.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        "CALCULATE_CLUSTER_DISTRIBUTION",
+                        "sed",
+                        "4.7"
+                    ]
+                ],
+                "mqc": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_clustering_distribution_mqc.csv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_sed": [
+                    [
+                        "CALCULATE_CLUSTER_DISTRIBUTION",
+                        "sed",
+                        "4.7"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-06-06T16:48:36.367635797",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
+    }
+}

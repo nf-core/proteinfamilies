@@ -1,0 +1,192 @@
+{
+    "proteinfamilies - tar.gz - hmms": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "archive"
+                        },
+                        [
+                            "existing_fam_1.hmm.gz:md5,ed58900acfe03269b8ebb91a63383414",
+                            "existing_fam_2.hmm.gz:md5,24ae2fcd394d183fcceb9e6238033fb8",
+                            "existing_fam_3.hmm.gz:md5,a4fd628918d05e3ec2645cf1c84706cb",
+                            "existing_fam_4.hmm.gz:md5,256a644151e847f37c2d693c357c16e7",
+                            "existing_fam_zero_hits.hmm.gz:md5,e7d91cee34d44565728e991f89f7c094"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "hmms": [
+                    [
+                        {
+                            "id": "archive"
+                        },
+                        [
+                            "existing_fam_1.hmm.gz:md5,ed58900acfe03269b8ebb91a63383414",
+                            "existing_fam_2.hmm.gz:md5,24ae2fcd394d183fcceb9e6238033fb8",
+                            "existing_fam_3.hmm.gz:md5,a4fd628918d05e3ec2645cf1c84706cb",
+                            "existing_fam_4.hmm.gz:md5,256a644151e847f37c2d693c357c16e7",
+                            "existing_fam_zero_hits.hmm.gz:md5,e7d91cee34d44565728e991f89f7c094"
+                        ]
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-05T11:49:39.819960247",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "proteinfamilies - plain multi-model library - hmms": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "library"
+                        },
+                        [
+                            "fam_a.hmm.gz:md5,4fd512ef4d12dabaec301698c477a8a1",
+                            "fam_b.hmm.gz:md5,4caf3ad5edc202191dbb17123130f917"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "hmms": [
+                    [
+                        {
+                            "id": "library"
+                        },
+                        [
+                            "fam_a.hmm.gz:md5,4fd512ef4d12dabaec301698c477a8a1",
+                            "fam_b.hmm.gz:md5,4caf3ad5edc202191dbb17123130f917"
+                        ]
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-05T11:49:46.055083102",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "proteinfamilies - tar.gz with macOS metadata - hmms": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "apple"
+                        },
+                        [
+                            "fam_a.hmm.gz:md5,37a5539534cae3510460671da50be741"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "hmms": [
+                    [
+                        {
+                            "id": "apple"
+                        },
+                        [
+                            "fam_a.hmm.gz:md5,37a5539534cae3510460671da50be741"
+                        ]
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-05T13:53:12.704846566",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "proteinfamilies - tar.gz - hmms - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "archive"
+                        },
+                        [
+                            "archive_stub.hmm.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "1": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "hmms": [
+                    [
+                        {
+                            "id": "archive"
+                        },
+                        [
+                            "archive_stub.hmm.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        ]
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "SPLIT_HMMS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-05T11:49:58.084478029",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

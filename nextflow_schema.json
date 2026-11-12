@@ -19,19 +19,20 @@
                     "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/proteinfamilies/usage#samplesheet-input).",
+                    "description": "Path to comma-separated file '.csv' containing information about the samples in the experiment.",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file '.csv' with 2 mandatory and 3 optional columns, and a header row. See [usage docs](https://nf-co.re/proteinfamilies/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "help_text": "You will need to define where your results will be saved. Use this parameter to specify the location.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "email": {
                     "type": "string",
-                    "description": "Email address for completion summary.",
+                    "description": "Email address for completion summary. Example: name.surname@example.com",
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
@@ -40,6 +41,12 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                },
+                "save_intermediates": {
+                    "type": "boolean",
+                    "description": "Publish intermediate files under `intermediates/` (e.g. clustering databases, raw alignments and HMMs, search results).",
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Final results are always published (`families/<id>/`, `qc/`, `clustering/`, `phylogeny/`); intermediate files only with this flag. Useful for debugging or to inspect each step's files."
                 }
             }
         },
@@ -88,6 +95,11 @@
                     "description": "Institutional config URL link.",
                     "hidden": true,
                     "fa_icon": "fas fa-users-cog"
+                },
+                "modules_testdata_base_path": {
+                    "type": "string",
+                    "description": "Base path / URL for data used in the modules",
+                    "hidden": true
                 }
             }
         },
@@ -115,7 +127,7 @@
                 },
                 "email_on_fail": {
                     "type": "string",
-                    "description": "Email address for completion summary, only when pipeline fails.",
+                    "description": "Email address for completion summary, only when pipeline fails. Example: name.surname@example.com",
                     "fa_icon": "fas fa-exclamation-triangle",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
                     "help_text": "An email address to send a summary email to when the pipeline is completed - ONLY sent if the pipeline does not exit successfully.",
@@ -129,7 +141,7 @@
                 },
                 "max_multiqc_email_size": {
                     "type": "string",
-                    "description": "File size limit when attaching MultiQC reports to summary emails.",
+                    "description": "File size limit when attaching MultiQC reports to summary emails. Example: name.surname@example.com",
                     "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
                     "default": "25.MB",
                     "fa_icon": "fas fa-file-upload",
@@ -150,12 +162,14 @@
                 },
                 "multiqc_logo": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
                     "fa_icon": "fas fa-image",
                     "hidden": true
                 },
                 "multiqc_methods_description": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Custom MultiQC yaml file containing HTML including a methods description.",
                     "fa_icon": "fas fa-cog"
                 },
@@ -170,7 +184,7 @@
                     "type": "string",
                     "fa_icon": "far fa-check-circle",
                     "description": "Base URL or local path to location of pipeline test dataset files",
-                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+                    "default": "https://raw.githubusercontent.com/nf-core/test-datasets/proteinfamilies/",
                     "hidden": true
                 },
                 "trace_report_suffix": {
@@ -192,6 +206,289 @@
                     "description": "Display hidden parameters in the help message (only works when --help or --help_full are provided)."
                 }
             }
+        },
+        "quality_check_params": {
+            "title": "Preprocessing parameters",
+            "type": "object",
+            "description": "Use these parameters to control the quality check and preprocessing of the input sequences.",
+            "fa_icon": "fas fa-filter",
+            "properties": {
+                "skip_preprocessing": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-question-circle",
+                    "description": "Skip all default QC steps for sequences (gap trimming, length filtering, validation, duplicate removal).",
+                    "help": "Skips input amino acid sequence preprocessing transformations, length filtering, duplicate removal and validation checks."
+                },
+                "min_seq_length": {
+                    "type": "integer",
+                    "default": 30,
+                    "fa_icon": "fas fa-ruler-horizontal",
+                    "description": "The minimum allowed sequence length",
+                    "help_text": "Specify the minimum length of amino acid sequences that go into clustering."
+                },
+                "max_seq_length": {
+                    "type": "integer",
+                    "default": 5000,
+                    "fa_icon": "fas fa-ruler-horizontal",
+                    "description": "The maximum allowed sequence length",
+                    "help_text": "Specify the maximum length of amino acid sequences that go into clustering."
+                },
+                "deduplicate_by": {
+                    "type": "string",
+                    "default": "name",
+                    "enum": ["name", "sequence"],
+                    "description": "How duplicate input sequences are found and removed.",
+                    "help_text": "`name` (default): sequences with the same identifier are duplicates. `sequence`: sequences with the same amino acid sequence are duplicates, whatever their names.",
+                    "fa_icon": "fas fa-clone"
+                }
+            }
+        },
+        "clustering_params": {
+            "title": "Clustering parameters",
+            "type": "object",
+            "description": "Use these parameters to control the initial clustering of the input sequences.",
+            "fa_icon": "fas fa-object-group",
+            "properties": {
+                "clustering_tool": {
+                    "type": "string",
+                    "default": "cluster",
+                    "description": "Choose clustering algorithm. Either simple 'cluster' for medium size inputs, or 'linclust' for less sensitive clustering of larger datasets.",
+                    "help_text": "mmseqs algorithms available: 'cluster' or 'linclust'.",
+                    "enum": ["linclust", "cluster"],
+                    "fa_icon": "fas fa-tools"
+                },
+                "clustering_min_seq_identity": {
+                    "type": "number",
+                    "default": 0.3,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "mmseqs parameter for minimum sequence identity",
+                    "help_text": "Minimum sequence identity required for clustering. Metagenomics protein families include diverse sequences, so using the mmseqs default identity (0.9) would oversplit them. A default value of 0.3 allows grouping more distant homologs while still maintaining meaningful functional relationships (https://doi.org/10.1093/protein/12.2.85).",
+                    "fa_icon": "fas fa-percentage"
+                },
+                "clustering_min_coverage": {
+                    "type": "number",
+                    "default": 0.5,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "mmseqs parameter for minimum sequence coverage ratio",
+                    "help_text": "Minimum sequence length coverage required for clustering. Similarly to the clustering_min_seq_identity parameter, a lower value (i.e., 0.5) than the mmseqs default (i.e., 0.8) enables the generation of protein families that are composed of more distant homologs.",
+                    "fa_icon": "fas fa-percentage"
+                },
+                "clustering_cov_mode": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "mmseqs parameter for coverage mode: 0 for both, 1 for target and 2 for query sequence",
+                    "help_text": "Defined by the number of aligned residue pairs divided by 0: the maximum of the length of query/centre and target/non-centre sequences, 1: the length of the target/non-centre sequence, 2: the length of the query/centre",
+                    "fa_icon": "fas fa-sliders-h"
+                },
+                "clustering_min_cluster_size": {
+                    "type": "integer",
+                    "default": 25,
+                    "description": "Minimum clustering chunk size threshold to create seed Multiple Sequence Alignments upon.",
+                    "help_text": "This is an initial filter for the mmseqs clustering results. The lower the threshold, the more families will be generated. Additional sequences may be later recruited in the families.",
+                    "fa_icon": "fas fa-filter"
+                }
+            }
+        },
+        "family_generation_params": {
+            "title": "Family generation parameters",
+            "type": "object",
+            "description": "Use these parameters to choose and control the family generation algorithm, and the update of existing families.",
+            "fa_icon": "fas fa-sitemap",
+            "properties": {
+                "family_generation_algorithm": {
+                    "type": "string",
+                    "default": "standard",
+                    "description": "Choose the algorithm that turns clusters into family models. Either 'standard', aligning each cluster and building one HMM per task, or 'iterative', letting mgnifam loop HMM building, recruitment and realignment per cluster.",
+                    "help_text": "The 'standard' algorithm chains FAMSA/MAFFT, ClipKIT, hmmbuild, hmmsearch and hmmalign, and recruits members in a single pass. The 'iterative' algorithm runs mgnifam, which uses pyfamsa, pytrimal and pyhmmer internally and repeats recruitment and realignment up to 3 iterations, or until each family converges or is discarded. Not all alignment and recruitment parameters of the standard algorithm apply to the iterative one; see the usage documentation for the full mapping.",
+                    "fa_icon": "fas fa-code-branch",
+                    "enum": ["standard", "iterative"]
+                },
+                "iterative_clusters_per_chunk": {
+                    "type": "integer",
+                    "default": 1000,
+                    "description": "Number of clusters handed to each family generation task by the 'iterative' algorithm.",
+                    "help_text": "Only used when family_generation_algorithm is 'iterative', which generates many families per task. Smaller chunks parallelise better and resume at a finer granularity, at the cost of more tasks. The 'standard' algorithm always processes a single cluster per task.",
+                    "fa_icon": "fas fa-layer-group"
+                },
+                "alignment_tool": {
+                    "type": "string",
+                    "description": "Choose alignment tool. FAMSA is recommended as best time-memory-accuracy combination option.",
+                    "help_text": "Available tools: 'famsa' or 'mafft'.",
+                    "enum": ["famsa", "mafft"],
+                    "fa_icon": "fas fa-align-left",
+                    "default": "famsa"
+                },
+                "skip_update_refinement": {
+                    "type": "boolean",
+                    "description": "Keep the existing HMMs of updated families, only rebuilding their full MSAs.",
+                    "help_text": "By default, each updated family is rebuilt from its hits like a newly created family: new seed MSA, new HMM, and a full MSA recruited with the new HMM. With this flag, the existing HMM is kept and aligns its hits (from the input sequences and the members of any existing full MSAs) into the new full MSA with hmmalign; a provided seed MSA passes through unchanged, otherwise the family has no seed MSA. Updated families are then never merged with similar families (as with `--family_merging created_only`), since a merge would rebuild their HMM.",
+                    "fa_icon": "fas fa-lock"
+                }
+            }
+        },
+        "seed_msa_trimming_params": {
+            "title": "Seed MSA trimming parameters",
+            "type": "object",
+            "description": "Use these parameters to control the trimming of the seed multiple sequence alignments.",
+            "fa_icon": "fas fa-cut",
+            "properties": {
+                "skip_seed_msa_trimming": {
+                    "type": "boolean",
+                    "description": "Skip trimming gappy positions from seed Multiple Sequence Alignments (MSAs). Full MSAs are never trimmed.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
+                "seed_msa_trimming_ends_only": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Choose if ClipKIT should only clip gaps at the ends of the MSAs.",
+                    "help_text": "By default, ClipKIT clips gaps over the specified threshold, both at the ends and throughout the length of the MSA. This flag restricts clipping to the ends. The pipeline authors strongly recommend keeping this on: trimmed rows get their `name/start-end` coordinates recalculated from the residues removed at the alignment ends, so with interior trimming the range no longer matches the residues a row holds.",
+                    "fa_icon": "fas fa-cut"
+                },
+                "seed_msa_trimming_max_gap_fraction": {
+                    "type": "number",
+                    "default": 0.5,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Multiple Sequence Alignment (MSA) positions with gappiness greater than this threshold will be trimmed",
+                    "fa_icon": "fas fa-filter"
+                }
+            }
+        },
+        "recruiting_params": {
+            "title": "Recruiting and search parameters",
+            "type": "object",
+            "description": "Use these parameters to control the HMM searches and the recruitment of additional sequences into the families.",
+            "fa_icon": "fas fa-search",
+            "properties": {
+                "skip_recruiting": {
+                    "type": "boolean",
+                    "description": "Skip recruitment of additional sequences from the input FASTA file using the family Hidden Markov Models (HMMs) into the full alignment",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true,
+                    "help_text": "If this is set to false, the hmmer/hmmsearch module will be used to recruit additional sequences from the input fasta file into the family (above the recruit_min_model_coverage), resulting in bigger but better described families"
+                },
+                "search_evalue_cutoff": {
+                    "type": "number",
+                    "default": 0.001,
+                    "description": "hmmsearch e-value cutoff threshold for reported results",
+                    "fa_icon": "fas fa-filter"
+                },
+                "recruit_min_model_coverage": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "hmmsearch minimum length percentage filter of hit env vs query length",
+                    "help_text": "This length threshold should be quite high to make sure that small, fragmented sequences are not recruited in the family models",
+                    "fa_icon": "fas fa-percentage"
+                }
+            }
+        },
+        "family_redundancy_params": {
+            "title": "Family redundancy parameters",
+            "type": "object",
+            "description": "Use these parameters to control the removal of redundant families and the merging of similar families.",
+            "fa_icon": "fas fa-compress-alt",
+            "properties": {
+                "family_redundancy_removal": {
+                    "type": "string",
+                    "default": "all",
+                    "enum": ["all", "created_only", "none"],
+                    "description": "Which families take part in the removal of between-family redundancy (hmmsearch of family representatives against family models).",
+                    "fa_icon": "fas fa-filter",
+                    "help_text": "`all` (default): created and updated families are checked. An updated family is never removed: a created family redundant with it is, and two redundant updated families are both kept. `created_only`: updated families bypass the check, so created families may duplicate them. `none`: no family is removed for redundancy. Suggested to keep `all`, so that redundant families are not further processed, for better resource management and to avoid duplication."
+                },
+                "family_merging": {
+                    "type": "string",
+                    "default": "all",
+                    "enum": ["all", "created_only", "none"],
+                    "description": "Which families can be merged with similar (but not redundant) families.",
+                    "fa_icon": "fas fa-object-group",
+                    "help_text": "Similarity is set by `--family_similarity_min_model_coverage`. `all` (default): created and updated families can be merged. A merge pool holds at most one updated family: two updated families are never merged together, and a pool that links several updated families (directly or through created families) leaves them unmerged and merges only its created families. `created_only`: updated families are left out of merging. `none`: no family is merged. With `--skip_update_refinement`, updated families are never merged (as with `created_only`), since a merge rebuilds the family's HMM."
+                },
+                "merged_family_name": {
+                    "type": "string",
+                    "default": "existing",
+                    "enum": ["existing", "new"],
+                    "description": "Name of a merged family that holds updated families.",
+                    "fa_icon": "fas fa-tag",
+                    "help_text": "`existing` keeps the name of the merged updated family (a merge holds at most one), so the family keeps its identity across updates. `new` names the merged family like any other merge, after the sample and its families. Applies to `--family_generation_algorithm standard`; the iterative algorithm always uses `new`."
+                },
+                "family_redundancy_min_model_coverage": {
+                    "type": "number",
+                    "default": 1.0,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "hmmsearch minimum length percentage filter of hit env vs query length, for redundant family removal",
+                    "fa_icon": "fas fa-percentage"
+                },
+                "family_similarity_min_model_coverage": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "hmmsearch minimum length percentage of hit env vs query length, to flag and report similar families (and to optionally merge)",
+                    "help_text": "Must be below the family_redundancy_min_model_coverage to be valid.",
+                    "fa_icon": "fas fa-percentage"
+                }
+            }
+        },
+        "seq_redundancy_params": {
+            "title": "Sequence redundancy parameters",
+            "type": "object",
+            "description": "Use these parameters to control the removal of redundant sequences within each family.",
+            "fa_icon": "fas fa-compress",
+            "properties": {
+                "skip_sequence_redundancy_removal": {
+                    "type": "boolean",
+                    "description": "Skip removal of inside-family redundancy of sequences via mmseqs clustering.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true,
+                    "help_text": "Highly similar sequences within the same family should be removed, while making sure that the protein family diversity is still well captured."
+                },
+                "seq_redundancy_min_seq_identity": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "mmseqs parameter for minimum sequence identity",
+                    "help_text": "Need to be quite high, to make sure that the diversity is still well captured, while highly similar sequences are removed",
+                    "fa_icon": "fas fa-percentage"
+                },
+                "seq_redundancy_min_coverage": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "mmseqs parameter for minimum sequence coverage ratio",
+                    "help_text": "Need to be quite high, to make sure that the diversity is still well captured, well highly similar sequences are removed",
+                    "fa_icon": "fas fa-percentage"
+                },
+                "seq_redundancy_cov_mode": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "mmseqs parameter for coverage mode: 0 for both, 1 for target and 2 for query sequence",
+                    "help_text": "Defined by the number of aligned residue pairs divided by 0: the maximum of the length of query/centre and target/non-centre sequences, 1: the length of the target/non-centre sequence, 2: the length of the query/centre",
+                    "fa_icon": "fas fa-sliders-h"
+                }
+            }
+        },
+        "phylogeny_params": {
+            "title": "Parameters for phylogenetic inference of full alignment sequences",
+            "type": "object",
+            "description": "Use these parameters to enable the phylogenetic tree construction of the final full MSAs.",
+            "fa_icon": "fas fa-project-diagram",
+            "properties": {
+                "run_phylogenetic_inference": {
+                    "type": "boolean",
+                    "description": "Infer a phylogenetic tree of each final family's full MSA with CMAPLE.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                }
+            }
         }
     },
     "allOf": [
@@ -203,6 +500,30 @@
         },
         {
             "$ref": "#/$defs/generic_options"
+        },
+        {
+            "$ref": "#/$defs/quality_check_params"
+        },
+        {
+            "$ref": "#/$defs/clustering_params"
+        },
+        {
+            "$ref": "#/$defs/family_generation_params"
+        },
+        {
+            "$ref": "#/$defs/seed_msa_trimming_params"
+        },
+        {
+            "$ref": "#/$defs/recruiting_params"
+        },
+        {
+            "$ref": "#/$defs/family_redundancy_params"
+        },
+        {
+            "$ref": "#/$defs/seq_redundancy_params"
+        },
+        {
+            "$ref": "#/$defs/phylogeny_params"
         }
     ]
 }

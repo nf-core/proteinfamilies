@@ -100,28 +100,11 @@ workflow PIPELINE_INITIALISATION {
     )
 
     //
-    // Create channel from input file provided through params.input
+    // Create channel from input file provided through input
     //
 
-    channel
+    ch_samplesheet = channel
         .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
-        .map {
-            meta, fastq_1, fastq_2 ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
-                }
-        }
-        .groupTuple()
-        .map { samplesheet ->
-            validateInputSamplesheet(samplesheet)
-        }
-        .map {
-            meta, fastqs ->
-                return [ meta, fastqs.flatten() ]
-        }
-        .set { ch_samplesheet }
 
     emit:
     samplesheet = ch_samplesheet
@@ -180,42 +163,77 @@ workflow PIPELINE_COMPLETION {
 */
 
 //
-// Validate channels from input samplesheet
-//
-def validateInputSamplesheet(input) {
-    def (metas, fastqs) = input[1..2]
-
-    // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-    if (!endedness_ok) {
-        error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
-    }
-
-    return [ metas[0], fastqs ]
-}
-//
 // Generate methods description for MultiQC
 //
 def toolCitationText() {
-    // TODO nf-core: Optionally add in-text citation tools to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
+    def quality_check_text = [
+        "Amino acid sequence statistics were generated with SeqFu (Telatin et al. 2021).",
+        params.skip_preprocessing ? "" : "Input sequences were preprocessed with SeqKit (gap trimming, length filtering, validation, duplicate removal) (Shen et al. 2024)."
+    ].join(' ').trim()
+
+    def clustering_text = "Amino acid sequence clustering was performed with MMseqs2 (Mirdita et al. 2021)."
+
+    def alignment_text = [
+        "Multiple Sequence Alignment (MSA) was performed with ",
+        params.alignment_tool == 'famsa' ? "FAMSA (Deorowicz et al. 2016)." : "",
+        params.alignment_tool == 'mafft' ? "mafft (Katoh et al. 2013)." : ""
+    ].join(' ').trim()
+
+    def clipping_text = "Seed MSAs were gap-trimmed with ClipKIT (Steenwyk et al. 2020)."
+
+    def model_text = "Family Hidden Markov Models (HMMs) were built with hmmer (Eddy et al. 2011)."
+
+    def phylogeny_text = "Sequence phylogenetic trees were calculated with CMAPLE (Ly-Trong et al. 2024)."
+
+    def postprocessing_text = "Run statistics were reported using MultiQC (Ewels et al. 2016)."
+
     def citation_text = [
-            "Tools used in the workflow included:",
-            "MultiQC (Ewels et al. 2016)",
-            "."
-        ].join(' ').trim()
+        quality_check_text,
+        clustering_text,
+        alignment_text,
+        !params.skip_seed_msa_trimming ? clipping_text : "",
+        model_text,
+        params.run_phylogenetic_inference ? phylogeny_text : "",
+        postprocessing_text
+    ].join(' ').trim()
 
     return citation_text
 }
 
 def toolBibliographyText() {
-    // TODO nf-core: Optionally add bibliographic entries to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
+    def quality_check_text = [
+        '<li>Telatin, A., Fariselli, P., & Birolo, G. (2021). SeqFu: a suite of utilities for the robust and reproducible manipulation of sequence files. Bioengineering, 8(5), 59. doi: <a href="https://doi.org/10.3390/bioengineering8050059">10.3390/bioengineering8050059</a></li>',
+        params.skip_preprocessing ? '' : '<li>Shen, W., Sipos, B., & Zhao, L. (2024). SeqKit2: A Swiss army knife for sequence and alignment processing. Imeta, 3(3), e191. doi: <a href="https://doi.org/10.1002/imt2.191">10.1002/imt2.191</a></li>'
+    ].join(' ').trim()
+
+    def clustering_text = '<li>Mirdita, M., Steinegger, M., Breitwieser, F., Söding, J., & Levy Karin, E. (2021). Fast and sensitive taxonomic assignment to metagenomic contigs. Bioinformatics, 37(18), 3029-3031. doi: <a href="https://doi.org/10.1093/bioinformatics/btab184">10.1093/bioinformatics/btab184</a></li>'
+
+    def alignment_text = [
+        params.alignment_tool == 'famsa' ? '<li>Deorowicz, S., Debudaj-Grabysz, A., & Gudyś, A. (2016). FAMSA: Fast and accurate multiple sequence alignment of huge protein families. Scientific reports, 6(1), 33964. doi: <a href="https://doi.org/10.1038/srep33964">10.1038/srep33964</a></li>' : "",
+        params.alignment_tool == 'mafft' ? '<li>Katoh, K., & Standley, D. M. (2013). MAFFT multiple sequence alignment software version 7: improvements in performance and usability. Molecular biology and evolution, 30(4), 772-780. doi: <a href="https://doi.org/10.1093/molbev/mst010">10.1093/molbev/mst010</a></li>' : "",
+    ].join(' ').trim()
+
+    def clipping_text = '<li>Steenwyk, J. L., Buida III, T. J., Li, Y., Shen, X. X., & Rokas, A. (2020). ClipKIT: a multiple sequence alignment trimming software for accurate phylogenomic inference. PLoS biology, 18(12), e3001007. doi: <a href="https://doi.org/10.1371/journal.pbio.3001007">10.1371/journal.pbio.3001007</a></li>'
+
+    def model_text = '<li>Eddy, S. R. (2011). Accelerated profile HMM searches. PLoS computational biology, 7(10), e1002195. doi: <a href="https://doi.org/10.1371/journal.pcbi.1002195">10.1371/journal.pcbi.1002195</a></li>'
+
+    def phylogeny_text = '<li>Ly-Trong, N., Bielow, C., De Maio, N., & Minh, B. Q. (2024). CMAPLE: efficient phylogenetic inference in the pandemic era. Molecular Biology and Evolution, 41(7), msae134. doi: <a href="https://doi.org/10.1093/molbev/msae134">10.1093/molbev/msae134</a></li>'
+
+    def postprocessing_text = '<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 32(19), 3047–3048. doi: <a href="https://doi.org/10.1093/bioinformatics/btw354">10.1093/bioinformatics/btw354</a></li>'
+
     def reference_text = [
-            "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>"
-        ].join(' ').trim()
+        quality_check_text,
+        clustering_text,
+        alignment_text,
+        !params.skip_seed_msa_trimming ? clipping_text : "",
+        model_text,
+        params.run_phylogenetic_inference ? phylogeny_text : "",
+        postprocessing_text
+    ].join(' ').trim()
 
     return reference_text
 }
@@ -241,12 +259,8 @@ def methodsDescriptionText(mqc_methods_yaml) {
     meta["nodoi_text"] = meta.manifest_map.doi ? "" : "<li>If available, make sure to update the text to include the Zenodo DOI of version of the pipeline used. </li>"
 
     // Tool references
-    meta["tool_citations"] = ""
-    meta["tool_bibliography"] = ""
-
-    // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
-    // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
-    // meta["tool_bibliography"] = toolBibliographyText()
+    meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
+    meta["tool_bibliography"] = toolBibliographyText()
 
 
     def methods_text = mqc_methods_yaml.text
@@ -255,4 +269,60 @@ def methodsDescriptionText(mqc_methods_yaml) {
     def description_html = engine.createTemplate(methods_text).make(meta)
 
     return description_html.toString()
+}
+
+//
+// Family ID of a family file: name minus '.gz' and the last extension ('run.v2_3.fas.gz' -> 'run.v2_3').
+// Not simpleName: sample and family names may contain dots. Same rule as the bin/ scripts.
+//
+def fileStem(file) {
+    return file.getBaseName(file.extension == 'gz' ? 2 : 1)
+}
+
+//
+// Whether a family name is one this run creates for the sample: created and merged families are
+// named `<id>_<digit>...`. Existing families never are (validateHmmNames), so any other name in a
+// sample's families is an updated family.
+//
+def isCreatedFamily(id, family) {
+    def prefix = id + '_'
+    return family.length() > prefix.length() && family.startsWith(prefix) && family[prefix.length()] in ('0'..'9')
+}
+
+//
+// Validate a sample's existing HMMs (one <NAME>.hmm.gz per model, from SPLIT_HMMS, which already
+// rejects duplicate NAMEs): no NAME may look like a name this run can create for the sample
+// (isCreatedFamily). An existing family named that way (e.g. from a previous run with the same id)
+// would collide with a new one in the HMM library and the archives, and be taken for a created one.
+//
+def validateHmmNames(ch_hmm_folders) {
+    ch_hmm_folders
+        .map { meta, folder ->
+            def colliding = folder.listFiles().collect { hmm -> fileStem(hmm) }.findAll { stem -> isCreatedFamily(meta.id, stem) }.sort()
+            if (colliding) {
+                error("[nf-core/proteinfamilies] ERROR: Existing families ${colliding.join(', ')} are named like families created for sample '${meta.id}' ('${meta.id}_<number>...'). Use a new id for this update run (e.g. '${meta.id}_r2').")
+            }
+        }
+}
+
+//
+// Validate that every file of an existing MSA folder (seed or full) is named after one of the
+// sample's existing HMMs, at most once. MSAs are matched to families by file stem, so an unmatched
+// file could never be passed through with its family.
+//
+def validateMsaStems(ch_hmm_folders, ch_msa_folders) {
+    ch_hmm_folders
+        .join(ch_msa_folders)
+        .map { _meta, hmm_folder, msa_folder ->
+            def families = hmm_folder.listFiles().collect { hmm -> fileStem(hmm) } as Set
+            def stems = msa_folder.listFiles().collect { msa -> fileStem(msa) }
+            def duplicates = stems.countBy { stem -> stem }.findAll { _stem, count -> count > 1 }.keySet().sort()
+            if (duplicates) {
+                error("[nf-core/proteinfamilies] ERROR: Duplicate MSAs in ${msa_folder}: ${duplicates.join(', ')} each given by more than one file.")
+            }
+            def unmatched = stems.findAll { stem -> !(stem in families) }.sort()
+            if (unmatched) {
+                error("[nf-core/proteinfamilies] ERROR: MSAs in ${msa_folder} without an existing HMM of the same name: ${unmatched.join(', ')}. MSA files must be named after their family's HMM file.")
+            }
+        }
 }

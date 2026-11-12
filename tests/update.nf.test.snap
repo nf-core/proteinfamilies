@@ -1,0 +1,375 @@
+{
+    "-profile test_update": {
+        "content": [
+            512,
+            {
+                "CALCULATE_CLUSTER_DISTRIBUTION": {
+                    "sed": 4.7
+                },
+                "CAT_HMM": {
+                    "coreutils": 9.4,
+                    "find": "4.6.0",
+                    "pigz": 2.8
+                },
+                "CHUNK_CLUSTERS": {
+                    "biopython": 1.85,
+                    "python": "3.13.1"
+                },
+                "CLIPKIT": {
+                    "clipkit": "2.11.4"
+                },
+                "EXTRACT_FAMILY_MEMBERS": {
+                    "python": "3.13.1"
+                },
+                "EXTRACT_FAMILY_REPS": {
+                    "python": "3.13.1"
+                },
+                "EXTRACT_UNASSIGNED_SEQS": {
+                    "python": "3.13.1"
+                },
+                "FAMSA_ALIGN": {
+                    "famsa": "2.4.1-45c9b2b"
+                },
+                "FILTER_NON_REDUNDANT_FASTA": {
+                    "python": "3.13.1"
+                },
+                "FILTER_NON_REDUNDANT_FULL_MSA": {
+                    "python": "3.13.1"
+                },
+                "FILTER_NON_REDUNDANT_HMM": {
+                    "python": "3.13.1"
+                },
+                "FILTER_NON_REDUNDANT_SEED_MSA": {
+                    "python": "3.13.1"
+                },
+                "FILTER_RECRUITED": {
+                    "biopython": 1.85,
+                    "python": "3.13.1"
+                },
+                "FIND_CONCATENATE_HMMS": {
+                    "coreutils": 9.4,
+                    "find": "4.6.0",
+                    "pigz": 2.8
+                },
+                "FIND_CONCATENATE_HMM_LIBRARY": {
+                    "coreutils": 9.4,
+                    "find": "4.6.0",
+                    "pigz": 2.8
+                },
+                "FIND_CONCATENATE_SKIP_IDS": {
+                    "coreutils": 9.4,
+                    "find": "4.6.0",
+                    "pigz": 2.8
+                },
+                "HMMER_HMMALIGN": {
+                    "hmmer": 3.4
+                },
+                "HMMER_HMMBUILD": {
+                    "hmmer": 3.4
+                },
+                "HMMER_HMMSEARCH": {
+                    "hmmer": 3.4
+                },
+                "IDENTIFY_REDUNDANT_FAMS": {
+                    "pandas": "2.3.0",
+                    "python": "3.13.1"
+                },
+                "MMSEQS_CREATEDB": {
+                    "mmseqs": "18.8cc5c"
+                },
+                "MMSEQS_CREATETSV": {
+                    "mmseqs": "18.8cc5c"
+                },
+                "MMSEQS_LINCLUST": {
+                    "mmseqs": "18.8cc5c"
+                },
+                "POOL_EXISTING_MEMBERS": {
+                    "python": "3.13.1"
+                },
+                "RECALCULATE_COORDINATES": {
+                    "python": "3.13.1"
+                },
+                "REMOVE_REDUNDANT_SEQS": {
+                    "biopython": 1.85,
+                    "python": "3.13.1"
+                },
+                "SEQFU_STATS_AFTER": {
+                    "seqfu": "1.22.3"
+                },
+                "SEQFU_STATS_BEFORE": {
+                    "seqfu": "1.22.3"
+                },
+                "SEQKIT_REPLACE": {
+                    "seqkit": "2.13.0"
+                },
+                "SEQKIT_RMDUP": {
+                    "seqkit": "2.13.0"
+                },
+                "SEQKIT_SEQ": {
+                    "seqkit": "2.13.0"
+                },
+                "SPLIT_FAMILY_HITS": {
+                    "biopython": 1.85,
+                    "python": "3.13.1"
+                },
+                "SPLIT_HMMS": {
+                    "python": "3.13.1"
+                },
+                "TAR_FASTA": {
+                    "tar": 1.34
+                },
+                "TAR_FULL_MSAS": {
+                    "tar": 1.34
+                },
+                "TAR_SEED_MSAS": {
+                    "tar": 1.34
+                },
+                "UNTAR_FULL_MSA": {
+                    "untar": 1.34
+                },
+                "UNTAR_SEED_MSA": {
+                    "untar": 1.34
+                },
+                "Workflow": {
+                    "nf-core/proteinfamilies": "v3.0.0dev"
+                }
+            },
+            [
+                "clustering",
+                "clustering/create_only",
+                "clustering/create_only/create_only.tsv",
+                "clustering/create_only/create_only_clustering_distribution_mqc.csv",
+                "clustering/update_hmm_only",
+                "clustering/update_hmm_only/update_hmm_only.tsv",
+                "clustering/update_hmm_only/update_hmm_only_clustering_distribution_mqc.csv",
+                "clustering/update_hmm_seed_full",
+                "clustering/update_hmm_seed_full/update_hmm_seed_full.tsv",
+                "clustering/update_hmm_seed_full/update_hmm_seed_full_clustering_distribution_mqc.csv",
+                "clustering/update_hmm_seed_gz",
+                "clustering/update_hmm_seed_gz/update_hmm_seed_gz.tsv",
+                "clustering/update_hmm_seed_gz/update_hmm_seed_gz_clustering_distribution_mqc.csv",
+                "families",
+                "families/create_only",
+                "families/create_only/create_only.lib.gz",
+                "families/create_only/create_only_faa.tar.gz",
+                "families/create_only/create_only_full_msas.tar.gz",
+                "families/create_only/create_only_members.tsv",
+                "families/create_only/create_only_meta_mqc.csv",
+                "families/create_only/create_only_reps.faa",
+                "families/create_only/create_only_seed_msas.tar.gz",
+                "families/create_only/redundancy",
+                "families/create_only/redundancy/redundant_fam_ids.txt",
+                "families/create_only/redundancy/similar_fam_ids.txt",
+                "families/samplesheet.csv",
+                "families/update_hmm_only",
+                "families/update_hmm_only/redundancy",
+                "families/update_hmm_only/redundancy/redundant_fam_ids.txt",
+                "families/update_hmm_only/redundancy/similar_fam_ids.txt",
+                "families/update_hmm_only/update_hmm_only.lib.gz",
+                "families/update_hmm_only/update_hmm_only_faa.tar.gz",
+                "families/update_hmm_only/update_hmm_only_full_msas.tar.gz",
+                "families/update_hmm_only/update_hmm_only_members.tsv",
+                "families/update_hmm_only/update_hmm_only_meta_mqc.csv",
+                "families/update_hmm_only/update_hmm_only_passed_through_existing_families.tsv",
+                "families/update_hmm_only/update_hmm_only_reps.faa",
+                "families/update_hmm_only/update_hmm_only_seed_msas.tar.gz",
+                "families/update_hmm_seed_full",
+                "families/update_hmm_seed_full/redundancy",
+                "families/update_hmm_seed_full/redundancy/redundant_fam_ids.txt",
+                "families/update_hmm_seed_full/redundancy/similar_fam_ids.txt",
+                "families/update_hmm_seed_full/update_hmm_seed_full.lib.gz",
+                "families/update_hmm_seed_full/update_hmm_seed_full_faa.tar.gz",
+                "families/update_hmm_seed_full/update_hmm_seed_full_full_msas.tar.gz",
+                "families/update_hmm_seed_full/update_hmm_seed_full_members.tsv",
+                "families/update_hmm_seed_full/update_hmm_seed_full_meta_mqc.csv",
+                "families/update_hmm_seed_full/update_hmm_seed_full_passed_through_existing_families.tsv",
+                "families/update_hmm_seed_full/update_hmm_seed_full_reps.faa",
+                "families/update_hmm_seed_full/update_hmm_seed_full_seed_msas.tar.gz",
+                "families/update_hmm_seed_gz",
+                "families/update_hmm_seed_gz/redundancy",
+                "families/update_hmm_seed_gz/redundancy/redundant_fam_ids.txt",
+                "families/update_hmm_seed_gz/redundancy/similar_fam_ids.txt",
+                "families/update_hmm_seed_gz/update_hmm_seed_gz.lib.gz",
+                "families/update_hmm_seed_gz/update_hmm_seed_gz_faa.tar.gz",
+                "families/update_hmm_seed_gz/update_hmm_seed_gz_full_msas.tar.gz",
+                "families/update_hmm_seed_gz/update_hmm_seed_gz_members.tsv",
+                "families/update_hmm_seed_gz/update_hmm_seed_gz_meta_mqc.csv",
+                "families/update_hmm_seed_gz/update_hmm_seed_gz_passed_through_existing_families.tsv",
+                "families/update_hmm_seed_gz/update_hmm_seed_gz_reps.faa",
+                "families/update_hmm_seed_gz/update_hmm_seed_gz_seed_msas.tar.gz",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/llms-full.txt",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_create_only_after.txt",
+                "multiqc/multiqc_data/multiqc_create_only_before.txt",
+                "multiqc/multiqc_data/multiqc_create_only_cluster_distribution.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_family_metadata.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_data/multiqc_update_hmm_only_after.txt",
+                "multiqc/multiqc_data/multiqc_update_hmm_only_before.txt",
+                "multiqc/multiqc_data/multiqc_update_hmm_only_cluster_distribution.txt",
+                "multiqc/multiqc_data/multiqc_update_hmm_seed_full_after.txt",
+                "multiqc/multiqc_data/multiqc_update_hmm_seed_full_before.txt",
+                "multiqc/multiqc_data/multiqc_update_hmm_seed_full_cluster_distribution.txt",
+                "multiqc/multiqc_data/multiqc_update_hmm_seed_gz_after.txt",
+                "multiqc/multiqc_data/multiqc_update_hmm_seed_gz_before.txt",
+                "multiqc/multiqc_data/multiqc_update_hmm_seed_gz_cluster_distribution.txt",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/pdf",
+                "multiqc/multiqc_plots/pdf/create_only_after.pdf",
+                "multiqc/multiqc_plots/pdf/create_only_before.pdf",
+                "multiqc/multiqc_plots/pdf/create_only_cluster_distribution.pdf",
+                "multiqc/multiqc_plots/pdf/family_metadata.pdf",
+                "multiqc/multiqc_plots/pdf/update_hmm_only_after.pdf",
+                "multiqc/multiqc_plots/pdf/update_hmm_only_before.pdf",
+                "multiqc/multiqc_plots/pdf/update_hmm_only_cluster_distribution.pdf",
+                "multiqc/multiqc_plots/pdf/update_hmm_seed_full_after.pdf",
+                "multiqc/multiqc_plots/pdf/update_hmm_seed_full_before.pdf",
+                "multiqc/multiqc_plots/pdf/update_hmm_seed_full_cluster_distribution.pdf",
+                "multiqc/multiqc_plots/pdf/update_hmm_seed_gz_after.pdf",
+                "multiqc/multiqc_plots/pdf/update_hmm_seed_gz_before.pdf",
+                "multiqc/multiqc_plots/pdf/update_hmm_seed_gz_cluster_distribution.pdf",
+                "multiqc/multiqc_plots/png",
+                "multiqc/multiqc_plots/png/create_only_after.png",
+                "multiqc/multiqc_plots/png/create_only_before.png",
+                "multiqc/multiqc_plots/png/create_only_cluster_distribution.png",
+                "multiqc/multiqc_plots/png/family_metadata.png",
+                "multiqc/multiqc_plots/png/update_hmm_only_after.png",
+                "multiqc/multiqc_plots/png/update_hmm_only_before.png",
+                "multiqc/multiqc_plots/png/update_hmm_only_cluster_distribution.png",
+                "multiqc/multiqc_plots/png/update_hmm_seed_full_after.png",
+                "multiqc/multiqc_plots/png/update_hmm_seed_full_before.png",
+                "multiqc/multiqc_plots/png/update_hmm_seed_full_cluster_distribution.png",
+                "multiqc/multiqc_plots/png/update_hmm_seed_gz_after.png",
+                "multiqc/multiqc_plots/png/update_hmm_seed_gz_before.png",
+                "multiqc/multiqc_plots/png/update_hmm_seed_gz_cluster_distribution.png",
+                "multiqc/multiqc_plots/svg",
+                "multiqc/multiqc_plots/svg/create_only_after.svg",
+                "multiqc/multiqc_plots/svg/create_only_before.svg",
+                "multiqc/multiqc_plots/svg/create_only_cluster_distribution.svg",
+                "multiqc/multiqc_plots/svg/family_metadata.svg",
+                "multiqc/multiqc_plots/svg/update_hmm_only_after.svg",
+                "multiqc/multiqc_plots/svg/update_hmm_only_before.svg",
+                "multiqc/multiqc_plots/svg/update_hmm_only_cluster_distribution.svg",
+                "multiqc/multiqc_plots/svg/update_hmm_seed_full_after.svg",
+                "multiqc/multiqc_plots/svg/update_hmm_seed_full_before.svg",
+                "multiqc/multiqc_plots/svg/update_hmm_seed_full_cluster_distribution.svg",
+                "multiqc/multiqc_plots/svg/update_hmm_seed_gz_after.svg",
+                "multiqc/multiqc_plots/svg/update_hmm_seed_gz_before.svg",
+                "multiqc/multiqc_plots/svg/update_hmm_seed_gz_cluster_distribution.svg",
+                "multiqc/multiqc_report.html",
+                "pipeline_info",
+                "pipeline_info/nf_core_proteinfamilies_software_mqc_versions.yml",
+                "qc",
+                "qc/create_only",
+                "qc/create_only/create_only.faa",
+                "qc/create_only/create_only.log",
+                "qc/create_only/create_only_after.tsv",
+                "qc/create_only/create_only_after_mqc.txt",
+                "qc/create_only/create_only_before.tsv",
+                "qc/create_only/create_only_before_mqc.txt",
+                "qc/update_hmm_only",
+                "qc/update_hmm_only/update_hmm_only.faa",
+                "qc/update_hmm_only/update_hmm_only.log",
+                "qc/update_hmm_only/update_hmm_only_after.tsv",
+                "qc/update_hmm_only/update_hmm_only_after_mqc.txt",
+                "qc/update_hmm_only/update_hmm_only_before.tsv",
+                "qc/update_hmm_only/update_hmm_only_before_mqc.txt",
+                "qc/update_hmm_seed_full",
+                "qc/update_hmm_seed_full/update_hmm_seed_full.faa",
+                "qc/update_hmm_seed_full/update_hmm_seed_full.log",
+                "qc/update_hmm_seed_full/update_hmm_seed_full_after.tsv",
+                "qc/update_hmm_seed_full/update_hmm_seed_full_after_mqc.txt",
+                "qc/update_hmm_seed_full/update_hmm_seed_full_before.tsv",
+                "qc/update_hmm_seed_full/update_hmm_seed_full_before_mqc.txt",
+                "qc/update_hmm_seed_gz",
+                "qc/update_hmm_seed_gz/update_hmm_seed_gz.faa",
+                "qc/update_hmm_seed_gz/update_hmm_seed_gz.log",
+                "qc/update_hmm_seed_gz/update_hmm_seed_gz_after.tsv",
+                "qc/update_hmm_seed_gz/update_hmm_seed_gz_after_mqc.txt",
+                "qc/update_hmm_seed_gz/update_hmm_seed_gz_before.tsv",
+                "qc/update_hmm_seed_gz/update_hmm_seed_gz_before_mqc.txt"
+            ],
+            [
+                "create_only_members.tsv:md5,f47a58606da673b7cea2efe991b0f8aa",
+                "create_only_meta_mqc.csv:md5,c038d7674f1415b54ccb2d8ad072f724",
+                "create_only_reps.faa:md5,b84c601b8533b9c457804ab3804c01fe",
+                "redundant_fam_ids.txt:md5,7bacd4745695ccc60332b17d61e72532",
+                "similar_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "redundant_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "similar_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "update_hmm_only_members.tsv:md5,d02a191a3d00aafb6f8006366920ee44",
+                "update_hmm_only_meta_mqc.csv:md5,6db14884b6fe03c057043b7a468a7e09",
+                "update_hmm_only_passed_through_existing_families.tsv:md5,919b67773a2f3ba80861a2aa7e7e2fda",
+                "update_hmm_only_reps.faa:md5,bd6cd368b361db71980c425def3a0d9b",
+                "redundant_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "similar_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "update_hmm_seed_full_members.tsv:md5,e99f5b3ec5e574a18e9af15a807c3db7",
+                "update_hmm_seed_full_meta_mqc.csv:md5,013b5ccb05653a46a817496e8634e463",
+                "update_hmm_seed_full_passed_through_existing_families.tsv:md5,ea8f6f94940e6a23a3b92ddc9687f70f",
+                "update_hmm_seed_full_reps.faa:md5,d6ce995b8cb13315db31c1f654e9c57f",
+                "redundant_fam_ids.txt:md5,8fec934ad282894bc92c1466ca22f005",
+                "similar_fam_ids.txt:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "update_hmm_seed_gz_members.tsv:md5,dedb3f97ef6c17dc6a0474cca8dae06d",
+                "update_hmm_seed_gz_meta_mqc.csv:md5,a8284271df80b178e74ef4613cd2fb42",
+                "update_hmm_seed_gz_passed_through_existing_families.tsv:md5,919b67773a2f3ba80861a2aa7e7e2fda",
+                "update_hmm_seed_gz_reps.faa:md5,c0d384a6e2b1689f376b9f820111f325",
+                "multiqc_citations.txt:md5,4c806e63a283ec1b7e78cdae3a923d4f",
+                "multiqc_create_only_after.txt:md5,3a4a72598a73a4830626c9b4887f1d66",
+                "multiqc_create_only_before.txt:md5,7f975cad14f7dbd4769083e22cc05a83",
+                "multiqc_create_only_cluster_distribution.txt:md5,9f310a12f74e4e64764f5831e5f8b02c",
+                "multiqc_update_hmm_only_after.txt:md5,f4a92d1d748cef8e17690db571b51d3a",
+                "multiqc_update_hmm_only_before.txt:md5,6f77349a1cd573d228f862d68e538d58",
+                "multiqc_update_hmm_only_cluster_distribution.txt:md5,3efb62c50b29e8a4d78ea84b827257cc",
+                "multiqc_update_hmm_seed_full_after.txt:md5,7233e2c1a0eae9f0f8d91666fe7ec11b",
+                "multiqc_update_hmm_seed_full_before.txt:md5,6f77349a1cd573d228f862d68e538d58",
+                "multiqc_update_hmm_seed_full_cluster_distribution.txt:md5,3efb62c50b29e8a4d78ea84b827257cc",
+                "multiqc_update_hmm_seed_gz_after.txt:md5,807f9810482fc145ca5a3ff6144a0418",
+                "multiqc_update_hmm_seed_gz_before.txt:md5,54c1e08d4cb5351dde84fd08eff9f887",
+                "multiqc_update_hmm_seed_gz_cluster_distribution.txt:md5,a4153fa14ff3c3659c6e04fa8edec6cf",
+                "create_only.log:md5,a41135cfe024baaf42f135583fe73f0d",
+                "create_only_before.tsv:md5,eb88faa675b2d0c6a9ebbff1aecb33a3",
+                "create_only_before_mqc.txt:md5,45de3e3c31c354347494309581b9ad2a",
+                "update_hmm_only.log:md5,a41135cfe024baaf42f135583fe73f0d",
+                "update_hmm_only_before.tsv:md5,7d2fdf1eb70ec19fa28d5a0084659899",
+                "update_hmm_only_before_mqc.txt:md5,7d6351c17db6eade43aed5bcee84465c",
+                "update_hmm_seed_full.log:md5,a41135cfe024baaf42f135583fe73f0d",
+                "update_hmm_seed_full_before.tsv:md5,7d2fdf1eb70ec19fa28d5a0084659899",
+                "update_hmm_seed_full_before_mqc.txt:md5,7d6351c17db6eade43aed5bcee84465c",
+                "update_hmm_seed_gz.log:md5,a41135cfe024baaf42f135583fe73f0d",
+                "update_hmm_seed_gz_before.tsv:md5,b18cdf93c41c21a2f5ec695e3df5c6bf",
+                "update_hmm_seed_gz_before_mqc.txt:md5,57afa0cca0ea5b4b8f910104d2ccfaa3"
+            ],
+            [
+                "create_only_faa.tar.gz: create_only_1.faa=f513b06991cd83c8ba1ff258923b05e4, create_only_2.faa=3b4179838de97782bbb00b3bf4e86e28, create_only_3.faa=01cc20f5ae52706f75dbcb47b71c0566, create_only_5.faa=72b685a8cb5902fbd4ec9aa0991bc949, create_only_7.faa=8fc317a7781199792228159343c653d8",
+                "create_only_full_msas.tar.gz: create_only_1.aln=f51fd1f5c8b4314f0faac1d749410d50, create_only_2.aln=303c6051b9cb6bdd3237562182189fe6, create_only_3.aln=ac351c5273cef6550cb2e399ec778b0b, create_only_5.aln=a49bdbb102e5d36a401558b84010c0f4, create_only_7.aln=a3fdfe5bca17bef9a86fd8cbe58b77bf",
+                "create_only_seed_msas.tar.gz: create_only_1.aln=7d087038c1e58c34bb5e28d236a33d28, create_only_2.aln=0e1524aebd12a97f1e428926008f7478, create_only_3.aln=a19a1dd17d357003f701ded33b83cbf6, create_only_5.aln=68adbd055b9ddca190001b020f306ad5, create_only_7.aln=207265361773b3a550927fad9528af7d",
+                "update_hmm_only_faa.tar.gz: existing_fam_1.faa=55e273c2ca7a6a15f979c9163d89a9bf, existing_fam_2.faa=f985db47cc8825c753a07d43be9dc85a, existing_fam_3.faa=59dcaedb81585210764f3d639032e881, existing_fam_4.faa=730d8bce6904f1cd7c4d877488cc7e71, update_hmm_only_1.faa=94c09306cc4456e1e66c79a631e378f8, update_hmm_only_2.faa=d9907011472bda8b425cc46f49efc6ef",
+                "update_hmm_only_full_msas.tar.gz: existing_fam_1.aln=2abb807c717335309740ad6ee22be76a, existing_fam_2.aln=c65ca4fea92158acbe78888a0019a25d, existing_fam_3.aln=6e1f3d1cce666836af1db8e9ae828eb2, existing_fam_4.aln=af4d7a45cf013f9f42a1f08283371994, update_hmm_only_1.aln=94c09306cc4456e1e66c79a631e378f8, update_hmm_only_2.aln=a685ce8f5c8fed7cbd1c10a06ffe2751",
+                "update_hmm_only_seed_msas.tar.gz: existing_fam_1.aln=dfa5c40157a56b8dcb25743b56194f68, existing_fam_2.aln=5e9bc15e7600132fc98c25d385f4fe3e, existing_fam_3.aln=ef03d86964c3b011e4e9de17d95eea37, existing_fam_4.aln=56e7a0c27513e42507e315bbbbdf042d, update_hmm_only_1.aln=a93bd912a642395fd71eaeadea47c9f3, update_hmm_only_2.aln=594618a4575bda2ccb49db615ac017ae",
+                "update_hmm_seed_full_faa.tar.gz: existing_fam_1.faa=5a9ed9b3a21d12b182295d517cb00f77, existing_fam_2.faa=f985db47cc8825c753a07d43be9dc85a, existing_fam_3.faa=59dcaedb81585210764f3d639032e881, existing_fam_4.faa=730d8bce6904f1cd7c4d877488cc7e71, existing_fam_zero_hits.faa=4c96555ff98bf686b56e2519a151e224, update_hmm_seed_full_1.faa=94c09306cc4456e1e66c79a631e378f8, update_hmm_seed_full_2.faa=d9907011472bda8b425cc46f49efc6ef",
+                "update_hmm_seed_full_full_msas.tar.gz: existing_fam_1.aln=cac8be6d6d01f7468b0ba81f76aaf0cc, existing_fam_2.aln=c65ca4fea92158acbe78888a0019a25d, existing_fam_3.aln=6e1f3d1cce666836af1db8e9ae828eb2, existing_fam_4.aln=af4d7a45cf013f9f42a1f08283371994, existing_fam_zero_hits.aln=f4f7a40f80043e84afc6fbdceec05901, update_hmm_seed_full_1.aln=94c09306cc4456e1e66c79a631e378f8, update_hmm_seed_full_2.aln=a685ce8f5c8fed7cbd1c10a06ffe2751",
+                "update_hmm_seed_full_seed_msas.tar.gz: existing_fam_1.aln=96c755f4e692e05eabd806269e9a0654, existing_fam_2.aln=5e9bc15e7600132fc98c25d385f4fe3e, existing_fam_3.aln=ef03d86964c3b011e4e9de17d95eea37, existing_fam_4.aln=56e7a0c27513e42507e315bbbbdf042d, existing_fam_zero_hits.aln=5b95acffcd6141546c3cd938a97a739a, update_hmm_seed_full_1.aln=a93bd912a642395fd71eaeadea47c9f3, update_hmm_seed_full_2.aln=594618a4575bda2ccb49db615ac017ae",
+                "update_hmm_seed_gz_faa.tar.gz: existing_fam_1.faa=d528df9c4bbc173310e6cee26e6f0abc, existing_fam_2.faa=993c09eceff801ed4ab9d3a6c7bd29eb, existing_fam_3.faa=26b76507bc7a6fd5356065f45f53e2e2, existing_fam_4.faa=4cf1e4918975fddf1ce7f511080fae18, update_hmm_seed_gz_1.faa=01cc20f5ae52706f75dbcb47b71c0566, update_hmm_seed_gz_2.faa=7fae07100b07a1491eafe104b1d2290b, update_hmm_seed_gz_4.faa=72b685a8cb5902fbd4ec9aa0991bc949, update_hmm_seed_gz_6.faa=a4b182c2b6958ef5f85ec96d4cb22fe1",
+                "update_hmm_seed_gz_full_msas.tar.gz: existing_fam_1.aln=3f3bc9b7ebe9a012717a9885f412bfe3, existing_fam_2.aln=cfbd430150047cd31b7efa5da2aaa19a, existing_fam_3.aln=0f5745b3909f42987f4fb0ed147d88cb, existing_fam_4.aln=b17d35f0ecfb6952d142122c45291683, update_hmm_seed_gz_1.aln=ac351c5273cef6550cb2e399ec778b0b, update_hmm_seed_gz_2.aln=a1e5506e769f8755d5239f7024ec6d20, update_hmm_seed_gz_4.aln=a49bdbb102e5d36a401558b84010c0f4, update_hmm_seed_gz_6.aln=853f89215dd46ef51d03a7ccdec40c9d",
+                "update_hmm_seed_gz_seed_msas.tar.gz: existing_fam_1.aln=19ef12d2251f66492a50ab7bfd428e35, existing_fam_2.aln=526669b6b629bb4da3e08f222620b6b8, existing_fam_3.aln=05e5228b02aa884d514dc0a0ad2199ca, existing_fam_4.aln=4d73311e929e415aad24217545c333f6, existing_fam_zero_hits.aln=dc8a37fd9e29fe0d988cbb9e9cbc6a27, update_hmm_seed_gz_1.aln=a19a1dd17d357003f701ded33b83cbf6, update_hmm_seed_gz_2.aln=188e8baba37fe14a7c3e88182c5bdf80, update_hmm_seed_gz_4.aln=68adbd055b9ddca190001b020f306ad5, update_hmm_seed_gz_6.aln=3c45fc423ada4c3131fe5aca1241131d"
+            ],
+            [
+                "create_only.lib.gz: create_only_1=ba2daf68dc68e7740d3ece08f4963d90, create_only_2=a6df50c760a6b1166055485d16f991f7, create_only_3=3d710e738c820117759ddd20d88d9287, create_only_5=905d8570d4f2e28dd904df2cdad7f910, create_only_7=cc233ed149af86dca6742ee1aec6e909",
+                "update_hmm_only.lib.gz: existing_fam_1=9399c37b39367b32fbceb25665083cf8, existing_fam_2=842c217dbab33df293ef2f8e7e1ddc6e, existing_fam_3=879d8c6f570ab79c434de30b211fa7ae, existing_fam_4=6549e9f64b13c975ae120631e86ed997, existing_fam_zero_hits=312c4f6d02fa5050f6164e47ff1871eb, update_hmm_only_1=2d8f094c43f333667e89bafdb09e56c2, update_hmm_only_2=d96629e23ee9bfa72a3b993eff6aa921",
+                "update_hmm_seed_full.lib.gz: existing_fam_1=100eba2b1eab49ed632a175039077882, existing_fam_2=842c217dbab33df293ef2f8e7e1ddc6e, existing_fam_3=879d8c6f570ab79c434de30b211fa7ae, existing_fam_4=6549e9f64b13c975ae120631e86ed997, existing_fam_zero_hits=ffb30b3e87946c3109e5ba44e1bca6ca, update_hmm_seed_full_1=aad496f26bba29dcc01f76c94615cbf4, update_hmm_seed_full_2=dbcf7fb41b2560513989bc86f8786b13",
+                "update_hmm_seed_gz.lib.gz: existing_fam_1=f33c561c9a74a934401aed748ce654f1, existing_fam_2=84e87c1bae8bd95ec60e7d76315f13a4, existing_fam_3=fcccb7ba7d4ce5c58b34c5520cfa1bb5, existing_fam_4=e013fc472ff12cdea0e5b10e533ed6cf, existing_fam_zero_hits=312c4f6d02fa5050f6164e47ff1871eb, update_hmm_seed_gz_1=184b0aa265af09066c77650fcfe679f2, update_hmm_seed_gz_2=d4710c4128145d99844a1ae5ddec36aa, update_hmm_seed_gz_4=9da256a3844f257ea1e8792d1a8fad3d, update_hmm_seed_gz_6=14873b12c8bfd044f5443956040d9c50"
+            ]
+        ],
+        "timestamp": "2026-10-09T10:09:28.571848107",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

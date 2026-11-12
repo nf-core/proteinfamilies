@@ -1,0 +1,125 @@
+{
+    "proteinfamilies - fasta - families": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unassigned.faa.gz:md5,98fbcee70cdba7ecd2a8572058c51f43"
+                    ]
+                ],
+                "1": [
+                    [
+                        "EXTRACT_UNASSIGNED_SEQS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unassigned.faa.gz:md5,98fbcee70cdba7ecd2a8572058c51f43"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "EXTRACT_UNASSIGNED_SEQS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-09T09:38:28.939855465",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "proteinfamilies - fasta - families - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unassigned.faa.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "1": [
+                    [
+                        "EXTRACT_UNASSIGNED_SEQS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unassigned.faa.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "EXTRACT_UNASSIGNED_SEQS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-09T09:38:56.345458709",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "proteinfamilies - fasta.gz - no families": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unassigned.faa.gz:md5,4d715a9da9b6571b46bed6174e025f11"
+                    ]
+                ],
+                "1": [
+                    [
+                        "EXTRACT_UNASSIGNED_SEQS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_unassigned.faa.gz:md5,4d715a9da9b6571b46bed6174e025f11"
+                    ]
+                ],
+                "versions_python": [
+                    [
+                        "EXTRACT_UNASSIGNED_SEQS",
+                        "python",
+                        "3.13.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-09T09:38:43.302663593",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}
